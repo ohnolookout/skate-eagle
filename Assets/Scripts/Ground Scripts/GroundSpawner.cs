@@ -70,6 +70,28 @@ public class GroundSpawner : MonoBehaviour
         }
     }
 
+    public void GenerateTestSegment(CurveParameters parameters)
+    {
+
+        if(transform.childCount > 0)
+        {
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        AddSegment(parameters);
+        segmentList[^1].gameObject.SetActive(true);
+        //leadingSegmentIndex = -1;
+        //ActivateSegment(SegmentPosition.Leading);
+    }
+
+    private void AddSegment(CurveParameters parameters)
+    {
+        GameObject newSegment = Instantiate(groundSegment, transform, true);
+        segmentList.Add(newSegment.GetComponent<GroundSegment>());
+        segmentList[^1].CreateCurve(parameters);
+        currentPoint = segmentList[^1].Curve.EndPoint;
+        segmentList[^1].gameObject.SetActive(false);
+    }
+
     private void AddSegment(CurveType type)
     {
         GameObject newSegment = Instantiate(groundSegment, transform, true);

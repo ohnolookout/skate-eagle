@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum CurveType { StartLine, FinishLine, Roller, SmallRoller };
+public enum CurveType { StartLine, FinishLine, Roller, SmallRoller, Custom, CustomFixed };
 public class Curve
 {
     private readonly float length;
@@ -21,17 +21,38 @@ public class Curve
             {
                 throw new Exception("Must specify CurveType.StartLine when not providing starting CurvePoint for new Curve.");
             }
-            curvePoints = CurveUtility.GenerateStartLine();
+            curvePoints = CurveTypes.GenerateStartLine();
         } else
         {
             startPoint = (CurvePoint)start;
-            curvePoints = CurveUtility.GenerateCurveList(type, startPoint);
+            curvePoints = CurveTypes.GenerateCurveList(type, startPoint);
         }
         curveType = type;
         length = CurveUtility.GetCurveLength(curvePoints, out segmentLengths);
         lowPoint = CurveUtility.FindLowPoint(curvePoints);
         startPoint = curvePoints[0];
         endPoint = curvePoints[^1];
+    }
+
+    public Curve(CurveParameters parameters, CurvePoint? start = null)
+    {
+        CurvePoint startPoint;
+        if(start is null)
+        {
+            startPoint = new CurvePoint(new Vector3 (0,0));
+        }
+        else
+        {
+            startPoint = (CurvePoint)start;
+        }
+        curvePoints = CurveTypes.CustomCurve(startPoint, parameters);
+        curveType = CurveType.Custom;
+        length = CurveUtility.GetCurveLength(curvePoints, out segmentLengths);
+        lowPoint = CurveUtility.FindLowPoint(curvePoints);
+        startPoint = curvePoints[0];
+        endPoint = curvePoints[^1];
+
+
     }
 
     public CurvePoint GetPoint(int i)

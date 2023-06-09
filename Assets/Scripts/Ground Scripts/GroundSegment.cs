@@ -13,7 +13,6 @@ public class GroundSegment : MonoBehaviour
     private EdgeCollider2D edgeCollider;
     private Spline spline;
     private List<Vector2> unoffsetPoints;
-    private CurveType curveType;
     private int floorHeight = 100;
 
 
@@ -25,19 +24,9 @@ public class GroundSegment : MonoBehaviour
         shadowCaster = GetComponent<ShadowCaster2D>();
         GroundUtility.FormatSpline(spline);
     }
-    /*public void CreateCurve(CurveType type, CurvePoint startPoint)
-    {
-        curveType = type;
-        curve = new Curve(curveType, startPoint);
-        GenerateSpline();
-        CurveCollider.CreateCollider(this, out unoffsetPoints);
-        CollisionActive = false;
-        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
-    }*/
 
     public void CreateStartLine()
     {
-        curveType = CurveType.StartLine;
         curve = new Curve(CurveType.StartLine);
         GenerateSpline();
         CurveCollider.CreateCollider(this, out unoffsetPoints);
@@ -45,10 +34,37 @@ public class GroundSegment : MonoBehaviour
         ShadowCasterCreator.GenerateShadow(shadowCaster, this);
     }
 
+    public void SetCurve(Curve inputCurve, CurvePoint startPoint, Vector3? overlapPoint = null)
+    {
+        curve = inputCurve;
+        GenerateSpline();
+        CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
+        CollisionActive = false;
+        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
+    }
+
     public void CreateCurve(CurveType type, CurvePoint startPoint, Vector3? overlapPoint = null)
     {
-        curveType = type;
-        curve = new Curve(curveType, startPoint);
+        curve = new Curve(type, startPoint);
+        GenerateSpline();
+        CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
+        CollisionActive = false;
+        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
+    }
+
+    public void CreateCurve(CurveParameters parameters, CurvePoint? start = null, Vector3? overlapPoint = null)
+    {
+        CurvePoint startPoint;
+        if (start is null)
+        {
+            startPoint = new CurvePoint(new Vector3(0, 0));
+        }
+        else
+        {
+            startPoint = (CurvePoint)start;
+        }
+        Awake();
+        curve = new Curve(parameters, startPoint);
         GenerateSpline();
         CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
         CollisionActive = false;
@@ -134,7 +150,7 @@ public class GroundSegment : MonoBehaviour
     {
         get
         {
-            return curveType;
+            return curve.Type;
         }
     }
 
@@ -165,15 +181,6 @@ public class GroundSegment : MonoBehaviour
         spline.SetRightTangent(0, new Vector3(1, 0));
         spline.SetTangentMode(1, ShapeTangentMode.Broken);
         spline.SetLeftTangent(1, new Vector2(0, -1));
-    }
-
-    private void FormatSpline()
-    {
-        spline.isOpenEnded = false;
-        while (spline.GetPointCount() > 2)
-        {
-            spline.RemovePointAt(2);
-        }
     }
 
 }
