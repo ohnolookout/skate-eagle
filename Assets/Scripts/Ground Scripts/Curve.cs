@@ -45,7 +45,7 @@ public class Curve
         {
             startPoint = (CurvePoint)start;
         }
-        curvePoints = CurveTypes.CustomCurve(startPoint, parameters);
+        curvePoints = CurveTypes.CustomCurve(parameters, startPoint);
         curveType = CurveType.Custom;
         length = CurveUtility.GetCurveLength(curvePoints, out segmentLengths);
         lowPoint = CurveUtility.FindLowPoint(curvePoints);

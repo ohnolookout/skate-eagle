@@ -113,21 +113,21 @@ public static class CurveTypes
         return curve;
     }
 
-    public static List<CurvePoint> CustomCurve(CurvePoint startPoint, CurveParameters parameters, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
+    public static List<CurvePoint> CustomCurve(CurveParameters parameters, CurvePoint startPoint, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
     {
 
         List<CurvePoint> curve = new();
         int hillStatus = 1;
-        Vector3 prevTangent = startPoint.RightTangent;
         curve.Add(startPoint);
         for (int i = 0; i < 2; i++)
         {
+            Vector3 prevTangent = startPoint.RightTangent;
             CurvePoint nextPoint = new CurvePoint();
-            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y);
+            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y)/3;
             float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer / 2);
             float yDelta = Random.Range(parameters.yDeltaMin, parameters.yDeltaMax);
-            float xVelocity = Random.Range(parameters.xVelocityMin * (xDelta / 10), (parameters.xVelocityMax * (xDelta / (15 + prevTangSpacer / 4))));
-            float randomSlope = Random.Range(parameters.slopeMin * (xVelocity / 4), parameters.slopeMax * (xVelocity / 6)) * hillStatus;
+            float xVelocity = Random.Range(parameters.xVelocityMin + (xDelta/3), parameters.xVelocityMax + (xDelta /3) + prevTangSpacer / 4);
+            float randomSlope = Random.Range(parameters.slopeMin * (xVelocity / 20), parameters.slopeMax * (xVelocity / 6) * hillStatus);
             nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(xDelta, yDelta, 0);
             nextPoint.SetTangents(randomSlope, xVelocity);
             hillStatus *= -1;
@@ -137,7 +137,7 @@ public static class CurveTypes
         return curve;
     }
 
-    public static List<CurvePoint> FixedCustomCurve(CurvePoint startPoint, CurveParameters parameters, bool useMinimumParameters, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
+    public static List<CurvePoint> FixedCustomCurve(CurveParameters parameters, CurvePoint startPoint, bool useMinimumParameters, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
     {
 
         List<CurvePoint> curve = new();

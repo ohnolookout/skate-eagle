@@ -5,9 +5,10 @@ using UnityEditor;
 
 public class CurveTypeCreator : EditorWindow
 {
-
+    private float xDeltaMin, xDeltaMax, yDeltaMin, yDeltaMax, xVelocityMin, xVelocityMax, slopeMin, slopeMax;
     string curveTypeName = "";
-    CurveParameters parameters;
+    CurveTypeSettings currentCurveSettings;
+    CurveParameters currentCurveParameters;
     GroundSpawner groundSpawner;
     string[] savedCurves = new[] { "Flat", "Bad Curve" };
     int curveIndex = 0;
@@ -27,18 +28,18 @@ public class CurveTypeCreator : EditorWindow
         GUILayout.Label("Curve Type Creator", EditorStyles.boldLabel);
 
         curveTypeName = EditorGUILayout.TextField("Curve Type Name", curveTypeName);
-        parameters = EditorGUILayout.ObjectField("", parameters, typeof(CurveParameters), false) as CurveParameters;
-        /*parameters.xDeltaMin = EditorGUILayout.FloatField("X Delta Min", parameters.xDeltaMin);
-        parameters.xDeltaMax = EditorGUILayout.FloatField("X Delta Max", parameters.xDeltaMax);
-        parameters.yDeltaMin = EditorGUILayout.FloatField("Y Delta Min", parameters.yDeltaMin);
-        parameters.yDeltaMax = EditorGUILayout.FloatField("Y Delta Max", parameters.yDeltaMax);
-        parameters.xVelocityMin = EditorGUILayout.FloatField("X Velocity Min", parameters.xVelocityMin);
-        parameters.xVelocityMax = EditorGUILayout.FloatField("X Velocity Max", parameters.xVelocityMax);
-        parameters.slopeMin = EditorGUILayout.FloatField("Slope Min", parameters.slopeMin);
-        parameters.slopeMax = EditorGUILayout.FloatField("Slope Min", parameters.slopeMax);*/
+        currentCurveSettings = EditorGUILayout.ObjectField("", currentCurveSettings, typeof(CurveTypeSettings), false) as CurveTypeSettings;
+        xDeltaMin = EditorGUILayout.FloatField("X Delta Min", xDeltaMin);
+        xDeltaMax = EditorGUILayout.FloatField("X Delta Max", xDeltaMax);
+        yDeltaMin = EditorGUILayout.FloatField("Y Delta Min", yDeltaMin);
+        yDeltaMax = EditorGUILayout.FloatField("Y Delta Max", yDeltaMax);
+        xVelocityMin = EditorGUILayout.FloatField("X Velocity Min", xVelocityMin);
+        xVelocityMax = EditorGUILayout.FloatField("X Velocity Max", xVelocityMax);
+        slopeMin = EditorGUILayout.FloatField("Slope Min", slopeMin);
+        slopeMax = EditorGUILayout.FloatField("Slope Min", slopeMax);
         curveIndex = EditorGUILayout.Popup(curveIndex, savedCurves);
-        //groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
-
+        groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
+        currentCurveParameters = new(xDeltaMin, xDeltaMax, yDeltaMin, yDeltaMax, xVelocityMin, xVelocityMax, slopeMin, slopeMax);
         if (GUILayout.Button("Generate"))
         {
             GenerateCustomCurve();
@@ -54,6 +55,6 @@ public class CurveTypeCreator : EditorWindow
             return;
         }
 
-        //groundSpawner.GenerateTestSegment(parameters);
+        groundSpawner.GenerateTestSegment(currentCurveParameters);
     }
 }
