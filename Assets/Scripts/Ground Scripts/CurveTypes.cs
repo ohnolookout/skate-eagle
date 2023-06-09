@@ -123,11 +123,16 @@ public static class CurveTypes
         {
             Vector3 prevTangent = startPoint.RightTangent;
             CurvePoint nextPoint = new CurvePoint();
-            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y)/3;
+            /*float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y)/3;
             float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer / 2);
             float yDelta = Random.Range(parameters.yDeltaMin, parameters.yDeltaMax);
             float xVelocity = Random.Range(parameters.xVelocityMin + (xDelta/3), parameters.xVelocityMax + (xDelta /3) + prevTangSpacer / 4);
-            float randomSlope = Random.Range(parameters.slopeMin * (xVelocity / 20), parameters.slopeMax * (xVelocity / 6) * hillStatus);
+            float randomSlope = Random.Range(parameters.slopeMin * (xVelocity / 20), parameters.slopeMax * (xVelocity / 6)) * hillStatus;*/
+            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y) / 3;
+            float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer);
+            float yDelta = Random.Range(parameters.yDeltaMin, parameters.yDeltaMax);
+            float xVelocity = Random.Range(parameters.xVelocityMin, parameters.xVelocityMax);
+            float randomSlope = Random.Range(parameters.slopeMin, parameters.slopeMax) * hillStatus;
             nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(xDelta, yDelta, 0);
             nextPoint.SetTangents(randomSlope, xVelocity);
             hillStatus *= -1;
