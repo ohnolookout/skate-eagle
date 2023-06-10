@@ -4,19 +4,8 @@ using UnityEngine.U2D;
 
 public static class CurveUtility
 {
-    public static float GetCurveLength(List<CurvePoint> curvePoints, out List<float> segmentLengths)
-    {
-        segmentLengths = new();
-        float length = 0;
-        for (int i = 0; i < curvePoints.Count - 1; i++)
-        {
-            segmentLengths.Add(SingleCurveLength(curvePoints[i].ControlPoint, curvePoints[i].RightTangent, curvePoints[i + 1].LeftTangent, curvePoints[i + 1].ControlPoint));
-            length += segmentLengths[^1];
-        }
-        return length;
-    }
 
-    public static float SingleCurveLength(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+    public static float BezierCurveLength(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
     {
         p1 += p0;
         p2 += p3;
@@ -45,23 +34,6 @@ public static class CurveUtility
         point += ttt * p3;
 
         return point;
-    }
-
-    public static Vector3 FindLowPoint(List<CurvePoint> curvePoints)
-    {
-        for(int i = 0; i < curvePoints.Count - 1; i++)
-        {
-            if(curvePoints[i].RightTangent.y < 0)
-            {
-                return GetPointAtT(curvePoints[i], curvePoints[i + 1], 0.5f);
-            }
-        }
-        CurvePoint lowPoint = curvePoints[0];
-        for(int i = 1; i < curvePoints.Count; i++)
-        {
-            if (curvePoints[i].ControlPoint.y < lowPoint.ControlPoint.y) lowPoint = curvePoints[i];
-        }
-        return lowPoint.ControlPoint;
     }
 
     public static Vector3 GetPointAtT(CurvePoint startPoint, CurvePoint endPoint, float t)

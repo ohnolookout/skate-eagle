@@ -4,8 +4,19 @@ using UnityEngine;
 
 public static class CurveTypes
 {
-    public static Dictionary<string, CurveParameters> SavedCurveParameters = new();
-    public static List<CurvePoint> Roller(CurvePoint startPoint, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
+
+    public static CurveParameters RollerParameters()
+    {
+        CurveParameters parameters = new(20, 50, -5, 3, 0.4f, 1.6f);
+        parameters.xDeltaMin = 20;
+        parameters.xDeltaMax = 50;
+        parameters.lengthToVelocityRatioMin = 0.2f;
+        parameters.lengthToVelocityRatioMax = 0.5f;
+        parameters.slopeMin = 0.4f;
+        parameters.slopeMax = 1.6f;
+        return parameters;
+    }
+    /*public static List<CurvePoint> Roller(CurvePoint startPoint, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
     {
         List<CurvePoint> curve = new();
         int hillStatus = 1;
@@ -113,71 +124,6 @@ public static class CurveTypes
         return curve;
     }
 
-    public static List<CurvePoint> CustomCurve(CurveParameters parameters, CurvePoint startPoint, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
-    {
-
-        List<CurvePoint> curve = new();
-        int hillStatus = 1;
-        curve.Add(startPoint);
-        for (int i = 0; i < 2; i++)
-        {
-            Vector3 prevTangent = startPoint.RightTangent;
-            CurvePoint nextPoint = new CurvePoint();
-            /*float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y)/3;
-            float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer / 2);
-            float yDelta = Random.Range(parameters.yDeltaMin, parameters.yDeltaMax);
-            float xVelocity = Random.Range(parameters.xVelocityMin + (xDelta/3), parameters.xVelocityMax + (xDelta /3) + prevTangSpacer / 4);
-            float randomSlope = Random.Range(parameters.slopeMin * (xVelocity / 20), parameters.slopeMax * (xVelocity / 6)) * hillStatus;*/
-            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y) / 3;
-            float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer);
-            float yDelta = Random.Range(parameters.yDeltaMin, parameters.yDeltaMax);
-            float xVelocity = Random.Range(parameters.xVelocityMin, parameters.xVelocityMax);
-            float randomSlope = Random.Range(parameters.slopeMin, parameters.slopeMax) * hillStatus;
-            nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(xDelta, yDelta, 0);
-            nextPoint.SetTangents(randomSlope, xVelocity);
-            hillStatus *= -1;
-            curve.Add(nextPoint);
-            startPoint = nextPoint;
-        }
-        return curve;
-    }
-
-    public static List<CurvePoint> FixedCustomCurve(CurveParameters parameters, CurvePoint startPoint, bool useMinimumParameters, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
-    {
-
-        List<CurvePoint> curve = new();
-        int hillStatus = 1;
-        Vector3 prevTangent = startPoint.RightTangent;
-        curve.Add(startPoint);
-
-        for (int i = 0; i < 2; i++)
-        {
-            CurvePoint nextPoint = new CurvePoint();
-            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y);
-            float xDelta, yDelta, xVelocity, slope;
-            if (useMinimumParameters)
-            {
-                xDelta = parameters.xDeltaMin + prevTangSpacer;
-                yDelta = parameters.yDeltaMin;
-                xVelocity = parameters.xVelocityMin * (xDelta / 10);
-                slope = parameters.slopeMin * hillStatus;
-            }
-            else
-            {
-                xDelta = parameters.xDeltaMax + prevTangSpacer / 2;
-                yDelta = parameters.yDeltaMax;
-                xVelocity = parameters.xVelocityMax * (xDelta / (15 + prevTangSpacer / 4));
-                slope = parameters.slopeMax * (xVelocity / 6) * hillStatus;
-            } 
-            nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(xDelta, yDelta, 0);
-            nextPoint.SetTangents(slope, xVelocity);
-            hillStatus *= -1;
-            curve.Add(nextPoint);
-            startPoint = nextPoint;
-        }
-        return curve;
-    }
-
     public static List<CurvePoint> GenerateCurveList(CurveType type, CurvePoint startPoint, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
     {
         return type switch
@@ -193,5 +139,5 @@ public static class CurveTypes
     public static List<CurvePoint> GenerateStartLine()
     {
         return CurveTypes.StartLine();
-    }
+    }*/
 }

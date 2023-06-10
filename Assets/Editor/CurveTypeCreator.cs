@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class CurveTypeCreator : EditorWindow
 {
-    private float xDeltaMin, xDeltaMax, yDeltaMin, yDeltaMax, xVelocityMin, xVelocityMax, slopeMin, slopeMax;
+    private float xDeltaMin, xDeltaMax, lengthToVelocityRatioMin, lengthToVelocityRatioMax, slopeMin, slopeMax;
     string curveTypeName = "";
     CurveTypeSettings currentCurveSettings;
     CurveParameters currentCurveParameters;
@@ -31,18 +31,24 @@ public class CurveTypeCreator : EditorWindow
         currentCurveSettings = EditorGUILayout.ObjectField("", currentCurveSettings, typeof(CurveTypeSettings), false) as CurveTypeSettings;
         xDeltaMin = EditorGUILayout.FloatField("X Delta Min", xDeltaMin);
         xDeltaMax = EditorGUILayout.FloatField("X Delta Max", xDeltaMax);
-        yDeltaMin = EditorGUILayout.FloatField("Y Delta Min", yDeltaMin);
-        yDeltaMax = EditorGUILayout.FloatField("Y Delta Max", yDeltaMax);
-        xVelocityMin = EditorGUILayout.FloatField("X Velocity Min", xVelocityMin);
-        xVelocityMax = EditorGUILayout.FloatField("X Velocity Max", xVelocityMax);
+        lengthToVelocityRatioMin = EditorGUILayout.FloatField("Length:Velocity Min", lengthToVelocityRatioMin);
+        lengthToVelocityRatioMax = EditorGUILayout.FloatField("Length:Velocity Max", lengthToVelocityRatioMax);
         slopeMin = EditorGUILayout.FloatField("Slope Min", slopeMin);
         slopeMax = EditorGUILayout.FloatField("Slope Max", slopeMax);
         curveIndex = EditorGUILayout.Popup(curveIndex, savedCurves);
         groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
-        currentCurveParameters = new(xDeltaMin, xDeltaMax, yDeltaMin, yDeltaMax, xVelocityMin, xVelocityMax, slopeMin, slopeMax);
+        currentCurveParameters = new(xDeltaMin, xDeltaMax, lengthToVelocityRatioMin, lengthToVelocityRatioMax, slopeMin, slopeMax);
         if (GUILayout.Button("Generate"))
         {
             GenerateCustomCurve();
+        }
+        if (GUILayout.Button("Generate Min"))
+        {
+            GenerateFixedCustomCurve(true);
+        }
+        if (GUILayout.Button("Generate Max"))
+        {
+            GenerateFixedCustomCurve(false);
         }
 
     }
@@ -55,6 +61,17 @@ public class CurveTypeCreator : EditorWindow
             return;
         }
 
-        groundSpawner.GenerateTestSegment(currentCurveParameters);
+        //groundSpawner.GenerateTestSegment(currentCurveParameters);
+    }
+
+    private void GenerateFixedCustomCurve(bool useMinimumParameters)
+    {
+        if (groundSpawner == null)
+        {
+            Debug.LogError("Error: No GroundSpawner assigned to CurveTypeCreatorTool");
+            return;
+        }
+
+        //groundSpawner.GenerateTestSegment(currentCurveParameters);
     }
 }

@@ -56,13 +56,14 @@ public class GroundSpawner : MonoBehaviour
 
     private void GenerateLevel(LevelData level)
     {
-        AddSegment(CurveType.StartLine);
+        AddSegment(CurveFactory.CurveFromType(CurveType.StartLine, currentPoint));
         while( length < level.Length)
         {
-            AddSegment(level.CurveTypes[Random.Range(0, level.CurveTypes.Count)]);
-            length += segmentList[^1].Curve.Length;
+            CurveType nextCurveType = level.CurveTypes[Random.Range(0, level.CurveTypes.Count)];
+            Curve newCurve = CurveFactory.CurveFromType(nextCurveType, currentPoint);
+            AddSegment(newCurve);
         }
-        AddSegment(CurveType.FinishLine);
+        AddSegment(CurveFactory.CurveFromType(CurveType.FinishLine, currentPoint));
         leadingSegmentIndex = -1;
         for(int i = 0; i < 2; i++)
         {
@@ -70,43 +71,32 @@ public class GroundSpawner : MonoBehaviour
         }
     }
 
-    public void GenerateTestSegment(CurveParameters parameters)
+    public void GenerateTestSegment(Curve curve)
     {
 
-        if(transform.childCount > 0)
+        if (transform.childCount > 0)
         {
             DestroyImmediate(transform.GetChild(0).gameObject);
         }
-        AddSegment(parameters);
+        AddSegment(curve);
         segmentList[^1].gameObject.SetActive(true);
-        //leadingSegmentIndex = -1;
-        //ActivateSegment(SegmentPosition.Leading);
     }
 
-    private void AddSegment(CurveParameters parameters)
+    private void AddSegment(Curve curve)
     {
+        Vector3? overlapPoint = null;
         GameObject newSegment = Instantiate(groundSegment, transform, true);
         segmentList.Add(newSegment.GetComponent<GroundSegment>());
-        segmentList[^1].CreateCurve(parameters);
-        currentPoint = segmentList[^1].Curve.EndPoint;
-        segmentList[^1].gameObject.SetActive(false);
-    }
-
-    private void AddSegment(CurveType type)
-    {
-        GameObject newSegment = Instantiate(groundSegment, transform, true);
-        segmentList.Add(newSegment.GetComponent<GroundSegment>());
-        if (type == CurveType.StartLine) 
+        if(segmentList.Count > 1)
         {
-            segmentList[^1].CreateStartLine();
-        } else
-        {
-            segmentList[^1].CreateCurve(type, currentPoint, segmentList[^2].LastColliderPoint);
+            overlapPoint = segmentList[^2].LastColliderPoint;
         }
+        segmentList[^1].SetCurve(curve, overlapPoint);
         currentPoint = segmentList[^1].Curve.EndPoint;
-        segmentList[^1].gameObject.SetActive(false);
+        newSegment.SetActive(false);
+        length += segmentList[^1].Curve.Length;
     }
-    //Change so that there is a collision buffer.
+
     private void UpdateCollision()
     {
         if(birdScript.DirectionForward && birdIndex >= segmentList.Count - 1 || (!birdScript.DirectionForward && birdIndex == 0))
@@ -307,6 +297,14 @@ public class GroundSpawner : MonoBehaviour
         get
         {
             return lowestPoint;
+        }
+    }
+
+    public CurvePoint CurrentEndPoint
+    {
+        get
+        {
+            return currentPoint;
         }
     }
 }

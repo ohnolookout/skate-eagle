@@ -25,46 +25,9 @@ public class GroundSegment : MonoBehaviour
         GroundUtility.FormatSpline(spline);
     }
 
-    public void CreateStartLine()
+    public void SetCurve(Curve curve, Vector3? overlapPoint = null)
     {
-        curve = new Curve(CurveType.StartLine);
-        GenerateSpline();
-        CurveCollider.CreateCollider(this, out unoffsetPoints);
-        CollisionActive = false;
-        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
-    }
-
-    public void SetCurve(Curve inputCurve, CurvePoint startPoint, Vector3? overlapPoint = null)
-    {
-        curve = inputCurve;
-        GenerateSpline();
-        CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
-        CollisionActive = false;
-        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
-    }
-
-    public void CreateCurve(CurveType type, CurvePoint startPoint, Vector3? overlapPoint = null)
-    {
-        curve = new Curve(type, startPoint);
-        GenerateSpline();
-        CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
-        CollisionActive = false;
-        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
-    }
-
-    public void CreateCurve(CurveParameters parameters, CurvePoint? start = null, Vector3? overlapPoint = null)
-    {
-        CurvePoint startPoint;
-        if (start is null)
-        {
-            startPoint = new CurvePoint(new Vector3(0, 0));
-        }
-        else
-        {
-            startPoint = (CurvePoint)start;
-        }
-        Awake();
-        curve = new Curve(parameters, startPoint);
+        this.curve = curve;
         GenerateSpline();
         CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
         CollisionActive = false;
@@ -81,10 +44,9 @@ public class GroundSegment : MonoBehaviour
         return curve.EndPoint.ControlPoint.x <= endX;
     }
 
-    // Uses curve to generate spline
     private void GenerateSpline()
     {
-        CurveUtility.InsertCurve(shapeController, curve, 1);
+        InsertCurveToSpline(curve, 1);
         UpdateCorners(floorHeight);
     }
 
@@ -181,6 +143,26 @@ public class GroundSegment : MonoBehaviour
         spline.SetRightTangent(0, new Vector3(1, 0));
         spline.SetTangentMode(1, ShapeTangentMode.Broken);
         spline.SetLeftTangent(1, new Vector2(0, -1));
+    }
+
+    private void InsertCurveToSpline(Curve curve, int index) //Inserts curve into the spline beginning at the given index
+    {
+        for (int i = 0; i < curve.Count; i++)
+        {
+            InsertCurvePointToSpline(curve.GetPoint(i), index);
+            index++;
+        }
+        spline.SetTangentMode(index, ShapeTangentMode.Broken);
+        spline.SetRightTangent(index, new Vector3(0, -1));
+
+    }
+
+    private void InsertCurvePointToSpline(CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
+    {
+        spline.InsertPointAt(index, curvePoint.ControlPoint);
+        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
+        spline.SetLeftTangent(index, curvePoint.LeftTangent);
+        spline.SetRightTangent(index, curvePoint.RightTangent);
     }
 
 }
