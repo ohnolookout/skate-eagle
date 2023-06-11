@@ -6,7 +6,7 @@ public class GroundSpawner : MonoBehaviour
 {
     public GameObject groundSegment;
     public List<GroundSegment> segmentList;
-    private CurvePoint currentPoint = new();
+    private CurvePoint currentPoint;
     private Vector3 leadingActivePoint, trailingActivePoint, lowestPoint;
     private float trailingCameraBound, leadingCameraBound, length = 0;
     private int leadingSegmentIndex = 3, trailingSegmentIndex = 0, birdIndex = 0;
@@ -18,12 +18,14 @@ public class GroundSpawner : MonoBehaviour
     private List<Vector3> activeLowPoints = new();
     private LogicScript logic;
     public GameObject finishFlag;
+    public bool testMode = false;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
 
     void Awake()
     {
         AssignComponents();
+        currentPoint = new(bird.transform.position);
         GenerateLevel(logic.Level);
         logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
         Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
@@ -33,8 +35,10 @@ public class GroundSpawner : MonoBehaviour
     }
     void Start()
     {
-
-        TrimLevel();
+        if (testMode)
+        {
+            TrimLevel();
+        }
 
     }
 
@@ -93,7 +97,10 @@ public class GroundSpawner : MonoBehaviour
         }
         segmentList[^1].SetCurve(curve, overlapPoint);
         currentPoint = segmentList[^1].Curve.EndPoint;
-        newSegment.SetActive(false);
+        if (!testMode)
+        {
+            newSegment.SetActive(false);
+        }
         length += segmentList[^1].Curve.Length;
     }
 
@@ -211,12 +218,18 @@ public class GroundSpawner : MonoBehaviour
         int index = -1;
         if(position == SegmentPosition.Leading)
         {
-            segmentList[leadingSegmentIndex].gameObject.SetActive(false);
+            if (!testMode)
+            {
+                segmentList[leadingSegmentIndex].gameObject.SetActive(false);
+            }
             leadingSegmentIndex--;
             index = activeLowPoints.Count - 1;
         } else if (position == SegmentPosition.Trailing)
         {
-            segmentList[trailingSegmentIndex].gameObject.SetActive(false);
+            if (!testMode)
+            {
+                segmentList[trailingSegmentIndex].gameObject.SetActive(false);
+            }
             trailingSegmentIndex++;
             index = Mathf.Min(0, activeLowPoints.Count - 1);
         }

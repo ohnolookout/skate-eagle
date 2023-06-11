@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public static class CurveUtility
+public static class BezierMath
 {
 
-    public static float BezierCurveLength(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+    public static float Length(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
     {
         p1 += p0;
         p2 += p3;
@@ -45,25 +45,5 @@ public static class CurveUtility
         return BezierUtility.BezierPoint(p0, rt, lt, p1, t);
     }
 
-    public static void InsertCurve(SpriteShapeController controller, Curve curve, int index) //Inserts curve into the spline beginning at the given index
-    {
-        for (int i = 0; i < curve.Count; i++)
-        {
-            InsertCurvePoint(controller, curve.GetPoint(i), index);
-            index++;
-        }
-        controller.spline.SetTangentMode(index, ShapeTangentMode.Broken);
-        controller.spline.SetRightTangent(index, new Vector3(0, -1));
-
-    }
-
-    public static void InsertCurvePoint(SpriteShapeController controller, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
-    {
-        Spline spline = controller.spline;
-        spline.InsertPointAt(index, curvePoint.ControlPoint);
-        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
-        spline.SetLeftTangent(index, curvePoint.LeftTangent);
-        spline.SetRightTangent(index, curvePoint.RightTangent);
-    }
 
 }

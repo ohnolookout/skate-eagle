@@ -86,7 +86,7 @@ public class Curve
         float length = 0;
         for (int i = 0; i < curvePoints.Count - 1; i++)
         {
-            segmentLengths.Add(CurveUtility.BezierCurveLength(curvePoints[i].ControlPoint, curvePoints[i].RightTangent, curvePoints[i + 1].LeftTangent, curvePoints[i + 1].ControlPoint));
+            segmentLengths.Add(BezierMath.Length(curvePoints[i].ControlPoint, curvePoints[i].RightTangent, curvePoints[i + 1].LeftTangent, curvePoints[i + 1].ControlPoint));
             length += segmentLengths[^1];
         }
         return length;
@@ -98,7 +98,7 @@ public class Curve
         {
             if (curvePoints[i].RightTangent.y < 0)
             {
-                return CurveUtility.GetPointAtT(curvePoints[i], curvePoints[i + 1], 0.5f);
+                return BezierMath.GetPointAtT(curvePoints[i], curvePoints[i + 1], 0.5f);
             }
         }
         CurvePoint lowPoint = curvePoints[0];

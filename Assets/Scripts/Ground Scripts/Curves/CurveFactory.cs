@@ -15,9 +15,9 @@ public static class CurveFactory
         {
             CurveType.StartLine => new StartLineCurve(startPoint),
             CurveType.FinishLine => new FinishLineCurve(startPoint),
-            CurveType.Roller => new CustomCurve(CurveTypes.RollerParameters(), startPoint),
-            CurveType.SmallRoller => new CustomCurve(CurveTypes.RollerParameters(), startPoint),
-            _ => new CustomCurve(CurveTypes.RollerParameters(), startPoint),
+            CurveType.Roller => new CustomCurve(CurveTypes.Roller(), startPoint),
+            CurveType.SmallRoller => new CustomCurve(CurveTypes.SmallRoller(), startPoint),
+            _ => new CustomCurve(CurveTypes.Roller(), startPoint),
         };
     }
 
