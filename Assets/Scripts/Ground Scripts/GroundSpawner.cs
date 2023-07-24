@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
+using System;
 public class GroundSpawner : MonoBehaviour
 {
     public GameObject groundSegment;
@@ -26,20 +27,27 @@ public class GroundSpawner : MonoBehaviour
     {
         AssignComponents();
         currentPoint = new(bird.transform.position);
-        GenerateLevel(logic.Level);
-        logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
-        Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
-        logic.TerrainCompleted = true;
-        FindBirdIndex(); 
+        if (Application.isPlaying)
+        {
+            DeleteChildren();
+            GenerateLevelFromSections(logic.CurrentLevel);
+            logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
+
+            Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
+            logic.TerrainCompleted = true;
+            FindBirdIndex();
+        }
 
     }
     void Start()
     {
-        if (testMode)
-        {
-            TrimLevel();
-        }
+        TrimLevel();
 
+    }
+    void Update()
+    {
+        UpdateActiveSegments();
+        UpdateCollision();
     }
 
     private void AssignComponents()
@@ -50,40 +58,38 @@ public class GroundSpawner : MonoBehaviour
         cameraScript = Camera.main.GetComponent<CameraScript>();
         transform.position = new Vector2(0, 0);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        segmentList = new();
     }
 
-    void Update()
+    public void GenerateLevelFromSections(LevelData2 levelData)
     {
-        UpdateActiveSegments();
-        UpdateCollision();
-    }
-
-    private void GenerateLevel(LevelData level)
-    {
-        AddSegment(CurveFactory.CurveFromType(CurveType.StartLine, currentPoint));
-        while( length < level.Length)
+        List<LevelSection> levelSections = levelData.LevelSections;
+        if (levelSections.Count < 1)
         {
-            CurveType nextCurveType = level.CurveTypes[Random.Range(0, level.CurveTypes.Count)];
-            Curve newCurve = CurveFactory.CurveFromType(nextCurveType, currentPoint);
-            AddSegment(newCurve);
+            throw new Exception("Level must contain at least one section");
+        }
+        if (!Application.isPlaying)
+        {
+            Awake();
+        }
+        DeleteChildren();
+        segmentList = new();
+        currentPoint = new(bird.transform.position);
+        length = 0;
+        GradeData grade = levelSections[0]._grade;
+        AddSegment(CurveFactory.CurveFromType(CurveType.StartLine, currentPoint));
+        while (length < levelData.Length)
+        {
+            CombinedCurveDefinition nextCurveDefinition = levelData.NextCurve(length / levelData.Length, out grade);
+            Curve nextCurve = CurveFactory.CurveFromCombinedDefinition(nextCurveDefinition, currentPoint, grade.MinClimb, grade.MaxClimb);
+            AddSegment(nextCurve);
         }
         AddSegment(CurveFactory.CurveFromType(CurveType.FinishLine, currentPoint));
         leadingSegmentIndex = -1;
-        for(int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)
         {
             ActivateSegment(SegmentPosition.Leading);
         }
-    }
-
-    public void GenerateTestSegment(Curve curve)
-    {
-
-        if (transform.childCount > 0)
-        {
-            DestroyImmediate(transform.GetChild(0).gameObject);
-        }
-        AddSegment(curve);
-        segmentList[^1].gameObject.SetActive(true);
     }
 
     private void AddSegment(Curve curve)
@@ -304,6 +310,16 @@ public class GroundSpawner : MonoBehaviour
             segmentList[birdIndex + indexModifier].CollisionActive = false;
         }
     }
+
+    public void DeleteChildren()
+    {
+        while (transform.childCount > 0)
+        {
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        segmentList = new();
+    }
+
 
     public Vector3 LowestPoint
     {

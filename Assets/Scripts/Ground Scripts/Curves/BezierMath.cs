@@ -45,5 +45,41 @@ public static class BezierMath
         return BezierUtility.BezierPoint(p0, rt, lt, p1, t);
     }
 
+    public static float CalculateAngle(Vector3 vertex, Vector3 firstRay, Vector3 secondRay)
+    {
+        // Calculate the direction vectors of the rays
+        Vector3 dir1 = (firstRay - vertex).normalized;
+        Vector3 dir2 = (secondRay - vertex).normalized;
+
+        // Calculate the dot product of the direction vectors
+        float dotProduct = Vector3.Dot(dir1, dir2);
+
+        // Calculate the angle in radians using the dot product
+        float angleRad = Mathf.Acos(dotProduct);
+
+        // Convert the angle from radians to degrees
+        float angleDeg = angleRad * Mathf.Rad2Deg;
+
+        return angleRad;
+    }
+
+    public static Vector3 CalculateThirdVertex(Vector3 firstVertex, Vector3 firstTangent, Vector3 secondVertex, Vector3 secondTangent)
+    {
+        float firstAngle = CalculateAngle(firstVertex, secondVertex, firstTangent);
+        float secondAngle = CalculateAngle(secondVertex, firstVertex, secondTangent);
+        float thirdAngle = 3.14159f - firstAngle - secondAngle;
+        float thirdSideLength = (secondVertex - firstVertex).magnitude;
+        float secondSideLength = (Mathf.Sin(secondAngle) * thirdSideLength) / Mathf.Sin(thirdAngle);
+        Vector3 secondSideDirection = (firstTangent - firstVertex).normalized;
+        return firstVertex + secondSideLength * secondSideDirection;
+    }
+
+    public static Vector3 CalculateThirdVertexFromCurvePoints(CurvePoint firstPoint, CurvePoint secondPoint)
+    {
+        
+        return CalculateThirdVertex(firstPoint.ControlPoint, firstPoint.ControlPoint + firstPoint.RightTangent, 
+            secondPoint.ControlPoint, secondPoint.ControlPoint + secondPoint.LeftTangent);
+    }
+
 
 }

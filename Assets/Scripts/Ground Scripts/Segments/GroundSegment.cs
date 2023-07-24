@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
 using System.Reflection;
 
+[ExecuteAlways]
 public class GroundSegment : MonoBehaviour
 {
     private Curve curve;
@@ -15,7 +16,7 @@ public class GroundSegment : MonoBehaviour
     private List<Vector2> unoffsetPoints;
     private int floorHeight = 100;
 
-
+    
     void Awake()
     {
         spline = shapeController.spline;

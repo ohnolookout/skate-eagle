@@ -37,7 +37,7 @@ public class CurveTypeCreator : EditorWindow
         slopeMax = EditorGUILayout.FloatField("Slope Max", slopeMax);
         curveIndex = EditorGUILayout.Popup(curveIndex, savedCurves);
         groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
-        currentCurveParameters = new(xDeltaMin, xDeltaMax, lengthToVelocityRatioMin, lengthToVelocityRatioMax, slopeMin, slopeMax);
+        //currentCurveParameters = new(xDeltaMin, xDeltaMax, lengthToVelocityRatioMin, lengthToVelocityRatioMax, slopeMin, slopeMax);
         if (GUILayout.Button("Generate"))
         {
             GenerateCustomCurve();

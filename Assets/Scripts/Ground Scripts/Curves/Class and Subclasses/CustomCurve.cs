@@ -4,35 +4,71 @@ using UnityEngine;
 
 public class CustomCurve : Curve
 {
-    // Start is called before the first frame update
-    public CustomCurve(CurveParameters parameters, CurvePoint startPoint, float yDeltaMin = 0, float yDeltaMax = 0)
+    int hillStatus = 1;
+    float lengthMin, lengthMax, climbMin, climbMax;
+    public CustomCurve(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
-        curvePoints = CurvePointsFromParameters(parameters, startPoint, yDeltaMin, yDeltaMax);
+        //Using array of CurveParameters2 because there will be a separate set of params for lower and upper parts of curve.
+        curvePoints = CurvePointsFromParameters(parameters, startPoint, climbMin, climbMax);
         curveType = CurveType.Custom;
         GenerateCurveStats();
     }
 
-    public static List<CurvePoint> CurvePointsFromParameters(CurveParameters parameters, CurvePoint startPoint, float yDeltaMin = 0, float yDeltaMax = 0, float lengthMult = 1, float amplitudeMult = 1, float declineMult = 1)
+    public List<CurvePoint> CurvePointsFromParameters(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
 
         List<CurvePoint> curvePoints = new();
-        int hillStatus = 1;
-        curvePoints.Add(startPoint);
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < parameters.Length; i++)
         {
-            Vector3 prevTangent = startPoint.RightTangent;
-            CurvePoint nextPoint = new CurvePoint();
-            float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y) / 3;
-            float xDelta = Random.Range(parameters.xDeltaMin + prevTangSpacer, parameters.xDeltaMax + prevTangSpacer);
-            float yDelta = Random.Range(yDeltaMin, yDeltaMax);
-            float xVelocity = Random.Range(xDelta * parameters.lengthToVelocityRatioMin, xDelta * parameters.lengthToVelocityRatioMax);
-            float randomSlope = Random.Range(parameters.slopeMin, parameters.slopeMax) * hillStatus;
-            nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(xDelta, yDelta, 0);
-            nextPoint.SetTangents(randomSlope, xVelocity);
+            
+            if(i == 0)
+            {
+                curvePoints = SingleCurvePoints(parameters[i], startPoint, climbMin, climbMax);
+            }
+            else
+            {
+                List<CurvePoint> additionalCurvePoints = SingleCurvePoints(parameters[i], startPoint, climbMin, climbMax);
+                curvePoints[^1] = additionalCurvePoints[0];
+                curvePoints.Add(additionalCurvePoints[1]);
+            }
             hillStatus *= -1;
-            curvePoints.Add(nextPoint);
-            startPoint = nextPoint;
+            startPoint = curvePoints[^1];
         }
         return curvePoints;
+    }
+
+    public List<CurvePoint> SingleCurvePoints(CurveParameters parameters, CurvePoint startPoint, float climbMin, float climbMax)
+    {
+        List<CurvePoint> curvePoints = new();
+        Vector3 prevTangent = -startPoint.LeftTangent.normalized;
+        float prevSlope = Mathf.Abs(prevTangent.y / prevTangent.x);
+        float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y) / 3;
+        float length = Random.Range(parameters.lengthMin + prevTangSpacer, parameters.lengthMax + prevTangSpacer);
+        float climb = Random.Range(climbMin, climbMax);
+        float grade = climb / length;
+        float adjustedSlopeMin = Mathf.Max(parameters.steepMin, Mathf.Abs(prevSlope * 0.4f)) + (grade * hillStatus);
+        float adjustedSlopeMax = Mathf.Min(parameters.steepMax, Mathf.Abs(prevSlope * 2f)) + (grade * hillStatus);
+        float slope = Random.Range(adjustedSlopeMin, adjustedSlopeMax) * hillStatus;
+        CurvePoint nextPoint = new();
+        nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(length, climb);
+        nextPoint.SetTangents(slope, 1);
+        Vector3 middleVertex = BezierMath.CalculateThirdVertexFromCurvePoints(startPoint, nextPoint);
+        float firstMaxMagnitude = (middleVertex - startPoint.ControlPoint).magnitude * 1.1f;
+        float secondMaxMagnitude = (nextPoint.ControlPoint - middleVertex).magnitude * 1.1f;
+        float round = Random.Range(parameters.roundMin, parameters.roundMax);
+        float firstMagnitude = Mathf.Min(Mathf.Max(round * firstMaxMagnitude, startPoint.LeftTangent.magnitude * 0.5f), startPoint.LeftTangent.magnitude * 3f);
+        float secondMagnitude = round * secondMaxMagnitude;
+        startPoint.RightTangent = prevTangent * firstMagnitude;
+        nextPoint.LeftTangent = nextPoint.LeftTangent.normalized * secondMagnitude;
+        curvePoints.Add(startPoint);
+        curvePoints.Add(nextPoint);
+
+
+        return curvePoints;
+    }
+
+    public void SetParametersFromType(CurveParameters parameters)
+    {
+
     }
 }

@@ -1,9 +1,10 @@
-using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEditor;
+
 
 public class LogicScript : MonoBehaviour
 {
@@ -17,9 +18,11 @@ public class LogicScript : MonoBehaviour
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
     public LevelData level;
     public GameObject mobileControls, mobileUI, desktopUI;
+    public ScriptableLevelData2 currentLevelData;
 
     void Awake()
     {
+        currentLevelData = (ScriptableLevelData2)AssetDatabase.LoadAssetAtPath("Assets/Session Data/CurrentLevel.Asset", typeof(ScriptableLevelData2));
         bird = GameObject.FindGameObjectWithTag("Player");
         level = new LevelData(new float[3] { 30, 40, 55 }, new List<CurveType> { CurveType.Roller, CurveType.SmallRoller }, terrainLimit);
         if (Application.isMobilePlatform || mobile)
@@ -82,6 +85,11 @@ public class LogicScript : MonoBehaviour
     public void AddDesktopUI()
     {
         Instantiate(desktopUI);
+    }
+
+    public void SetCurrentLevel(LevelData2 level)
+    {
+        currentLevelData.ReassignValues(level);
     }
 
     public float StompCharge
@@ -167,6 +175,14 @@ public class LogicScript : MonoBehaviour
         {
             finishPoint = value;
             distanceToFinish = finishPoint.x - startPoint.x;
+        }
+    }
+
+    public LevelData2 CurrentLevel
+    {
+        get
+        {
+            return currentLevelData.LevelData;
         }
     }
 

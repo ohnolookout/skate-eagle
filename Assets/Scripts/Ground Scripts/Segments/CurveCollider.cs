@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+[ExecuteAlways]
 public static class CurveCollider
 {
     private static float resolution, edgeOffset = 1.2f;

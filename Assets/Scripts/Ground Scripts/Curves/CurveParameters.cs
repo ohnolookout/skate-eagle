@@ -4,16 +4,32 @@ using UnityEngine;
 
 public struct CurveParameters
 {
-    public float xDeltaMin, xDeltaMax, lengthToVelocityRatioMin, lengthToVelocityRatioMax, slopeMin, slopeMax;
+    public float lengthMin, lengthMax, roundMin, roundMax, steepMin, steepMax;
+    public SkewType skew;
 
 
-    public CurveParameters(float xDeltaMin, float xDeltaMax, float lengthToVelocityRatioMin, float lengthToVelocityRatioMax, float slopeMin, float slopeMax)
+    public CurveParameters(float lengthMin, float lengthMax, float roundMin, float roundMax, float steepMin, float steepMax, SkewType skew = SkewType.Center)
     {
-        this.xDeltaMin = xDeltaMin;
-        this.xDeltaMax = xDeltaMax;
-        this.lengthToVelocityRatioMin = lengthToVelocityRatioMin;
-        this.lengthToVelocityRatioMax = lengthToVelocityRatioMax;
-        this.slopeMin = slopeMin;
-        this.slopeMax = slopeMax;
+        this.lengthMin = lengthMin;
+        this.lengthMax = lengthMax;
+        this.roundMin = roundMin;
+        this.roundMax = roundMax;
+        this.steepMin = steepMin;
+        this.steepMax = steepMax;
+        this.skew = skew;
+    }
+
+    public CurveParameters(CurveDefinition definition)
+    {
+        Vector2 lengthMinMax = CurveDefinition.Lengths(definition._length);
+        this.lengthMin = lengthMinMax.x;
+        this.lengthMax = lengthMinMax.y;
+        Vector2 roundMinMax = CurveDefinition.Shapes(definition._shape);
+        this.roundMin = roundMinMax.x;
+        this.roundMax = roundMinMax.y;
+        Vector2 slopeMinMax = CurveDefinition.Slopes(definition._slope);
+        this.steepMin = slopeMinMax.x;
+        this.steepMax = slopeMinMax.y;
+        this.skew = definition._skew;
     }
 }
