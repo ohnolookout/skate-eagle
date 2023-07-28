@@ -21,7 +21,7 @@ public class Level : ScriptableObject
     {
         _name = "Default Level";
         _length = 2000;
-        _medalTimes = new();
+        _medalTimes = new(60, 45, 30, 20, 10);
         _levelSections = new();
         _levelSections.Add(new LevelSection());
         _weightedCurveList = WeightedCurveList(_levelSections[0]._curves);

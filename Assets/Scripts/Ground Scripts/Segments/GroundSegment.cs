@@ -23,7 +23,7 @@ public class GroundSegment : MonoBehaviour
         shapeController.spriteShape = spriteShape;
         edgeCollider = shapeController.edgeCollider;
         shadowCaster = GetComponent<ShadowCaster2D>();
-        GroundUtility.FormatSpline(spline);
+        FormatSpline();
     }
 
     public void SetCurve(Curve curve, Vector3? overlapPoint = null)
@@ -166,6 +166,13 @@ public class GroundSegment : MonoBehaviour
         }
     }
 
-                                       
+    public void FormatSpline()
+    {
+        spline.isOpenEnded = false;
+        while (spline.GetPointCount() > 2)
+        {
+            spline.RemovePointAt(2);
+        }
+    }
 
 }
