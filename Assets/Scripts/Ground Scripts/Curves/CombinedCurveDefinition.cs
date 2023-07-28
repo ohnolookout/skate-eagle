@@ -79,4 +79,11 @@ public class CombinedCurveDefinition
         }
     }
 
+    public CombinedCurveDefinition DeepCopy()
+    {
+        CurveDefinition valley = _valleyDefinition.DeepCopy();
+        CurveDefinition peak = _peakDefinition.DeepCopy();
+        return new CombinedCurveDefinition(_name, valley, peak, _weight);
+    }
+
 }

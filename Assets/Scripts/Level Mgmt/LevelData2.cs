@@ -15,7 +15,7 @@ public class LevelData2
     {
         _name = "Default Level";
         _length = 2000;
-        _medalTimes = new();
+        _medalTimes = new(60, 45, 30, 20, 15);
         _levelSections = new();
         _levelSections.Add(new LevelSection());
         _weightedCurveList = WeightedCurveList(_levelSections[0]._curves);
@@ -29,6 +29,17 @@ public class LevelData2
         _length = length;
         _medalTimes = medalTimes;
         _levelSections = levelSections;
+        _weightedCurveList = WeightedCurveList(_levelSections[0]._curves);
+        _currentSectionIndex = 0;
+    }
+
+    public void Reset()
+    {
+        _name = "Default Level";
+        _length = 2000;
+        _medalTimes = new(60, 45, 30, 20, 15);
+        _levelSections = new();
+        _levelSections.Add(new LevelSection());
         _weightedCurveList = WeightedCurveList(_levelSections[0]._curves);
         _currentSectionIndex = 0;
     }
@@ -81,20 +92,6 @@ public class LevelData2
         grade = _levelSections[_currentSectionIndex]._grade;
         int newCurveIndex = Random.Range(0, _weightedCurveList.Count);
         return _weightedCurveList[newCurveIndex];
-    }
-
-    private int SectionIndexByT(float targetT)
-    {
-        int sectionIndex = 0;
-        while (targetT < _levelSections[sectionIndex]._startT)
-        {
-            sectionIndex++;
-            if (sectionIndex >= _levelSections.Count - 1)
-            {
-                break;
-            }
-        }
-        return sectionIndex;
     }
 
     private bool CurrentSectionIsValid(float targetT)

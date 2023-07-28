@@ -7,7 +7,7 @@ public class OverlayManager : MonoBehaviour
 {
     private GameObject hud, gameOverScreen, startText, stompBar, finishScreen, progressBar, mobileControls;
     private TMP_Text timerText;
-    private LevelData levelData;
+    private Level _level;
     private char[] timerChars = new char[8];
     private LogicScript logic;
     // Start is called before the first frame update
@@ -51,14 +51,14 @@ public class OverlayManager : MonoBehaviour
 
     }
 
-    public void StartScreen(LevelData level)
+    public void StartScreen(Level level)
     {
-        levelData = level;
+        _level = level;
         startText.SetActive(true);
         TMP_Text[] medalTexts = startText.transform.GetChild(0).transform.GetComponentsInChildren<TMP_Text>();
         for(int i = 0; i < medalTexts.Length; i++)
         {
-            medalTexts[i].text = FormatTime(levelData.LevelTimes[i]);
+            medalTexts[i].text = FormatTime(_level.MedalTimes.TimesArray[i]);
         }
         hud.SetActive(true);
     }
@@ -70,7 +70,7 @@ public class OverlayManager : MonoBehaviour
         {
             TurnOffMobileControls();
         }
-        finishScreen.GetComponent<FinishScreenScript>().GenerateFinishScreen(levelData, finishTime);
+        finishScreen.GetComponent<FinishScreenScript>().GenerateFinishScreen(_level, finishTime);
         finishScreen.SetActive(true);
     }
 

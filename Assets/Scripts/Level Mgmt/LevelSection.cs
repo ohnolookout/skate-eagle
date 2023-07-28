@@ -5,8 +5,7 @@ using System;
 [Serializable]
 public class LevelSection
 {
-    [HideInInspector]
-    public string _name;
+    [HideInInspector] public string _name;
     public float _startT;
     public GradeData _grade;
     public List<CombinedCurveDefinition> _curves = new();
@@ -41,6 +40,10 @@ public class LevelSection
         {
             return _startT;
         }
+        set
+        {
+            _startT = value;
+        }
     }
 
     public GradeData Grade
@@ -49,5 +52,46 @@ public class LevelSection
         {
             return _grade;
         }
+        set
+        {
+            _grade = value;
+        }
+    }
+
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+        set
+        {
+            _name = value;
+        }
+    }
+
+    public bool Validate()
+    {
+        Name = $"{(StartT * 100)}%";
+        if (StartT >= 1 || StartT < 0)
+        {
+            return false;
+        }
+        if (Curves.Count < 1)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public LevelSection DeepCopy()
+    {
+        GradeData grade = _grade.DeepCopy();
+        List<CombinedCurveDefinition> curves = new();
+        foreach (CombinedCurveDefinition combinedCurve in _curves)
+        {
+            curves.Add(combinedCurve.DeepCopy());
+        }
+        return new LevelSection(_startT, grade, curves);
     }
 }

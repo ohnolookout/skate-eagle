@@ -16,15 +16,13 @@ public class LogicScript : MonoBehaviour
     private Vector3 startPoint, finishPoint;
     public float terrainLimit = 1000;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
-    public LevelData level;
     public GameObject mobileControls, mobileUI, desktopUI;
-    public ScriptableLevelData2 currentLevelData;
+    public Level currentLevelData;
 
     void Awake()
     {
-        currentLevelData = (ScriptableLevelData2)AssetDatabase.LoadAssetAtPath("Assets/Session Data/CurrentLevel.Asset", typeof(ScriptableLevelData2));
+        currentLevelData = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/CurrentLevel.Asset", typeof(Level));
         bird = GameObject.FindGameObjectWithTag("Player");
-        level = new LevelData(new float[3] { 30, 40, 55 }, new List<CurveType> { CurveType.Roller, CurveType.SmallRoller }, terrainLimit);
         if (Application.isMobilePlatform || mobile)
         {
             mobile = true;
@@ -39,7 +37,7 @@ public class LogicScript : MonoBehaviour
 
     void Start()
     {
-        overlayManager.StartScreen(level);
+        overlayManager.StartScreen(currentLevelData);
 
     }
 
@@ -87,9 +85,9 @@ public class LogicScript : MonoBehaviour
         Instantiate(desktopUI);
     }
 
-    public void SetCurrentLevel(LevelData2 level)
+    public void SetCurrentLevel(Level level)
     {
-        currentLevelData.ReassignValues(level);
+        currentLevelData = level.DeepCopy();
     }
 
     public float StompCharge
@@ -178,11 +176,11 @@ public class LogicScript : MonoBehaviour
         }
     }
 
-    public LevelData2 CurrentLevel
+    public Level Level
     {
         get
         {
-            return currentLevelData.LevelData;
+            return currentLevelData;
         }
     }
 
@@ -215,12 +213,5 @@ public class LogicScript : MonoBehaviour
         }
     }
 
-    public LevelData Level
-    {
-        get
-        {
-            return level;
-        }
-    }
 
 }

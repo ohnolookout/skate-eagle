@@ -34,4 +34,9 @@ public class GradeData
             return _maxClimb;
         }
     }
+
+    public GradeData DeepCopy()
+    {
+        return new GradeData(_minClimb, _maxClimb);
+    }
 }

@@ -30,7 +30,7 @@ public class GroundSpawner : MonoBehaviour
         if (Application.isPlaying)
         {
             DeleteChildren();
-            GenerateLevelFromSections(logic.CurrentLevel);
+            GenerateLevelFromSections(logic.Level);
             logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
             Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
@@ -61,9 +61,9 @@ public class GroundSpawner : MonoBehaviour
         segmentList = new();
     }
 
-    public void GenerateLevelFromSections(LevelData2 levelData)
+    public void GenerateLevelFromSections(Level level)
     {
-        List<LevelSection> levelSections = levelData.LevelSections;
+        List<LevelSection> levelSections = level.LevelSections;
         if (levelSections.Count < 1)
         {
             throw new Exception("Level must contain at least one section");
@@ -78,9 +78,9 @@ public class GroundSpawner : MonoBehaviour
         length = 0;
         GradeData grade = levelSections[0]._grade;
         AddSegment(CurveFactory.CurveFromType(CurveType.StartLine, currentPoint));
-        while (length < levelData.Length)
+        while (length < level.Length)
         {
-            CombinedCurveDefinition nextCurveDefinition = levelData.NextCurve(length / levelData.Length, out grade);
+            CombinedCurveDefinition nextCurveDefinition = level.NextCurve(length / level.Length, out grade);
             Curve nextCurve = CurveFactory.CurveFromCombinedDefinition(nextCurveDefinition, currentPoint, grade.MinClimb, grade.MaxClimb);
             AddSegment(nextCurve);
         }

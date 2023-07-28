@@ -6,7 +6,6 @@ using System.Linq;
 
 public class LevelLoader : EditorWindow
 {
-    private ScriptableLevelData2 _selectedLevel;
     private LevelEditor _levelEditor;
     private Dictionary<string, string> _levelPathsByName = new();
     private string[] _levelNames;

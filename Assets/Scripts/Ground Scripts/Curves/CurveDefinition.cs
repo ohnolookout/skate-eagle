@@ -93,4 +93,9 @@ public class CurveDefinition
             return _skew;
         }
     }
+
+    public CurveDefinition DeepCopy()
+    {
+        return new CurveDefinition(_length, _shape, _slope, _skew);
+    }
 }

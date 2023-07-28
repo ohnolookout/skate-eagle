@@ -7,22 +7,22 @@ using UnityEngine.UI;
 public class FinishScreenScript : MonoBehaviour
 {
     public TMP_Text goldTimeText, silverTimeText, bronzeTimeText, timeText;
-    public Sprite[] medalImages = new Sprite[4];
+    public Sprite[] medalImages = new Sprite[5];
     public GameObject medal;
 
     //Generates the finish screen based on a LevelData object
-    public void GenerateFinishScreen(LevelData levelData, float finishTime) 
+    public void GenerateFinishScreen(Level levelData, float finishTime) 
     {
-        SetLevelTimes(levelData.LevelTimes);
+        SetLevelTimes(levelData.MedalTimes);
         SetMedalImage(3);
-        for(int i = 0; i < levelData.LevelTimes.Length; i++)
+        for(int i = levelData.MedalTimes.TimesArray.Length - 1; i >= 0 ; i--)
         {
-            if(finishTime <= levelData.LevelTimes[i])
+            if(finishTime <= levelData.MedalTimes.TimesArray[i])
             {
                 SetMedalImage(i);
-                if (i == 0) goldTimeText.fontStyle = FontStyles.Bold;
+                if (i == 0) bronzeTimeText.fontStyle = FontStyles.Bold;
                 else if (i == 1) silverTimeText.fontStyle = FontStyles.Bold;
-                else if (i == 2) bronzeTimeText.fontStyle = FontStyles.Bold;
+                else if (i == 2) goldTimeText.fontStyle = FontStyles.Bold;
                 break;
             }
         }
@@ -31,11 +31,11 @@ public class FinishScreenScript : MonoBehaviour
     }
 
     //Sets the medal times for the level
-    void SetLevelTimes(float[] levelTimes)
+    void SetLevelTimes(MedalTimes times)
     {
-        goldTimeText.text = FormatTime(levelTimes[0]);
-        silverTimeText.text = FormatTime(levelTimes[1]);
-        bronzeTimeText.text = FormatTime(levelTimes[2]);
+        goldTimeText.text = FormatTime(times.Gold);
+        silverTimeText.text = FormatTime(times.Silver);
+        bronzeTimeText.text = FormatTime(times.Bronze);
 
     }
 
