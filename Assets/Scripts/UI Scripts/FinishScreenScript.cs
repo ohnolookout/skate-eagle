@@ -9,20 +9,30 @@ public class FinishScreenScript : MonoBehaviour
     public TMP_Text goldTimeText, silverTimeText, bronzeTimeText, timeText;
     public Sprite[] medalImages = new Sprite[5];
     public GameObject medal;
+    private Image _medalImage;
+    private OverlayManager _overlay;
+
+    public void Start()
+    {
+        
+    }
 
     //Generates the finish screen based on a LevelData object
-    public void GenerateFinishScreen(Level levelData, float finishTime) 
+    public void GenerateFinishScreen(Level level, float finishTime, OverlayManager overlay) 
     {
-        SetLevelTimes(levelData.MedalTimes);
-        SetMedalImage(3);
-        for(int i = levelData.MedalTimes.TimesArray.Length - 1; i >= 0 ; i--)
+        _medalImage = medal.GetComponent<Image>();
+        _overlay = overlay;
+        SetLevelTimes(level.MedalTimes);
+        float[] times = level.MedalTimes.TimesArray;
+        SetMedalImage(_overlay.MedalSprites.Length - 1);
+        for (int i = 0; i < times.Length; i++)
         {
-            if(finishTime <= levelData.MedalTimes.TimesArray[i])
+            if(finishTime <= times[i])
             {
                 SetMedalImage(i);
-                if (i == 0) bronzeTimeText.fontStyle = FontStyles.Bold;
-                else if (i == 1) silverTimeText.fontStyle = FontStyles.Bold;
-                else if (i == 2) goldTimeText.fontStyle = FontStyles.Bold;
+                if (i == times.Length - 1) bronzeTimeText.fontStyle = FontStyles.Bold;
+                else if (i == times.Length - 2) silverTimeText.fontStyle = FontStyles.Bold;
+                else if (i == times.Length - 3) goldTimeText.fontStyle = FontStyles.Bold;
                 break;
             }
         }
@@ -42,8 +52,7 @@ public class FinishScreenScript : MonoBehaviour
     //Sets the medal image and bolds the relevant text
     void SetMedalImage(int finishPosition)
     {
-        Image medalImage = medal.GetComponent<Image>();
-        medalImage.sprite = medalImages[finishPosition];
+        _medalImage.sprite = _overlay.MedalSprites[finishPosition];
     }
 
     void SetTime(float time)

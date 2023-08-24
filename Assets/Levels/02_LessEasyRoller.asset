@@ -13,41 +13,135 @@ MonoBehaviour:
   m_Name: 02_LessEasyRoller
   m_EditorClassIdentifier: 
   _name: 02_LessEasyRoller
-  _length: 1200
   _medalTimes:
-    _bronzeTime: 20
-    _silverTime: 17
-    _goldTime: 14
-    _blueTime: 11
-    _redTime: 9
+    _bronzeTime: 16
+    _silverTime: 13
+    _goldTime: 11
+    _blueTime: 8
+    _redTime: 6.85
   _levelSections:
-  - _name: 0%
-    _startT: 0
+  - _name: Med Rollers
     _grade:
       _minClimb: 0
       _maxClimb: -2
     _curves:
-    - _name: big doink
+    - _name: Medium Gentle Roller Center
       _valleyDefinition:
         _shape: 0
-        _length: 0
+        _length: 1
         _slope: 1
         _skew: 2
       _peakDefinition:
         _shape: 0
-        _length: 0
+        _length: 1
         _slope: 1
         _skew: 2
-      _weight: 1
-    - _name: small doink
-      _valleyDefinition:
-        _shape: 0
-        _length: 1
-        _slope: 0
-        _skew: 2
-      _peakDefinition:
-        _shape: 0
-        _length: 1
-        _slope: 0
-        _skew: 2
-      _weight: 1
+      _quantity: 8
+      _maxConsecutive: 2
+    _cachedSequences:
+    - _curves:
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+      - _name: Medium Gentle Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 1
+          _skew: 2
+        _quantity: 8
+        _maxConsecutive: 2
+  cachedSequencesCount: 0

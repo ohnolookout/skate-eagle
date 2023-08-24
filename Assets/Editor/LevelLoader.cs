@@ -17,7 +17,7 @@ public class LevelLoader : EditorWindow
 
     private void OnEnable()
     {
-        _levelPathsByName = LevelManagement.LevelPathsByName();
+        _levelPathsByName = LevelFileManagement.LevelPathsByName();
         _levelNames = _levelPathsByName.Keys.ToArray();
     }
 

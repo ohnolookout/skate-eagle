@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872745c09bebb3642a6525b467396663, type: 3}
+  m_Name: 04_VarietyPack
+  m_EditorClassIdentifier: 
+  _name: 04_VarietyPack
+  _medalTimes:
+    _bronzeTime: 28
+    _silverTime: 20
+    _goldTime: 16
+    _blueTime: 14
+    _redTime: 11
+  _levelSections:
+  - _name: Fixed Bag
+    _grade:
+      _minClimb: 2
+      _maxClimb: -4
+    _curves:
+    - _name: Medium Gentle Roller Center
+      _valleyDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 1
+        _skew: 2
+      _peakDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 1
+        _skew: 2
+      _quantity: 1
+      _maxConsecutive: 2
+  - _name: Mixed Bag
+    _grade:
+      _minClimb: 2
+      _maxClimb: -4
+    _curves:
+    - _name: Medium Flat Roller Center
+      _valleyDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 1
+        _skew: 2
+      _peakDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 0
+        _skew: 2
+      _quantity: 4
+      _maxConsecutive: 2
+    - _name: Medium Gentle Roller Center
+      _valleyDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 1
+        _skew: 2
+      _peakDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 1
+        _skew: 2
+      _quantity: 4
+      _maxConsecutive: 2
+    - _name: Medium Normal Roller Center
+      _valleyDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 2
+        _skew: 2
+      _peakDefinition:
+        _shape: 0
+        _length: 1
+        _slope: 2
+        _skew: 2
+      _quantity: 4
+      _maxConsecutive: 2
