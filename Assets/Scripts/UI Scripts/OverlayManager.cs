@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor;
 
 public class OverlayManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class OverlayManager : MonoBehaviour
     private Level _level;
     private char[] timerChars = new char[8];
     private LogicScript logic;
+    public Sprite[] medalSprites;
     // Start is called before the first frame update
     void Awake()
     {
@@ -54,11 +56,12 @@ public class OverlayManager : MonoBehaviour
     public void StartScreen(Level level)
     {
         _level = level;
+        float[] times = _level.MedalTimes.TimesArray;
         startText.SetActive(true);
         TMP_Text[] medalTexts = startText.transform.GetChild(0).transform.GetComponentsInChildren<TMP_Text>();
-        for(int i = 0; i < medalTexts.Length; i++)
+        for (int i = 0; i < medalTexts.Length; i++)
         {
-            medalTexts[i].text = FormatTime(_level.MedalTimes.TimesArray[i]);
+            medalTexts[i].text = FormatTime(times[i + 2]);
         }
         hud.SetActive(true);
     }
@@ -70,7 +73,7 @@ public class OverlayManager : MonoBehaviour
         {
             TurnOffMobileControls();
         }
-        finishScreen.GetComponent<FinishScreenScript>().GenerateFinishScreen(_level, finishTime);
+        finishScreen.GetComponent<FinishScreenScript>().GenerateFinishScreen(_level, finishTime, this);
         finishScreen.SetActive(true);
     }
 
@@ -90,7 +93,7 @@ public class OverlayManager : MonoBehaviour
 
     public void FillStompBar(float fillAmount)
     {
-        stompBar.GetComponent<StompBarScript>().FillStompBar(fillAmount);
+        stompBar.GetComponent<StompBar>().FillStompBar(fillAmount);
     }
 
     public void UpdateTimer(float time)
@@ -99,7 +102,7 @@ public class OverlayManager : MonoBehaviour
         timerText.SetCharArray(timerChars);
     }
 
-    private void SecondsToCharArray(float timeInSeconds, char[] array)
+    private static void SecondsToCharArray(float timeInSeconds, char[] array)
     {
         int minutes = (int)(timeInSeconds / 60f);
         array[0] = (char)(48 + (minutes % 10));
@@ -153,6 +156,56 @@ public class OverlayManager : MonoBehaviour
         mobileControls.transform.GetChild(1).gameObject.SetActive(false);
     }
 
+    public Sprite[] MedalSprites
+    {
+        get
+        {
+            return medalSprites;
+        }
+    }
 
+    public Sprite RedSprite
+    {
+        get
+        {
+            return medalSprites[0];
+        }
+    }
+    public Sprite BlueSprite
+    {
+        get
+        {
+            return medalSprites[1];
+        }
+    }
+    public Sprite GoldSprite
+    {
+        get
+        {
+            return medalSprites[2];
+        }
+    }
+    public Sprite SilverSprite
+    {
+        get
+        {
+            return medalSprites[3];
+        }
+    }
+
+    public Sprite BronzeSprite
+    {
+        get
+        {
+            return medalSprites[4];
+        }
+    }
+    public Sprite ParticipantSprite
+    {
+        get
+        {
+            return medalSprites[5];
+        }
+    }
 
 }

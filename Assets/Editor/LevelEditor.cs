@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 public class LevelEditor : EditorWindow
 {
-    public float _length;
     public string _name;
     public MedalTimes _medalTimes = new();
     public List<LevelSection> _levelSections = new();
     public GroundSpawner _groundSpawner;
+    private LogicScript _logic;
+    private bool isLevelEditor;
     ScriptableObject _target;
     SerializedObject _so;
     SerializedProperty _serializedMedalTimes, _serializedLevelSections;
@@ -26,30 +28,50 @@ public class LevelEditor : EditorWindow
 
     private void OnEnable()
     {
-
+        isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
+        if (isLevelEditor)
+        {
+            AddTerrainGeneration();
+        }
         _target = this;
         _so = new(_target);
-        _currentLevel = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/CurrentLevel.asset", typeof(Level));
-        _currentLevel.ManualReset();
+        _currentLevel = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/EditorLevel.asset", typeof(Level));
+        _currentLevel.CacheSections();
         UpdateFields();
         _serializedMedalTimes = _so.FindProperty("_medalTimes");
         _serializedLevelSections = _so.FindProperty("_levelSections");
-        RefreshGroundSpawner();
 
     }
 
 
     private void OnGUI()
     {
-        PopulateEditorFields();
-        if (GUILayout.Button("Generate", GUILayout.ExpandWidth(false)))
-        {
-            GenerateLevel();
+        if ((SceneManager.GetActiveScene().name == "Level_Editor") != isLevelEditor) {
+            isLevelEditor = !isLevelEditor;
+            if (isLevelEditor)
+            {
+                AddTerrainGeneration();
+            }
         }
-        if (GUILayout.Button("Clear Level", GUILayout.ExpandWidth(false)))
+        PopulateEditorFields();
+        if (isLevelEditor)
         {
-            RefreshGroundSpawner();
-            _groundSpawner.DeleteChildren();
+            if (GUILayout.Button("Generate", GUILayout.ExpandWidth(false)))
+            {
+                GenerateLevel();
+            }
+            if (GUILayout.Button("Clear Level", GUILayout.ExpandWidth(false)))
+            {
+                _groundSpawner.DeleteChildren();
+            }
+        }
+        else
+        {
+            GUILayout.Label("Must be in Level Editor to generate levels."); 
+            if (GUILayout.Button("Load Level Editor Scene", GUILayout.ExpandWidth(false)))
+            {
+                EditorSceneManager.OpenScene("Assets/Scenes/Level_Editor.unity");
+            }
         }
         if(GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
@@ -65,25 +87,27 @@ public class LevelEditor : EditorWindow
             _currentLevel.ManualReset();
             UpdateFields();
         }
+        if(GUILayout.Button("Log Sections", GUILayout.ExpandWidth(false))){
+            LogAllSections();
+        }
     }
 
     private void PopulateEditorFields()
     {
         GUILayout.Label("Level Editor", EditorStyles.boldLabel);
+        EditorGUI.BeginChangeCheck();
         _name = EditorGUILayout.TextField("Level Name", _name);
-        _length = EditorGUILayout.FloatField("Level Length", _length);
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
         EditorGUILayout.PropertyField(_serializedMedalTimes, true);
-        EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedLevelSections, true);
+        EditorGUILayout.EndScrollView();
+        _so.ApplyModifiedProperties();
+        _so.Update();
         if (EditorGUI.EndChangeCheck())
         {
             UpdateLevel();
             _currentLevel.ValidateSections();
         }
-        EditorGUILayout.EndScrollView();
-        _so.ApplyModifiedProperties();
-        _so.Update();
     }
 
     private void GenerateLevel()
@@ -92,11 +116,12 @@ public class LevelEditor : EditorWindow
         {
             return;
         }
-        RefreshGroundSpawner();
-        _currentLevel.ReassignValues(_name, _length, _medalTimes, _levelSections);
+        UpdateLevel();
+        _logic.SetLevel(_currentLevel);
+        bool testModeStatus = _groundSpawner.testMode;
         _groundSpawner.testMode = true;
-        _groundSpawner.GenerateLevelFromSections(_currentLevel);
-        _groundSpawner.testMode = false;
+        _groundSpawner.GenerateLevel(_currentLevel);
+        _groundSpawner.testMode = testModeStatus;
     }
 
     private void SaveLevel()
@@ -109,7 +134,7 @@ public class LevelEditor : EditorWindow
         {
             return;
         }
-        if (LevelManagement.LevelNames().Contains($"{_name}.asset"))
+        if (LevelFileManagement.LevelNames().Contains($"{_name}.asset"))
         {
             bool overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Are you sure you want to overwrite {_name}?", "Yes", "No");
             if (!overwrite)
@@ -118,15 +143,17 @@ public class LevelEditor : EditorWindow
             }
         }
         UpdateLevel();
-        Level saveLevel = _currentLevel.DeepCopy();
-        AssetDatabase.CreateAsset(saveLevel, $"Assets/Levels/{_name}.asset");
+        string path = $"Assets/Levels/{_name}.asset";
+        AssetDatabase.CreateAsset(_currentLevel.DeepCopy(), path);
+        Level savedLevel = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
     }
 
 
     public void LoadLevel(string path) 
     {
-        Level _levelToLoad = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
-        _currentLevel.ReassignValues(_levelToLoad);
+        Level levelToLoad = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
+        Vector2 levelSequenceCount = levelToLoad.CachedSequencesCount();
+        _currentLevel.ReassignValues(levelToLoad);
         UpdateFields();
     }
 
@@ -135,20 +162,32 @@ public class LevelEditor : EditorWindow
         _levelSections = _currentLevel.LevelSections;
         _medalTimes = _currentLevel.MedalTimes;
         _name = _currentLevel.Name;
-        _length = _currentLevel.Length;
     }
 
     public void UpdateLevel()
     {
-        _currentLevel.ReassignValues(_name, _length, _medalTimes, _levelSections);
-    }
-    private void RefreshGroundSpawner()
-    {
-        if (_groundSpawner == null)
+        Debug.Log($"Updating current level with {_levelSections.Count} sections");
+        foreach(LevelSection section in _levelSections)
         {
-            _groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
+            section.Log();
         }
+        _currentLevel.ReassignValues(_name, _medalTimes, _levelSections);
+        _currentLevel.CacheSections();
+    }
+    private void AddTerrainGeneration()
+    {
+
+        _logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        _groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
+
     }
 
-    
+    private void LogAllSections()
+    {
+        UpdateLevel();
+        foreach(LevelSection section in _currentLevel.LevelSections)
+        { 
+            section.LogSectionCache();
+        }
+    }
 }

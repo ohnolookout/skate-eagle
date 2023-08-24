@@ -10,7 +10,7 @@ public class PlayerCoroutines : MonoBehaviour
     private GameObject eagle;
     private GameObject boostTrail;
     private TrailRenderer trail;
-    public bool dampening = false, checkingForSecondJump = false, delayedDampenJump = false;
+    public bool dampening = false, checkingForSecondJump = false, delayedDampenJump = false, countingDownJump = false;
     public enum EagleCoroutines { Stomp, Dampen, JumpCountDelay, BoostTrail, EndFlip, DelayedFreeze, AddBoost }
     void Start()
     {
@@ -90,7 +90,8 @@ public class PlayerCoroutines : MonoBehaviour
 
     public IEnumerator JumpCountDelay()
     {
-        yield return new WaitForSeconds(0.2f);
+        countingDownJump = true;
+        yield return new WaitForSeconds(0.2f); 
         rigidEagle.centerOfMass = new Vector2(0, 0f);
         eagleScript.Airborne = true;
         StopCoroutine(eagleScript.dampen);
@@ -98,6 +99,7 @@ public class PlayerCoroutines : MonoBehaviour
         {
             eagleScript.JumpCount = 1;
         }
+        countingDownJump = false;
     }
 
     public IEnumerator BoostTrail()

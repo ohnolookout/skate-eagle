@@ -17,11 +17,10 @@ public class LogicScript : MonoBehaviour
     public float terrainLimit = 1000;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
     public GameObject mobileControls, mobileUI, desktopUI;
-    public Level currentLevelData;
+    public Level currentLevel;
 
     void Awake()
     {
-        currentLevelData = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/CurrentLevel.Asset", typeof(Level));
         bird = GameObject.FindGameObjectWithTag("Player");
         if (Application.isMobilePlatform || mobile)
         {
@@ -37,8 +36,7 @@ public class LogicScript : MonoBehaviour
 
     void Start()
     {
-        overlayManager.StartScreen(currentLevelData);
-
+        overlayManager.StartScreen(currentLevel);
     }
 
     private void Update()
@@ -54,6 +52,12 @@ public class LogicScript : MonoBehaviour
             distancePassed = (bird.transform.position.x - startPoint.x)/distanceToFinish;
             overlayManager.UpdateTimer(timer);
         }
+    }
+
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Start_Menu");
     }
 
     public void RestartGame()
@@ -85,9 +89,9 @@ public class LogicScript : MonoBehaviour
         Instantiate(desktopUI);
     }
 
-    public void SetCurrentLevel(Level level)
+    public void SetLevel(Level level)
     {
-        currentLevelData = level.DeepCopy();
+        currentLevel = level;
     }
 
     public float StompCharge
@@ -180,7 +184,7 @@ public class LogicScript : MonoBehaviour
     {
         get
         {
-            return currentLevelData;
+            return currentLevel;
         }
     }
 

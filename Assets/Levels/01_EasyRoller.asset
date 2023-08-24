@@ -13,21 +13,19 @@ MonoBehaviour:
   m_Name: 01_EasyRoller
   m_EditorClassIdentifier: 
   _name: 01_EasyRoller
-  _length: 800
   _medalTimes:
-    _bronzeTime: 15
-    _silverTime: 11
-    _goldTime: 9
-    _blueTime: 7
-    _redTime: 6
+    _bronzeTime: 11
+    _silverTime: 9
+    _goldTime: 8
+    _blueTime: 7.2
+    _redTime: 6.53
   _levelSections:
-  - _name: 0%
-    _startT: 0
+  - _name: Flat Rollers
     _grade:
       _minClimb: 0
       _maxClimb: -2
     _curves:
-    - _name: Default Curve
+    - _name: Medium Flat Roller Center
       _valleyDefinition:
         _shape: 0
         _length: 1
@@ -38,4 +36,86 @@ MonoBehaviour:
         _length: 1
         _slope: 0
         _skew: 2
-      _weight: 1
+      _quantity: 6
+      _maxConsecutive: 2
+    _cachedSequences:
+    - _curves:
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+      - _name: Medium Flat Roller Center
+        _valleyDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _peakDefinition:
+          _shape: 0
+          _length: 1
+          _slope: 0
+          _skew: 2
+        _quantity: 6
+        _maxConsecutive: 2
+  cachedSequencesCount: 0

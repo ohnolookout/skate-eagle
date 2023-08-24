@@ -140,4 +140,12 @@ public class CameraScript : MonoBehaviour
         }
         cameraZoomIn = false;
     }
+
+    public float ZoomYDelta
+    {
+        get
+        {
+            return zoomYDelta;
+        }
+    }
 }
