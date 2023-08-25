@@ -8,7 +8,7 @@ public class EagleScript : MonoBehaviour
     //private SpriteRenderer spriteRenderer;
     public Animator animator;
     [HideInInspector] public float rotationSpeed = 0; 
-    public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -300;
+    public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
     private int jumpCount = 0, jumpLimit = 2;
@@ -18,7 +18,6 @@ public class EagleScript : MonoBehaviour
     public LogicScript logic;
     public Canvas textGenerator;
     private FlipTextGenerator textGen;
-    //public Sprite defaultSprite, crouchSprite, deadSprite, jumpSprite, diveSprite;
     public GameObject boostTrail;
     private TrailRenderer trail;
     private PlayerController playerController;

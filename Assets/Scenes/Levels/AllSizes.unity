@@ -979,6 +979,14 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: -494917309
       objectReference: {fileID: 0}
+    - target: {fileID: 4091451407118222943, guid: 360ace3f78db68547acc0dbd36fa9bf5, type: 3}
+      propertyPath: logic
+      value: 
+      objectReference: {fileID: 530877245}
+    - target: {fileID: 4091451407118222943, guid: 360ace3f78db68547acc0dbd36fa9bf5, type: 3}
+      propertyPath: textGenerator
+      value: 
+      objectReference: {fileID: 221686407}
     - target: {fileID: 4101446637322116667, guid: 360ace3f78db68547acc0dbd36fa9bf5, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1761,7 +1769,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!43 &322719591
+--- !u!43 &353082785
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
