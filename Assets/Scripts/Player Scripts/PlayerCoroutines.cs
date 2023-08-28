@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerCoroutines : MonoBehaviour
 {
     private EagleScript eagleScript;
-    private LogicScript logic;
+    private LiveRunManager logic;
     private Rigidbody2D rigidEagle;
     private GameObject eagle;
     private GameObject boostTrail;
@@ -15,9 +15,11 @@ public class PlayerCoroutines : MonoBehaviour
     void Start()
     {
         eagle = GameObject.FindGameObjectWithTag("Player");
+        Debug.Log($"Eagle: {eagle}");
         rigidEagle = eagle.GetComponent<Rigidbody2D>();
         eagleScript = eagle.GetComponent<EagleScript>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        Debug.Log($"Eagle Script: {eagleScript}");
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         boostTrail = eagleScript.boostTrail;
         trail = boostTrail.GetComponent<TrailRenderer>();
     }

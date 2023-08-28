@@ -11,8 +11,9 @@ public class LevelEditor : EditorWindow
     public MedalTimes _medalTimes = new();
     public List<LevelSection> _levelSections = new();
     public GroundSpawner _groundSpawner;
-    private LogicScript _logic;
+    private LiveRunManager _logic;
     private bool isLevelEditor;
+    private LevelDataManager levelManager;
     ScriptableObject _target;
     SerializedObject _so;
     SerializedProperty _serializedMedalTimes, _serializedLevelSections;
@@ -28,6 +29,11 @@ public class LevelEditor : EditorWindow
 
     private void OnEnable()
     {
+        if(levelManager is null)
+        {
+            levelManager = new();
+        }
+        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
         if (isLevelEditor)
         {
@@ -98,6 +104,7 @@ public class LevelEditor : EditorWindow
         EditorGUI.BeginChangeCheck();
         _name = EditorGUILayout.TextField("Level Name", _name);
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
         EditorGUILayout.PropertyField(_serializedMedalTimes, true);
         EditorGUILayout.PropertyField(_serializedLevelSections, true);
         EditorGUILayout.EndScrollView();
@@ -143,7 +150,7 @@ public class LevelEditor : EditorWindow
             }
         }
         UpdateLevel();
-        string path = $"Assets/Levels/{_name}.asset";
+        string path = $"Assets/Resources/Levels/{_name}.asset";
         AssetDatabase.CreateAsset(_currentLevel.DeepCopy(), path);
         Level savedLevel = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
     }
@@ -166,18 +173,13 @@ public class LevelEditor : EditorWindow
 
     public void UpdateLevel()
     {
-        Debug.Log($"Updating current level with {_levelSections.Count} sections");
-        foreach(LevelSection section in _levelSections)
-        {
-            section.Log();
-        }
         _currentLevel.ReassignValues(_name, _medalTimes, _levelSections);
         _currentLevel.CacheSections();
     }
     private void AddTerrainGeneration()
     {
 
-        _logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        _logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         _groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
 
     }

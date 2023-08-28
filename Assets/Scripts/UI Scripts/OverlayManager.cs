@@ -10,7 +10,8 @@ public class OverlayManager : MonoBehaviour
     private TMP_Text timerText;
     private Level _level;
     private char[] timerChars = new char[8];
-    private LogicScript logic;
+    private LiveRunManager logic;
+    private LevelDataManager levelManager;
     public Sprite[] medalSprites;
     // Start is called before the first frame update
     void Awake()
@@ -43,7 +44,8 @@ public class OverlayManager : MonoBehaviour
 
     private void AssignComponents()
     {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         hud = transform.Find("HUD").gameObject;
         gameOverScreen = transform.Find("Game Over Screen").gameObject;
         startText = transform.Find("Start Text").gameObject;

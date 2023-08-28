@@ -14,7 +14,7 @@ public static class LevelFileManagement
     public static Dictionary<string, string> LevelPathsByName()
     {
         Dictionary<string, string> levelPathsByName = new();
-        string[] levelGuids = AssetDatabase.FindAssets("t:Level", new string[] { "Assets/Levels" });
+        string[] levelGuids = AssetDatabase.FindAssets("t:Level", new string[] { "Assets/Resources/Levels" });
         string[] _levelPaths = new string[levelGuids.Length];
         for (int i = 0; i < levelGuids.Length; i++)
         {

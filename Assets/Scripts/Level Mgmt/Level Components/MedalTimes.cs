@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 [Serializable]
+public enum Medal { Red = 0, Blue = 1, Gold = 2, Silver = 3, Bronze = 4, Participant = 5 }
+[Serializable]
 public struct MedalTimes
 {
     public float _bronzeTime, _silverTime, _goldTime, _blueTime, _redTime;
@@ -80,6 +82,19 @@ public struct MedalTimes
     public MedalTimes DeepCopy()
     {
         return new MedalTimes(_bronzeTime, _silverTime, _goldTime, _blueTime, _redTime);
+    }
+
+    public Medal MedalFromTime(float timeInSeconds)
+    {
+        float[] times = TimesArray;
+        for (int i = 0; i < times.Length; i++)
+        {
+            if (timeInSeconds <= times[i])
+            {
+                return (Medal) i;
+            }
+        }
+        return Medal.Participant;
     }
 
 }

@@ -12,7 +12,7 @@ public class CameraScript : MonoBehaviour
     public float leadingEdgeOffset = 0;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     private bool cameraZoomOut = false, cameraZoomIn = false;
-    private LogicScript logic;
+    private LiveRunManager logic;
     private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
 
     void Awake()
@@ -42,7 +42,7 @@ public class CameraScript : MonoBehaviour
     private void AssignComponents()
     {
         defaultSize = Camera.main.orthographicSize;
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         bird = GameObject.FindWithTag("Player").transform;
         groundSpawner = GameObject.FindWithTag("GroundSpawner").GetComponent<GroundSpawner>();
         birdBody = bird.GetComponent<Rigidbody2D>();

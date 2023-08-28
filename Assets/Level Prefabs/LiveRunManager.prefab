@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5430903513768536548}
   - component: {fileID: 5430903513768536551}
   m_Layer: 0
-  m_Name: Logic Manager
+  m_Name: LiveRunManager
   m_TagString: Logic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,10 +53,11 @@ MonoBehaviour:
   timerText: {fileID: 0}
   startWithStomp: 1
   mobile: 0
-  terrainLimit: 2000
   mobileControls: {fileID: 1879682036418759277, guid: c19db463920f2f0478ff4656a049dae2, type: 3}
   mobileUI: {fileID: 6040552123237861429, guid: 313ed65f9e51fbe408b4a7557be4b584, type: 3}
   desktopUI: {fileID: 8020686778321261477, guid: 4b9b0ec08963fdd44bc55f91c26663e7, type: 3}
+  levelManagerPrefab: {fileID: 6184026423833642185, guid: 60c3cdab95c58fc4fbfffb4ddbcfab23, type: 3}
+  currentLevel: {fileID: 0}
 --- !u!222 &5430903513768536551
 CanvasRenderer:
   m_ObjectHideFlags: 0

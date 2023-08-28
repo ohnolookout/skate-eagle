@@ -5,7 +5,6 @@ using System;
 public class EagleScript : MonoBehaviour
 {
     private Rigidbody2D rigidEagle;
-    //private SpriteRenderer spriteRenderer;
     public Animator animator;
     [HideInInspector] public float rotationSpeed = 0; 
     public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
@@ -15,7 +14,7 @@ public class EagleScript : MonoBehaviour
     private bool dead = false, fallen = false, airborne = false, collided = true, isActive = false, stomping = false, facingForward = true, crouched = false;
     private IEnumerator jumpCoroutine, stompCoroutine, trailCoroutine;
     public IEnumerator dampen;
-    public LogicScript logic;
+    public LiveRunManager logic;
     public Canvas textGenerator;
     private FlipTextGenerator textGen;
     public GameObject boostTrail;
@@ -54,7 +53,6 @@ public class EagleScript : MonoBehaviour
                 animator.SetTrigger("Crouch");
                 crouched = true;
             }
-            //CurrentSprite = SpriteState.Crouch;
         }
         else
         {
@@ -63,7 +61,6 @@ public class EagleScript : MonoBehaviour
                 animator.SetTrigger("Stand Up");
                 crouched = false;
             }
-            //CurrentSprite = SpriteState.Default;
         }
         if (playerController.stomp)
         {
@@ -273,7 +270,6 @@ public class EagleScript : MonoBehaviour
         if (playerController.down)
         {
             logic.StartAttempt();
-            //spriteRenderer.sprite = crouchSprite;
             rigidEagle.bodyType = RigidbodyType2D.Dynamic;
             rigidEagle.velocity += new Vector2(15, 0);
         }
@@ -287,8 +283,6 @@ public class EagleScript : MonoBehaviour
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
-        //if (rigidEagle.velocity.x < 0) spriteRenderer.flipX = true;
-        //else spriteRenderer.flipX = false;
     }
 
     private void FinishCheck()
@@ -296,20 +290,8 @@ public class EagleScript : MonoBehaviour
         if (transform.position.x >= logic.FinishPoint.x && collided)
         {
             logic.Finish();
-            //spriteRenderer.sprite = defaultSprite;
         }
     }
-
-    /*
-    private void StompCheck()
-    {
-        if (playerController.stomp && !collided)
-        {
-            stompCoroutine = coroutines.Stomp();
-            playerController.stomp = false;
-            StartCoroutine(stompCoroutine);
-        }
-    }*/
 
     private bool PlayerIsActive()
     {
@@ -460,9 +442,8 @@ public class EagleScript : MonoBehaviour
     }
     private void AssignComponents()
     {
-        //spriteRenderer = GetComponent<SpriteRenderer>();
         textGen = textGenerator.GetComponent<FlipTextGenerator>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         rigidEagle = GetComponent<Rigidbody2D>();
         coroutines = GetComponent<PlayerCoroutines>();
         jumpCoroutine = coroutines.JumpCountDelay();

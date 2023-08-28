@@ -6,7 +6,7 @@ using TMPro;
 using UnityEditor;
 
 
-public class LogicScript : MonoBehaviour
+public class LiveRunManager : MonoBehaviour
 {
     public TMP_Text timerText;
     private OverlayManager overlayManager;
@@ -14,13 +14,20 @@ public class LogicScript : MonoBehaviour
     private bool finished = false, terrainGenerationCompleted = false, started = false, gameOver = false, fallen = false;
     public bool startWithStomp = false, mobile = false;
     private Vector3 startPoint, finishPoint;
-    public float terrainLimit = 1000;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
-    public GameObject mobileControls, mobileUI, desktopUI;
+    public GameObject mobileControls, mobileUI, desktopUI, levelManagerPrefab;
     public Level currentLevel;
+    private LevelDataManager levelManager;
 
     void Awake()
     {
+        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+        if (levelManager is null)
+        {
+            GameObject levelManagerObject = Instantiate(levelManagerPrefab);
+            levelManager = levelManagerObject.GetComponent<LevelDataManager>();
+
+        }
         bird = GameObject.FindGameObjectWithTag("Player");
         if (Application.isMobilePlatform || mobile)
         {
@@ -36,7 +43,7 @@ public class LogicScript : MonoBehaviour
 
     void Start()
     {
-        overlayManager.StartScreen(currentLevel);
+        overlayManager.StartScreen(levelManager.currentLevel);
     }
 
     private void Update()

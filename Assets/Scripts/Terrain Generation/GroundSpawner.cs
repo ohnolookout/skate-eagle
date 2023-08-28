@@ -17,20 +17,22 @@ public class GroundSpawner : MonoBehaviour
     private Rigidbody2D birdBody;
     private EagleScript birdScript;
     private List<Vector3> activeLowPoints = new();
-    private LogicScript logic;
+    private LiveRunManager logic;
     public GameObject finishFlag;
+    private LevelDataManager levelManager;
     public bool testMode = false;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
 
     void Awake()
     {
+        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
         AssignComponents();
         currentPoint = new(bird.transform.position);
         if (Application.isPlaying)
         {
             DeleteChildren();
-            GenerateLevel(logic.Level);
+            GenerateLevel(levelManager.currentLevel);
             logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
             Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
@@ -57,7 +59,7 @@ public class GroundSpawner : MonoBehaviour
         birdScript = bird.GetComponent<EagleScript>();
         cameraScript = Camera.main.GetComponent<CameraScript>();
         transform.position = new Vector2(0, 0);
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         segmentList = new();
     }
 

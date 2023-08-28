@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 rotation = new(0,0);
     private EagleScript eagleScript;
     private int downCount;
-    private LogicScript logic;
+    private LiveRunManager logic;
     private int fake;
 
     void Awake()
@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         eagleScript = GameObject.FindGameObjectWithTag("Player").GetComponent<EagleScript>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
     }
 
     public void OnJump(InputValue value = null)

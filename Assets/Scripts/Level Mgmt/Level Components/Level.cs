@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using UnityEditor;
 
-[CreateAssetMenu(fileName = "New Level", menuName = "ScriptableObjects/LevelData2")]
+[CreateAssetMenu(fileName = "New Level", menuName = "ScriptableObjects/LevelData")]
 [Serializable]
 public class Level : ScriptableObject
 {
@@ -176,5 +176,10 @@ public class Level : ScriptableObject
         {
             section.Log();
         }
+    }
+
+    public Medal MedalFromTime(float timeInSeconds)
+    {
+        return _medalTimes.MedalFromTime(timeInSeconds);
     }
 }

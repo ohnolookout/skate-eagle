@@ -8,21 +8,17 @@ public class MainMenu : MonoBehaviour
 {
     public Level currentLevel;
     public List<Level> levels;
+    private LevelDataManager levelManager;
 
-    void Awake()
+    private void Awake()
     {
-    }
-    public void PlayGame()
-    {
-        SceneManager.LoadScene("Level_0");
+        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
     }
 
     public void LoadLevel(Level level)
     {
-        currentLevel = level;
-        PlayGame();
+        levelManager.LoadLevel(level);
     }
-
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

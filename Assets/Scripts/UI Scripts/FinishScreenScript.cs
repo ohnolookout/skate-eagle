@@ -12,10 +12,6 @@ public class FinishScreenScript : MonoBehaviour
     private Image _medalImage;
     private OverlayManager _overlay;
 
-    public void Start()
-    {
-        
-    }
 
     //Generates the finish screen based on a LevelData object
     public void GenerateFinishScreen(Level level, float finishTime, OverlayManager overlay) 
