@@ -15,10 +15,8 @@ public class PlayerCoroutines : MonoBehaviour
     void Start()
     {
         eagle = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log($"Eagle: {eagle}");
         rigidEagle = eagle.GetComponent<Rigidbody2D>();
         eagleScript = eagle.GetComponent<EagleScript>();
-        Debug.Log($"Eagle Script: {eagleScript}");
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         boostTrail = eagleScript.boostTrail;
         trail = boostTrail.GetComponent<TrailRenderer>();

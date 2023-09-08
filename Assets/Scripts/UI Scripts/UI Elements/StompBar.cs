@@ -22,7 +22,7 @@ public class StompBar : MonoBehaviour
     {
     }
 
-    public void FillStompBar(float fillAmount)
+    public void Fill(float fillAmount)
     {
         if (filling)
         {

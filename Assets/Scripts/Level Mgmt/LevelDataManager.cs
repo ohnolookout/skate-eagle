@@ -12,6 +12,7 @@ public class LevelDataManager : MonoBehaviour
     public Medal? currentLevelMedal;
     private void Awake()
     {
+        Debug.Log("Waking up...");
         DontDestroyOnLoad(gameObject);
         SaveData loadedData = SaveSerial.LoadGame();
         if (loadedData is null)
@@ -19,25 +20,45 @@ public class LevelDataManager : MonoBehaviour
             loadedData = SaveSerial.SaveGame();
         }
         playerData = new(loadedData);
+        if (playerData == null)
+        {
+            Debug.Log("Player data is null");
+        }
     }
 
     public void LoadLevel(Level level)
     {
         currentLevel = level;
         SceneManager.LoadScene("City");
-        if(!(playerData.levelTimeDict.ContainsKey(level.Name)))
+        if(!(playerData.levelTimeDict.ContainsKey(level)))
         {
             playerData.AddLevel(currentLevel);
         }
-        currentLevelTimeData = playerData.levelTimeDict[level.Name];
+        currentLevelTimeData = playerData.levelTimeDict[level];
         currentLevelBestTime = currentLevelTimeData.bestTime;
         currentLevelMedal = currentLevelTimeData.medal;
     }
 
-    public void UpdateTime(float timeInSeconds)
+    public Medal UpdateTime(float timeInSeconds)
     {
-        currentLevelTimeData.UpdateTime(timeInSeconds, out Medal? newMedal, out Medal? oldMedal);
+        currentLevelTimeData.UpdateTime(timeInSeconds, out Medal newMedal, out Medal? oldMedal);
         currentLevelBestTime = currentLevelTimeData.bestTime;
         currentLevelMedal = currentLevelTimeData.medal;
+        return newMedal;
+    }
+
+
+    public LevelTimeData PlayerDataForCurrentLevel()
+    {
+        if(playerData == null)
+        {
+            Debug.Log("Player data is null");
+            Awake();
+        }
+        if (playerData.levelTimeDict.ContainsKey(currentLevel))
+        {
+            return playerData.levelTimeDict[currentLevel];
+        }
+        return new LevelTimeData(currentLevel);
     }
 }

@@ -6,7 +6,7 @@ using System;
 
 public class PlayerData
 {
-    public Dictionary<string, LevelTimeData> levelTimeDict = new();
+    public Dictionary<Level, LevelTimeData> levelTimeDict = new();
     public Dictionary<Medal, int> medalCount = new();
     public bool dirty = false;
 
@@ -21,23 +21,23 @@ public class PlayerData
     {
         foreach(LevelTimeData levelTime in loadedGame.levelTimes)
         {
-            levelTimeDict[levelTime.levelName] = levelTime;
+            levelTimeDict[levelTime.level] = levelTime;
         }
     }
 
     public void AddLevel(Level level)
     {
-        if (levelTimeDict.ContainsKey(level.Name))
+        if (levelTimeDict.ContainsKey(level))
         {
             return;
         }
-        levelTimeDict[level.Name] = new LevelTimeData(level);
+        levelTimeDict[level] = new LevelTimeData(level);
     }
 
     public void AddLevelTime(Level level, float timeInSeconds)
     {
-        if (levelTimeDict.ContainsKey(level.Name)){
-            levelTimeDict[level.Name].UpdateTime(timeInSeconds, out Medal? newMedal, out Medal? oldMedal);
+        if (levelTimeDict.ContainsKey(level)){
+            levelTimeDict[level].UpdateTime(timeInSeconds, out Medal newMedal, out Medal? oldMedal);
             if(newMedal != oldMedal)
             {
                 AdjustMedalCount((Medal)newMedal, (Medal)oldMedal);
@@ -45,7 +45,7 @@ public class PlayerData
         }
         else
         {
-            levelTimeDict[level.Name] = new LevelTimeData(level, timeInSeconds);
+            levelTimeDict[level] = new LevelTimeData(level, timeInSeconds);
         }
     }
 

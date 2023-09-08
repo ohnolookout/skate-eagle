@@ -20,7 +20,7 @@ public class FinishScreenScript : MonoBehaviour
         _overlay = overlay;
         SetLevelTimes(level.MedalTimes);
         float[] times = level.MedalTimes.TimesArray;
-        SetMedalImage(_overlay.MedalSprites.Length - 1);
+        //SetMedalImage(_overlay.MedalSprites.Length - 1);
         for (int i = 0; i < times.Length; i++)
         {
             if(finishTime <= times[i])
@@ -48,7 +48,7 @@ public class FinishScreenScript : MonoBehaviour
     //Sets the medal image and bolds the relevant text
     void SetMedalImage(int finishPosition)
     {
-        _medalImage.sprite = _overlay.MedalSprites[finishPosition];
+        //_medalImage.sprite = _overlay.MedalSprites[finishPosition];
     }
 
     void SetTime(float time)

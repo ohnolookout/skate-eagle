@@ -67,8 +67,4 @@ public class CustomCurve : Curve
         return curvePoints;
     }
 
-    public void SetParametersFromType(CurveParameters parameters)
-    {
-
-    }
 }

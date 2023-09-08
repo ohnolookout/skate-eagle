@@ -29,10 +29,6 @@ public class LevelEditor : EditorWindow
 
     private void OnEnable()
     {
-        if(levelManager is null)
-        {
-            levelManager = new();
-        }
         levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
         if (isLevelEditor)

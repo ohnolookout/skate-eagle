@@ -12,7 +12,7 @@ public class LiveRunManager : MonoBehaviour
     private OverlayManager overlayManager;
     private GameObject bird;
     private bool finished = false, terrainGenerationCompleted = false, started = false, gameOver = false, fallen = false;
-    public bool startWithStomp = false, mobile = false;
+    public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
     public GameObject mobileControls, mobileUI, desktopUI, levelManagerPrefab;
@@ -21,29 +21,23 @@ public class LiveRunManager : MonoBehaviour
 
     void Awake()
     {
-        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
-        if (levelManager is null)
+        
+        if (GameObject.Find("LevelManager"))
         {
+            levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+        } 
+        else {
             GameObject levelManagerObject = Instantiate(levelManagerPrefab);
             levelManager = levelManagerObject.GetComponent<LevelDataManager>();
-
+            levelManager.currentLevel = currentLevel;
         }
         bird = GameObject.FindGameObjectWithTag("Player");
-        if (Application.isMobilePlatform || mobile)
-        {
-            mobile = true;
-            AddMobileUI();
-        }
-        else
-        {
-            AddDesktopUI();
-        }
         overlayManager = GameObject.FindGameObjectWithTag("UI").GetComponent<OverlayManager>();
+        overlayManager.AddUI(levelManager.currentLevel, isMobile, levelManager.currentLevelTimeData);
     }
 
     void Start()
     {
-        overlayManager.StartScreen(levelManager.currentLevel);
     }
 
     private void Update()
@@ -53,11 +47,9 @@ public class LiveRunManager : MonoBehaviour
         {
             return;
         }
-        timer += Time.deltaTime;
         if (Time.frameCount % 20 != 0)
         {
             distancePassed = (bird.transform.position.x - startPoint.x)/distanceToFinish;
-            overlayManager.UpdateTimer(timer);
         }
     }
 
@@ -75,7 +67,7 @@ public class LiveRunManager : MonoBehaviour
     public void GameOver()
     {
         gameOver = true;
-        overlayManager.GameOverScreen();
+        overlayManager.GameOver();
     }
 
     public void StartAttempt()
@@ -124,7 +116,15 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         finished = true;
-        overlayManager.FinishScreen(timer);
+        overlayManager.Finish(levelManager.currentLevelTimeData);
+    }
+
+    public LevelTimeData PlayerDataCurrentLevel
+    {
+        get
+        {
+            return levelManager.PlayerDataForCurrentLevel();
+        }
     }
 
     public float DistancePassed

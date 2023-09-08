@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4205479141229028257}
   - component: {fileID: 4205479141229028263}
   - component: {fileID: 4205479141229028260}
+  - component: {fileID: 3104205418496710391}
   m_Layer: 5
   m_Name: TimerText
   m_TagString: Untagged
@@ -68,14 +69,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0:00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 51dc858ae47e1914298a3729c8451059, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4a20d0051733c7848b87f131735355d7, type: 2}
+  m_sharedMaterial: {fileID: 562307077240863215, guid: 51dc858ae47e1914298a3729c8451059, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4291070042
+    rgba: 4286276421
   m_fontColor: {r: 0.27006942, g: 0.3886114, b: 0.4811321, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -135,3 +136,15 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3104205418496710391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4205479141229028256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d685ea06abf542845a9971efd12d614d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
