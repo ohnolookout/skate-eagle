@@ -115,10 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popText: {fileID: 4917807504311315805, guid: 11e0a1c0c778a00449e7182481e9ffab, type: 3}
-  lastText: 
-  lastFlipCount: 0
   wordSpread: 5
-  lastPopText: {fileID: 0}
 --- !u!1001 &6988192532197515800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,6 +126,10 @@ PrefabInstance:
     - target: {fileID: 4917807504311315805, guid: 11e0a1c0c778a00449e7182481e9ffab, type: 3}
       propertyPath: m_Name
       value: FlipText
+      objectReference: {fileID: 0}
+    - target: {fileID: 4917807504311315805, guid: 11e0a1c0c778a00449e7182481e9ffab, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7819299134144410053, guid: 11e0a1c0c778a00449e7182481e9ffab, type: 3}
       propertyPath: m_Pivot.x
