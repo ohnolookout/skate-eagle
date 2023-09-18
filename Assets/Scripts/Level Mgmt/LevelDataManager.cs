@@ -12,7 +12,6 @@ public class LevelDataManager : MonoBehaviour
     public Medal? currentLevelMedal;
     private void Awake()
     {
-        Debug.Log("Waking up...");
         DontDestroyOnLoad(gameObject);
         SaveData loadedData = SaveSerial.LoadGame();
         if (loadedData is null)

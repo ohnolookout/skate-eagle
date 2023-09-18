@@ -295,7 +295,7 @@ public class EagleScript : MonoBehaviour
 
     private bool PlayerIsActive()
     {
-        if (!logic.Started)
+        if (logic.runState == RunState.Standby)
         {
             StartCheck();
             return false ;
@@ -313,7 +313,7 @@ public class EagleScript : MonoBehaviour
         }
 
 
-        if (logic.Finished)
+        if (logic.runState == RunState.Finished)
         {
             SlowToStop();
             return false;

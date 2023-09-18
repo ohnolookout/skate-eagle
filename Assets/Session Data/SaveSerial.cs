@@ -29,7 +29,6 @@ public static class SaveSerial
 					   + "/SaveData.dat", FileMode.Open);
 			SaveData data = (SaveData)bf.Deserialize(file);
 			file.Close();
-			Debug.Log("Game data loaded!");
 			return data;
 		}
 		Debug.LogError("There is no save data!");

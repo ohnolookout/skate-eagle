@@ -1,48 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor;
 
 public class OverlayManager : MonoBehaviour
 {
-    private GameObject hud, gameOverScreen, startText, stompBar, finishScreen, progressBar;
     public GameObject mobileUI, mobileControls, desktopUI;
     private Overlay overlay;
-    private TMP_Text timerText;
-    private Level _level;
-    private char[] timerChars = new char[8];
-    private LiveRunManager logic;
-    public Sprite[] medalSprites;
-    public LevelTimeData _currentLevelPlayerData;
+    private LevelTimeData playerTime;
+    public LiveRunManager runManager;
     // Start is called before the first frame update
-    void Awake()
-    {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-    }
 
-    public void AddUI(Level level, bool isMobile, LevelTimeData playerTime = null)
+    public void AddUI(LevelTimeData playerData, bool isMobile = true)
     {
-        if(playerTime == null)
-        {
-            playerTime = new(level);
-        }
         GameObject uiObject;
         if (isMobile)
         {
-            Debug.Log("Adding mobile UI");
             uiObject = Instantiate(mobileUI);
         }
         else
         {
-            Debug.Log("Adding desktop UI");
             uiObject = Instantiate(desktopUI);
         }
         overlay = uiObject.GetComponent<Overlay>();
-        overlay.SetLevelData(playerTime);
-        _level = level;
-        _currentLevelPlayerData = playerTime;
-        overlay.StartScreen(_level, _currentLevelPlayerData);
+        overlay.overlayManager = this;
+        overlay.StartScreen(playerData);
     }
 
     public void GameOver()
@@ -50,24 +34,15 @@ public class OverlayManager : MonoBehaviour
         overlay.GameOverScreen();
     }
 
-    public void Finish(LevelTimeData playerTime)
+    public float Finish(LevelTimeData playerTime)
     {
-        overlay.FinishScreen(playerTime);
+        float time = overlay.FinishScreen(playerTime);
+        return time;
     }
 
-    public void Finish()
+    public void StartScreen(LevelTimeData playerTime)
     {
-        overlay.FinishScreen(_currentLevelPlayerData);
-    }
-
-    public void StartScreen(Level level, LevelTimeData playerTime)
-    {
-        overlay.StartScreen(level, playerTime);
-    }
-
-    public void StartScreen()
-    {
-        overlay.StartScreen(_level, _currentLevelPlayerData);
+        overlay.StartScreen(playerTime);
     }
 
     public void StartAttempt()
@@ -77,11 +52,16 @@ public class OverlayManager : MonoBehaviour
 
     public void BackToMenu()
     {
-        logic.BackToMenu();
+        SceneManager.LoadScene("Start_Menu");
     }
 
     public void FillStompBar(float fillAmount)
     {
         overlay.FillStompBar(fillAmount);
+    }
+
+    public void SetRunState(RunState runState)
+    {
+        runManager.runState = runState;
     }
 }

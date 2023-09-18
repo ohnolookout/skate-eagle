@@ -5,17 +5,18 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor;
 
-
+public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
 public class LiveRunManager : MonoBehaviour
 {
     public TMP_Text timerText;
+    public RunState runState = RunState.Landing;
     private OverlayManager overlayManager;
     private GameObject bird;
     private bool finished = false, terrainGenerationCompleted = false, started = false, gameOver = false, fallen = false;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
-    private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, timer = 0, stompThreshold = 2, stompCharge = 0;
-    public GameObject mobileControls, mobileUI, desktopUI, levelManagerPrefab;
+    private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
+    public GameObject levelManagerPrefab;
     public Level currentLevel;
     private LevelDataManager levelManager;
 
@@ -33,12 +34,9 @@ public class LiveRunManager : MonoBehaviour
         }
         bird = GameObject.FindGameObjectWithTag("Player");
         overlayManager = GameObject.FindGameObjectWithTag("UI").GetComponent<OverlayManager>();
-        overlayManager.AddUI(levelManager.currentLevel, isMobile, levelManager.currentLevelTimeData);
+        overlayManager.AddUI(levelManager.currentLevelTimeData, isMobile);
     }
 
-    void Start()
-    {
-    }
 
     private void Update()
     {
@@ -62,32 +60,23 @@ public class LiveRunManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        runState = RunState.Landing;
     }
 
     public void GameOver()
     {
         gameOver = true;
         overlayManager.GameOver();
+        runState = RunState.GameOver;
     }
 
     public void StartAttempt()
     {
         overlayManager.StartAttempt();
+        runState = RunState.Active;
         started = true;
         startPoint = bird.transform.position;
     }
-
-    public void AddMobileUI()
-    {
-        Instantiate(mobileUI);
-        Instantiate(mobileControls);
-    }
-
-    public void AddDesktopUI()
-    {
-        Instantiate(desktopUI);
-    }
-
     public void SetLevel(Level level)
     {
         currentLevel = level;
@@ -116,7 +105,9 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         finished = true;
-        overlayManager.Finish(levelManager.currentLevelTimeData);
+        runState = RunState.Finished;
+        float time = overlayManager.Finish(levelManager.currentLevelTimeData);
+        levelManager.UpdateTime(time);
     }
 
     public LevelTimeData PlayerDataCurrentLevel
