@@ -32,6 +32,7 @@ public class Overlay : MonoBehaviour
         overlayManager.SetRunState(RunState.Standby);
     }
 
+
     public void StartAttempt()
     {
         standby.SetActive(false);
@@ -40,7 +41,6 @@ public class Overlay : MonoBehaviour
 
     public void GameOverScreen()
     {
-        Debug.Log("Creating game over screen...");
         gameOver.SetActive(true);
         timer.StopTimer();
         ActivateControls(false);
@@ -48,7 +48,6 @@ public class Overlay : MonoBehaviour
 
     public float FinishScreen(LevelTimeData playerTime)
     {
-        Debug.Log("Creating finish screen...");
         float finishTime = timer.StopTimer();
         finish.GetComponent<FinishScreenLoader>().GenerateFinishScreen(playerTime, finishTime);
         finish.SetActive(true);
@@ -74,6 +73,11 @@ public class Overlay : MonoBehaviour
             return;
         }
         mobileControls.SetActive(activate);
+    }
+
+    public void RestartLevel()
+    {
+        overlayManager.RestartLevel();
     }
 
 }

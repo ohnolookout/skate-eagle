@@ -34,7 +34,6 @@ public class FlipText : MonoBehaviour
         defaultColor = displayText.color;
         defaultFontStyle = displayText.fontStyle;
         activeFadeOut = FadeOut(fadeOutTimer);
-        Debug.Log("The flip text has awakened!");
     }
     void Start()
     {

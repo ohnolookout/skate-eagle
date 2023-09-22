@@ -64,7 +64,7 @@ public class PlayerData
         }
         foreach(LevelTimeData levelTime in levelTimeDict.Values)
         {
-            if(levelTime.bestTime is null)
+            if (Single.IsPositiveInfinity(levelTime.bestTime))
             {
                 break;
             }

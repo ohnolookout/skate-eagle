@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnRestartLevel(InputValue value = null)
     {
-        if (logic.Started)
+        if ((int)logic.runState > 1)
         {
             logic.RestartGame();
         }

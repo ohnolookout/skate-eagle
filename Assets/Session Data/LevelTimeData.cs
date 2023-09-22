@@ -7,7 +7,7 @@ using System;
 public class LevelTimeData
 {
 	public string levelName;
-	public float? bestTime = null;
+	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
 	public Level level;
@@ -30,8 +30,7 @@ public class LevelTimeData
 
 	public void UpdateTime(float timeInSeconds, out Medal newMedal, out Medal? oldMedal)
 	{
-
-		if (timeInSeconds < bestTime || bestTime is null)
+		if (timeInSeconds < bestTime)
 		{
 			bestTime = timeInSeconds;
 			date = DateTime.Now;

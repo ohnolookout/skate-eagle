@@ -64,4 +64,9 @@ public class OverlayManager : MonoBehaviour
     {
         runManager.runState = runState;
     }
+
+    public void RestartLevel()
+    {
+        runManager.RestartGame();
+    }
 }

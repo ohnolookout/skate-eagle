@@ -27,13 +27,13 @@ public class CameraScript : MonoBehaviour
 
     void Update()
     {
-        if (logic.Fallen)
+        if (logic.runState == RunState.Fallen)
         {
             return;
         }
-        if (Camera.main.WorldToScreenPoint(bird.position).y < 0) logic.Fallen = true;
+        if (Camera.main.WorldToScreenPoint(bird.position).y < 0) logic.Fall();
         UpdateZoom();
-        if (!logic.Finished)
+        if (logic.runState != RunState.Finished)
         {
             UpdatePosition();
         }

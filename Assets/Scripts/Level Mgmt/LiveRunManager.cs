@@ -1,18 +1,13 @@
-using System.IO;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
-using UnityEditor;
 
 public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
 public class LiveRunManager : MonoBehaviour
 {
-    public TMP_Text timerText;
     public RunState runState = RunState.Landing;
     private OverlayManager overlayManager;
     private GameObject bird;
-    private bool finished = false, terrainGenerationCompleted = false, started = false, gameOver = false, fallen = false;
+    private bool terrainGenerationCompleted = false;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
@@ -41,7 +36,7 @@ public class LiveRunManager : MonoBehaviour
     private void Update()
     {
         
-        if (!started || finished || gameOver)
+        if (runState != RunState.Active)
         {
             return;
         }
@@ -65,7 +60,6 @@ public class LiveRunManager : MonoBehaviour
 
     public void GameOver()
     {
-        gameOver = true;
         overlayManager.GameOver();
         runState = RunState.GameOver;
     }
@@ -74,7 +68,6 @@ public class LiveRunManager : MonoBehaviour
     {
         overlayManager.StartAttempt();
         runState = RunState.Active;
-        started = true;
         startPoint = bird.transform.position;
     }
     public void SetLevel(Level level)
@@ -104,10 +97,15 @@ public class LiveRunManager : MonoBehaviour
     
     public void Finish()
     {
-        finished = true;
         runState = RunState.Finished;
         float time = overlayManager.Finish(levelManager.currentLevelTimeData);
         levelManager.UpdateTime(time);
+    }
+
+    public void Fall()
+    {
+        bird.GetComponent<EagleScript>().Fall();
+        runState = RunState.GameOver;
     }
 
     public LevelTimeData PlayerDataCurrentLevel
@@ -134,13 +132,6 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
-    public bool Finished
-    {
-        get
-        {
-            return finished;
-        }
-    }
 
     public float ActualTerrainLength
     {
@@ -185,35 +176,5 @@ public class LiveRunManager : MonoBehaviour
             return currentLevel;
         }
     }
-
-    public bool Started
-    {
-        get
-        {
-            return started;
-        }
-    }
-
-    public bool Dead
-    {
-        get
-        {
-            return gameOver;
-        }
-    }
-
-    public bool Fallen
-    {
-        get
-        {
-            return fallen;
-        }
-        set
-        {
-            fallen = value;
-            bird.GetComponent<EagleScript>().Fallen = value;
-        }
-    }
-
 
 }

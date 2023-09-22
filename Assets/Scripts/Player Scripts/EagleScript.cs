@@ -11,7 +11,7 @@ public class EagleScript : MonoBehaviour
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
     private int jumpCount = 0, jumpLimit = 2;
-    private bool dead = false, fallen = false, airborne = false, collided = true, isActive = false, stomping = false, facingForward = true, crouched = false;
+    private bool airborne = false, collided = true, stomping = false, facingForward = true, crouched = false;
     private IEnumerator jumpCoroutine, stompCoroutine, trailCoroutine;
     public IEnumerator dampen;
     public LiveRunManager logic;
@@ -20,15 +20,12 @@ public class EagleScript : MonoBehaviour
     public GameObject boostTrail;
     private TrailRenderer trail;
     private PlayerController playerController;
-    public enum SpriteState { Default, Crouch, Dive, Dead, Jump}
-    private SpriteState currentSprite = SpriteState.Default;
     private PlayerCoroutines coroutines;
 
 
     private void Awake()
     {
         AssignComponents();
-        CurrentSprite = SpriteState.Default;
         rigidEagle.bodyType = RigidbodyType2D.Kinematic;
         rigidEagle.centerOfMass = new Vector2(0, -2f);
     }
@@ -41,9 +38,13 @@ public class EagleScript : MonoBehaviour
 
     void Update()
     {
-        if (!PlayerIsActive())
+        
+        if (logic.runState == RunState.Standby)
         {
-            isActive = false;
+            StartCheck();
+        }
+        if (logic.runState != RunState.Active) 
+        {
             return;
         }
         if (playerController.down)
@@ -77,7 +78,7 @@ public class EagleScript : MonoBehaviour
     
     private void FixedUpdate() 
     {
-        if (!isActive)
+        if (logic.runState != RunState.Active)
         {
             return;
         }
@@ -100,7 +101,7 @@ public class EagleScript : MonoBehaviour
     private float minimumJumpDuration = 0.1f;
     public void JumpValidation()
     {
-        if (jumpCount >= jumpLimit || !isActive)
+        if (jumpCount >= jumpLimit || logic.runState != RunState.Active)
         {
             return;
         }
@@ -160,7 +161,7 @@ public class EagleScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (logic.Finished)
+        if (logic.runState == RunState.Finished)
         {
             return;
         }
@@ -210,7 +211,7 @@ public class EagleScript : MonoBehaviour
             StopCoroutine(jumpCoroutine);
             coroutines.countingDownJump = false;
         }
-        if (dead)
+        if (logic.runState == RunState.GameOver)
         {
             rigidEagle.velocity *= 1 - (Time.deltaTime);
             return;
@@ -231,7 +232,6 @@ public class EagleScript : MonoBehaviour
 
     public void Die()
     {
-        dead = true;
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
         textGen.CancelText();
@@ -252,16 +252,9 @@ public class EagleScript : MonoBehaviour
     }
 
 
-    private void SlowToStop()
+    public void SlowToStop()
     {
-        if (Mathf.Abs(rigidEagle.velocity.x) < 1 && Mathf.Abs(rigidEagle.velocity.y) < 1)
-        {
-            rigidEagle.velocity *= 0;
-        }
-        else
-        {
-            rigidEagle.velocity -= rigidEagle.velocity * 4 * Time.deltaTime;
-        }
+        StartCoroutine(coroutines.SlowToStop());
     }
 
     
@@ -290,98 +283,24 @@ public class EagleScript : MonoBehaviour
         if (transform.position.x >= logic.FinishPoint.x && collided)
         {
             logic.Finish();
+            SlowToStop();
         }
     }
 
-    private bool PlayerIsActive()
+    public void Fall()
     {
-        if (logic.runState == RunState.Standby)
-        {
-            StartCheck();
-            return false ;
-        }
-
-        if (fallen)
-        {
-            StartCoroutine(coroutines.DelayedFreeze(0.5f));
-            return false;
-        }
-
-        if (dead)
-        {
-            return false;
-        }
-
-
-        if (logic.runState == RunState.Finished)
-        {
-            SlowToStop();
-            return false;
-        }
-        if (!isActive)
-        {
-            isActive = true;
-        }
-        return true;
+        StartCoroutine(coroutines.DelayedFreeze(0.5f));
+        logic.runState = RunState.Fallen;
     }
 
     private void FlipCheck()
     {
         double spins = Math.Round(Math.Abs(rotationStart - rigidEagle.rotation) / 360);
         rotationStart = rigidEagle.rotation;
-        if (spins >= 1 && !dead)
+        if (spins >= 1 && logic.runState != RunState.GameOver)
         {
             textGen.NewFlipText(spins);
             StartCoroutine(coroutines.EndFlip(flipDelay, spins));
-        }
-    }
-    public bool Fallen
-    {
-        get
-        {
-            return fallen;
-        }
-        set
-        {
-            fallen = value;
-        }
-    }
-
-    public SpriteState CurrentSprite
-    {
-        get
-        {
-            return currentSprite;
-        }
-        set
-        {
-            if (stomping && value != SpriteState.Dive)
-            {
-                return;
-            }
-            if (value == CurrentSprite)
-            {
-                return;
-            }
-            currentSprite = value;
-            switch (value)
-            {
-                case SpriteState.Default:
-                    //spriteRenderer.sprite = defaultSprite;
-                    break;
-                case SpriteState.Crouch:
-                    //spriteRenderer.sprite = crouchSprite;
-                    break;
-                case SpriteState.Dive:
-                    //spriteRenderer.sprite = diveSprite;
-                    break;
-                case SpriteState.Dead:
-                    //spriteRenderer.sprite = deadSprite;
-                    break;
-                case SpriteState.Jump:
-                    //spriteRenderer.sprite = jumpSprite;
-                    break;
-            }
         }
     }
 
@@ -390,7 +309,6 @@ public class EagleScript : MonoBehaviour
         get
         {
             return facingForward;
-            //return !spriteRenderer.flipX;
         }
     }
 

@@ -29,7 +29,6 @@ public class PlayerCoroutines : MonoBehaviour
             yield break;
         }
         eagleScript.Stomping = true;
-        eagleScript.CurrentSprite = EagleScript.SpriteState.Dive;
         eagleScript.JumpCount = 2;
         logic.StompCharge = 0;
         rigidEagle.angularVelocity = 0;
@@ -51,7 +50,6 @@ public class PlayerCoroutines : MonoBehaviour
         }
         yield return new WaitUntil(() => eagleScript.Collided);
         eagleScript.Stomping = false;
-        eagleScript.CurrentSprite = EagleScript.SpriteState.Default;
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(AddBoost(eagleScript.flipBoost, 1.8f));
         eagleScript.rotationAccel = originalRotationAccel;
@@ -115,7 +113,7 @@ public class PlayerCoroutines : MonoBehaviour
         trail.emitting = true;
         while (currentTime < maxTime)
         {
-            if (logic.Dead)
+            if (logic.runState != RunState.Active)
             {
                 trail.emitting = false;
             }
@@ -126,7 +124,7 @@ public class PlayerCoroutines : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         while (currentTime > 0)
         {
-            if (logic.Dead)
+            if (logic.runState != RunState.Active)
             {
                 trail.emitting = false;
             }
@@ -162,6 +160,22 @@ public class PlayerCoroutines : MonoBehaviour
         eagleScript.Jump();
     }
 
+    public IEnumerator SlowToStop()
+    {
+        while (rigidEagle.velocity.x != 0)
+        {
+            if (Mathf.Abs(rigidEagle.velocity.x) < 1 && Mathf.Abs(rigidEagle.velocity.y) < 1)
+            {
+                rigidEagle.velocity *= 0;
+            }
+            else
+            {
+                rigidEagle.velocity -= rigidEagle.velocity * 4 * Time.deltaTime;
+            }
+            yield return null;
+        }
+    }
+
 
     public IEnumerator DelayedJumpDampen(float delayTimerInSeconds)
     {
@@ -173,11 +187,11 @@ public class PlayerCoroutines : MonoBehaviour
     public IEnumerator EndFlip(float flipDelay, double spins)
     {
         yield return new WaitForSeconds(flipDelay * 0.1f);
-        if (logic.Dead)
+        if (logic.runState != RunState.Active)
         {
             yield break;
         }
-        if (logic.StompCharge < logic.StompThreshold && !logic.Finished)
+        if (logic.StompCharge < logic.StompThreshold)
         {
             logic.StompCharge += (int)spins;
         }
