@@ -40,6 +40,11 @@ public class OverlayManager : MonoBehaviour
         return time;
     }
 
+    public void Finish(LevelTimeData levelTimeData, float attemptTime)
+    {
+        overlay.FinishScreen(levelTimeData, attemptTime);
+    }
+
     public void StartScreen(LevelTimeData playerTime)
     {
         overlay.StartScreen(playerTime);
@@ -48,6 +53,11 @@ public class OverlayManager : MonoBehaviour
     public void StartAttempt()
     {
         overlay.StartAttempt();
+    }
+
+    public float StopTimer()
+    {
+        return overlay.StopTimer();
     }
 
     public void BackToMenu()
@@ -68,5 +78,20 @@ public class OverlayManager : MonoBehaviour
     public void RestartLevel()
     {
         runManager.RestartGame();
+    }
+
+    public void ActivateControls(bool activate)
+    {
+        overlay.ActivateControls(activate);
+    }
+
+    public void GenerateFinishScreen(LevelTimeData levelTimeData, float attemptTime)
+    {
+        overlay.GenerateFinishScreen(levelTimeData, attemptTime);
+    }
+
+    public void ActivateFinishScreen()
+    {
+        overlay.ActivateFinishScreen();
     }
 }

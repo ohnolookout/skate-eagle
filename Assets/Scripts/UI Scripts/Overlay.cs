@@ -8,6 +8,8 @@ using TMPro;
 public class Overlay : MonoBehaviour
 {
     public GameObject gameOver, finish, standby, mobileControls, hud, landing;
+    public LandingScreenLoader landingLoader;
+    public FinishScreenLoader finishLoader;
     public StompBar stompBar;
     public Timer timer;
     public OverlayManager overlayManager;
@@ -20,7 +22,7 @@ public class Overlay : MonoBehaviour
         standby.SetActive(false);
         hud.SetActive(false);
         ActivateControls(false);
-        landing.GetComponent<LandingScreenLoader>().GenerateLanding(playerInfo);
+        landingLoader.GenerateLanding(playerInfo);
     }
 
     public void StandbyScreen()
@@ -49,11 +51,26 @@ public class Overlay : MonoBehaviour
     public float FinishScreen(LevelTimeData playerTime)
     {
         float finishTime = timer.StopTimer();
-        finish.GetComponent<FinishScreenLoader>().GenerateFinishScreen(playerTime, finishTime);
+        finishLoader.GenerateFinishScreen(playerTime, finishTime);
         finish.SetActive(true);
         hud.SetActive(false);
         ActivateControls(false);
         return finishTime;
+    }
+
+    public void FinishScreen(LevelTimeData levelTimeData, float attemptTime)
+    {
+        finishLoader.GenerateFinishScreen(levelTimeData, attemptTime);
+        finish.SetActive(true);
+        hud.SetActive(false);
+        ActivateControls(false);
+    }
+
+    public void ActivateFinishScreen()
+    {
+        finish.SetActive(true);
+        hud.SetActive(false);
+        ActivateControls(false);
     }
 
     public void FillStompBar(float fillAmount)
@@ -78,6 +95,16 @@ public class Overlay : MonoBehaviour
     public void RestartLevel()
     {
         overlayManager.RestartLevel();
+    }
+
+    public float StopTimer()
+    {
+        return timer.StopTimer();
+    }
+
+    public void GenerateFinishScreen(LevelTimeData levelTimeData, float attemptTime)
+    {
+        finishLoader.GenerateFinishScreen(levelTimeData, attemptTime);
     }
 
 }

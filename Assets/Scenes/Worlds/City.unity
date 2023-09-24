@@ -1409,7 +1409,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6576770770109524140, guid: d0dbc230cf561a442844d65f2b6fe0b2, type: 3}
   m_PrefabInstance: {fileID: 909814472}
   m_PrefabAsset: {fileID: 0}
---- !u!43 &722564924
+--- !u!43 &909499235
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1647,6 +1647,10 @@ PrefabInstance:
     - target: {fileID: 1087189620, guid: d0dbc230cf561a442844d65f2b6fe0b2, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.82767266
+      objectReference: {fileID: 0}
+    - target: {fileID: 2154577717214287977, guid: d0dbc230cf561a442844d65f2b6fe0b2, type: 3}
+      propertyPath: m_RenderPostProcessing
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6576770770109524128, guid: d0dbc230cf561a442844d65f2b6fe0b2, type: 3}
       propertyPath: m_Name

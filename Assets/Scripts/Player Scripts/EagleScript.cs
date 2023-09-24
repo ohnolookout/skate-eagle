@@ -283,7 +283,6 @@ public class EagleScript : MonoBehaviour
         if (transform.position.x >= logic.FinishPoint.x && collided)
         {
             logic.Finish();
-            SlowToStop();
         }
     }
 
@@ -356,6 +355,14 @@ public class EagleScript : MonoBehaviour
             {
                 jumpCount = value;
             }
+        }
+    }
+
+    public Vector2 Velocity
+    {
+        get
+        {
+            return rigidEagle.velocity;
         }
     }
     private void AssignComponents()

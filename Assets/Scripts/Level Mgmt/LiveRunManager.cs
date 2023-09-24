@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
 public class LiveRunManager : MonoBehaviour
@@ -7,6 +8,7 @@ public class LiveRunManager : MonoBehaviour
     public RunState runState = RunState.Landing;
     private OverlayManager overlayManager;
     private GameObject bird;
+    private EagleScript eagleScript;
     private bool terrainGenerationCompleted = false;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
@@ -28,6 +30,7 @@ public class LiveRunManager : MonoBehaviour
             levelManager.currentLevel = currentLevel;
         }
         bird = GameObject.FindGameObjectWithTag("Player");
+        eagleScript = bird.GetComponent<EagleScript>();
         overlayManager = GameObject.FindGameObjectWithTag("UI").GetComponent<OverlayManager>();
         overlayManager.AddUI(levelManager.currentLevelTimeData, isMobile);
     }
@@ -98,13 +101,26 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         runState = RunState.Finished;
-        float time = overlayManager.Finish(levelManager.currentLevelTimeData);
-        levelManager.UpdateTime(time);
+        float finishTime = overlayManager.StopTimer();
+        overlayManager.GenerateFinishScreen(levelManager.currentLevelTimeData, finishTime);
+        StartCoroutine(SlowToFinish(finishTime));
+    }
+
+    public IEnumerator SlowToFinish(float finishTime)
+    {
+        eagleScript.SlowToStop();
+        while (eagleScript.Velocity.x > 0.2f)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(0.2f);
+        overlayManager.ActivateFinishScreen();
+        levelManager.UpdateTime(finishTime);
     }
 
     public void Fall()
     {
-        bird.GetComponent<EagleScript>().Fall();
+        eagleScript.Fall();
         runState = RunState.GameOver;
     }
 

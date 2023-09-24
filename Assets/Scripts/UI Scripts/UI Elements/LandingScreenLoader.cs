@@ -10,9 +10,8 @@ public class LandingScreenLoader : MonoBehaviour
     public TMP_Text levelName, playerTime, blueTime, goldTime, silverTime;
     public Image playerMedal;
     public Sprite[] medalSprites;
-    public GameObject globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, levelTimes, levelMedals;
-    public GameObject[] badgeGrays, levelTimeGrays;
-    private LevelTimeData playerData;
+    public GameObject globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, bestTimeBadgeGrayOut;
+    public GameObject[] levelTimeGrays, strikeThroughs;
     public bool nextLevelUnlocked = false;
 
     public void GenerateLanding(LevelTimeData playerInfo)
@@ -38,24 +37,12 @@ public class LandingScreenLoader : MonoBehaviour
 
     private void StrikeThruTimes(Medal bestMedal)
     {
-        if ((int)bestMedal <= 1) 
+        //Use bestMedal - 1 as start index because grays and strikethroughs start at blue rather than red. Use max with 0 to ensure that a red medal also starts at 0 instead of -1;
+        int startIndex = Mathf.Max((int)bestMedal - 1, 0);
+        for (int i = startIndex; i < 3; i++)
         {
-            blueTime.fontStyle = FontStyles.Strikethrough;
-            levelTimeGrays[0].SetActive(true);
-            levelTimeGrays[1].SetActive(true);
-
-        }
-        if ((int)bestMedal <= 2)
-        {
-            goldTime.fontStyle = FontStyles.Strikethrough;
-            levelTimeGrays[2].SetActive(true);
-            levelTimeGrays[3].SetActive(true);
-        }
-        if ((int)bestMedal <= 3)
-        {
-            silverTime.fontStyle = FontStyles.Strikethrough;
-            levelTimeGrays[4].SetActive(true);
-            levelTimeGrays[5].SetActive(true);
+            levelTimeGrays[i].SetActive(true);
+            strikeThroughs[i].SetActive(true);
         }
     }
 
@@ -76,10 +63,7 @@ public class LandingScreenLoader : MonoBehaviour
     
     private void DeactivatePlayerBadge()
     {
-        foreach(GameObject grayOut in badgeGrays)
-        {
-            grayOut.SetActive(true);
-        }
+        bestTimeBadgeGrayOut.SetActive(true);
     }
 
 }
