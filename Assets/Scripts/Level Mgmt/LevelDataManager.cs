@@ -58,6 +58,10 @@ public class LevelDataManager : MonoBehaviour
         {
             return playerData.levelTimeDict[currentLevel];
         }
-        return new LevelTimeData(currentLevel);
+        if (currentLevelTimeData.level is null)
+        {
+            currentLevelTimeData = new LevelTimeData(currentLevel);
+        }
+        return currentLevelTimeData;
     }
 }

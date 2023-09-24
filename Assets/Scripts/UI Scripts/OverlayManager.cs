@@ -25,7 +25,7 @@ public class OverlayManager : MonoBehaviour
             uiObject = Instantiate(desktopUI);
         }
         overlay = uiObject.GetComponent<Overlay>();
-        overlay.overlayManager = this;
+        //overlay.overlayManager = this;
         overlay.StartScreen(playerData);
     }
 

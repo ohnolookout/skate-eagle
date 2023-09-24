@@ -10,9 +10,10 @@ public class Overlay : MonoBehaviour
     public GameObject gameOver, finish, standby, mobileControls, hud, landing;
     public LandingScreenLoader landingLoader;
     public FinishScreenLoader finishLoader;
+    public LiveRunManager runManager;
     public StompBar stompBar;
     public Timer timer;
-    public OverlayManager overlayManager;
+    //public OverlayManager overlayManager;
 
     public void StartScreen(LevelTimeData playerInfo)
     {
@@ -31,7 +32,7 @@ public class Overlay : MonoBehaviour
         standby.SetActive(true);
         hud.SetActive(true);
         ActivateControls(true);
-        overlayManager.SetRunState(RunState.Standby);
+        runManager.runState = RunState.Standby;
     }
 
 
@@ -94,7 +95,7 @@ public class Overlay : MonoBehaviour
 
     public void RestartLevel()
     {
-        overlayManager.RestartLevel();
+        runManager.RestartGame();
     }
 
     public float StopTimer()

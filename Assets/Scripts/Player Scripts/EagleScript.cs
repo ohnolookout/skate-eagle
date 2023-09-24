@@ -35,6 +35,19 @@ public class EagleScript : MonoBehaviour
         lastSpeed = rigidEagle.velocity;
     }
 
+    private void AssignComponents()
+    {
+        textGen = textGenerator.GetComponent<FlipTextGenerator>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        rigidEagle = GetComponent<Rigidbody2D>();
+        coroutines = GetComponent<PlayerCoroutines>();
+        jumpCoroutine = coroutines.JumpCountDelay();
+        stompCoroutine = coroutines.Stomp();
+        dampen = coroutines.DampenLanding();
+        trail = boostTrail.GetComponent<TrailRenderer>();
+        trailCoroutine = coroutines.BoostTrail();
+        playerController = GetComponent<PlayerController>();
+    }
 
     void Update()
     {
@@ -365,17 +378,5 @@ public class EagleScript : MonoBehaviour
             return rigidEagle.velocity;
         }
     }
-    private void AssignComponents()
-    {
-        textGen = textGenerator.GetComponent<FlipTextGenerator>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        rigidEagle = GetComponent<Rigidbody2D>();
-        coroutines = GetComponent<PlayerCoroutines>();
-        jumpCoroutine = coroutines.JumpCountDelay();
-        stompCoroutine = coroutines.Stomp();
-        dampen = coroutines.DampenLanding();
-        trail = boostTrail.GetComponent<TrailRenderer>();
-        trailCoroutine = coroutines.BoostTrail();
-        playerController = GetComponent<PlayerController>();
-    }
+    
 }

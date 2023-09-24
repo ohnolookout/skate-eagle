@@ -7,15 +7,15 @@ public class LiveRunManager : MonoBehaviour
 {
     public RunState runState = RunState.Landing;
     private OverlayManager overlayManager;
-    private GameObject bird;
     private EagleScript eagleScript;
     private bool terrainGenerationCompleted = false;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
-    public GameObject levelManagerPrefab;
+    public GameObject levelManagerPrefab, bird;
     public Level currentLevel;
     private LevelDataManager levelManager;
+    public Overlay overlay;
 
     void Awake()
     {
@@ -29,12 +29,13 @@ public class LiveRunManager : MonoBehaviour
             levelManager = levelManagerObject.GetComponent<LevelDataManager>();
             levelManager.currentLevel = currentLevel;
         }
-        bird = GameObject.FindGameObjectWithTag("Player");
         eagleScript = bird.GetComponent<EagleScript>();
-        overlayManager = GameObject.FindGameObjectWithTag("UI").GetComponent<OverlayManager>();
-        overlayManager.AddUI(levelManager.currentLevelTimeData, isMobile);
     }
 
+    private void Start()
+    {
+        overlay.StartScreen(levelManager.PlayerDataForCurrentLevel());
+    }
 
     private void Update()
     {
@@ -63,13 +64,13 @@ public class LiveRunManager : MonoBehaviour
 
     public void GameOver()
     {
-        overlayManager.GameOver();
+        overlay.GameOverScreen();
         runState = RunState.GameOver;
     }
 
     public void StartAttempt()
     {
-        overlayManager.StartAttempt();
+        overlay.StartAttempt();
         runState = RunState.Active;
         startPoint = bird.transform.position;
     }
@@ -94,15 +95,15 @@ public class LiveRunManager : MonoBehaviour
             {
                 stompCharge = stompThreshold;
             }
-            overlayManager.FillStompBar(stompCharge / stompThreshold);
+            overlay.FillStompBar(stompCharge / stompThreshold);
         }
     }
     
     public void Finish()
     {
         runState = RunState.Finished;
-        float finishTime = overlayManager.StopTimer();
-        overlayManager.GenerateFinishScreen(levelManager.currentLevelTimeData, finishTime);
+        float finishTime = overlay.StopTimer();
+        overlay.GenerateFinishScreen(levelManager.PlayerDataForCurrentLevel(), finishTime);
         StartCoroutine(SlowToFinish(finishTime));
     }
 
@@ -113,8 +114,7 @@ public class LiveRunManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
-        yield return new WaitForSeconds(0.2f);
-        overlayManager.ActivateFinishScreen();
+        overlay.ActivateFinishScreen();
         levelManager.UpdateTime(finishTime);
     }
 

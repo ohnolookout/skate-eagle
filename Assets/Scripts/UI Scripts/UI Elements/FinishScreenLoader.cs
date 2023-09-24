@@ -14,6 +14,7 @@ public class FinishScreenLoader : MonoBehaviour
     public void GenerateFinishScreen(LevelTimeData playerData, float attemptTime)
     {
         ClearOptionalText();
+        Debug.Log($"Level: {playerData.level}");
         Medal attemptMedal = playerData.level.MedalFromTime(attemptTime);
         bool isNewMedal = false;
         if ((int)attemptMedal < (int)playerData.medal)
