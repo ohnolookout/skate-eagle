@@ -2290,7 +2290,6 @@ MonoBehaviour:
   logic: {fileID: 0}
   rigidEagle: {fileID: 6091589263621437131}
   boostTrail: {fileID: 8883567102701504889}
-  eagle: {fileID: 6011852464375175001}
   trail: {fileID: 5270781511123226311}
   dampening: 0
   checkingForSecondJump: 0
@@ -2316,6 +2315,7 @@ MonoBehaviour:
   down: 0
   stomp: 0
   rotation: {x: 0, y: 0}
+  eagleScript: {fileID: 1340608751}
 --- !u!114 &5603919523911398314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2487,7 +2487,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 742524
+  m_InstanceId: 781682
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0

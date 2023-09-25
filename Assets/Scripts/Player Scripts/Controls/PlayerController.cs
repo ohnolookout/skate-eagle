@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public KeyState jumpState = KeyState.Off, downState = KeyState.Off, stompState = KeyState.Off;
     public bool jump = false, down = false, stomp = false;
     public Vector2 rotation = new(0,0);
-    private EagleScript eagleScript;
+    public EagleScript eagleScript;
     private int downCount;
     private LiveRunManager logic;
     private int fake;
@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        eagleScript = GameObject.FindGameObjectWithTag("Player").GetComponent<EagleScript>();
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
     }
 

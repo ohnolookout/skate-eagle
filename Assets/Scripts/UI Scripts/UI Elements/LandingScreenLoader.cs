@@ -16,7 +16,6 @@ public class LandingScreenLoader : MonoBehaviour
 
     public void GenerateLanding(LevelTimeData playerInfo)
     {
-        Debug.Log(playerInfo.level.Name);
         levelName.text = playerInfo.level.Name;
         GenerateLevelTimes(playerInfo.level.MedalTimes);
         GeneratePlayerBadge(playerInfo);

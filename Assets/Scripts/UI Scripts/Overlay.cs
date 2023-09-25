@@ -49,15 +49,6 @@ public class Overlay : MonoBehaviour
         ActivateControls(false);
     }
 
-    public float FinishScreen(LevelTimeData playerTime)
-    {
-        float finishTime = timer.StopTimer();
-        finishLoader.GenerateFinishScreen(playerTime, finishTime);
-        finish.SetActive(true);
-        hud.SetActive(false);
-        ActivateControls(false);
-        return finishTime;
-    }
 
     public void FinishScreen(LevelTimeData levelTimeData, float attemptTime)
     {

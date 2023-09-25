@@ -6,9 +6,7 @@ public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
 public class LiveRunManager : MonoBehaviour
 {
     public RunState runState = RunState.Landing;
-    private OverlayManager overlayManager;
     private EagleScript eagleScript;
-    private bool terrainGenerationCompleted = false;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
@@ -158,17 +156,6 @@ public class LiveRunManager : MonoBehaviour
         set
         {
             actualTerrainLength = value;
-        }
-    }
-    public bool TerrainCompleted
-    {
-        get
-        {
-            return terrainGenerationCompleted;
-        }
-        set
-        {
-            terrainGenerationCompleted = value;
         }
     }
 
