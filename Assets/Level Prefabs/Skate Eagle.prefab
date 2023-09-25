@@ -2150,10 +2150,9 @@ GameObject:
   - component: {fileID: 7546833667872202176}
   - component: {fileID: 5603919523911398314}
   - component: {fileID: 4674152064080632777}
-  - component: {fileID: 1340608752}
   - component: {fileID: 1340608751}
   m_Layer: 3
-  m_Name: Skate Eagle Centered
+  m_Name: Skate Eagle
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2287,6 +2286,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f80b650262f06408c11910556fba16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eagleScript: {fileID: 1340608751}
+  logic: {fileID: 0}
+  rigidEagle: {fileID: 6091589263621437131}
+  boostTrail: {fileID: 8883567102701504889}
+  eagle: {fileID: 6011852464375175001}
+  trail: {fileID: 5270781511123226311}
   dampening: 0
   checkingForSecondJump: 0
   delayedDampenJump: 0
@@ -2459,7 +2464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShadowGroup: 0
   m_ComponentVersion: 1
-  m_HasRenderer: 1
+  m_HasRenderer: 0
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
   m_SelfShadows: 0
@@ -2482,59 +2487,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: -83210
---- !u!212 &1340608752
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6011852464375175001}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_InstanceId: 742524
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2547,6 +2500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c70161976110664cb13e1ed4c68beb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigidEagle: {fileID: 6091589263621437131}
   animator: {fileID: 6091589263621437134}
   rotationSpeed: 0
   jumpForce: 40
@@ -2557,8 +2511,10 @@ MonoBehaviour:
   flipBoost: 70
   stompSpeedLimit: -250
   logic: {fileID: 0}
-  textGenerator: {fileID: 5876770833193495685}
-  boostTrail: {fileID: 8883567102701504889}
+  textGen: {fileID: 5876770833193495704}
+  trail: {fileID: 5270781511123226311}
+  playerController: {fileID: 7546833667872202176}
+  coroutines: {fileID: 7090149600255550064}
   jumpMultiplier: 1
 --- !u!1 &6091589263151592812
 GameObject:
@@ -4159,8 +4115,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
   m_PrefabInstance: {fileID: 1044942288}
   m_PrefabAsset: {fileID: 0}
---- !u!223 &5876770833193495685 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 5876770832551207253, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+--- !u!114 &5876770833193495704 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
   m_PrefabInstance: {fileID: 1044942288}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fd2022fda893a64d9873a45ec3e40f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

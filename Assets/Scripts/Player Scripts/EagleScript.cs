@@ -4,10 +4,10 @@ using System;
 
 public class EagleScript : MonoBehaviour
 {
-    private Rigidbody2D rigidEagle;
+    public Rigidbody2D rigidEagle;
     public Animator animator;
     [HideInInspector] public float rotationSpeed = 0; 
-    public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
+    [HideInInspector] public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
     private int jumpCount = 0, jumpLimit = 2;
@@ -15,12 +15,10 @@ public class EagleScript : MonoBehaviour
     private IEnumerator jumpCoroutine, stompCoroutine, trailCoroutine;
     public IEnumerator dampen;
     public LiveRunManager logic;
-    public Canvas textGenerator;
-    private FlipTextGenerator textGen;
-    public GameObject boostTrail;
-    private TrailRenderer trail;
-    private PlayerController playerController;
-    private PlayerCoroutines coroutines;
+    public FlipTextGenerator textGen;
+    public TrailRenderer trail;
+    public PlayerController playerController;
+    public PlayerCoroutines coroutines;
 
 
     private void Awake()
@@ -37,16 +35,11 @@ public class EagleScript : MonoBehaviour
 
     private void AssignComponents()
     {
-        textGen = textGenerator.GetComponent<FlipTextGenerator>();
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        rigidEagle = GetComponent<Rigidbody2D>();
-        coroutines = GetComponent<PlayerCoroutines>();
         jumpCoroutine = coroutines.JumpCountDelay();
         stompCoroutine = coroutines.Stomp();
         dampen = coroutines.DampenLanding();
-        trail = boostTrail.GetComponent<TrailRenderer>();
         trailCoroutine = coroutines.BoostTrail();
-        playerController = GetComponent<PlayerController>();
     }
 
     void Update()

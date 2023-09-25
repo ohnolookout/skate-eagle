@@ -1,25 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCoroutines : MonoBehaviour
 {
-    private EagleScript eagleScript;
-    private LiveRunManager logic;
-    private Rigidbody2D rigidEagle;
-    private GameObject eagle;
-    private GameObject boostTrail;
-    private TrailRenderer trail;
+    public EagleScript eagleScript;
+    public LiveRunManager logic;
+    public Rigidbody2D rigidEagle;
+    public GameObject boostTrail;
+    public TrailRenderer trail;
     public bool dampening = false, checkingForSecondJump = false, delayedDampenJump = false, countingDownJump = false;
     public enum EagleCoroutines { Stomp, Dampen, JumpCountDelay, BoostTrail, EndFlip, DelayedFreeze, AddBoost }
     void Start()
     {
-        eagle = GameObject.FindGameObjectWithTag("Player");
-        rigidEagle = eagle.GetComponent<Rigidbody2D>();
-        eagleScript = eagle.GetComponent<EagleScript>();
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        boostTrail = eagleScript.boostTrail;
-        trail = boostTrail.GetComponent<TrailRenderer>();
     }
 
     public IEnumerator Stomp()
