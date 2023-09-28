@@ -5,8 +5,16 @@ using UnityEngine;
 
 public static class SaveSerial
 {
-
-	public static SaveData SaveGame()
+	public static void SaveGame(SaveData data)
+    {
+		BinaryFormatter bf = new BinaryFormatter();
+		FileStream file = File.Open(Application.persistentDataPath
+					 + "/SaveData.dat", FileMode.OpenOrCreate);
+		bf.Serialize(file, data);
+		file.Close();
+		Debug.Log("Game data saved!");
+	}
+	public static SaveData NewGame()
 	{
 		BinaryFormatter bf = new BinaryFormatter();
 		FileStream file = File.Create(Application.persistentDataPath
@@ -31,8 +39,8 @@ public static class SaveSerial
 			file.Close();
 			return data;
 		}
-		Debug.LogError("There is no save data!");
-		return null;
+		Debug.Log("There is no save data! Creating new game...");
+		return NewGame();
 	}
 
 	public static void ResetData()
@@ -53,15 +61,15 @@ public static class SaveSerial
 public class SaveData
 {
 	public DateTime startDate;
-	public LevelTimeData[] levelTimes;
+	public LevelRecords[] levelTimes;
 
 	public SaveData()
     {
 		startDate = DateTime.Now;
-		levelTimes = new LevelTimeData[0];
+		levelTimes = new LevelRecords[0];
     }
 
-	public void UpdateTimes(LevelTimeData[] newTimes)
+	public void UpdateLevelRecords(LevelRecords[] newTimes)
     {
 		levelTimes = newTimes;
     }

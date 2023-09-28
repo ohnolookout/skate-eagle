@@ -4,42 +4,39 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class LevelTimeData
+public class LevelRecords
 {
 	public string levelName;
 	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
-	public Level level;
 
-	public LevelTimeData(Level level)
+	public LevelRecords(Level level)
 	{
-		this.level = level;
 		levelName = level.Name;
 
 	}
 
-	public LevelTimeData(Level completedLevel, float timeInSeconds)
+	public LevelRecords(Level completedLevel, float timeInSeconds)
 	{
-		level = completedLevel;
 		levelName = completedLevel.Name;
 		bestTime = timeInSeconds;
 		date = DateTime.Now;
 		medal = completedLevel.MedalTimes.MedalFromTime(timeInSeconds);
 	}
 
-	public void UpdateTime(float timeInSeconds, out Medal newMedal, out Medal? oldMedal)
+	public bool UpdateTime(float timeInSeconds, Medal newMedal)
 	{
 		if (timeInSeconds < bestTime)
 		{
 			bestTime = timeInSeconds;
 			date = DateTime.Now;
-			oldMedal = medal;
-			medal = level.MedalTimes.MedalFromTime(timeInSeconds);
-			newMedal = (Medal) medal;
-			return;
+			if((int)newMedal < (int)medal)
+            {
+				medal = newMedal;
+            }
+			return true;
 		}
-		newMedal = level.MedalTimes.MedalFromTime(timeInSeconds);
-		oldMedal = null;
+		return false;
 	}
 }

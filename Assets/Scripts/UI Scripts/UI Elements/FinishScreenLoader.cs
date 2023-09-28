@@ -5,45 +5,31 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
+public enum FinishScreenType { NewMedal, NewBestTime, Participant}
+
 public class FinishScreenLoader : MonoBehaviour
 {
     public GameObject medal, newMedal, newBest, previousBlock;
     public TMP_Text previousTime, playerTime;
     public Sprite[] medalSprites;
+    public GameObject[] statusTexts;
 
-    public void GenerateFinishScreen(LevelTimeData playerData, float attemptTime)
+    public void GenerateFinishScreen(FinishScreenData finishData)
     {
         ClearOptionalText();
-        Medal attemptMedal = playerData.level.MedalFromTime(attemptTime);
-        bool isNewMedal = false;
-        if ((int)attemptMedal < (int)playerData.medal)
+        playerTime.text = OverlayUtility.TimeToString(finishData.attemptTime);
+        statusTexts[(int)finishData.finishType].SetActive(true);
+        if (!Single.IsPositiveInfinity(finishData.previousBest))
         {
-            PopulateMedal(attemptMedal);
-            isNewMedal = true;
-        }
-        PopulateTimes(attemptTime, playerData.bestTime, isNewMedal);
-    }
-
-    public void PopulateMedal(Medal attemptMedal)
-    {
-        newMedal.SetActive(true);
-        medal.GetComponent<Image>().sprite = medalSprites[(int)attemptMedal];
-        medal.SetActive(true);
-    }
-
-    public void PopulateTimes(float attemptTime, float previousBestTime, bool hasNewMedal)
-    {
-        newBest.SetActive(attemptTime < previousBestTime && !hasNewMedal);
-        if (Single.IsPositiveInfinity(previousBestTime))
-        {
-            previousBlock.SetActive(false);
-        }
-        else
-        {
-            previousTime.text = OverlayUtility.TimeToString(previousBestTime);
+            previousTime.text = OverlayUtility.TimeToString(finishData.previousBest);
             previousBlock.SetActive(true);
         }
-        playerTime.text = OverlayUtility.TimeToString(attemptTime);
+        if (finishData.finishType == FinishScreenType.NewMedal)
+        {
+            medal.GetComponent<Image>().sprite = medalSprites[(int)finishData.medal];
+            medal.SetActive(true);
+        }
+
     }
 
     public void ClearOptionalText()
@@ -55,3 +41,5 @@ public class FinishScreenLoader : MonoBehaviour
 
     }
 }
+
+

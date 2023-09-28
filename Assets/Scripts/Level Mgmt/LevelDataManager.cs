@@ -5,63 +5,61 @@ using UnityEngine.SceneManagement;
 
 public class LevelDataManager : MonoBehaviour
 {
-    public PlayerData playerData;
+    public SessionData sessionData;
     public Level currentLevel;
-    public LevelTimeData currentLevelTimeData;
-    public float? currentLevelBestTime;
-    public Medal? currentLevelMedal;
+    public LevelRecords currentLevelRecords;
+    private static SaveData saveData;
     private void Awake()
     {
+        if (GameObject.FindGameObjectsWithTag("LevelManager").Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
         DontDestroyOnLoad(gameObject);
-        SaveData loadedData = SaveSerial.LoadGame();
-        if (loadedData is null)
-        {
-            loadedData = SaveSerial.SaveGame();
-        }
-        playerData = new(loadedData);
-        if (playerData == null)
-        {
-            Debug.Log("Player data is null");
-        }
+        saveData = SaveSerial.LoadGame();
+        Debug.Log($"Loaded data file that was first created on {saveData.startDate}");
+        sessionData = new(saveData);
     }
 
     public void LoadLevel(Level level)
     {
         currentLevel = level;
         SceneManager.LoadScene("City");
-        if(!(playerData.levelTimeDict.ContainsKey(level)))
+        if(!(sessionData.levelTimeDict.ContainsKey(level.Name)))
         {
-            playerData.AddLevel(currentLevel);
+            sessionData.AddLevel(currentLevel);
         }
-        currentLevelTimeData = playerData.levelTimeDict[level];
-        currentLevelBestTime = currentLevelTimeData.bestTime;
-        currentLevelMedal = currentLevelTimeData.medal;
+        currentLevelRecords = sessionData.levelTimeDict[level.Name];
     }
 
-    public Medal UpdateTime(float timeInSeconds)
+    public void UpdateSessionData(FinishScreenData finishData)
     {
-        currentLevelTimeData.UpdateTime(timeInSeconds, out Medal newMedal, out Medal? oldMedal);
-        currentLevelBestTime = currentLevelTimeData.bestTime;
-        currentLevelMedal = currentLevelTimeData.medal;
-        return newMedal;
+        sessionData.UpdateLevelRecords(finishData, currentLevel);
+        saveData.UpdateLevelRecords(sessionData.ExportLevelRecordList());
+        SaveSerial.SaveGame(saveData);
     }
 
 
-    public LevelTimeData PlayerDataForCurrentLevel()
+    public LevelRecords CurrentLevelRecords
     {
-        if(playerData == null)
+        get
         {
-            Debug.Log("Player data is null");
-            Awake();
+            if (sessionData == null)
+            {
+                Debug.Log("Player data is null");
+                Awake();
+            }
+            if (sessionData.levelTimeDict.ContainsKey(currentLevel.name))
+            {
+                return sessionData.levelTimeDict[currentLevel.name];
+            }
+            if (currentLevelRecords.levelName is null)
+            {
+                currentLevelRecords = new LevelRecords(currentLevel);
+            }
+            return currentLevelRecords;
         }
-        if (playerData.levelTimeDict.ContainsKey(currentLevel))
-        {
-            return playerData.levelTimeDict[currentLevel];
-        }
-        if (currentLevelTimeData.level is null)
-        {
-            currentLevelTimeData = new LevelTimeData(currentLevel);
-        }
-        return currentLevelTimeData;
     }
+
 }

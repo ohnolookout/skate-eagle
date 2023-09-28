@@ -15,7 +15,7 @@ public class Overlay : MonoBehaviour
     public Timer timer;
     //public OverlayManager overlayManager;
 
-    public void StartScreen(LevelTimeData playerInfo)
+    public void StartScreen(LevelRecords playerInfo)
     {
         landing.SetActive(true);
         gameOver.SetActive(false);
@@ -23,7 +23,7 @@ public class Overlay : MonoBehaviour
         standby.SetActive(false);
         hud.SetActive(false);
         ActivateControls(false);
-        landingLoader.GenerateLanding(playerInfo);
+        landingLoader.GenerateLanding(runManager.CurrentLevel, playerInfo);
     }
 
     public void StandbyScreen()
@@ -49,13 +49,9 @@ public class Overlay : MonoBehaviour
         ActivateControls(false);
     }
 
-
-    public void FinishScreen(LevelTimeData levelTimeData, float attemptTime)
+    public void GenerateFinishScreen(FinishScreenData screenData)
     {
-        finishLoader.GenerateFinishScreen(levelTimeData, attemptTime);
-        finish.SetActive(true);
-        hud.SetActive(false);
-        ActivateControls(false);
+        finishLoader.GenerateFinishScreen(screenData);
     }
 
     public void ActivateFinishScreen()
@@ -94,10 +90,6 @@ public class Overlay : MonoBehaviour
         return timer.StopTimer();
     }
 
-    public void GenerateFinishScreen(LevelTimeData levelTimeData, float attemptTime)
-    {
-        finishLoader.GenerateFinishScreen(levelTimeData, attemptTime);
-    }
 
 }
 

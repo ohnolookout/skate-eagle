@@ -23,6 +23,7 @@ public class LiveRunManager : MonoBehaviour
             levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
         } 
         else {
+            Debug.Log("LevelManager not found. Creating a new one...");
             GameObject levelManagerObject = Instantiate(levelManagerPrefab);
             levelManager = levelManagerObject.GetComponent<LevelDataManager>();
             levelManager.currentLevel = currentLevel;
@@ -32,7 +33,7 @@ public class LiveRunManager : MonoBehaviour
 
     private void Start()
     {
-        overlay.StartScreen(levelManager.PlayerDataForCurrentLevel());
+        overlay.StartScreen(levelManager.CurrentLevelRecords);
     }
 
     private void Update()
@@ -101,19 +102,21 @@ public class LiveRunManager : MonoBehaviour
     {
         runState = RunState.Finished;
         float finishTime = overlay.StopTimer();
-        overlay.GenerateFinishScreen(levelManager.PlayerDataForCurrentLevel(), finishTime);
-        StartCoroutine(SlowToFinish(finishTime));
+        FinishScreenData finishData = FinishUtility.GenerateFinishData(levelManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
+        overlay.GenerateFinishScreen(finishData);
+        levelManager.UpdateSessionData(finishData);
+        StartCoroutine(SlowToFinish());
     }
 
-    public IEnumerator SlowToFinish(float finishTime)
+
+    public IEnumerator SlowToFinish()
     {
         eagleScript.SlowToStop();
         while (eagleScript.Velocity.x > 0.2f)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForFixedUpdate();
         }
         overlay.ActivateFinishScreen();
-        levelManager.UpdateTime(finishTime);
     }
 
     public void Fall()
@@ -122,11 +125,11 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.GameOver;
     }
 
-    public LevelTimeData PlayerDataCurrentLevel
+    public LevelRecords CurrentLevelRecords
     {
         get
         {
-            return levelManager.PlayerDataForCurrentLevel();
+            return levelManager.CurrentLevelRecords;
         }
     }
 
@@ -172,12 +175,13 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
-    public Level Level
+    public Level CurrentLevel
     {
         get
         {
-            return currentLevel;
+            return levelManager.currentLevel;
         }
     }
+
 
 }

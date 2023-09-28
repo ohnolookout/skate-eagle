@@ -10,7 +10,7 @@ public class SaveInspector : Editor
     override public void OnInspectorGUI()
 	{
 		if (GUILayout.Button("Save Game"))
-			SaveSerial.SaveGame();
+			//SaveSerial.SaveGame();
 		if (GUILayout.Button(
 					"Load Game"))
 			SaveSerial.LoadGame();
