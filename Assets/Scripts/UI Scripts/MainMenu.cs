@@ -15,6 +15,11 @@ public class MainMenu : MonoBehaviour
         levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
     }
 
+    public void ResetSaveData()
+    {
+        levelManager.ResetSaveData();
+    }
+
     public void LoadLevel(Level level)
     {
         levelManager.LoadLevel(level);

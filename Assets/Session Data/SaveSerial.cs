@@ -22,7 +22,7 @@ public static class SaveSerial
 		SaveData data = new SaveData();
 		bf.Serialize(file, data);
 		file.Close();
-		Debug.Log("Game data saved!");
+		Debug.Log("New game created!");
 		return data;
 	}
 

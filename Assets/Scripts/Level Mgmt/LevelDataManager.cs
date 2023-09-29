@@ -22,6 +22,12 @@ public class LevelDataManager : MonoBehaviour
         sessionData = new(saveData);
     }
 
+    public void ResetSaveData() 
+    {
+        saveData = SaveSerial.NewGame();
+        sessionData = new(saveData);
+    }
+
     public void LoadLevel(Level level)
     {
         currentLevel = level;
