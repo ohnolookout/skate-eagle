@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
+using System;
 
 public class MainMenu : MonoBehaviour
 {
-    public Level currentLevel;
-    public List<Level> levels;
-    private LevelDataManager levelManager;
+    public LevelDataManager levelManager;
+    public LevelPanelGenerator levelPanel;
+    public Level defaultLevel;
 
-    private void Awake()
+
+    public void Start()
     {
-        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+        SetLevelPanel(defaultLevel);
     }
 
     public void ResetSaveData()
@@ -32,5 +33,21 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
         Debug.Log("There is no escape.");
+    }
+
+    public void SetLevelPanel(Level level)
+    {
+        LevelRecords records = levelManager.RecordFromLevel(level.Name);
+        if(records == null)
+        {
+            levelPanel.Generate(level, LevelPanelType.Locked, records, 1);
+            return;
+        }
+        if (Single.IsPositiveInfinity(records.bestTime))
+        {
+            levelPanel.Generate(level, LevelPanelType.Incomplete, records);
+            return;
+        }
+        levelPanel.Generate(level, LevelPanelType.Completed, records);
     }
 }

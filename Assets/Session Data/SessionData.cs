@@ -4,7 +4,7 @@ using System;
 
 public class SessionData
 {
-    public Dictionary<string, LevelRecords> levelTimeDict = new();
+    public Dictionary<string, LevelRecords> levelRecordsDict = new();
     public Dictionary<Medal, int> medalCount = new();
     public bool dirty = false;
 
@@ -19,17 +19,17 @@ public class SessionData
     {
         foreach(LevelRecords levelRecords in loadedGame.levelTimes)
         {
-            levelTimeDict[levelRecords.levelName] = levelRecords;
+            levelRecordsDict[levelRecords.levelName] = levelRecords;
         }
     }
 
     public void AddLevel(Level level)
     {
-        if (levelTimeDict.ContainsKey(level.name))
+        if (levelRecordsDict.ContainsKey(level.name))
         {
             return;
         }
-        levelTimeDict[level.name] = new LevelRecords(level);
+        levelRecordsDict[level.name] = new LevelRecords(level);
     }
 
     public void UpdateLevelRecords(FinishScreenData finishData, Level level)
@@ -40,15 +40,15 @@ public class SessionData
         }
         if(finishData.finishType == FinishScreenType.NewMedal)
         {
-            AdjustMedalCount(finishData.medal, levelTimeDict[level.name].medal);
-            levelTimeDict[level.name].medal = finishData.medal;
+            AdjustMedalCount(finishData.medal, levelRecordsDict[level.name].medal);
+            levelRecordsDict[level.name].medal = finishData.medal;
         }
-        levelTimeDict[level.name].bestTime = finishData.attemptTime;
+        levelRecordsDict[level.name].bestTime = finishData.attemptTime;
     }
 
     public LevelRecords[] ExportLevelRecordList()
     {
-        return levelTimeDict.Values.ToArray();
+        return levelRecordsDict.Values.ToArray();
     }
 
     public void BuildMedalCount()
@@ -59,7 +59,7 @@ public class SessionData
         {
             medalCount[medal] = 0;
         }
-        foreach(LevelRecords levelTime in levelTimeDict.Values)
+        foreach(LevelRecords levelTime in levelRecordsDict.Values)
         {
             if (Single.IsPositiveInfinity(levelTime.bestTime))
             {
@@ -77,7 +77,7 @@ public class SessionData
 
     public void Clear()
     {
-        levelTimeDict = null;
+        levelRecordsDict = null;
         medalCount = null;
     }
 }

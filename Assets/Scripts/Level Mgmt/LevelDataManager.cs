@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelDataManager : MonoBehaviour
 {
-    public SessionData sessionData;
-    public Level currentLevel;
-    public LevelRecords currentLevelRecords;
+    public static SessionData sessionData;
+    public static Level currentLevel;
+    public static LevelRecords currentLevelRecords;
     private static SaveData saveData;
     private void Awake()
     {
@@ -22,6 +22,12 @@ public class LevelDataManager : MonoBehaviour
         sessionData = new(saveData);
     }
 
+    private void Start()
+    {
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+    }
+
     public void ResetSaveData() 
     {
         saveData = SaveSerial.NewGame();
@@ -31,12 +37,13 @@ public class LevelDataManager : MonoBehaviour
     public void LoadLevel(Level level)
     {
         currentLevel = level;
+        Debug.Log($"Loading current level {currentLevel}");
         SceneManager.LoadScene("City");
-        if(!(sessionData.levelTimeDict.ContainsKey(level.Name)))
+        if(!(sessionData.levelRecordsDict.ContainsKey(currentLevel.Name)))
         {
             sessionData.AddLevel(currentLevel);
         }
-        currentLevelRecords = sessionData.levelTimeDict[level.Name];
+        currentLevelRecords = sessionData.levelRecordsDict[currentLevel.Name];
     }
 
     public void UpdateSessionData(FinishScreenData finishData)
@@ -56,9 +63,9 @@ public class LevelDataManager : MonoBehaviour
                 Debug.Log("Player data is null");
                 Awake();
             }
-            if (sessionData.levelTimeDict.ContainsKey(currentLevel.name))
+            if (sessionData.levelRecordsDict.ContainsKey(currentLevel.name))
             {
-                return sessionData.levelTimeDict[currentLevel.name];
+                return sessionData.levelRecordsDict[currentLevel.name];
             }
             if (currentLevelRecords.levelName is null)
             {
@@ -67,5 +74,20 @@ public class LevelDataManager : MonoBehaviour
             return currentLevelRecords;
         }
     }
+
+    public LevelRecords RecordFromLevel(string levelName)
+    {
+        if (sessionData.levelRecordsDict.ContainsKey(levelName))
+        {
+            return sessionData.levelRecordsDict[levelName];
+        }
+        return null;
+    }
+
+    public void AddAttempt()
+    {
+        currentLevelRecords.AddAttempt();
+    }
+
 
 }

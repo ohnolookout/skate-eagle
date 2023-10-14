@@ -10,6 +10,7 @@ public class LevelRecords
 	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
+	public int attemptsCount = 0;
 
 	public LevelRecords(Level level)
 	{
@@ -25,18 +26,8 @@ public class LevelRecords
 		medal = completedLevel.MedalTimes.MedalFromTime(timeInSeconds);
 	}
 
-	public bool UpdateTime(float timeInSeconds, Medal newMedal)
-	{
-		if (timeInSeconds < bestTime)
-		{
-			bestTime = timeInSeconds;
-			date = DateTime.Now;
-			if((int)newMedal < (int)medal)
-            {
-				medal = newMedal;
-            }
-			return true;
-		}
-		return false;
-	}
+	public void AddAttempt()
+    {
+		attemptsCount++;
+    }
 }

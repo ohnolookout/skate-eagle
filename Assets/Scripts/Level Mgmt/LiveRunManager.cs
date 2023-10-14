@@ -21,12 +21,13 @@ public class LiveRunManager : MonoBehaviour
         if (GameObject.Find("LevelManager"))
         {
             levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+            currentLevel = LevelDataManager.currentLevel;
         } 
         else {
             Debug.Log("LevelManager not found. Creating a new one...");
             GameObject levelManagerObject = Instantiate(levelManagerPrefab);
             levelManager = levelManagerObject.GetComponent<LevelDataManager>();
-            levelManager.currentLevel = currentLevel;
+            LevelDataManager.currentLevel = currentLevel;
         }
         eagleScript = bird.GetComponent<EagleScript>();
     }
@@ -57,12 +58,17 @@ public class LiveRunManager : MonoBehaviour
 
     public void RestartGame()
     {
+        if(runState == RunState.Active)
+        {
+            levelManager.AddAttempt();
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         runState = RunState.Landing;
     }
 
     public void GameOver()
     {
+        levelManager.AddAttempt();
         overlay.GameOverScreen();
         runState = RunState.GameOver;
     }
@@ -101,8 +107,9 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         runState = RunState.Finished;
+        levelManager.AddAttempt();
         float finishTime = overlay.StopTimer();
-        FinishScreenData finishData = FinishUtility.GenerateFinishData(levelManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
+        FinishScreenData finishData = FinishUtility.GenerateFinishData(LevelDataManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
         overlay.GenerateFinishScreen(finishData);
         levelManager.UpdateSessionData(finishData);
         StartCoroutine(SlowToFinish());
@@ -179,7 +186,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return levelManager.currentLevel;
+            return LevelDataManager.currentLevel;
         }
     }
 
