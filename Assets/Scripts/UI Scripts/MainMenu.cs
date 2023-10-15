@@ -6,12 +6,15 @@ using System;
 
 public class MainMenu : MonoBehaviour
 {
-    public LevelDataManager levelManager;
     public LevelPanelGenerator levelPanel;
     public Level defaultLevel;
+    private LevelDataManager levelManager;
 
-
-    public void Start()
+    void Awake()
+    {
+        levelManager = LevelDataManager.Instance;
+    }
+    void Start()
     {
         SetLevelPanel(defaultLevel);
     }
@@ -40,14 +43,14 @@ public class MainMenu : MonoBehaviour
         LevelRecords records = levelManager.RecordFromLevel(level.Name);
         if(records == null)
         {
-            levelPanel.Generate(level, LevelPanelType.Locked, records, 1);
+            levelPanel.Generate(level, LevelNodeStatus.Locked, records, 1);
             return;
         }
         if (Single.IsPositiveInfinity(records.bestTime))
         {
-            levelPanel.Generate(level, LevelPanelType.Incomplete, records);
+            levelPanel.Generate(level, LevelNodeStatus.Incomplete, records);
             return;
         }
-        levelPanel.Generate(level, LevelPanelType.Completed, records);
+        levelPanel.Generate(level, LevelNodeStatus.Completed, records);
     }
 }

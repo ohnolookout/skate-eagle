@@ -26,14 +26,13 @@ public class GroundSpawner : MonoBehaviour
 
     void Awake()
     {
-        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+        levelManager = LevelDataManager.Instance;
         AssignComponents();
         currentPoint = new(bird.transform.position);
         if (Application.isPlaying)
         {
             DeleteChildren();
-            Debug.Log($"Generating current level {logic.currentLevel}");
-            GenerateLevel(LevelDataManager.currentLevel);
+            GenerateLevel(levelManager.currentLevel);
             logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
             Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);

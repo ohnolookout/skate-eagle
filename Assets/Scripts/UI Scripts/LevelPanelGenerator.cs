@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 
 
-public enum LevelPanelType { Completed, Incomplete, Locked }
+public enum LevelNodeStatus { Completed, Incomplete, Locked }
 public class LevelPanelGenerator : MonoBehaviour
 {
     public GameObject bestBlock, incompleteText, attemptsBlock, medal, lockedBlock;
@@ -16,19 +16,19 @@ public class LevelPanelGenerator : MonoBehaviour
     private Level selectedLevel;
 
 
-    public void Generate(Level level, LevelPanelType panelType, LevelRecords records, int requiredToUnlock = 0)
+    public void Generate(Level level, LevelNodeStatus panelType, LevelRecords records, int requiredToUnlock = 0)
     {
         selectedLevel = level;
         Debug.Log($"Setting current level to {selectedLevel}");
         levelName.text = level.Name;
         ActivateObjects(panelType);
-        if (panelType == LevelPanelType.Locked)
+        if (panelType == LevelNodeStatus.Locked)
         {
             lockedText.text = $"Earn {requiredToUnlock} more points to unlock.";
             return;
         }
         attemptsCount.text = records.attemptsCount.ToString();
-        if (panelType == LevelPanelType.Incomplete)
+        if (panelType == LevelNodeStatus.Incomplete)
         {
             attemptsCount.color = Color.gray;
             attemptsTitle.color = Color.gray;
@@ -44,9 +44,9 @@ public class LevelPanelGenerator : MonoBehaviour
 
     }
 
-    private void ActivateObjects(LevelPanelType panelType)
+    private void ActivateObjects(LevelNodeStatus panelType)
     {
-        if(panelType == LevelPanelType.Locked)
+        if(panelType == LevelNodeStatus.Locked)
         {
             bestBlock.SetActive(false);
             incompleteText.SetActive(false);
@@ -57,7 +57,7 @@ public class LevelPanelGenerator : MonoBehaviour
         }
         attemptsBlock.SetActive(true);
         lockedBlock.SetActive(false);
-        if (panelType == LevelPanelType.Incomplete)
+        if (panelType == LevelNodeStatus.Incomplete)
         {
             bestBlock.SetActive(false);
             incompleteText.SetActive(true);

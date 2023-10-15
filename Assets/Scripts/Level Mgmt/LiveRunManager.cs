@@ -18,16 +18,10 @@ public class LiveRunManager : MonoBehaviour
     void Awake()
     {
         
-        if (GameObject.Find("LevelManager"))
-        {
-            levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
-            currentLevel = LevelDataManager.currentLevel;
-        } 
-        else {
-            Debug.Log("LevelManager not found. Creating a new one...");
-            GameObject levelManagerObject = Instantiate(levelManagerPrefab);
-            levelManager = levelManagerObject.GetComponent<LevelDataManager>();
-            LevelDataManager.currentLevel = currentLevel;
+        levelManager = LevelDataManager.Instance;
+        currentLevel = levelManager.currentLevel;
+        if(currentLevel == null) { 
+            levelManager.currentLevel = currentLevel;
         }
         eagleScript = bird.GetComponent<EagleScript>();
     }
@@ -109,7 +103,7 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.Finished;
         levelManager.AddAttempt();
         float finishTime = overlay.StopTimer();
-        FinishScreenData finishData = FinishUtility.GenerateFinishData(LevelDataManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
+        FinishScreenData finishData = FinishUtility.GenerateFinishData(levelManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
         overlay.GenerateFinishScreen(finishData);
         levelManager.UpdateSessionData(finishData);
         StartCoroutine(SlowToFinish());
@@ -186,7 +180,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return LevelDataManager.currentLevel;
+            return levelManager.currentLevel;
         }
     }
 

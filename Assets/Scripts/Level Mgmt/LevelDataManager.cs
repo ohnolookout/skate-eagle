@@ -5,17 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class LevelDataManager : MonoBehaviour
 {
-    public static SessionData sessionData;
-    public static Level currentLevel;
-    public static LevelRecords currentLevelRecords;
-    private static SaveData saveData;
+    public SessionData sessionData;
+    public Level currentLevel;
+    public LevelRecords currentLevelRecords;
+    private static LevelDataManager instance;
+    private SaveData saveData;
     private void Awake()
     {
-        if (GameObject.FindGameObjectsWithTag("LevelManager").Length > 1)
+        if (instance != null && instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
+        instance = this;
         DontDestroyOnLoad(gameObject);
         saveData = SaveSerial.LoadGame();
         Debug.Log($"Loaded data file that was first created on {saveData.startDate}");
@@ -28,7 +30,7 @@ public class LevelDataManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
     }
 
-    public void ResetSaveData() 
+    public void ResetSaveData()
     {
         saveData = SaveSerial.NewGame();
         sessionData = new(saveData);
@@ -39,7 +41,7 @@ public class LevelDataManager : MonoBehaviour
         currentLevel = level;
         Debug.Log($"Loading current level {currentLevel}");
         SceneManager.LoadScene("City");
-        if(!(sessionData.levelRecordsDict.ContainsKey(currentLevel.Name)))
+        if (!(sessionData.levelRecordsDict.ContainsKey(currentLevel.Name)))
         {
             sessionData.AddLevel(currentLevel);
         }
@@ -89,5 +91,18 @@ public class LevelDataManager : MonoBehaviour
         currentLevelRecords.AddAttempt();
     }
 
+    public static LevelDataManager Instance
+    {
+        get
+        {
+            if (instance != null)
+            {
+                return instance;
+            }
+            GameObject managerObject = new GameObject("LevelManager");
+            instance = managerObject.AddComponent<LevelDataManager>();
+            return instance;
+        }
+    }
 
 }
