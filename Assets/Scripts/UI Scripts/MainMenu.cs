@@ -14,11 +14,6 @@ public class MainMenu : MonoBehaviour
     {
         levelManager = LevelDataManager.Instance;
     }
-    void Start()
-    {
-        SetLevelPanel(defaultLevel);
-    }
-
     public void ResetSaveData()
     {
         levelManager.ResetSaveData();
@@ -38,19 +33,4 @@ public class MainMenu : MonoBehaviour
         Debug.Log("There is no escape.");
     }
 
-    public void SetLevelPanel(Level level)
-    {
-        LevelRecords records = levelManager.RecordFromLevel(level.Name);
-        if(records == null)
-        {
-            levelPanel.Generate(level, LevelNodeStatus.Locked, records, 1);
-            return;
-        }
-        if (Single.IsPositiveInfinity(records.bestTime))
-        {
-            levelPanel.Generate(level, LevelNodeStatus.Incomplete, records);
-            return;
-        }
-        levelPanel.Generate(level, LevelNodeStatus.Completed, records);
-    }
 }

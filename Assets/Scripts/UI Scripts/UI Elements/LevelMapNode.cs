@@ -6,30 +6,37 @@ using UnityEngine.UI;
 public class LevelMapNode : MonoBehaviour
 {
     public GameObject lockedFade;
-    public Button button;
+    public Level level;
+    public LevelMenu menu;
+    private LevelNodeStatus nodeStatus = LevelNodeStatus.Locked;
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void SetStatus(LevelNodeStatus status, Medal medal = Medal.Participant)
     {
-        if(status == LevelNodeStatus.Locked)
+        nodeStatus = status;
+        if(nodeStatus == LevelNodeStatus.Locked)
         {
             return;
         }
         lockedFade.SetActive(false);
-        if(status == LevelNodeStatus.Completed)
+        if(nodeStatus == LevelNodeStatus.Completed)
         {
 
         }
 
+    }
+
+    public void SendToLevelPanel()
+    {
+        menu.SetLevelPanel(level, nodeStatus);
+    }
+
+    public void SelectButton()
+    {
+        gameObject.GetComponent<Button>().Select();
     }
 }

@@ -17,10 +17,10 @@ public class LiveRunManager : MonoBehaviour
 
     void Awake()
     {
-        
+
         levelManager = LevelDataManager.Instance;
         currentLevel = levelManager.currentLevel;
-        if(currentLevel == null) { 
+        if (currentLevel == null) {
             levelManager.currentLevel = currentLevel;
         }
         eagleScript = bird.GetComponent<EagleScript>();
@@ -33,14 +33,14 @@ public class LiveRunManager : MonoBehaviour
 
     private void Update()
     {
-        
+
         if (runState != RunState.Active)
         {
             return;
         }
         if (Time.frameCount % 20 != 0)
         {
-            distancePassed = (bird.transform.position.x - startPoint.x)/distanceToFinish;
+            distancePassed = (bird.transform.position.x - startPoint.x) / distanceToFinish;
         }
     }
 
@@ -52,7 +52,7 @@ public class LiveRunManager : MonoBehaviour
 
     public void RestartGame()
     {
-        if(runState == RunState.Active)
+        if (runState == RunState.Active)
         {
             levelManager.AddAttempt();
         }
@@ -97,7 +97,7 @@ public class LiveRunManager : MonoBehaviour
             overlay.FillStompBar(stompCharge / stompThreshold);
         }
     }
-    
+
     public void Finish()
     {
         runState = RunState.Finished;
@@ -184,5 +184,20 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
+    public Vector2 BirdPosition
+    {
+        get
+        {
+            return bird.transform.position;
+        }
+    }
+
+    public bool BirdDirectionForward
+    {
+        get
+        {
+            return eagleScript.DirectionForward;
+        }
+    }
 
 }

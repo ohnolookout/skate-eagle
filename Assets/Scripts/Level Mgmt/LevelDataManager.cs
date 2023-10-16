@@ -30,6 +30,16 @@ public class LevelDataManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
     }
 
+    public void CheckForOtherManagers()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+        instance = this;
+    }
+
     public void ResetSaveData()
     {
         saveData = SaveSerial.NewGame();
@@ -99,6 +109,12 @@ public class LevelDataManager : MonoBehaviour
             {
                 return instance;
             }
+            if (GameObject.FindGameObjectWithTag("LevelManager"))
+            {
+                instance = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+                return instance;
+            }
+            Debug.Log("Creating new level manager...");
             GameObject managerObject = new GameObject("LevelManager");
             instance = managerObject.AddComponent<LevelDataManager>();
             return instance;

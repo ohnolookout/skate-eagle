@@ -29,11 +29,12 @@ public class LevelEditor : EditorWindow
 
     private void OnEnable()
     {
-        levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
         if (isLevelEditor)
         {
+            levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
             AddTerrainGeneration();
+            levelManager.currentLevel = _currentLevel;
         }
         _target = this;
         _so = new(_target);
@@ -115,6 +116,7 @@ public class LevelEditor : EditorWindow
 
     private void GenerateLevel()
     {
+        AddTerrainGeneration();
         if (!_currentLevel.Validate())
         {
             return;
@@ -146,16 +148,14 @@ public class LevelEditor : EditorWindow
             }
         }
         UpdateLevel();
-        string path = $"Assets/Resources/Levels/{_name}.asset";
+        string path = $"Assets/Levels/{_name}.asset";
         AssetDatabase.CreateAsset(_currentLevel.DeepCopy(), path);
-        Level savedLevel = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
     }
 
 
     public void LoadLevel(string path) 
     {
         Level levelToLoad = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
-        Vector2 levelSequenceCount = levelToLoad.CachedSequencesCount();
         _currentLevel.ReassignValues(levelToLoad);
         UpdateFields();
     }
@@ -174,7 +174,6 @@ public class LevelEditor : EditorWindow
     }
     private void AddTerrainGeneration()
     {
-
         _logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         _groundSpawner = GameObject.FindGameObjectWithTag("GroundSpawner").GetComponent<GroundSpawner>();
 

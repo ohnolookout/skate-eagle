@@ -19,7 +19,6 @@ public class LevelPanelGenerator : MonoBehaviour
     public void Generate(Level level, LevelNodeStatus panelType, LevelRecords records, int requiredToUnlock = 0)
     {
         selectedLevel = level;
-        Debug.Log($"Setting current level to {selectedLevel}");
         levelName.text = level.Name;
         ActivateObjects(panelType);
         if (panelType == LevelNodeStatus.Locked)
@@ -27,7 +26,14 @@ public class LevelPanelGenerator : MonoBehaviour
             lockedText.text = $"Earn {requiredToUnlock} more points to unlock.";
             return;
         }
-        attemptsCount.text = records.attemptsCount.ToString();
+        if (records != null)
+        {
+            attemptsCount.text = records.attemptsCount.ToString();
+        }
+        else
+        {
+            attemptsCount.text = "0";
+        }
         if (panelType == LevelNodeStatus.Incomplete)
         {
             attemptsCount.color = Color.gray;

@@ -13,9 +13,6 @@ public class GroundSpawner : MonoBehaviour
     private int leadingSegmentIndex = 3, trailingSegmentIndex = 0, birdIndex = 0;
     private CameraScript cameraScript;
     private float cameraBuffer = 25;
-    private GameObject bird;
-    private Rigidbody2D birdBody;
-    private EagleScript birdScript;
     private List<Vector3> activeLowPoints = new();
     private LiveRunManager logic;
     public GameObject finishFlag;
@@ -26,9 +23,8 @@ public class GroundSpawner : MonoBehaviour
 
     void Awake()
     {
-        levelManager = LevelDataManager.Instance;
         AssignComponents();
-        currentPoint = new(bird.transform.position);
+        currentPoint = new(logic.BirdPosition);
         if (Application.isPlaying)
         {
             DeleteChildren();
@@ -53,9 +49,7 @@ public class GroundSpawner : MonoBehaviour
 
     private void AssignComponents()
     {
-        bird = GameObject.FindGameObjectWithTag("Player");
-        birdBody = bird.GetComponent<Rigidbody2D>();
-        birdScript = bird.GetComponent<EagleScript>();
+        levelManager = LevelDataManager.Instance;
         cameraScript = Camera.main.GetComponent<CameraScript>();
         transform.position = new Vector2(0, 0);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
@@ -75,7 +69,7 @@ public class GroundSpawner : MonoBehaviour
         }
         DeleteChildren();
         segmentList = new();
-        currentPoint = new(bird.transform.position);
+        currentPoint = new(logic.BirdPosition);
         AddSegment(CurveFactory.StartLine(currentPoint));
         Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
         foreach(KeyValuePair<Grade, Sequence> sequence in curveSequences)
@@ -115,14 +109,14 @@ public class GroundSpawner : MonoBehaviour
 
     private void UpdateCollision()
     {
-        if(birdScript.DirectionForward && birdIndex >= segmentList.Count - 1 || (!birdScript.DirectionForward && birdIndex == 0))
+        if(logic.BirdDirectionForward && birdIndex >= segmentList.Count - 1 || (!logic.BirdDirectionForward && birdIndex == 0))
         {
             return;
         }
-        if ((birdScript.DirectionForward && !segmentList[birdIndex + 1].CollisionActive) ||
-            (!birdScript.DirectionForward && !segmentList[birdIndex - 1].CollisionActive))
+        if ((logic.BirdDirectionForward && !segmentList[birdIndex + 1].CollisionActive) ||
+            (!logic.BirdDirectionForward && !segmentList[birdIndex - 1].CollisionActive))
         {
-            ChangeCollisionDirection(birdScript.DirectionForward);
+            ChangeCollisionDirection(logic.BirdDirectionForward);
         }
 
         CheckCurrentSegment();
@@ -183,7 +177,7 @@ public class GroundSpawner : MonoBehaviour
 
     private void FindBirdIndex()
     {
-        while (!segmentList[birdIndex].ContainsX(bird.transform.position.x) && birdIndex < segmentList.Count - 1)
+        while (!segmentList[birdIndex].ContainsX(logic.BirdPosition.x) && birdIndex < segmentList.Count - 1)
         {
             birdIndex++;
         }
@@ -280,9 +274,9 @@ public class GroundSpawner : MonoBehaviour
 
     private void CheckCurrentSegment()
     {
-        if (!segmentList[birdIndex].ContainsX(bird.transform.position.x))
+        if (!segmentList[birdIndex].ContainsX(logic.BirdPosition.x))
         {
-            if (birdScript.DirectionForward)
+            if (logic.BirdDirectionForward)
             {
                 birdIndex++;
             }
@@ -302,7 +296,7 @@ public class GroundSpawner : MonoBehaviour
         {
             indexModifier = 1;
         }
-        if (segmentList[birdIndex + indexModifier].ContainsX(bird.transform.position.x))
+        if (segmentList[birdIndex + indexModifier].ContainsX(logic.BirdPosition.x))
         {
             birdIndex+= indexModifier;
         }

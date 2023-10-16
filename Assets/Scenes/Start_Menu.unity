@@ -342,14 +342,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -438,6 +430,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: 6a17345a308af764eb35c3280c07e535, type: 2}
     - target: {fileID: 7274818768963221575, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -613,18 +613,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 520110560}
     m_Modifications:
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 11400000, guid: ba6de5f6386a71d42bd3c344f9a98dbf, type: 2}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -713,6 +701,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: ba6de5f6386a71d42bd3c344f9a98dbf, type: 2}
     - target: {fileID: 9160764630596381210, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_text
       value: 6
@@ -1273,18 +1269,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 619413211}
     m_Modifications:
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 11400000, guid: 0c25e4eb01a919543b0f57bb2b9b0feb, type: 2}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1373,6 +1357,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: 0c25e4eb01a919543b0f57bb2b9b0feb, type: 2}
     - target: {fileID: 9160764630596381210, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_text
       value: 3
@@ -2206,18 +2198,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 520110560}
     m_Modifications:
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 11400000, guid: ba6de5f6386a71d42bd3c344f9a98dbf, type: 2}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2306,6 +2286,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: ba6de5f6386a71d42bd3c344f9a98dbf, type: 2}
     - target: {fileID: 9160764630596381210, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_text
       value: 5
@@ -2854,18 +2842,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 619413211}
     m_Modifications:
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 11400000, guid: f0b28b360dce89a42a5b560e4bbdc856, type: 2}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2954,6 +2930,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: f0b28b360dce89a42a5b560e4bbdc856, type: 2}
     - target: {fileID: 9160764630596381210, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_text
       value: 2
@@ -3287,6 +3271,7 @@ GameObject:
   - component: {fileID: 1350409226}
   - component: {fileID: 1350409231}
   - component: {fileID: 1350409232}
+  - component: {fileID: 1350409233}
   m_Layer: 5
   m_Name: LevelMenu
   m_TagString: Untagged
@@ -3417,6 +3402,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1350409233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350409225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44b3208e020ca104ea16531949e2b3c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelPanel: {fileID: 1779653027}
 --- !u!224 &1379497552 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1945969726738957087, guid: 95a54f9cd2b63f342b26633d7d9539c3, type: 3}
@@ -4075,18 +4073,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 520110560}
     m_Modifications:
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1253713293}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetLevelPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3143874937206365421, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 11400000, guid: 11e4b615766b63e478637e7ad43fc70d, type: 2}
     - target: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4175,6 +4161,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1350409233}
+    - target: {fileID: 5107768620332101743, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
+      propertyPath: level
+      value: 
+      objectReference: {fileID: 11400000, guid: 11e4b615766b63e478637e7ad43fc70d, type: 2}
     - target: {fileID: 9160764630596381210, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
       propertyPath: m_text
       value: 4
