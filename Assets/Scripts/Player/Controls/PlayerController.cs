@@ -7,12 +7,11 @@ public class PlayerController : MonoBehaviour
 {
     public enum KeyState { Off, Down, Held, Up, Released };
     public KeyState jumpState = KeyState.Off, downState = KeyState.Off, stompState = KeyState.Off;
-    public bool jump = false, down = false, stomp = false;
+    public bool down = false, stomp = false;
     public Vector2 rotation = new(0,0);
     public EagleScript eagleScript;
     private int downCount;
     private LiveRunManager logic;
-    private int fake;
 
     void Awake()
     {
@@ -95,6 +94,11 @@ public class PlayerController : MonoBehaviour
         if ((int)logic.runState > 1)
         {
             logic.RestartGame();
+            return;
+        }
+        if(logic.runState == RunState.Landing)
+        {
+            logic.GoToStandby();
         }
     }
 

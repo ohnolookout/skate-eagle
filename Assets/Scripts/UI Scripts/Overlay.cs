@@ -71,6 +71,11 @@ public class Overlay : MonoBehaviour
         SceneManager.LoadScene("Start_Menu");
     }
 
+    public void BackToLevelMenu()
+    {
+        LevelDataManager.Instance.BackToLevelMenu();
+    }
+
     public void ActivateControls(bool activate)
     {
         if(mobileControls is null)
@@ -83,6 +88,11 @@ public class Overlay : MonoBehaviour
     public void RestartLevel()
     {
         runManager.RestartGame();
+    }
+
+    public void NextLevel()
+    {
+        LevelDataManager.Instance.NextLevel();
     }
 
     public float StopTimer()

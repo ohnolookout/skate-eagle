@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine;
 
 public class SessionData
 {
@@ -17,7 +18,7 @@ public class SessionData
 
     public void BuildLevelRecordDictionary(SaveData loadedGame)
     {
-        foreach(LevelRecords levelRecords in loadedGame.levelTimes)
+        foreach(LevelRecords levelRecords in loadedGame.levelRecords)
         {
             levelRecordsDict[levelRecords.levelName] = levelRecords;
         }
@@ -79,5 +80,22 @@ public class SessionData
     {
         levelRecordsDict = null;
         medalCount = null;
+    }
+
+    public void PrintMedalCount()
+    {
+        Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
+        foreach (Medal medal in medals)
+        {
+            Debug.Log($"{medal} medals: {medalCount[medal]}");
+        }
+    }
+
+    public int GoldPlusCount
+    {
+        get
+        {
+            return medalCount[Medal.Gold] + medalCount[Medal.Blue] + medalCount[Medal.Red];
+        }
     }
 }

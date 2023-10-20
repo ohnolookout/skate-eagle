@@ -10,6 +10,10 @@ public class LevelDataManager : MonoBehaviour
     public LevelRecords currentLevelRecords;
     private static LevelDataManager instance;
     private SaveData saveData;
+    public LevelList levelList;
+    public LevelNode currentLevelNode = null;
+    public LevelNode[] levelNodes;
+    public bool goToLevelMenu = false;
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -22,12 +26,16 @@ public class LevelDataManager : MonoBehaviour
         saveData = SaveSerial.LoadGame();
         Debug.Log($"Loaded data file that was first created on {saveData.startDate}");
         sessionData = new(saveData);
+        levelList = Resources.Load<LevelList>("Level List");
+        Debug.Log($"Level nodes loaded: {levelList.levelNodes.Count}");
     }
 
     private void Start()
     {
+        Debug.Log("Starting...");
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
+        
     }
 
     public void CheckForOtherManagers()
@@ -49,7 +57,6 @@ public class LevelDataManager : MonoBehaviour
     public void LoadLevel(Level level)
     {
         currentLevel = level;
-        Debug.Log($"Loading current level {currentLevel}");
         SceneManager.LoadScene("City");
         if (!(sessionData.levelRecordsDict.ContainsKey(currentLevel.Name)))
         {
@@ -58,10 +65,43 @@ public class LevelDataManager : MonoBehaviour
         currentLevelRecords = sessionData.levelRecordsDict[currentLevel.Name];
     }
 
+
+    public void BackToLevelMenu()
+    {
+        goToLevelMenu = true;
+        SceneManager.LoadScene("Start_Menu");
+    }
+
+    public void NextLevel()
+    {
+        if (currentLevelNode.next == null)
+        {
+            return;
+        }
+        currentLevelNode = currentLevelNode.next;
+        LoadLevel(currentLevelNode.level);
+    }
+
+    public bool NextLevelUnlocked()
+    {
+        if (currentLevelNode.next == null || currentLevelNode.status != LevelNodeStatus.Complete) {
+            Debug.Log($"next node null: {currentLevelNode.next == null} Current node status: {currentLevelNode.status}");
+            return false;
+        }
+        if(currentLevelNode.next.status != LevelNodeStatus.Locked)
+        {
+            return true;
+        }
+        currentLevelNode.next.GenerateStatus();
+        return currentLevelNode.next.status != LevelNodeStatus.Locked;
+
+    }
+
     public void UpdateSessionData(FinishScreenData finishData)
     {
         sessionData.UpdateLevelRecords(finishData, currentLevel);
         saveData.UpdateLevelRecords(sessionData.ExportLevelRecordList());
+        currentLevelNode.GenerateStatus();
         SaveSerial.SaveGame(saveData);
     }
 
@@ -114,11 +154,15 @@ public class LevelDataManager : MonoBehaviour
                 instance = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
                 return instance;
             }
-            Debug.Log("Creating new level manager...");
             GameObject managerObject = new GameObject("LevelManager");
             instance = managerObject.AddComponent<LevelDataManager>();
             return instance;
         }
+    }
+
+    public void PrintMedalCount()
+    {
+        sessionData.PrintMedalCount();
     }
 
 }

@@ -73,6 +73,11 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.Active;
         startPoint = bird.transform.position;
     }
+
+    public void GoToStandby()
+    {
+        overlay.StandbyScreen();
+    }
     public void SetLevel(Level level)
     {
         currentLevel = level;
@@ -125,6 +130,7 @@ public class LiveRunManager : MonoBehaviour
         eagleScript.Fall();
         runState = RunState.GameOver;
     }
+
 
     public LevelRecords CurrentLevelRecords
     {

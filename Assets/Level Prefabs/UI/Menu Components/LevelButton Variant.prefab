@@ -109,11 +109,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4436359967008359136, guid: b9ba39e8bc296ca4f90e348a3ca1cef9, type: 3}
       propertyPath: m_Colors.m_SelectedColor.g
-      value: 1
+      value: 0.894045
       objectReference: {fileID: 0}
     - target: {fileID: 4436359967008359136, guid: b9ba39e8bc296ca4f90e348a3ca1cef9, type: 3}
       propertyPath: m_Colors.m_SelectedColor.r
-      value: 1
+      value: 0.6273585
       objectReference: {fileID: 0}
     - target: {fileID: 4436359967008359136, guid: b9ba39e8bc296ca4f90e348a3ca1cef9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -264,8 +264,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3143874937206365423}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d20bbabb85b7c245920302c47fd51be, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a487479ce7274c40ba7f704fd3c3190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lockedFade: {fileID: 7274818768963221575}
+  menu: {fileID: 0}
   level: {fileID: 0}
+  goldRequired: 0

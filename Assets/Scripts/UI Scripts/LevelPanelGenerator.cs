@@ -5,10 +5,10 @@ using TMPro;
 using UnityEngine.UI;
 
 
-public enum LevelNodeStatus { Completed, Incomplete, Locked }
+
 public class LevelPanelGenerator : MonoBehaviour
 {
-    public GameObject bestBlock, incompleteText, attemptsBlock, medal, lockedBlock;
+    public GameObject bestBlock, incompleteText, attemptsBlock, medal, lockedBlock, playButton;
     public TMP_Text attemptsCount, attemptsTitle, bestTime, levelName, lockedText;
     public Image medalImage;
     public Sprite[] medalSprites;
@@ -16,16 +16,18 @@ public class LevelPanelGenerator : MonoBehaviour
     private Level selectedLevel;
 
 
-    public void Generate(Level level, LevelNodeStatus panelType, LevelRecords records, int requiredToUnlock = 0)
+    public void Generate(LevelNode node, LevelRecords records)
     {
-        selectedLevel = level;
-        levelName.text = level.Name;
-        ActivateObjects(panelType);
-        if (panelType == LevelNodeStatus.Locked)
+        selectedLevel = node.level;
+        levelName.text = selectedLevel.Name;
+        ActivateObjects(node.status);
+        if (node.status == LevelNodeStatus.Locked)
         {
-            lockedText.text = $"Earn {requiredToUnlock} more points to unlock.";
+            playButton.SetActive(false);
+            lockedText.text = LockedMessage(node);
             return;
         }
+        playButton.SetActive(true);
         if (records != null)
         {
             attemptsCount.text = records.attemptsCount.ToString();
@@ -34,7 +36,7 @@ public class LevelPanelGenerator : MonoBehaviour
         {
             attemptsCount.text = "0";
         }
-        if (panelType == LevelNodeStatus.Incomplete)
+        if (node.status == LevelNodeStatus.Incomplete)
         {
             attemptsCount.color = Color.gray;
             attemptsTitle.color = Color.gray;
@@ -46,6 +48,31 @@ public class LevelPanelGenerator : MonoBehaviour
         medalImage.sprite = medalSprites[(int)records.medal];
 
 
+
+
+    }
+
+    private string LockedMessage(LevelNode node)
+    {        
+        if(node.previous.status == LevelNodeStatus.Locked)
+        {
+            return "Locked";
+        }
+        int goldRequired = node.goldRequired - LevelDataManager.Instance.sessionData.GoldPlusCount;
+        if (goldRequired < 1)
+        {
+            return "Complete previous level to unlock.";
+        }
+        string pluralizedMedal = "medal";
+        if (goldRequired > 1)
+        {
+            pluralizedMedal += "s";
+        }
+        if (node.previous.status == LevelNodeStatus.Incomplete)
+        {
+            return $"Complete previous level and earn {goldRequired} more gold {pluralizedMedal} or better to unlock.";
+        }
+        return $"Earn {goldRequired} more gold {pluralizedMedal} or better to unlock.";
 
 
     }
@@ -77,7 +104,6 @@ public class LevelPanelGenerator : MonoBehaviour
 
     public void PlayLevel()
     {
-        Debug.Log($"Playing current level {selectedLevel}");
         menu.LoadLevel(selectedLevel);
     }
 }

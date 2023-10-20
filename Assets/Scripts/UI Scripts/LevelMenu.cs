@@ -1,59 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class LevelMenu : MonoBehaviour
 {
     private LevelDataManager levelManager;
     public LevelPanelGenerator levelPanel;
+    public MedalCounts medalCounts;
     void Awake()
     {
         levelManager = LevelDataManager.Instance;
     }
     void Start()
     {
+        PopulateMedalCounts();
         ActivateNodes();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void ActivateNodes()
     {
-        LevelMapNode[] nodes = GetComponentsInChildren<LevelMapNode>();
-        foreach(LevelMapNode node in nodes)
+        NodeContainer[] nodeContainers = GetComponentsInChildren<NodeContainer>();
+        levelManager.levelNodes = new LevelNode[nodeContainers.Length];
+        int selectIndex = nodeContainers.Length - 1;
+        for(int i = 0; i < nodeContainers.Length; i++)
         {
-            LevelRecords records = levelManager.RecordFromLevel(node.level.Name);
-            if(records is null)
+            LevelNode node = nodeContainers[i].Node;
+            levelManager.levelNodes[i] = node;
+            if (i > 0)
             {
-                node.SetStatus(LevelNodeStatus.Incomplete);
-                //Activate most recent node
-                SelectNode(node);
-                return;
+                node.previous = nodeContainers[i-1].Node;
             }
-            if(records.medal == Medal.Participant)
+            if (i < nodeContainers.Length - 1)
             {
-                node.SetStatus(LevelNodeStatus.Incomplete);
-                continue;
+                node.next = nodeContainers[i + 1].Node;
             }
-            node.SetStatus(LevelNodeStatus.Completed, records.medal);
+            nodeContainers[i].Setup();
+            if (node.status == LevelNodeStatus.Incomplete ||
+                (node.status == LevelNodeStatus.Locked && node.previous.status == LevelNodeStatus.Complete))
+            {
+                selectIndex = i;
+            }
+            levelManager.levelNodes[i] = node;
         }
-        //If no incomplete node has been found, activate last node;
-        SelectNode(nodes[nodes.Length - 1]);
+        SelectNode(nodeContainers[selectIndex]);
     }
 
-    public void SetLevelPanel(Level level, LevelNodeStatus nodeStatus)
+    public void SetLevelPanel(LevelNode node)
     {
-        LevelRecords records = levelManager.RecordFromLevel(level.Name);
-        levelPanel.Generate(level, nodeStatus, records, 1);
+        levelManager.currentLevelNode = node;
+        LevelRecords records = levelManager.RecordFromLevel(node.level.Name);
+        levelPanel.Generate(node, records);
     }
 
-    public void SelectNode(LevelMapNode node)
+    public void SelectNode(NodeContainer node)
     {
         node.SendToLevelPanel();
         node.SelectButton();
+    }
+
+    public void PopulateMedalCounts()
+    {
+        Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
+        for(int i = 0; i < medals.Length - 1; i++)
+        {
+            int count = levelManager.sessionData.medalCount[medals[i]];
+            medalCounts.SetMedalCount(medals[i], count);
+        }
+        
     }
 }

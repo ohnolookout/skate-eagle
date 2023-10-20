@@ -9,10 +9,20 @@ public class MainMenu : MonoBehaviour
     public LevelPanelGenerator levelPanel;
     public Level defaultLevel;
     private LevelDataManager levelManager;
+    public GameObject levelScreen, titleScreen;
 
     void Awake()
     {
         levelManager = LevelDataManager.Instance;
+    }
+
+    private void Start()
+    {
+        if (levelManager.goToLevelMenu)
+        {
+            LevelScreen();
+            levelManager.goToLevelMenu = false;
+        }
     }
     public void ResetSaveData()
     {
@@ -31,6 +41,18 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
         Debug.Log("There is no escape.");
+    }
+
+    public void LevelScreen()
+    {
+        titleScreen.SetActive(false);
+        levelScreen.SetActive(true);
+    }
+
+    public void StartScreen()
+    {
+        titleScreen.SetActive(true);
+        levelScreen.SetActive(false);
     }
 
 }
