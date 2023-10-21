@@ -14,15 +14,15 @@ public class LandingScreenLoader : MonoBehaviour
     public GameObject[] levelTimeGrays, strikeThroughs;
     public bool nextLevelUnlocked = false;
 
-    public void GenerateLanding(Level level, LevelRecords playerInfo)
+    public void GenerateLanding(Level level, PlayerRecord playerRecord)
     {
-        levelName.text = playerInfo.levelName;
+        levelName.text = playerRecord.levelName;
         GenerateLevelTimes(level.MedalTimes);
-        GeneratePlayerBadge(playerInfo);
-        nextLevelButton.SetActive(LevelDataManager.Instance.NextLevelUnlocked());
+        GeneratePlayerBadge(playerRecord);
+        nextLevelButton.SetActive(GameManager.Instance.NextLevelUnlocked());
     }
 
-    public void GenerateLeaderboards(LevelRecords[] globalTimes, LevelRecords[] friendTimes)
+    public void GenerateLeaderboards(PlayerRecord[] globalTimes, PlayerRecord[] friendTimes)
     {
 
     }
@@ -45,7 +45,7 @@ public class LandingScreenLoader : MonoBehaviour
         }
     }
 
-    private void GeneratePlayerBadge(LevelRecords playerInfo)
+    private void GeneratePlayerBadge(PlayerRecord playerInfo)
     {
         if(Single.IsPositiveInfinity(playerInfo.bestTime))
         {

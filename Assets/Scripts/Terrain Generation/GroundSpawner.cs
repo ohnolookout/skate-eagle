@@ -16,7 +16,7 @@ public class GroundSpawner : MonoBehaviour
     private List<Vector3> activeLowPoints = new();
     private LiveRunManager logic;
     public GameObject finishFlag;
-    private LevelDataManager levelManager;
+    private GameManager gameManager;
     public bool testMode = false;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
@@ -28,7 +28,7 @@ public class GroundSpawner : MonoBehaviour
         if (Application.isPlaying)
         {
             DeleteChildren();
-            GenerateLevel(levelManager.currentLevel);
+            GenerateLevel(gameManager.currentLevel);
             logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
             Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
@@ -49,7 +49,7 @@ public class GroundSpawner : MonoBehaviour
 
     private void AssignComponents()
     {
-        levelManager = LevelDataManager.Instance;
+        gameManager = GameManager.Instance;
         cameraScript = Camera.main.GetComponent<CameraScript>();
         transform.position = new Vector2(0, 0);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();

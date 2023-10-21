@@ -5,7 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Level List", menuName = "ScriptableObjects/LevelList")]
 public class LevelList : ScriptableObject
 {
-    public List<LevelNode> levelNodes;
+    public LevelNode[] levelNodes;
 
+    void Awake()
+    {
+        for(int i = 0; i < levelNodes.Length; i++)
+        {
+            levelNodes[i].order = i;
+        }
+    }
 
 }

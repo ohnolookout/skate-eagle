@@ -5,12 +5,12 @@ using System;
 
 public class LevelMenu : MonoBehaviour
 {
-    private LevelDataManager levelManager;
+    private GameManager gameManager;
     public LevelPanelGenerator levelPanel;
     public MedalCounts medalCounts;
     void Awake()
     {
-        levelManager = LevelDataManager.Instance;
+        gameManager = GameManager.Instance;
     }
     void Start()
     {
@@ -20,12 +20,12 @@ public class LevelMenu : MonoBehaviour
     private void ActivateNodes()
     {
         NodeContainer[] nodeContainers = GetComponentsInChildren<NodeContainer>();
-        levelManager.levelNodes = new LevelNode[nodeContainers.Length];
+        gameManager.levelNodes = new LevelNode[nodeContainers.Length];
         int selectIndex = nodeContainers.Length - 1;
         for(int i = 0; i < nodeContainers.Length; i++)
         {
             LevelNode node = nodeContainers[i].Node;
-            levelManager.levelNodes[i] = node;
+            gameManager.levelNodes[i] = node;
             if (i > 0)
             {
                 node.previous = nodeContainers[i-1].Node;
@@ -40,16 +40,16 @@ public class LevelMenu : MonoBehaviour
             {
                 selectIndex = i;
             }
-            levelManager.levelNodes[i] = node;
+            gameManager.levelNodes[i] = node;
         }
         SelectNode(nodeContainers[selectIndex]);
     }
 
     public void SetLevelPanel(LevelNode node)
     {
-        levelManager.currentLevelNode = node;
-        LevelRecords records = levelManager.RecordFromLevel(node.level.Name);
-        levelPanel.Generate(node, records);
+        gameManager.currentLevelNode = node;
+        PlayerRecord record = gameManager.RecordFromLevel(node.level.Name);
+        levelPanel.Generate(node, record);
     }
 
     public void SelectNode(NodeContainer node)
@@ -63,7 +63,7 @@ public class LevelMenu : MonoBehaviour
         Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
         for(int i = 0; i < medals.Length - 1; i++)
         {
-            int count = levelManager.sessionData.medalCount[medals[i]];
+            int count = gameManager.sessionData.medalCount[medals[i]];
             medalCounts.SetMedalCount(medals[i], count);
         }
         

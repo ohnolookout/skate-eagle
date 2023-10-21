@@ -61,17 +61,17 @@ public static class SaveSerial
 public class SaveData
 {
 	public DateTime startDate;
-	public LevelRecords[] levelRecords;
+	public PlayerRecord[] playerRecord;
 
 	public SaveData()
     {
 		startDate = DateTime.Now;
-		levelRecords = new LevelRecords[0];
+		playerRecord = new PlayerRecord[0];
     }
 
-	public void UpdateLevelRecords(LevelRecords[] newTimes)
+	public void UpdatePlayerRecord(PlayerRecord[] newTimes)
     {
-		levelRecords = newTimes;
+		playerRecord = newTimes;
     }
 
 }

@@ -4,22 +4,22 @@ using UnityEngine;
 
 public static class FinishUtility
 {
-    public static FinishScreenData GenerateFinishData(Level level, LevelRecords levelRecords, float attemptTime)
+    public static FinishScreenData GenerateFinishData(Level level, PlayerRecord playerRecord, float attemptTime)
     {
-        FinishScreenType finishType = FindFinishType(level, levelRecords, attemptTime, out Medal displayMedal);
-        FinishScreenData finishData = new(finishType, attemptTime, levelRecords.bestTime, displayMedal);
+        FinishScreenType finishType = FindFinishType(level, playerRecord, attemptTime, out Medal displayMedal);
+        FinishScreenData finishData = new(finishType, attemptTime, playerRecord.bestTime, displayMedal);
         return finishData;
     }
 
-    public static FinishScreenType FindFinishType(Level level, LevelRecords levelTimeData, float attemptTime, out Medal displayMedal)
+    public static FinishScreenType FindFinishType(Level level, PlayerRecord playerRecord, float attemptTime, out Medal displayMedal)
     {
         Medal attemptMedal = level.MedalFromTime(attemptTime);
-        if (levelTimeData.bestTime <= attemptTime)
+        if (playerRecord.bestTime <= attemptTime)
         {
             displayMedal = Medal.Participant;
             return FinishScreenType.Participant;
         }
-        if ((int)attemptMedal >= (int)levelTimeData.medal)
+        if ((int)attemptMedal >= (int)playerRecord.medal)
         {
             displayMedal = Medal.Participant;
             return FinishScreenType.NewBestTime;

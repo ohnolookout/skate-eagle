@@ -16,7 +16,7 @@ public class LevelPanelGenerator : MonoBehaviour
     private Level selectedLevel;
 
 
-    public void Generate(LevelNode node, LevelRecords records)
+    public void Generate(LevelNode node, PlayerRecord playerRecord)
     {
         selectedLevel = node.level;
         levelName.text = selectedLevel.Name;
@@ -28,9 +28,9 @@ public class LevelPanelGenerator : MonoBehaviour
             return;
         }
         playButton.SetActive(true);
-        if (records != null)
+        if (playerRecord != null)
         {
-            attemptsCount.text = records.attemptsCount.ToString();
+            attemptsCount.text = playerRecord.attemptsCount.ToString();
         }
         else
         {
@@ -44,8 +44,8 @@ public class LevelPanelGenerator : MonoBehaviour
         }
         attemptsCount.color = Color.white;
         attemptsTitle.color = Color.white;
-        bestTime.text = records.bestTime.ToString();
-        medalImage.sprite = medalSprites[(int)records.medal];
+        bestTime.text = playerRecord.bestTime.ToString();
+        medalImage.sprite = medalSprites[(int)playerRecord.medal];
 
 
 
@@ -58,7 +58,7 @@ public class LevelPanelGenerator : MonoBehaviour
         {
             return "Locked";
         }
-        int goldRequired = node.goldRequired - LevelDataManager.Instance.sessionData.GoldPlusCount;
+        int goldRequired = node.goldRequired - GameManager.Instance.sessionData.GoldPlusCount;
         if (goldRequired < 1)
         {
             return "Complete previous level to unlock.";

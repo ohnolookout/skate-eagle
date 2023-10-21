@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class LevelRecords
+public class PlayerRecord
 {
 	public string levelName;
 	public float bestTime = float.PositiveInfinity;
@@ -12,13 +12,13 @@ public class LevelRecords
 	public Medal medal = Medal.Participant;
 	public int attemptsCount = 0;
 
-	public LevelRecords(Level level)
+	public PlayerRecord(Level level)
 	{
 		levelName = level.Name;
 
 	}
 
-	public LevelRecords(Level completedLevel, float timeInSeconds)
+	public PlayerRecord(Level completedLevel, float timeInSeconds)
 	{
 		levelName = completedLevel.Name;
 		bestTime = timeInSeconds;

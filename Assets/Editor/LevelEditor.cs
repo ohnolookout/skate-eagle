@@ -13,7 +13,7 @@ public class LevelEditor : EditorWindow
     public GroundSpawner _groundSpawner;
     private LiveRunManager _logic;
     private bool isLevelEditor;
-    private LevelDataManager levelManager;
+    private GameManager gameManager;
     ScriptableObject _target;
     SerializedObject _so;
     SerializedProperty _serializedMedalTimes, _serializedLevelSections;
@@ -32,9 +32,9 @@ public class LevelEditor : EditorWindow
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
         if (isLevelEditor)
         {
-            levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+            gameManager = GameManager.Instance;
             AddTerrainGeneration();
-            levelManager.currentLevel = _currentLevel;
+            gameManager.currentLevel = _currentLevel;
         }
         _target = this;
         _so = new(_target);

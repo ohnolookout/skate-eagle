@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelDataManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public SessionData sessionData;
     public Level currentLevel;
-    public LevelRecords currentLevelRecords;
-    private static LevelDataManager instance;
+    public PlayerRecord currentPlayerRecord;
+    private static GameManager instance;
     private SaveData saveData;
     public LevelList levelList;
     public LevelNode currentLevelNode = null;
@@ -27,12 +27,10 @@ public class LevelDataManager : MonoBehaviour
         Debug.Log($"Loaded data file that was first created on {saveData.startDate}");
         sessionData = new(saveData);
         levelList = Resources.Load<LevelList>("Level List");
-        Debug.Log($"Level nodes loaded: {levelList.levelNodes.Count}");
     }
 
     private void Start()
     {
-        Debug.Log("Starting...");
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
         
@@ -58,11 +56,11 @@ public class LevelDataManager : MonoBehaviour
     {
         currentLevel = level;
         SceneManager.LoadScene("City");
-        if (!(sessionData.levelRecordsDict.ContainsKey(currentLevel.Name)))
+        if (!(sessionData.playerRecordsDict.ContainsKey(currentLevel.Name)))
         {
             sessionData.AddLevel(currentLevel);
         }
-        currentLevelRecords = sessionData.levelRecordsDict[currentLevel.Name];
+        currentPlayerRecord = sessionData.playerRecordsDict[currentLevel.Name];
     }
 
 
@@ -85,7 +83,6 @@ public class LevelDataManager : MonoBehaviour
     public bool NextLevelUnlocked()
     {
         if (currentLevelNode.next == null || currentLevelNode.status != LevelNodeStatus.Complete) {
-            Debug.Log($"next node null: {currentLevelNode.next == null} Current node status: {currentLevelNode.status}");
             return false;
         }
         if(currentLevelNode.next.status != LevelNodeStatus.Locked)
@@ -100,13 +97,13 @@ public class LevelDataManager : MonoBehaviour
     public void UpdateSessionData(FinishScreenData finishData)
     {
         sessionData.UpdateLevelRecords(finishData, currentLevel);
-        saveData.UpdateLevelRecords(sessionData.ExportLevelRecordList());
+        saveData.UpdatePlayerRecord(sessionData.ExportLevelRecordList());
         currentLevelNode.GenerateStatus();
         SaveSerial.SaveGame(saveData);
     }
 
 
-    public LevelRecords CurrentLevelRecords
+    public PlayerRecord CurrentPlayerRecord
     {
         get
         {
@@ -115,33 +112,33 @@ public class LevelDataManager : MonoBehaviour
                 Debug.Log("Player data is null");
                 Awake();
             }
-            if (sessionData.levelRecordsDict.ContainsKey(currentLevel.name))
+            if (sessionData.playerRecordsDict.ContainsKey(currentLevel.name))
             {
-                return sessionData.levelRecordsDict[currentLevel.name];
+                return sessionData.playerRecordsDict[currentLevel.name];
             }
-            if (currentLevelRecords.levelName is null)
+            if (currentPlayerRecord.levelName is null)
             {
-                currentLevelRecords = new LevelRecords(currentLevel);
+                currentPlayerRecord = new PlayerRecord(currentLevel);
             }
-            return currentLevelRecords;
+            return currentPlayerRecord;
         }
     }
 
-    public LevelRecords RecordFromLevel(string levelName)
+    public PlayerRecord RecordFromLevel(string levelName)
     {
-        if (sessionData.levelRecordsDict.ContainsKey(levelName))
+        if (sessionData.playerRecordsDict.ContainsKey(levelName))
         {
-            return sessionData.levelRecordsDict[levelName];
+            return sessionData.playerRecordsDict[levelName];
         }
         return null;
     }
 
     public void AddAttempt()
     {
-        currentLevelRecords.AddAttempt();
+        currentPlayerRecord.AddAttempt();
     }
 
-    public static LevelDataManager Instance
+    public static GameManager Instance
     {
         get
         {
@@ -149,13 +146,13 @@ public class LevelDataManager : MonoBehaviour
             {
                 return instance;
             }
-            if (GameObject.FindGameObjectWithTag("LevelManager"))
+            if (GameObject.FindGameObjectWithTag("GameManager"))
             {
-                instance = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelDataManager>();
+                instance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
                 return instance;
             }
-            GameObject managerObject = new GameObject("LevelManager");
-            instance = managerObject.AddComponent<LevelDataManager>();
+            GameObject managerObject = new GameObject("GameManager");
+            instance = managerObject.AddComponent<GameManager>();
             return instance;
         }
     }

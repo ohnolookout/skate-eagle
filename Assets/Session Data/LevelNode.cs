@@ -10,7 +10,7 @@ public class LevelNode
     public LevelNode previous, next;
     public LevelNodeStatus status = LevelNodeStatus.Default;
     public Level level;
-    public int goldRequired;
+    public int goldRequired, order;
 
     public LevelNode(Level level, int goldRequired = 0)
     {
@@ -46,7 +46,7 @@ public class LevelNode
 
     public LevelNodeStatus GenerateStatus()
     {
-        LevelRecords records = LevelDataManager.Instance.RecordFromLevel(level.Name);
+        PlayerRecord records = GameManager.Instance.RecordFromLevel(level.Name);
         if (records != null)
         {
             if (!Single.IsPositiveInfinity(records.bestTime))
@@ -65,7 +65,7 @@ public class LevelNode
         {
             status = LevelNodeStatus.Locked;
         }
-        else if (previous.status == LevelNodeStatus.Complete && LevelDataManager.Instance.sessionData.GoldPlusCount >= goldRequired)
+        else if (previous.status == LevelNodeStatus.Complete && GameManager.Instance.sessionData.GoldPlusCount >= goldRequired)
         {
             status = LevelNodeStatus.Incomplete;
         }

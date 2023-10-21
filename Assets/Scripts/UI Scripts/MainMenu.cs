@@ -8,30 +8,30 @@ public class MainMenu : MonoBehaviour
 {
     public LevelPanelGenerator levelPanel;
     public Level defaultLevel;
-    private LevelDataManager levelManager;
+    private GameManager gameManager;
     public GameObject levelScreen, titleScreen;
 
     void Awake()
     {
-        levelManager = LevelDataManager.Instance;
+        gameManager = GameManager.Instance;
     }
 
     private void Start()
     {
-        if (levelManager.goToLevelMenu)
+        if (gameManager.goToLevelMenu)
         {
             LevelScreen();
-            levelManager.goToLevelMenu = false;
+            gameManager.goToLevelMenu = false;
         }
     }
     public void ResetSaveData()
     {
-        levelManager.ResetSaveData();
+        gameManager.ResetSaveData();
     }
 
     public void LoadLevel(Level level)
     {
-        levelManager.LoadLevel(level);
+        gameManager.LoadLevel(level);
     }
     public void LoadScene(string sceneName)
     {

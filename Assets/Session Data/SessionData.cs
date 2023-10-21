@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SessionData
 {
-    public Dictionary<string, LevelRecords> levelRecordsDict = new();
+    public Dictionary<string, PlayerRecord> playerRecordsDict = new();
     public Dictionary<Medal, int> medalCount = new();
     public bool dirty = false;
 
@@ -18,19 +18,19 @@ public class SessionData
 
     public void BuildLevelRecordDictionary(SaveData loadedGame)
     {
-        foreach(LevelRecords levelRecords in loadedGame.levelRecords)
+        foreach(PlayerRecord playerRecord in loadedGame.playerRecord)
         {
-            levelRecordsDict[levelRecords.levelName] = levelRecords;
+            playerRecordsDict[playerRecord.levelName] = playerRecord;
         }
     }
 
     public void AddLevel(Level level)
     {
-        if (levelRecordsDict.ContainsKey(level.name))
+        if (playerRecordsDict.ContainsKey(level.name))
         {
             return;
         }
-        levelRecordsDict[level.name] = new LevelRecords(level);
+        playerRecordsDict[level.name] = new PlayerRecord(level);
     }
 
     public void UpdateLevelRecords(FinishScreenData finishData, Level level)
@@ -41,15 +41,15 @@ public class SessionData
         }
         if(finishData.finishType == FinishScreenType.NewMedal)
         {
-            AdjustMedalCount(finishData.medal, levelRecordsDict[level.name].medal);
-            levelRecordsDict[level.name].medal = finishData.medal;
+            AdjustMedalCount(finishData.medal, playerRecordsDict[level.name].medal);
+            playerRecordsDict[level.name].medal = finishData.medal;
         }
-        levelRecordsDict[level.name].bestTime = finishData.attemptTime;
+        playerRecordsDict[level.name].bestTime = finishData.attemptTime;
     }
 
-    public LevelRecords[] ExportLevelRecordList()
+    public PlayerRecord[] ExportLevelRecordList()
     {
-        return levelRecordsDict.Values.ToArray();
+        return playerRecordsDict.Values.ToArray();
     }
 
     public void BuildMedalCount()
@@ -60,7 +60,7 @@ public class SessionData
         {
             medalCount[medal] = 0;
         }
-        foreach(LevelRecords levelTime in levelRecordsDict.Values)
+        foreach(PlayerRecord levelTime in playerRecordsDict.Values)
         {
             if (Single.IsPositiveInfinity(levelTime.bestTime))
             {
@@ -78,7 +78,7 @@ public class SessionData
 
     public void Clear()
     {
-        levelRecordsDict = null;
+        playerRecordsDict = null;
         medalCount = null;
     }
 

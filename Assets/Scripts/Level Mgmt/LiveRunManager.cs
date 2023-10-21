@@ -12,23 +12,23 @@ public class LiveRunManager : MonoBehaviour
     private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
     public GameObject levelManagerPrefab, bird;
     public Level currentLevel;
-    private LevelDataManager levelManager;
+    private GameManager gameManager;
     public Overlay overlay;
 
     void Awake()
     {
 
-        levelManager = LevelDataManager.Instance;
-        currentLevel = levelManager.currentLevel;
+        gameManager = GameManager.Instance;
+        currentLevel = gameManager.currentLevel;
         if (currentLevel == null) {
-            levelManager.currentLevel = currentLevel;
+            gameManager.currentLevel = currentLevel;
         }
         eagleScript = bird.GetComponent<EagleScript>();
     }
 
     private void Start()
     {
-        overlay.StartScreen(levelManager.CurrentLevelRecords);
+        overlay.StartScreen(gameManager.CurrentPlayerRecord);
     }
 
     private void Update()
@@ -54,7 +54,7 @@ public class LiveRunManager : MonoBehaviour
     {
         if (runState == RunState.Active)
         {
-            levelManager.AddAttempt();
+            gameManager.AddAttempt();
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         runState = RunState.Landing;
@@ -62,7 +62,7 @@ public class LiveRunManager : MonoBehaviour
 
     public void GameOver()
     {
-        levelManager.AddAttempt();
+        gameManager.AddAttempt();
         overlay.GameOverScreen();
         runState = RunState.GameOver;
     }
@@ -106,11 +106,11 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         runState = RunState.Finished;
-        levelManager.AddAttempt();
+        gameManager.AddAttempt();
         float finishTime = overlay.StopTimer();
-        FinishScreenData finishData = FinishUtility.GenerateFinishData(levelManager.currentLevel, levelManager.CurrentLevelRecords, finishTime);
+        FinishScreenData finishData = FinishUtility.GenerateFinishData(gameManager.currentLevel, gameManager.CurrentPlayerRecord, finishTime);
         overlay.GenerateFinishScreen(finishData);
-        levelManager.UpdateSessionData(finishData);
+        gameManager.UpdateSessionData(finishData);
         StartCoroutine(SlowToFinish());
     }
 
@@ -132,11 +132,11 @@ public class LiveRunManager : MonoBehaviour
     }
 
 
-    public LevelRecords CurrentLevelRecords
+    public PlayerRecord CurrentPlayerRecord
     {
         get
         {
-            return levelManager.CurrentLevelRecords;
+            return gameManager.CurrentPlayerRecord;
         }
     }
 
@@ -186,7 +186,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return levelManager.currentLevel;
+            return gameManager.currentLevel;
         }
     }
 

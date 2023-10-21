@@ -15,7 +15,7 @@ public class Overlay : MonoBehaviour
     public Timer timer;
     //public OverlayManager overlayManager;
 
-    public void StartScreen(LevelRecords playerInfo)
+    public void StartScreen(PlayerRecord playerRecord)
     {
         landing.SetActive(true);
         gameOver.SetActive(false);
@@ -23,7 +23,7 @@ public class Overlay : MonoBehaviour
         standby.SetActive(false);
         hud.SetActive(false);
         ActivateControls(false);
-        landingLoader.GenerateLanding(runManager.CurrentLevel, playerInfo);
+        landingLoader.GenerateLanding(runManager.CurrentLevel, playerRecord);
     }
 
     public void StandbyScreen()
@@ -73,7 +73,7 @@ public class Overlay : MonoBehaviour
 
     public void BackToLevelMenu()
     {
-        LevelDataManager.Instance.BackToLevelMenu();
+        GameManager.Instance.BackToLevelMenu();
     }
 
     public void ActivateControls(bool activate)
@@ -92,7 +92,7 @@ public class Overlay : MonoBehaviour
 
     public void NextLevel()
     {
-        LevelDataManager.Instance.NextLevel();
+        GameManager.Instance.NextLevel();
     }
 
     public float StopTimer()
