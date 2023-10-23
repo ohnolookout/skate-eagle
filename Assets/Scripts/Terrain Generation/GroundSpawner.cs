@@ -28,7 +28,7 @@ public class GroundSpawner : MonoBehaviour
         if (Application.isPlaying)
         {
             DeleteChildren();
-            GenerateLevel(gameManager.currentLevel);
+            GenerateLevel(gameManager.CurrentLevel);
             logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
             Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);

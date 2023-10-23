@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872745c09bebb3642a6525b467396663, type: 3}
   m_Name: ShortNSteep
   m_EditorClassIdentifier: 
+  _UID: 0ad24351-f270-4027-8558-b9622cc08cd6
   _name: ShortNSteep
-  _length: 1400
   _medalTimes:
     _bronzeTime: 28
     _silverTime: 20
@@ -22,7 +22,6 @@ MonoBehaviour:
     _redTime: 10
   _levelSections:
   - _name: 0%
-    _startT: 0
     _grade:
       _minClimb: 2
       _maxClimb: -4
@@ -38,7 +37,8 @@ MonoBehaviour:
         _length: 0
         _slope: 3
         _skew: 2
-      _weight: 1
+      _quantity: 1
+      _maxConsecutive: 0
     - _name: Normal
       _valleyDefinition:
         _shape: 0
@@ -50,7 +50,8 @@ MonoBehaviour:
         _length: 0
         _slope: 2
         _skew: 2
-      _weight: 1
+      _quantity: 1
+      _maxConsecutive: 0
     - _name: Normal
       _valleyDefinition:
         _shape: 0
@@ -62,7 +63,8 @@ MonoBehaviour:
         _length: 0
         _slope: 3
         _skew: 2
-      _weight: 1
+      _quantity: 1
+      _maxConsecutive: 0
     - _name: Normal
       _valleyDefinition:
         _shape: 0
@@ -74,4 +76,7 @@ MonoBehaviour:
         _length: 0
         _slope: 3
         _skew: 2
-      _weight: 1
+      _quantity: 1
+      _maxConsecutive: 0
+    _cachedSequences: []
+  cachedSequencesCount: 0

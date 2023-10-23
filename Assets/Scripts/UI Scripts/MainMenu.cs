@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
     public Level defaultLevel;
     private GameManager gameManager;
     public GameObject levelScreen, titleScreen;
+    public LevelMenu levelMenu;
 
     void Awake()
     {
@@ -27,6 +28,7 @@ public class MainMenu : MonoBehaviour
     public void ResetSaveData()
     {
         gameManager.ResetSaveData();
+        levelMenu.Start();
     }
 
     public void LoadLevel(Level level)

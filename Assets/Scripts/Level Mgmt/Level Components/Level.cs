@@ -9,11 +9,11 @@ using UnityEditor;
 [Serializable]
 public class Level : ScriptableObject
 {
+    public string _UID;
     public string _name;
     public MedalTimes _medalTimes;
     public List<LevelSection> _levelSections;
     public int cachedSequencesCount;
-
 
     public Level()
     {
@@ -22,6 +22,18 @@ public class Level : ScriptableObject
         _levelSections = new();
         _levelSections.Add(new LevelSection());
     }
+
+    private void OnValidate()
+    {
+#if UNITY_EDITOR
+        if (string.IsNullOrWhiteSpace(_UID))
+        {
+            _UID = Guid.NewGuid().ToString();            
+            EditorUtility.SetDirty(this);
+        }
+#endif
+    }
+
 
     public void ManualReset()
     {
@@ -34,14 +46,14 @@ public class Level : ScriptableObject
     {
         _name = name;
         _medalTimes = medalTimes;
-        _levelSections = DeepCopySections(levelSections);
+        _levelSections = DeepCopy.CopyLevelSections(levelSections);
     }
 
     public void ReassignValues(Level level)
     {
         _name = level.Name;
-        _medalTimes = level.MedalTimes.DeepCopy();
-        _levelSections = level.DeepCopySections();
+        _medalTimes = DeepCopy.CopyMedalTimes(level.MedalTimes);
+        _levelSections = DeepCopy.CopyLevelSections(level.LevelSections);
         cachedSequencesCount = (int)CachedSequencesCount().y;
     }
 
@@ -76,6 +88,14 @@ public class Level : ScriptableObject
         }
     }
 
+    public string UID
+    {
+        get
+        {
+            return _UID;
+        }
+    }
+
     public MedalTimes MedalTimes
     {
         get
@@ -101,36 +121,6 @@ public class Level : ScriptableObject
             sequences[section.Grade] = section.RandomCurveSequence;
         }
         return sequences;
-    }
-
-    public Level DeepCopy()
-    {
-        string name = _name;
-        MedalTimes medalTimes = _medalTimes.DeepCopy();
-        List<LevelSection> levelSections = DeepCopySections();
-        Level newLevel = ScriptableObject.CreateInstance<Level>();
-        newLevel.ReassignValues(name, medalTimes, levelSections);
-        return newLevel;
-    }
-
-    public List<LevelSection> DeepCopySections()
-    {
-        List<LevelSection> levelSections = new();
-        foreach (LevelSection section in _levelSections)
-        {
-            levelSections.Add(section.DeepCopy());
-        }
-        return levelSections;
-    }
-
-    public List<LevelSection> DeepCopySections(List<LevelSection> sectionsToCopy)
-    {
-        List<LevelSection> levelSections = new();
-        foreach (LevelSection section in sectionsToCopy)
-        {
-            levelSections.Add(section.DeepCopy());
-        }
-        return levelSections;
     }
 
     public bool Validate()

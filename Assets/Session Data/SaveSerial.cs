@@ -2,76 +2,82 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine;
-
+using AYellowpaper.SerializedCollections;
+using RotaryHeart.Lib.SerializableDictionary;
+using Newtonsoft.Json;
 public static class SaveSerial
 {
-	public static void SaveGame(SaveData data)
-    {
-		BinaryFormatter bf = new BinaryFormatter();
-		FileStream file = File.Open(Application.persistentDataPath
-					 + "/SaveData.dat", FileMode.OpenOrCreate);
-		bf.Serialize(file, data);
-		file.Close();
+	public static void SaveGame(SaveData toSave)
+	{
+		string data = JsonConvert.SerializeObject(toSave);
+		WriteToSavePath(data);
 		Debug.Log("Game data saved!");
 	}
 	public static SaveData NewGame()
 	{
-		BinaryFormatter bf = new BinaryFormatter();
-		FileStream file = File.Create(Application.persistentDataPath
-					 + "/SaveData.dat");
-		SaveData data = new SaveData();
-		bf.Serialize(file, data);
-		file.Close();
+		SaveData toSave = new SaveData();
+		string data = JsonConvert.SerializeObject(toSave);
+		WriteToSavePath(data);
 		Debug.Log("New game created!");
-		return data;
+		return toSave;
 	}
 
 	public static SaveData LoadGame()
 	{
-		if (File.Exists(Application.persistentDataPath
-					   + "/SaveData.dat"))
+		if (File.Exists(SavePath))
 		{
-			BinaryFormatter bf = new BinaryFormatter();
-			FileStream file =
-					   File.Open(Application.persistentDataPath
-					   + "/SaveData.dat", FileMode.Open);
-			SaveData data = (SaveData)bf.Deserialize(file);
-			file.Close();
-			return data;
+			string data = File.ReadAllText(SavePath);
+			SaveData loadedGame = JsonConvert.DeserializeObject<SaveData>(data);
+			return loadedGame;
 		}
-		Debug.Log("There is no save data! Creating new game...");
+		Debug.Log("No save data found. Creating new game...");
 		return NewGame();
 	}
 
-	public static void ResetData()
-	{
-		if (File.Exists(Application.persistentDataPath
-					  + "/SaveData.dat"))
+	public static void WriteToSavePath(string data)
+    {
+		if (!File.Exists(SavePath))
 		{
-			File.Delete(Application.persistentDataPath
-							  + "/SaveData.dat");
-			Debug.Log("Data reset complete!");
+			File.Create(SavePath);
 		}
-		else
-		Debug.LogError("No save data to delete.");
+		File.WriteAllText(SavePath, data);
 	}
+
+	public static string SavePath
+    {
+        get
+        {
+			return Application.persistentDataPath
+					 + "/SaveData.dat";
+		}
+    }
 }
 
 [Serializable]
 public class SaveData
 {
 	public DateTime startDate;
-	public PlayerRecord[] playerRecord;
+	public SerializedDictionary<string, PlayerRecord> recordDict;
 
 	public SaveData()
-    {
+	{
 		startDate = DateTime.Now;
-		playerRecord = new PlayerRecord[0];
+		recordDict = new();
+	}
+
+	public SerializedDictionary<string, PlayerRecord> PlayerRecords()
+    {
+		return recordDict;
     }
 
-	public void UpdatePlayerRecord(PlayerRecord[] newTimes)
+	public void UpdateRecord(string UID, PlayerRecord record)
     {
-		playerRecord = newTimes;
+		recordDict[UID] = record;
+    }
+
+	public void ReplaceAllRecords(SerializedDictionary<string, PlayerRecord> newRecords)
+    {
+		recordDict = newRecords;
     }
 
 }

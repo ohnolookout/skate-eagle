@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-[Serializable]
-public enum LevelNodeStatus { Complete, Incomplete, Locked, Default}
+
 [Serializable]
 public class LevelNode
 {
-    public LevelNode previous, next;
-    public LevelNodeStatus status = LevelNodeStatus.Default;
+    public LevelNode previous = null, next = null;
     public Level level;
     public int goldRequired, order;
 
@@ -16,63 +14,39 @@ public class LevelNode
     {
         this.level = level;
         this.goldRequired = goldRequired;
-        status = LevelNodeStatus.Default;
         previous = null;
         next = null;
     }
-    public LevelNode(LevelNodeStatus status, Level level, int goldRequired = 0)
+    public LevelNode(CompletionStatus status, Level level, int goldRequired = 0)
     {
-        this.status = status;
         this.level = level;
         this.goldRequired = goldRequired;
         previous = null;
         next = null;
     }
 
-    public bool IsNextNodeUnlocked()
+
+    public string Name
     {
-        if (next == null || status != LevelNodeStatus.Complete)
+        get
         {
-            Debug.Log($"next node null: {next == null} Current node status: {status}");
-            return false;
+            return level.Name;
         }
-        if (next.status != LevelNodeStatus.Locked)
-        {
-            return true;
-        }
-        next.GenerateStatus();
-        return next.status != LevelNodeStatus.Locked;
     }
 
-    public LevelNodeStatus GenerateStatus()
+    public string UID
     {
-        PlayerRecord records = GameManager.Instance.RecordFromLevel(level.Name);
-        if (records != null)
+        get
         {
-            if (!Single.IsPositiveInfinity(records.bestTime))
-            {
-                status = LevelNodeStatus.Complete;
-            }
-            else
-            {
-                status = LevelNodeStatus.Incomplete;
-            }
-        } else if (previous == null)
-        {
-            status = LevelNodeStatus.Incomplete;
+            return level.UID;
         }
-        else if (previous.status == LevelNodeStatus.Locked)
+    }
+
+    public Level Level
+    {
+        get
         {
-            status = LevelNodeStatus.Locked;
+            return level;
         }
-        else if (previous.status == LevelNodeStatus.Complete && GameManager.Instance.sessionData.GoldPlusCount >= goldRequired)
-        {
-            status = LevelNodeStatus.Incomplete;
-        }
-        else
-        {
-            status = LevelNodeStatus.Locked;
-        }
-        return status;
     }
 }

@@ -1,55 +1,69 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System;
+using UnityEngine.UI;
 
 public class LevelMenu : MonoBehaviour
 {
     private GameManager gameManager;
     public LevelPanelGenerator levelPanel;
     public MedalCounts medalCounts;
+    public EventSystem eventSystem;
+    private NodeContainer[] nodeContainers;
+    private int selectIndex = 0;
     void Awake()
     {
         gameManager = GameManager.Instance;
     }
-    void Start()
+    public void Start()
     {
+        eventSystem = EventSystem.current;
         PopulateMedalCounts();
         ActivateNodes();
     }
-    private void ActivateNodes()
+
+    void Update()
     {
-        NodeContainer[] nodeContainers = GetComponentsInChildren<NodeContainer>();
-        gameManager.levelNodes = new LevelNode[nodeContainers.Length];
-        int selectIndex = nodeContainers.Length - 1;
-        for(int i = 0; i < nodeContainers.Length; i++)
+        if(Input.touchCount > 0 || Input.GetMouseButtonDown(0))
         {
-            LevelNode node = nodeContainers[i].Node;
-            gameManager.levelNodes[i] = node;
-            if (i > 0)
+            if (eventSystem.currentSelectedGameObject == null || eventSystem.currentSelectedGameObject.transform.tag != "MapNode")
             {
-                node.previous = nodeContainers[i-1].Node;
+                SelectNode(nodeContainers[selectIndex]);
             }
-            if (i < nodeContainers.Length - 1)
+        }    
+    }
+    public void ActivateNodes()
+    {
+        nodeContainers = GetComponentsInChildren<NodeContainer>();
+        List<LevelNode> nodes = new(gameManager.Session.NodeDict.Values);
+        selectIndex = nodeContainers.Length - 1;
+        for (int i = 0; i < nodeContainers.Length; i++)
+        {
+            if(i >= nodes.Count) 
             {
-                node.next = nodeContainers[i + 1].Node;
+                break;
             }
-            nodeContainers[i].Setup();
-            if (node.status == LevelNodeStatus.Incomplete ||
-                (node.status == LevelNodeStatus.Locked && node.previous.status == LevelNodeStatus.Complete))
+            PlayerRecord record = gameManager.Session.Record(nodes[i].UID);
+            nodeContainers[i].Node = nodes[i];
+            nodeContainers[i].containerIndex = i;
+            nodeContainers[i].Setup(record.status);
+            if (record.status == CompletionStatus.Incomplete ||
+                (record.status == CompletionStatus.Locked 
+                && gameManager.Session.PreviousLevelRecord(record.UID).status == CompletionStatus.Complete))
             {
                 selectIndex = i;
             }
-            gameManager.levelNodes[i] = node;
         }
         SelectNode(nodeContainers[selectIndex]);
     }
 
-    public void SetLevelPanel(LevelNode node)
+    public void SetLevelPanel(LevelNode node, int containerIndex)
     {
-        gameManager.currentLevelNode = node;
-        PlayerRecord record = gameManager.RecordFromLevel(node.level.Name);
-        levelPanel.Generate(node, record);
+        PlayerRecord record = gameManager.Session.Record(node.UID);
+        levelPanel.Generate(node, record, gameManager.Session.PreviousLevelRecord(node.UID));
+        selectIndex = containerIndex;
     }
 
     public void SelectNode(NodeContainer node)
@@ -63,7 +77,7 @@ public class LevelMenu : MonoBehaviour
         Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
         for(int i = 0; i < medals.Length - 1; i++)
         {
-            int count = gameManager.sessionData.medalCount[medals[i]];
+            int count = gameManager.Session.MedalCount[medals[i]];
             medalCounts.SetMedalCount(medals[i], count);
         }
         

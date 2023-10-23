@@ -19,13 +19,6 @@ public class LevelSection
         _curves.Add(new CurveDefinition());
     }
 
-    public LevelSection(string name, Grade grade, List<CurveDefinition> curves)
-    {
-        _name = name;
-        _grade = grade;
-        _curves = curves;
-    }
-
     public LevelSection(string name, Grade grade, List<CurveDefinition> curves, List<Sequence> cachedSequences)
     {
         _name = name;
@@ -33,7 +26,6 @@ public class LevelSection
         _curves = curves;
         _cachedSequences = cachedSequences;
     }
-
 
     public bool Validate()
     {
@@ -54,38 +46,17 @@ public class LevelSection
         curve.Name = name;
     }
 
-    public LevelSection DeepCopy()
-    {
-        Grade grade = _grade.DeepCopy();
-        List<CurveDefinition> curves = new();
-        List<Sequence> sequencesToCache = new();
-        foreach (CurveDefinition curve in _curves)
-        {
-            curves.Add(curve.DeepCopy());
-        }
-        foreach (Sequence cachedSequence in _cachedSequences)
-        {
-            Sequence newSequence = new();
-            foreach(CurveDefinition curve in cachedSequence.Curves)
-            {
-                newSequence.Add(curve.DeepCopy());
-            }
-            sequencesToCache.Add(newSequence);
-        }
-        return new LevelSection(_name, grade, curves, sequencesToCache);
-    }
-
     public void CacheValidSections()
     {
-        if(!Validate())
+        if (!Validate())
         {
             throw new Exception("Section must contain at least one curve type");
         }
-        if(_curves.Count == 1)
+        if (_curves.Count == 1)
         {
             _cachedSequences = new();
             Sequence newSequence = new();
-            for(int i = 0; i < _curves[0].Quantity; i++)
+            for (int i = 0; i < _curves[0].Quantity; i++)
             {
                 newSequence.Add(_curves[0]);
             }
@@ -98,7 +69,7 @@ public class LevelSection
             Dictionary<CurveDefinition, int> maxRepetitions = SectionCache.MaxRepetitionDict(this);
             _cachedSequences = SectionCache.TrimForMaxRepetitions(_cachedSequences, maxRepetitions);
         }
-        if(_cachedSequences.Count < 1)
+        if (_cachedSequences.Count < 1)
         {
             throw new Exception("No valid sequences exist with current parameters.");
         }
@@ -107,10 +78,10 @@ public class LevelSection
     public void LogSectionCache()
     {
         Debug.Log($"Logging {_cachedSequences.Count} sections");
-        for(int i = 0; i < _cachedSequences.Count; i++)
+        for (int i = 0; i < _cachedSequences.Count; i++)
         {
             Debug.Log($"Sequence {i}:");
-            foreach(CurveDefinition curve in _cachedSequences[i].Curves)
+            foreach (CurveDefinition curve in _cachedSequences[i].Curves)
             {
                 Debug.Log($"{curve.Name}");
             }
@@ -122,7 +93,7 @@ public class LevelSection
         Validate();
         Debug.Log($"Logging section {_name}...");
         string curveNames = "Curves: ";
-        foreach(CurveDefinition curve in _curves)
+        foreach (CurveDefinition curve in _curves)
         {
             curveNames += curve.Name + " ";
         }
@@ -162,11 +133,29 @@ public class LevelSection
         }
     }
 
+    public List<Sequence> Sequences
+    {
+        get
+        {
+            return _cachedSequences;
+        }
+    }
+
     public Sequence RandomCurveSequence
     {
         get
         {
-            return _cachedSequences[random.Next(_cachedSequences.Count)];
+            if (_cachedSequences.Count > 0)
+            {
+                return _cachedSequences[random.Next(_cachedSequences.Count)];
+            }
+            CacheValidSections();
+            if (_cachedSequences.Count > 0)
+            {
+                return _cachedSequences[random.Next(_cachedSequences.Count)];
+            }
+            Debug.Log("No sequences cached!");
+            return null;
         }
     }
 

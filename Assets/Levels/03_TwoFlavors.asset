@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872745c09bebb3642a6525b467396663, type: 3}
   m_Name: 03_TwoFlavors
   m_EditorClassIdentifier: 
+  _UID: 4ca552e9-9d0b-4024-a360-08d12d5ada1e
   _name: 03_TwoFlavors
   _medalTimes:
     _bronzeTime: 19
@@ -38,6 +39,7 @@ MonoBehaviour:
         _skew: 2
       _quantity: 1
       _maxConsecutive: 2
+    _cachedSequences: []
   - _name: Two tone
     _grade:
       _minClimb: 0
@@ -69,3 +71,5 @@ MonoBehaviour:
         _skew: 2
       _quantity: 5
       _maxConsecutive: 2
+    _cachedSequences: []
+  cachedSequencesCount: 0

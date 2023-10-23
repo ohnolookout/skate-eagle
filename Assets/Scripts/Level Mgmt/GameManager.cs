@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-    public SessionData sessionData;
-    public Level currentLevel;
-    public PlayerRecord currentPlayerRecord;
+    private SessionData sessionData;
+    private Level currentLevel;
     private static GameManager instance;
     private SaveData saveData;
-    public LevelList levelList;
-    public LevelNode currentLevelNode = null;
-    public LevelNode[] levelNodes;
     public bool goToLevelMenu = false;
     private void Awake()
     {
@@ -24,16 +21,27 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
         saveData = SaveSerial.LoadGame();
-        Debug.Log($"Loaded data file that was first created on {saveData.startDate}");
+        Debug.Log($"Loaded data file with {saveData.PlayerRecords().Count} entries, first created on {saveData.startDate}");
+        int loadedRecordCount = saveData.recordDict.Count;
         sessionData = new(saveData);
-        levelList = Resources.Load<LevelList>("Level List");
+        //If new records were created during session setup, save game.
+        Debug.Log($"First record in session data. Name: {Session.RecordDict[Session.RecordDict.Keys.ToList<string>()[0]].levelName} " +
+            $"UID: {Session.RecordDict[Session.RecordDict.Keys.ToList<string>()[0]].UID}");
+        if (loadedRecordCount < Session.RecordDict.Count)
+        {
+            Debug.Log($"First record before saved data. Name: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].levelName}" +
+                $" UID: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].UID}");
+            SaveSerial.SaveGame(saveData);
+            Debug.Log($"First record in saved data. Name {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].levelName}" +
+                $" UID: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].UID}");
+        }
     }
 
     private void Start()
     {
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
-        
+
     }
 
     public void CheckForOtherManagers()
@@ -56,11 +64,6 @@ public class GameManager : MonoBehaviour
     {
         currentLevel = level;
         SceneManager.LoadScene("City");
-        if (!(sessionData.playerRecordsDict.ContainsKey(currentLevel.Name)))
-        {
-            sessionData.AddLevel(currentLevel);
-        }
-        currentPlayerRecord = sessionData.playerRecordsDict[currentLevel.Name];
     }
 
 
@@ -72,33 +75,22 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
-        if (currentLevelNode.next == null)
+        if (CurrentLevelNode.next == null)
         {
             return;
         }
-        currentLevelNode = currentLevelNode.next;
-        LoadLevel(currentLevelNode.level);
+        LoadLevel(CurrentLevelNode.next.level);
     }
 
     public bool NextLevelUnlocked()
     {
-        if (currentLevelNode.next == null || currentLevelNode.status != LevelNodeStatus.Complete) {
-            return false;
-        }
-        if(currentLevelNode.next.status != LevelNodeStatus.Locked)
-        {
-            return true;
-        }
-        currentLevelNode.next.GenerateStatus();
-        return currentLevelNode.next.status != LevelNodeStatus.Locked;
+        return sessionData.NextLevelUnlocked(currentLevel);
 
     }
 
-    public void UpdateSessionData(FinishScreenData finishData)
+    public void UpdateRecord(FinishScreenData finishData)
     {
-        sessionData.UpdateLevelRecords(finishData, currentLevel);
-        saveData.UpdatePlayerRecord(sessionData.ExportLevelRecordList());
-        currentLevelNode.GenerateStatus();
+        Session.UpdateRecord(finishData, CurrentLevel);
         SaveSerial.SaveGame(saveData);
     }
 
@@ -107,35 +99,22 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (sessionData == null)
-            {
-                Debug.Log("Player data is null");
-                Awake();
-            }
-            if (sessionData.playerRecordsDict.ContainsKey(currentLevel.name))
-            {
-                return sessionData.playerRecordsDict[currentLevel.name];
-            }
-            if (currentPlayerRecord.levelName is null)
-            {
-                currentPlayerRecord = new PlayerRecord(currentLevel);
-            }
-            return currentPlayerRecord;
+            return sessionData.Record(currentLevel.UID);
         }
     }
 
-    public PlayerRecord RecordFromLevel(string levelName)
+    public LevelNode CurrentLevelNode
     {
-        if (sessionData.playerRecordsDict.ContainsKey(levelName))
+        get
         {
-            return sessionData.playerRecordsDict[levelName];
+
+            return sessionData.Node(currentLevel.UID);
         }
-        return null;
     }
 
     public void AddAttempt()
     {
-        currentPlayerRecord.AddAttempt();
+        CurrentPlayerRecord.AddAttempt();
     }
 
     public static GameManager Instance
@@ -144,11 +123,6 @@ public class GameManager : MonoBehaviour
         {
             if (instance != null)
             {
-                return instance;
-            }
-            if (GameObject.FindGameObjectWithTag("GameManager"))
-            {
-                instance = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
                 return instance;
             }
             GameObject managerObject = new GameObject("GameManager");
@@ -160,6 +134,26 @@ public class GameManager : MonoBehaviour
     public void PrintMedalCount()
     {
         sessionData.PrintMedalCount();
+    }
+
+    public SessionData Session
+    {
+        get
+        {
+            return sessionData;
+        }
+    }
+
+    public Level CurrentLevel
+    {
+        get
+        {
+            return currentLevel;
+        }
+        set
+        {
+            currentLevel = value;
+        }
     }
 
 }

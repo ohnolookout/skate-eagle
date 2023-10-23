@@ -95,8 +95,4 @@ public class HalfCurveDefinition
         }
     }
 
-    public HalfCurveDefinition DeepCopy()
-    {
-        return new HalfCurveDefinition(_length, _shape, _slope, _skew);
-    }
 }

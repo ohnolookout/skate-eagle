@@ -34,7 +34,7 @@ public class LevelEditor : EditorWindow
         {
             gameManager = GameManager.Instance;
             AddTerrainGeneration();
-            gameManager.currentLevel = _currentLevel;
+            gameManager.CurrentLevel = _currentLevel;
         }
         _target = this;
         _so = new(_target);
@@ -149,7 +149,7 @@ public class LevelEditor : EditorWindow
         }
         UpdateLevel();
         string path = $"Assets/Levels/{_name}.asset";
-        AssetDatabase.CreateAsset(_currentLevel.DeepCopy(), path);
+        AssetDatabase.CreateAsset(DeepCopy.CopyLevel(_currentLevel), path);
     }
 
 

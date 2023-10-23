@@ -5,18 +5,6 @@ using System.Linq;
 
 public static class SectionCache
 {
-    public static List<CurveDefinition> DeepCopyCurveList(List<CurveDefinition> curveList)
-    {
-        List<CurveDefinition> copiedCurves = new();
-        foreach (CurveDefinition combinedCurve in curveList)
-        {
-            copiedCurves.Add(combinedCurve.DeepCopy());
-        }
-
-        return copiedCurves;
-
-    }
-
     public static List<Sequence> AllValidSections(Dictionary<CurveDefinition, int> curveQuantities, int remainingCurveCount)
     {
         if (remainingCurveCount == 1)

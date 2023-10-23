@@ -8,6 +8,7 @@ public class NodeContainer : MonoBehaviour
     public GameObject lockedFade;
     public LevelMenu menu;
     private LevelNode node;
+    public int containerIndex;
     public Level level;
     public int goldRequired = 0;
 
@@ -18,7 +19,7 @@ public class NodeContainer : MonoBehaviour
 
     public void SendToLevelPanel()
     {
-        menu.SetLevelPanel(node);
+        menu.SetLevelPanel(node, containerIndex);
     }
 
     public void SelectButton()
@@ -26,14 +27,16 @@ public class NodeContainer : MonoBehaviour
         gameObject.GetComponent<Button>().Select();
     }
 
-    public void Setup()
+    public void Setup(CompletionStatus status)
     {
-        node.GenerateStatus();
-        if (node.status == LevelNodeStatus.Locked)
+        if (status == CompletionStatus.Locked)
         {
-            return;
+            lockedFade.SetActive(true);
         }
-        lockedFade.SetActive(false);
+        else
+        {
+            lockedFade.SetActive(false);
+        }
     }
 
     public LevelNode Previous

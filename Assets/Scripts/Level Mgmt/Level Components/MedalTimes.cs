@@ -79,38 +79,6 @@ public struct MedalTimes
         return true;
     }
 
-    public float TimeFromMedal(Medal medal)
-    {
-        if(medal == Medal.Participant)
-        {
-            medal = Medal.Bronze;
-        }
-        return TimesArray[(int) medal];
-        /*
-        switch (medal)
-        {
-            case Medal.Participant:
-                return _bronzeTime;
-            case Medal.Bronze:
-                return _bronzeTime;
-            case Medal.Silver:
-                return _silverTime;
-            case Medal.Gold:
-                return _goldTime;
-            case Medal.Blue:
-                return _blueTime;
-            case Medal.Red:
-                return _redTime;
-            default:
-                return _bronzeTime;
-        }*/
-    }
-
-    public MedalTimes DeepCopy()
-    {
-        return new MedalTimes(_bronzeTime, _silverTime, _goldTime, _blueTime, _redTime);
-    }
-
     public Medal MedalFromTime(float timeInSeconds)
     {
         float[] times = TimesArray;

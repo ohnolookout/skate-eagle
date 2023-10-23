@@ -102,12 +102,4 @@ public class CurveDefinition
             _maxConsecutive = value;
         }
     }
-
-    public CurveDefinition DeepCopy()
-    {
-        HalfCurveDefinition valley = _valleyDefinition.DeepCopy();
-        HalfCurveDefinition peak = _peakDefinition.DeepCopy();
-        return new CurveDefinition(_name, valley, peak, _quantity);
-    }
-
 }

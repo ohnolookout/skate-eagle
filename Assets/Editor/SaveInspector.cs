@@ -15,8 +15,8 @@ public class SaveInspector : Editor
 					"Load Game"))
 			SaveSerial.LoadGame();
 		if (GUILayout.Button(
-					"Reset Save Data"))
-			SaveSerial.ResetData();
+					"New Game"))
+			SaveSerial.NewGame();
 	}
 
 }

@@ -16,27 +16,20 @@ public class LevelPanelGenerator : MonoBehaviour
     private Level selectedLevel;
 
 
-    public void Generate(LevelNode node, PlayerRecord playerRecord)
+    public void Generate(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
     {
         selectedLevel = node.level;
         levelName.text = selectedLevel.Name;
-        ActivateObjects(node.status);
-        if (node.status == LevelNodeStatus.Locked)
+        ActivateObjects(record.status);
+        if (record.status == CompletionStatus.Locked)
         {
             playButton.SetActive(false);
-            lockedText.text = LockedMessage(node);
+            lockedText.text = LockedMessage(node, record, previousRecord);
             return;
         }
         playButton.SetActive(true);
-        if (playerRecord != null)
-        {
-            attemptsCount.text = playerRecord.attemptsCount.ToString();
-        }
-        else
-        {
-            attemptsCount.text = "0";
-        }
-        if (node.status == LevelNodeStatus.Incomplete)
+        attemptsCount.text = record.attemptsCount.ToString();
+        if (record.status == CompletionStatus.Incomplete)
         {
             attemptsCount.color = Color.gray;
             attemptsTitle.color = Color.gray;
@@ -44,21 +37,21 @@ public class LevelPanelGenerator : MonoBehaviour
         }
         attemptsCount.color = Color.white;
         attemptsTitle.color = Color.white;
-        bestTime.text = playerRecord.bestTime.ToString();
-        medalImage.sprite = medalSprites[(int)playerRecord.medal];
+        bestTime.text = record.bestTime.ToString();
+        medalImage.sprite = medalSprites[(int)record.medal];
 
 
 
 
     }
 
-    private string LockedMessage(LevelNode node)
+    private string LockedMessage(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
     {        
-        if(node.previous.status == LevelNodeStatus.Locked)
+        if(previousRecord.status == CompletionStatus.Locked)
         {
             return "Locked";
         }
-        int goldRequired = node.goldRequired - GameManager.Instance.sessionData.GoldPlusCount;
+        int goldRequired = node.goldRequired - GameManager.Instance.Session.GoldPlusCount;
         if (goldRequired < 1)
         {
             return "Complete previous level to unlock.";
@@ -68,7 +61,7 @@ public class LevelPanelGenerator : MonoBehaviour
         {
             pluralizedMedal += "s";
         }
-        if (node.previous.status == LevelNodeStatus.Incomplete)
+        if (previousRecord.status == CompletionStatus.Incomplete)
         {
             return $"Complete previous level and earn {goldRequired} more gold {pluralizedMedal} or better to unlock.";
         }
@@ -77,9 +70,9 @@ public class LevelPanelGenerator : MonoBehaviour
 
     }
 
-    private void ActivateObjects(LevelNodeStatus panelType)
+    private void ActivateObjects(CompletionStatus panelType)
     {
-        if(panelType == LevelNodeStatus.Locked)
+        if(panelType == CompletionStatus.Locked)
         {
             bestBlock.SetActive(false);
             incompleteText.SetActive(false);
@@ -90,7 +83,7 @@ public class LevelPanelGenerator : MonoBehaviour
         }
         attemptsBlock.SetActive(true);
         lockedBlock.SetActive(false);
-        if (panelType == LevelNodeStatus.Incomplete)
+        if (panelType == CompletionStatus.Incomplete)
         {
             bestBlock.SetActive(false);
             incompleteText.SetActive(true);

@@ -35,8 +35,4 @@ public class Grade
         }
     }
 
-    public Grade DeepCopy()
-    {
-        return new Grade(_minClimb, _maxClimb);
-    }
 }

@@ -9,7 +9,7 @@ public class LiveRunManager : MonoBehaviour
     private EagleScript eagleScript;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
-    private float actualTerrainLength = 0, distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
+    private float distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
     public GameObject levelManagerPrefab, bird;
     public Level currentLevel;
     private GameManager gameManager;
@@ -19,9 +19,9 @@ public class LiveRunManager : MonoBehaviour
     {
 
         gameManager = GameManager.Instance;
-        currentLevel = gameManager.currentLevel;
+        currentLevel = gameManager.CurrentLevel;
         if (currentLevel == null) {
-            gameManager.currentLevel = currentLevel;
+            gameManager.CurrentLevel = currentLevel;
         }
         eagleScript = bird.GetComponent<EagleScript>();
     }
@@ -106,11 +106,10 @@ public class LiveRunManager : MonoBehaviour
     public void Finish()
     {
         runState = RunState.Finished;
-        gameManager.AddAttempt();
         float finishTime = overlay.StopTimer();
-        FinishScreenData finishData = FinishUtility.GenerateFinishData(gameManager.currentLevel, gameManager.CurrentPlayerRecord, finishTime);
+        FinishScreenData finishData = FinishUtility.GenerateFinishData(gameManager.CurrentLevel, gameManager.CurrentPlayerRecord, finishTime);
         overlay.GenerateFinishScreen(finishData);
-        gameManager.UpdateSessionData(finishData);
+        gameManager.UpdateRecord(finishData);
         StartCoroutine(SlowToFinish());
     }
 
@@ -132,14 +131,6 @@ public class LiveRunManager : MonoBehaviour
     }
 
 
-    public PlayerRecord CurrentPlayerRecord
-    {
-        get
-        {
-            return gameManager.CurrentPlayerRecord;
-        }
-    }
-
     public float DistancePassed
     {
         get
@@ -156,18 +147,6 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
-
-    public float ActualTerrainLength
-    {
-        get
-        {
-            return actualTerrainLength;
-        }
-        set
-        {
-            actualTerrainLength = value;
-        }
-    }
 
     public Vector3 FinishPoint
     {
@@ -186,7 +165,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return gameManager.currentLevel;
+            return gameManager.CurrentLevel;
         }
     }
 
