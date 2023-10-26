@@ -39,16 +39,7 @@ public static class DeepCopy
         {
             curves.Add(CopyCurveDefinition(curve));
         }
-        foreach (Sequence cachedSequence in sectionToCopy.Sequences)
-        {
-            Sequence newSequence = new();
-            foreach (CurveDefinition curve in cachedSequence.Curves)
-            {
-                newSequence.Add(CopyCurveDefinition(curve));
-            }
-            sequencesToCache.Add(newSequence);
-        }
-        return new LevelSection(sectionToCopy.Name, grade, curves, sequencesToCache);
+        return new LevelSection(sectionToCopy.Name, grade, curves);
     }
 
     public static CurveDefinition CopyCurveDefinition(CurveDefinition curveToCopy)

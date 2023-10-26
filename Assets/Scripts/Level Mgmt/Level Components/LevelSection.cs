@@ -9,7 +9,6 @@ public class LevelSection
     public string _name;
     public Grade _grade;
     public List<CurveDefinition> _curves = new();
-    [HideInInspector] public List<Sequence> _cachedSequences = new();
     private static System.Random random = new();
 
     public LevelSection()
@@ -19,12 +18,11 @@ public class LevelSection
         _curves.Add(new CurveDefinition());
     }
 
-    public LevelSection(string name, Grade grade, List<CurveDefinition> curves, List<Sequence> cachedSequences)
+    public LevelSection(string name, Grade grade, List<CurveDefinition> curves)
     {
         _name = name;
         _grade = grade;
         _curves = curves;
-        _cachedSequences = cachedSequences;
     }
 
     public bool Validate()
@@ -46,12 +44,20 @@ public class LevelSection
         curve.Name = name;
     }
 
-    public List<CurveDefinition> GenerateSequence()
+    public Sequence GenerateSequence()
     {
-        Dictionary<CurveDefinition, int> curveQuantities = new();
+        Sequence sequence = new();
+        if (Curves.Count == 1)
+        {
+            for(int i = 0; i < Curves[0].Quantity; i++)
+            {
+                sequence.Add(Curves[0]);
+            }
+            return sequence;
+        }
         int totalCount = 0;
+        Dictionary<CurveDefinition, int> curveQuantities = new();
         List<CurveDefinition> possibleCurves = new();
-        List<CurveDefinition> sequence = new();
         //Build dictionary of curve quantities to decrement as curves are added as well as a total count of all curves
         //and a list of possible curves that will be adjusted as curves become available or unavailable to generate.
         foreach(CurveDefinition curve in _curves)
@@ -60,8 +66,8 @@ public class LevelSection
             totalCount += curve.Quantity;
             possibleCurves.Add(curve);
         }
-        CurveDefinition lastCurve = null;
-        int consecCount = 0;
+        CurveDefinition lastCurve = new CurveDefinition();
+        int consecCount = 1;
         int currentCount = 0;
         while (totalCount > currentCount)
         {
@@ -72,23 +78,21 @@ public class LevelSection
             {
                 possibleCurves.Remove(currentCurve);
                 curveQuantities.Remove(currentCurve);
-                consecCount = 0;
-            }else if (currentCurve == lastCurve)
+            }
+            if (currentCurve == lastCurve)
             {
                 consecCount++;
-                if(consecCount > currentCurve.MaxConsecutive)
+                if (consecCount >= currentCurve.MaxConsecutive)
                 {
                     possibleCurves.Remove(currentCurve);
                 }
-            } else if (!possibleCurves.Contains(lastCurve) && curveQuantities.ContainsKey(lastCurve))
+            } else if (curveQuantities.ContainsKey(lastCurve) && !possibleCurves.Contains(lastCurve))
             {
                 possibleCurves.Add(lastCurve);
-                consecCount = 0;
+                consecCount = 1;
             }
-
             lastCurve = currentCurve;
             currentCount++;
-            totalCount--;
         }
         return sequence;
     }
@@ -106,88 +110,54 @@ public class LevelSection
             int curveQuantity = curveQuantities[curve];
             if(curve == lastCurve)
             {
-                cyclesNeeded = Mathf.CeilToInt(1 + (curveQuantity - (curve.MaxConsecutive - consecCount)) / curve.MaxConsecutive);
+                //Debug.Log($"{curve.Name} is part of consecutive chain. Adjusting cycles needed.");
+                cyclesNeeded = Mathf.CeilToInt(1 + (curveQuantity - ((float)curve.MaxConsecutive - consecCount)) / curve.MaxConsecutive);
             }
             else
             {
-                cyclesNeeded = Mathf.CeilToInt(curveQuantity / curve.MaxConsecutive);
+                cyclesNeeded = Mathf.CeilToInt((float)curveQuantity / curve.MaxConsecutive);
             }
+            //Debug.Log($"Cycles needed for {curve.Name} to expend quantity {curveQuantity}: {cyclesNeeded}");
             if (cyclesNeeded > totalRemaining - curveQuantity)
             {
                 return curve;
             } 
         }
-
-        return possibleCurves[random.Next(possibleCurves.Count)];
-    }
-
-    //Return list of possible curves for next curve that won't violate max consecutive rules
-    private List<CurveDefinition> VetPossibleCurves(Dictionary<CurveDefinition, int> curveQuantities, List<CurveDefinition> possibleCurves, 
-        CurveDefinition currentCurve, CurveDefinition lastCurve, int consecCount, int remainingCount)
-    {
-        int aboveConsecLimit = 0;
-        foreach (var curve in possibleCurves)
+        if (possibleCurves.Count > 0)
         {
-            if (curveQuantities[curve] <= curve.MaxConsecutive)
-            {
-                continue;
-            }
-            aboveConsecLimit++;
-            //If more than two curve types have more quantity remaining than their max consecutive curves, return possible curves list.
-            if(aboveConsecLimit > 2)
-            {
-                return possibleCurves;
-            }
-            if(remainingCount - curveQuantities[curve] < curveQuantities[curve] / curve.MaxConsecutive)
-            {
-                return new List<CurveDefinition>(){ curve};
-            }
-            //if remainingCount < curveQuantities[curve]/curve.MaxConsecutive, return list of only this curve.
+            return possibleCurves[random.Next(possibleCurves.Count)];
         }
-
+        else if (curveQuantities.Count > 0)
+        {
+            Debug.Log("!!!!Ran out of possible curves!!!!");
+            return curveQuantities.Keys.ToList()[0];
+        }
+        Debug.Log("!!!!Ran out of all curves!!!!");
         return null;
     }
 
-    public void CacheValidSections()
+    public void NextCurveTest()
     {
-        if (!Validate())
-        {
-            throw new Exception("Section must contain at least one curve type");
-        }
-        if (_curves.Count == 1)
-        {
-            _cachedSequences = new();
-            Sequence newSequence = new();
-            for (int i = 0; i < _curves[0].Quantity; i++)
-            {
-                newSequence.Add(_curves[0]);
-            }
-            _cachedSequences.Add(newSequence);
-        }
-        Dictionary<CurveDefinition, int> curveQuantities = SectionCache.CurveQuantityDict(_curves, out int curveCount);
-        _cachedSequences = SectionCache.AllValidSections(curveQuantities, curveCount);
-        if (_curves.Count > 1)
-        {
-            Dictionary<CurveDefinition, int> maxRepetitions = SectionCache.MaxRepetitionDict(this);
-            _cachedSequences = SectionCache.TrimForMaxRepetitions(_cachedSequences, maxRepetitions);
-        }
-        if (_cachedSequences.Count < 1)
-        {
-            throw new Exception("No valid sequences exist with current parameters.");
-        }
-    }
+        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        HalfCurveDefinition peak1 = new(LengthType.Short, ShapeType.HardPeak, SlopeType.Steep, SkewType.Center);
+        HalfCurveDefinition peak2 = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        HalfCurveDefinition peak3 = new(LengthType.Long, ShapeType.SoftTable, SlopeType.Gentle, SkewType.Center);
+        CurveDefinition curve1 = new("curve1", valley, peak1, 5, 2);
+        CurveDefinition curve2 = new("curve2", valley, peak2, 1, 1);
+        CurveDefinition curve3 = new("curve3", valley, peak2, 1, 1);
+        CurveDefinition lastCurve = new();
+        int consecCount = 0;
 
-    public void LogSectionCache()
-    {
-        Debug.Log($"Logging {_cachedSequences.Count} sections");
-        for (int i = 0; i < _cachedSequences.Count; i++)
+        List<CurveDefinition> possibleCurves = new() { curve1, curve2, curve3 };
+        Dictionary<CurveDefinition, int> curveQuantities = new();
+        int totalRemaining = 0;
+
+        foreach (CurveDefinition curve in possibleCurves)
         {
-            Debug.Log($"Sequence {i}:");
-            foreach (CurveDefinition curve in _cachedSequences[i].Curves)
-            {
-                Debug.Log($"{curve.Name}");
-            }
+            curveQuantities[curve] = curve.Quantity;
+            totalRemaining += curve.Quantity;
         }
+
     }
 
     public void LogCurveList(List<CurveDefinition> curveList)
@@ -241,33 +211,6 @@ public class LevelSection
         set
         {
             _name = value;
-        }
-    }
-
-    public List<Sequence> Sequences
-    {
-        get
-        {
-            return _cachedSequences;
-        }
-    }
-
-    public Sequence RandomCurveSequence
-    {
-        get
-        {
-            LogCurveList(GenerateSequence());
-            if (_cachedSequences.Count > 0)
-            {
-                return _cachedSequences[random.Next(_cachedSequences.Count)];
-            }
-            CacheValidSections();
-            if (_cachedSequences.Count > 0)
-            {
-                return _cachedSequences[random.Next(_cachedSequences.Count)];
-            }
-            Debug.Log("No sequences cached!");
-            return null;
         }
     }
 

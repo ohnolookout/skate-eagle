@@ -39,7 +39,6 @@ public class LevelEditor : EditorWindow
         _target = this;
         _so = new(_target);
         _currentLevel = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/EditorLevel.asset", typeof(Level));
-        _currentLevel.CacheSections();
         UpdateFields();
         _serializedMedalTimes = _so.FindProperty("_medalTimes");
         _serializedLevelSections = _so.FindProperty("_levelSections");
@@ -89,9 +88,6 @@ public class LevelEditor : EditorWindow
         {
             _currentLevel.ManualReset();
             UpdateFields();
-        }
-        if(GUILayout.Button("Log Sections", GUILayout.ExpandWidth(false))){
-            LogAllSections();
         }
     }
 
@@ -170,7 +166,6 @@ public class LevelEditor : EditorWindow
     public void UpdateLevel()
     {
         _currentLevel.ReassignValues(_name, _medalTimes, _levelSections);
-        _currentLevel.CacheSections();
     }
     private void AddTerrainGeneration()
     {
@@ -179,12 +174,4 @@ public class LevelEditor : EditorWindow
 
     }
 
-    private void LogAllSections()
-    {
-        UpdateLevel();
-        foreach(LevelSection section in _currentLevel.LevelSections)
-        { 
-            section.LogSectionCache();
-        }
-    }
 }

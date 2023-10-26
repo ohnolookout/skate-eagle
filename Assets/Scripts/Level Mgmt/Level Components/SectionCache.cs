@@ -5,64 +5,6 @@ using System.Linq;
 
 public static class SectionCache
 {
-    public static List<Sequence> AllValidSections(Dictionary<CurveDefinition, int> curveQuantities, int remainingCurveCount)
-    {
-        if (remainingCurveCount == 1)
-        {
-            return ReturnRemainingCurves(curveQuantities.Keys.ToList());
-        }
-        List<Sequence> combinedBranches = new();
-        foreach (CurveDefinition curve in curveQuantities.Keys.ToList())
-        {
-            if (curveQuantities[curve] <= 0) continue;
-
-            List<Sequence> receivedBranch = CreateNewBranch(curve);
-            combinedBranches = combinedBranches.Union(receivedBranch).ToList();
-        }
-
-        return combinedBranches;
-
-
-        List<Sequence> ReturnRemainingCurves(List<CurveDefinition> curves)
-        {
-            List<Sequence> combinedBranches = new();
-            foreach (CurveDefinition curve in curves)
-            {
-                if (curveQuantities[curve] <= 0) continue;
-
-                Sequence newBranch = new();
-                newBranch.Add(curve);
-                combinedBranches.Add(newBranch);
-            }
-            return combinedBranches;
-        }
-
-        List<Sequence> CreateNewBranch(CurveDefinition curve)
-        {
-            curveQuantities[curve] -= 1;
-            List<Sequence> receivedBranches = AllValidSections(curveQuantities, remainingCurveCount - 1);
-            curveQuantities[curve] += 1;
-            foreach (Sequence receivedBranch in receivedBranches)
-            {
-                receivedBranch.Curves.Insert(0, curve);
-            }
-            return receivedBranches;
-        }
-    }
-
-    public static List<Sequence> TrimForMaxRepetitions(List<Sequence> listOfSequences, Dictionary<CurveDefinition, int> maxRepetitions)
-    {
-        List<Sequence> trimmedSequences = new();
-        foreach (Sequence sequence in listOfSequences)
-        {
-            if (IsWithinRepetitionLimits(sequence, maxRepetitions))
-            {
-                trimmedSequences.Add(sequence);
-            }
-        }
-        return trimmedSequences;
-    }
-
     private static bool IsWithinRepetitionLimits(Sequence sequence, Dictionary<CurveDefinition, int> maxRepetitions)
     {
         CurveDefinition lastCurve = sequence.Curves[0];
@@ -83,6 +25,82 @@ public static class SectionCache
             }
         }
         return true;
+    }
+
+    private static bool IsWithinRepetitionLimits(List<CurveDefinition> sequence, Dictionary<CurveDefinition, int> maxRepetitions)
+    {
+        CurveDefinition lastCurve = sequence[0];
+        int repetitions = 1;
+        for (int i = 1; i < sequence.Count; i++)
+        {
+            CurveDefinition currentCurve = sequence[i];
+            if (currentCurve != lastCurve)
+            {
+                lastCurve = currentCurve;
+                repetitions = 1;
+                continue;
+            }
+            repetitions++;
+            if (repetitions > maxRepetitions[currentCurve])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static bool ValidateSection(LevelSection section)
+    {
+        return ValidateCurveList(section.GenerateSequence().Curves, section.Curves);
+    }
+
+    public static bool ValidateCurveList(List<CurveDefinition> sequence, List<CurveDefinition> possibleCurves)
+    {
+        var quantityDict = CurveQuantityDict(possibleCurves, out var curveCount);
+        if(!AchievesAllQuantities(sequence, quantityDict))
+        {
+            Debug.Log("Sequence fails to achieve correct quantity of curves.");
+            return false;
+        }
+        var repetitionDict = MaxRepetitionDict(possibleCurves);
+        if(!IsWithinRepetitionLimits(sequence, repetitionDict))
+        {
+            Debug.Log("Sequence has too many repetitions of curve.");
+            return false;
+        }
+        Debug.Log("Sequence is valid.");
+        return true;
+    }
+
+    private static bool AchievesAllQuantities(List<CurveDefinition> sequence, Dictionary<CurveDefinition, int> quantityDict)
+    {
+        foreach(var curve in sequence)
+        {
+            quantityDict[curve]--;
+            if(quantityDict[curve] < 0)
+            {
+                return false;
+            }
+        }
+        foreach(var entry in quantityDict)
+        {
+            if(entry.Value < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Dictionary<CurveDefinition, int> MaxRepetitionDict(List<CurveDefinition> curves)
+    {
+        Dictionary<CurveDefinition, int> maxRepetitions = new();
+        foreach (var curve in curves)
+        {
+            maxRepetitions[curve] = curve.MaxConsecutive;
+        }
+        return maxRepetitions;
     }
 
     public static Dictionary<CurveDefinition, int> MaxRepetitionDict(LevelSection section)

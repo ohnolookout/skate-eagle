@@ -13,7 +13,6 @@ public class Level : ScriptableObject
     public string _name;
     public MedalTimes _medalTimes;
     public List<LevelSection> _levelSections;
-    public int cachedSequencesCount;
 
     public Level()
     {
@@ -54,30 +53,6 @@ public class Level : ScriptableObject
         _name = level.Name;
         _medalTimes = DeepCopy.CopyMedalTimes(level.MedalTimes);
         _levelSections = DeepCopy.CopyLevelSections(level.LevelSections);
-        cachedSequencesCount = (int)CachedSequencesCount().y;
-    }
-
-    public void CacheSections()
-    {
-        foreach(LevelSection section in _levelSections)
-        {
-            section.CacheValidSections();
-        }
-        cachedSequencesCount = (int)CachedSequencesCount().y;
-    }
-
-    public Vector2 CachedSequencesCount() //X value is num of sections, y is total possible sequences
-    {
-        Vector2 sequencesCount = new(0, 0);
-        foreach(LevelSection section in _levelSections)
-        {
-            sequencesCount = new(sequencesCount.x + 1, sequencesCount.y);
-            foreach(Sequence sequence in section._cachedSequences)
-            {
-                sequencesCount = new(sequencesCount.x, sequencesCount.y + 1);
-            }
-        }
-        return sequencesCount;
     }
 
     public string Name
@@ -114,11 +89,10 @@ public class Level : ScriptableObject
 
     public Dictionary<Grade, Sequence> GenerateSequence()
     {
-        cachedSequencesCount = (int)CachedSequencesCount().y;
         Dictionary<Grade, Sequence> sequences = new();
         foreach (LevelSection section in _levelSections)
         {
-            sequences[section.Grade] = section.RandomCurveSequence;
+            sequences[section.Grade] = section.GenerateSequence();
         }
         return sequences;
     }
