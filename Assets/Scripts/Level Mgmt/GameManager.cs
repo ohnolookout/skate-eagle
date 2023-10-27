@@ -4,36 +4,50 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+[ExecuteAlways]
 public class GameManager : MonoBehaviour
 {
     private SessionData sessionData;
-    private Level currentLevel;
+    public Level currentLevel;
     private static GameManager instance;
     private SaveData saveData;
     public bool goToLevelMenu = false;
+    
     private void Awake()
     {
+        //Check to see if other instance exists that has already 
         if (instance != null && instance != this)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(this);
+                return;
+            }
+#endif
             Destroy(this);
             return;
         }
         instance = this;
+        if (SceneManager.GetActiveScene().name == "Level_Editor")
+        {
+            currentLevel = Resources.Load<Level>("EditorLevel");
+        }
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {            
+            return;
+        }
+#endif
         DontDestroyOnLoad(gameObject);
         saveData = SaveSerial.LoadGame();
         Debug.Log($"Loaded data file with {saveData.PlayerRecords().Count} entries, first created on {saveData.startDate}");
         int loadedRecordCount = saveData.recordDict.Count;
         sessionData = new(saveData);
         //If new records were created during session setup, save game.
-        Debug.Log($"First record in session data. Name: {Session.RecordDict[Session.RecordDict.Keys.ToList<string>()[0]].levelName} " +
-            $"UID: {Session.RecordDict[Session.RecordDict.Keys.ToList<string>()[0]].UID}");
         if (loadedRecordCount < Session.RecordDict.Count)
         {
-            Debug.Log($"First record before saved data. Name: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].levelName}" +
-                $" UID: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].UID}");
             SaveSerial.SaveGame(saveData);
-            Debug.Log($"First record in saved data. Name {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].levelName}" +
-                $" UID: {saveData.PlayerRecords()[saveData.PlayerRecords().Keys.ToList<string>()[0]].UID}");
         }
     }
 
@@ -99,7 +113,12 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return sessionData.Record(currentLevel.UID);
+            //If sessionData hasn't been created, it means that GM is being run in editor mode, so Awake may need to be called manually.
+            if(sessionData == null)
+            {
+                Awake();
+            }
+            return sessionData.Record(currentLevel);
         }
     }
 
@@ -125,21 +144,21 @@ public class GameManager : MonoBehaviour
             {
                 return instance;
             }
+            Debug.Log("No instance found. Creating instance.");
             GameObject managerObject = new GameObject("GameManager");
             instance = managerObject.AddComponent<GameManager>();
             return instance;
         }
     }
 
-    public void PrintMedalCount()
-    {
-        sessionData.PrintMedalCount();
-    }
-
     public SessionData Session
     {
         get
         {
+            if(sessionData == null)
+            {
+                Awake();
+            }
             return sessionData;
         }
     }

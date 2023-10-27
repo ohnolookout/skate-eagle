@@ -25,16 +25,18 @@ public class GroundSpawner : MonoBehaviour
     {
         AssignComponents();
         currentPoint = new(logic.BirdPosition);
-        if (Application.isPlaying)
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
         {
-            DeleteChildren();
-            GenerateLevel(gameManager.CurrentLevel);
-            logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
-
-            Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
-            FindBirdIndex();
+            return;
         }
+#endif
+        DeleteChildren();
+        GenerateLevel(gameManager.CurrentLevel);
+        logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
 
+        Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
+        FindBirdIndex();
     }
     void Start()
     {
@@ -75,9 +77,9 @@ public class GroundSpawner : MonoBehaviour
         foreach(KeyValuePair<Grade, Sequence> sequence in curveSequences)
         {
             Grade grade = sequence.Key;
-            foreach(CurveDefinition curve in sequence.Value.Curves)
+            foreach(CurveDefinition curveDef in sequence.Value.Curves)
             {
-                Curve nextCurve = CurveFactory.CompoundCurve(curve, currentPoint, grade.MinClimb, grade.MaxClimb);
+                Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, currentPoint, grade.MinClimb, grade.MaxClimb);
                 AddSegment(nextCurve);
             }
         }

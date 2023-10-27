@@ -72,18 +72,8 @@ public class SessionData
 
     public PlayerRecord AddLevelToRecords(Level level)
     {
-        Debug.Log("Adding level to records by Level");
         recordDict[level.UID] = new PlayerRecord(level);
         return recordDict[level.UID];
-    }
-
-
-    //UID PROBLEM STARTS HERE
-    public PlayerRecord AddLevelToRecords(string UID)
-    {
-        Debug.Log("Adding level to records by UID");
-        recordDict[UID] = new PlayerRecord(UID);
-        return recordDict[UID];
     }
 
     public void UpdateRecord(FinishScreenData finishData, Level level)
@@ -117,7 +107,6 @@ public class SessionData
 
     public CompletionStatus RefreshRecordStatus(PlayerRecord record)
     {
-        Debug.Log("Refreshing record status. UID:" + record.UID + " Level name:" + record.levelName);
         if (record.medal != Medal.Participant)
         {
             record.status = CompletionStatus.Complete;
@@ -161,7 +150,17 @@ public class SessionData
         {
             return recordDict[UID];
         }
-        return AddLevelToRecords(UID);
+        Debug.LogError("No record found. Call record using level to create new record.");
+        return null;
+    }
+
+    public PlayerRecord Record(Level level)
+    {
+        if (recordDict.ContainsKey(level.UID))
+        {
+            return recordDict[level.UID];
+        }
+        return AddLevelToRecords(level);
     }
 
     public LevelNode Node(string UID)

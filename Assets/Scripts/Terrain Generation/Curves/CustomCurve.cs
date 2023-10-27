@@ -7,13 +7,6 @@ public class CustomCurve : Curve
     int hillStatus = 1;
     float _climbMin, _climbMax;
     CurvePoint _startPoint;
-    public CustomCurve(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
-    {
-        //Using array of CurveParameters2 because there will be a separate set of params for lower and upper parts of curve.
-        curvePoints = CurvePointsFromParameters(parameters, startPoint, climbMin, climbMax);
-        curveType = CurveType.Custom;
-        GenerateCurveStats();
-    }
     
     public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint, float climbMin, float climbMax)
     {
@@ -39,29 +32,6 @@ public class CustomCurve : Curve
             else
             {
                 List<CurvePoint> additionalCurvePoints = SingleCurvePoints(curveParams, startPoint, _climbMin, _climbMax);
-                curvePoints[^1] = additionalCurvePoints[0];
-                curvePoints.Add(additionalCurvePoints[1]);
-            }
-            hillStatus *= -1;
-            startPoint = curvePoints[^1];
-        }
-        return curvePoints;
-    }
-
-    private List<CurvePoint> CurvePointsFromParameters(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
-    {
-
-        List<CurvePoint> curvePoints = new();
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            
-            if(i == 0)
-            {
-                curvePoints = SingleCurvePoints(parameters[i], startPoint, climbMin, climbMax);
-            }
-            else
-            {
-                List<CurvePoint> additionalCurvePoints = SingleCurvePoints(parameters[i], startPoint, climbMin, climbMax);
                 curvePoints[^1] = additionalCurvePoints[0];
                 curvePoints.Add(additionalCurvePoints[1]);
             }

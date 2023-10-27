@@ -27,13 +27,12 @@ MonoBehaviour:
       _maxClimb: -4
     _curves:
     - _name: Medium Gentle Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
         _slope: 1
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
         _slope: 1
         _skew: 2
@@ -45,39 +44,36 @@ MonoBehaviour:
       _maxClimb: -4
     _curves:
     - _name: Medium Flat Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
-        _slope: 1
+        _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
         _slope: 0
         _skew: 2
       _quantity: 4
       _maxConsecutive: 2
     - _name: Medium Gentle Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
-        _slope: 1
+        _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
         _slope: 1
         _skew: 2
       _quantity: 4
       _maxConsecutive: 2
     - _name: Medium Normal Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
         _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
         _slope: 2
         _skew: 2

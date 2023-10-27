@@ -14,14 +14,7 @@ public static class CurveFactory
         return new StartLineCurve(startPoint);
     }
 
-    public static Curve CurveFromCombinedDefinition(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
-    {
-        CurveParameters valley = new(definition.Valley);
-        CurveParameters peak = new(definition.Peak);
-        return new CustomCurve(new CurveParameters[] { valley, peak }, startPoint, climbMin, climbMax);
-    }
-
-    public static Curve CompoundCurve(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
+    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
     {
         return new CustomCurve(definition, startPoint, climbMin, climbMax);
     }

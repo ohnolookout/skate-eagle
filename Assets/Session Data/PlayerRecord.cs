@@ -24,7 +24,6 @@ public class PlayerRecord
 		status = CompletionStatus.Locked;
 		medal = Medal.Participant;
 		date = DateTime.Now;
-		Debug.Log($"Created record by level. Name: {levelName} UID: {UID}");
 	}
 
 	public PlayerRecord(string UID)
@@ -34,7 +33,6 @@ public class PlayerRecord
 		status = CompletionStatus.Locked;
 		medal = Medal.Participant;
 		date = DateTime.Now;
-		Debug.Log($"Created record by UID. Name: {levelName} UID: {UID}");
 	}
 
 	public PlayerRecord()

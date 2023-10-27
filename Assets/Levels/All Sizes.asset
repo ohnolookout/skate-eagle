@@ -27,13 +27,12 @@ MonoBehaviour:
       _maxClimb: -2
     _curves:
     - _name: Short Flat Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 0
         _slope: 0
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 0
         _slope: 0
         _skew: 2
@@ -45,13 +44,12 @@ MonoBehaviour:
       _maxClimb: -2
     _curves:
     - _name: Medium Gentle Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
         _slope: 1
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
         _slope: 1
         _skew: 2
@@ -63,13 +61,12 @@ MonoBehaviour:
       _maxClimb: -2
     _curves:
     - _name: Long Normal Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 2
         _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 2
         _slope: 2
         _skew: 2
@@ -81,13 +78,12 @@ MonoBehaviour:
       _maxClimb: -2
     _curves:
     - _name: Jumbo Steep Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 3
         _slope: 3
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 3
         _slope: 3
         _skew: 2

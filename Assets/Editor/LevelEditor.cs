@@ -38,7 +38,7 @@ public class LevelEditor : EditorWindow
         }
         _target = this;
         _so = new(_target);
-        _currentLevel = (Level)AssetDatabase.LoadAssetAtPath("Assets/Session Data/EditorLevel.asset", typeof(Level));
+        _currentLevel = Resources.Load<Level>("EditorLevel");
         UpdateFields();
         _serializedMedalTimes = _so.FindProperty("_medalTimes");
         _serializedLevelSections = _so.FindProperty("_levelSections");
@@ -119,6 +119,7 @@ public class LevelEditor : EditorWindow
         }
         UpdateLevel();
         _logic.SetLevel(_currentLevel);
+        gameManager.CurrentLevel = _currentLevel;
         bool testModeStatus = _groundSpawner.testMode;
         _groundSpawner.testMode = true;
         _groundSpawner.GenerateLevel(_currentLevel);

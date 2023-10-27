@@ -136,30 +136,6 @@ public class LevelSection
         return null;
     }
 
-    public void NextCurveTest()
-    {
-        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
-        HalfCurveDefinition peak1 = new(LengthType.Short, ShapeType.HardPeak, SlopeType.Steep, SkewType.Center);
-        HalfCurveDefinition peak2 = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
-        HalfCurveDefinition peak3 = new(LengthType.Long, ShapeType.SoftTable, SlopeType.Gentle, SkewType.Center);
-        CurveDefinition curve1 = new("curve1", new[] { valley, peak1 }, 5, 2);
-        CurveDefinition curve2 = new("curve2", new[] { valley, peak2 }, 1, 1);
-        CurveDefinition curve3 = new("curve3", new[] { valley, peak3 }, 1, 1);
-        CurveDefinition lastCurve = new();
-        int consecCount = 0;
-
-        List<CurveDefinition> possibleCurves = new() { curve1, curve2, curve3 };
-        Dictionary<CurveDefinition, int> curveQuantities = new();
-        int totalRemaining = 0;
-
-        foreach (CurveDefinition curve in possibleCurves)
-        {
-            curveQuantities[curve] = curve.Quantity;
-            totalRemaining += curve.Quantity;
-        }
-
-    }
-
     public void LogCurveList(List<CurveDefinition> curveList)
     {
         string curveNames = "Curves: ";

@@ -10,7 +10,7 @@ public class LiveRunManager : MonoBehaviour
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
     private float distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
-    public GameObject levelManagerPrefab, bird;
+    public GameObject bird;
     public Level currentLevel;
     private GameManager gameManager;
     public Overlay overlay;
