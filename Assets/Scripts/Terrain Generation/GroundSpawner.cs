@@ -77,7 +77,7 @@ public class GroundSpawner : MonoBehaviour
             Grade grade = sequence.Key;
             foreach(CurveDefinition curve in sequence.Value.Curves)
             {
-                Curve nextCurve = CurveFactory.CurveFromCombinedDefinition(curve, currentPoint, grade.MinClimb, grade.MaxClimb);
+                Curve nextCurve = CurveFactory.CompoundCurve(curve, currentPoint, grade.MinClimb, grade.MaxClimb);
                 AddSegment(nextCurve);
             }
         }

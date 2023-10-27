@@ -46,7 +46,7 @@ public static class DeepCopy
     {
         HalfCurveDefinition valley = CopyHalfCurve(curveToCopy.Valley);
         HalfCurveDefinition peak = CopyHalfCurve(curveToCopy.Peak);
-        return new CurveDefinition(curveToCopy.Name, valley, peak, curveToCopy.Quantity);
+        return new CurveDefinition(curveToCopy.Name, curveToCopy.Definitions, curveToCopy.Quantity);
     }
 
     public static HalfCurveDefinition CopyHalfCurve(HalfCurveDefinition halfCurveToCopy)

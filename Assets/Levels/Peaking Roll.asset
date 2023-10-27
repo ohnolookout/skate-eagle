@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872745c09bebb3642a6525b467396663, type: 3}
+  m_Name: Peaking Roll
+  m_EditorClassIdentifier: 
+  _UID: 58a05ba8-484c-4ac0-8109-65e193de7f34
+  _name: Peaking Roll
+  _medalTimes:
+    _bronzeTime: 60
+    _silverTime: 45
+    _goldTime: 30
+    _blueTime: 20
+    _redTime: 10
+  _levelSections:
+  - _name: PeakRoller
+    _grade:
+      _minClimb: -4
+      _maxClimb: -2
+    _curves:
+    - _name: Medium Normal Roller Center
+      _definitions:
+      - _shape: 0
+        _length: 1
+        _slope: 2
+        _skew: 2
+      - _shape: 2
+        _length: 0
+        _slope: 3
+        _skew: 2
+      - _shape: 0
+        _length: 0
+        _slope: 2
+        _skew: 2
+      - _shape: 0
+        _length: 1
+        _slope: 2
+        _skew: 2
+      _quantity: 5
+      _maxConsecutive: 2

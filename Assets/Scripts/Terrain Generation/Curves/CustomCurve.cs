@@ -5,7 +5,8 @@ using UnityEngine;
 public class CustomCurve : Curve
 {
     int hillStatus = 1;
-    float lengthMin, lengthMax, climbMin, climbMax;
+    float _climbMin, _climbMax;
+    CurvePoint _startPoint;
     public CustomCurve(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
         //Using array of CurveParameters2 because there will be a separate set of params for lower and upper parts of curve.
@@ -13,8 +14,41 @@ public class CustomCurve : Curve
         curveType = CurveType.Custom;
         GenerateCurveStats();
     }
+    
+    public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint, float climbMin, float climbMax)
+    {
+        _startPoint = startPoint;
+        _climbMin = climbMin;
+        _climbMax = climbMax;
+        curvePoints = CurvePointsFromDefinition(curveDef);
+        curveType = CurveType.Custom;
+        GenerateCurveStats();
 
-    public List<CurvePoint> CurvePointsFromParameters(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
+    }
+
+    private List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef)
+    {
+        List<CurvePoint> curvePoints = new();
+        for (int i = 0; i < curveDef.Array.Length; i++)
+        {
+            CurveParameters curveParams = new(curveDef.Array[i]);
+            if (i == 0)
+            {
+                curvePoints = SingleCurvePoints(curveParams, _startPoint, _climbMin, _climbMax);
+            }
+            else
+            {
+                List<CurvePoint> additionalCurvePoints = SingleCurvePoints(curveParams, startPoint, _climbMin, _climbMax);
+                curvePoints[^1] = additionalCurvePoints[0];
+                curvePoints.Add(additionalCurvePoints[1]);
+            }
+            hillStatus *= -1;
+            startPoint = curvePoints[^1];
+        }
+        return curvePoints;
+    }
+
+    private List<CurvePoint> CurvePointsFromParameters(CurveParameters[] parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
 
         List<CurvePoint> curvePoints = new();
@@ -37,7 +71,7 @@ public class CustomCurve : Curve
         return curvePoints;
     }
 
-    public List<CurvePoint> SingleCurvePoints(CurveParameters parameters, CurvePoint startPoint, float climbMin, float climbMax)
+    private List<CurvePoint> SingleCurvePoints(CurveParameters parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
         List<CurvePoint> curvePoints = new();
         Vector3 prevTangent = -startPoint.LeftTangent.normalized;

@@ -18,8 +18,11 @@ public static class CurveFactory
     {
         CurveParameters valley = new(definition.Valley);
         CurveParameters peak = new(definition.Peak);
-        return new CustomCurve(new CurveParameters[] {valley, peak }, startPoint, climbMin, climbMax);
+        return new CustomCurve(new CurveParameters[] { valley, peak }, startPoint, climbMin, climbMax);
     }
-    
 
+    public static Curve CompoundCurve(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
+    {
+        return new CustomCurve(definition, startPoint, climbMin, climbMax);
+    }
 }

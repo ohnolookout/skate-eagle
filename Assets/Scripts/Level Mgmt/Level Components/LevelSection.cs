@@ -40,7 +40,7 @@ public class LevelSection
 
     private void NameCurve(CurveDefinition curve)
     {
-        string name = $"{curve.Peak.Length} {curve.Peak.Slope} {curve.Peak.Shape} {curve.Peak.Skew}";
+        string name = $"{curve.Peak.Length} {curve.Peak.Slope} {curve.Peak.Shape}";
         curve.Name = name;
     }
 
@@ -142,9 +142,9 @@ public class LevelSection
         HalfCurveDefinition peak1 = new(LengthType.Short, ShapeType.HardPeak, SlopeType.Steep, SkewType.Center);
         HalfCurveDefinition peak2 = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
         HalfCurveDefinition peak3 = new(LengthType.Long, ShapeType.SoftTable, SlopeType.Gentle, SkewType.Center);
-        CurveDefinition curve1 = new("curve1", valley, peak1, 5, 2);
-        CurveDefinition curve2 = new("curve2", valley, peak2, 1, 1);
-        CurveDefinition curve3 = new("curve3", valley, peak2, 1, 1);
+        CurveDefinition curve1 = new("curve1", new[] { valley, peak1 }, 5, 2);
+        CurveDefinition curve2 = new("curve2", new[] { valley, peak2 }, 1, 1);
+        CurveDefinition curve3 = new("curve3", new[] { valley, peak3 }, 1, 1);
         CurveDefinition lastCurve = new();
         int consecCount = 0;
 

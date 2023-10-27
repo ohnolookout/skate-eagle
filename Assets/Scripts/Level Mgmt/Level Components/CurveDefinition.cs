@@ -6,23 +6,24 @@ using System;
 public class CurveDefinition
 {
     [HideInInspector] public string _name;
-    public HalfCurveDefinition _valleyDefinition, _peakDefinition;
+    public HalfCurveDefinition[] _definitions;
     public int _quantity, _maxConsecutive;
 
-    public CurveDefinition(string name, HalfCurveDefinition valleyDefinition, HalfCurveDefinition peakDefinition, int quantity = 1, int maxConsecutive = 2)
+
+    public CurveDefinition(string name, HalfCurveDefinition[] definitions, int quantity = 1, int maxConsecutive = 2)
     {
         _name = name;
-        _valleyDefinition = valleyDefinition;
-        _peakDefinition = peakDefinition;
+        _definitions = definitions;
         _quantity = quantity;
-        _maxConsecutive = 2;
+        _maxConsecutive = maxConsecutive;
     }
 
     public CurveDefinition()
     {
         _name = "Default Curve";
-        _valleyDefinition = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
-        _peakDefinition = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        HalfCurveDefinition peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        _definitions = new[] { valley, peak };
         _quantity = 1;
     }
 
@@ -31,11 +32,19 @@ public class CurveDefinition
         _name = newName;
     }
 
-    public HalfCurveDefinition[] DefinitionsAsArray
+    public HalfCurveDefinition[] Array
     {
         get
         {
-            return new HalfCurveDefinition[2] { _valleyDefinition, _peakDefinition };
+            return _definitions;
+        }
+    }
+
+    public HalfCurveDefinition[] Definitions
+    {
+        get
+        {
+            return _definitions;
         }
     }
 
@@ -43,7 +52,7 @@ public class CurveDefinition
     {
         get
         {
-            return _valleyDefinition;
+            return Definitions[0];
         }
     }
 
@@ -51,7 +60,7 @@ public class CurveDefinition
     {
         get
         {
-            return _peakDefinition;
+            return Definitions[1];
         }
     }
 
