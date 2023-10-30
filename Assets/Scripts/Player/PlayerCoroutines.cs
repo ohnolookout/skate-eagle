@@ -85,6 +85,7 @@ public class PlayerCoroutines : MonoBehaviour
         yield return new WaitForSeconds(0.2f); 
         rigidEagle.centerOfMass = new Vector2(0, 0f);
         eagleScript.Airborne = true;
+        eagleScript.playerAudio.Airborne();
         StopCoroutine(eagleScript.dampen);
         if (eagleScript.JumpCount < 1)
         {

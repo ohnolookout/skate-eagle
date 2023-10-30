@@ -21,11 +21,11 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
-                DestroyImmediate(this);
+                DestroyImmediate(gameObject);
                 return;
             }
 #endif
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         instance = this;
