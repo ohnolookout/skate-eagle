@@ -1,68 +1,55 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerCoroutines : MonoBehaviour
+public static class PlayerCoroutines
 {
-    public EagleScript eagleScript;
-    public LiveRunManager logic;
-    public Rigidbody2D rigidEagle;
-    public GameObject boostTrail;
-    public TrailRenderer trail;
-    public bool dampening = false, checkingForSecondJump = false, delayedDampenJump = false, countingDownJump = false;
     public enum EagleCoroutines { Stomp, Dampen, JumpCountDelay, BoostTrail, EndFlip, DelayedFreeze, AddBoost }
-    void Start()
-    {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-    }
+    public static bool Stomping = false, CountingDownJump = false, CheckingForSecondJump = false, DelayedSecondJump = false;
 
-    public IEnumerator Stomp()
+    public static IEnumerator Stomp(EagleScript eagleScript)
     {
-        if (logic.StompCharge < logic.StompThreshold)
-        {
-            yield break;
-        }
         eagleScript.Stomping = true;
         eagleScript.JumpCount = 2;
-        logic.StompCharge = 0;
-        rigidEagle.angularVelocity = 0;
+        Rigidbody2D rigidBody = eagleScript.rigidEagle;
+        rigidBody.angularVelocity = 0;
         float originalRotationAccel = eagleScript.rotationAccel;
         eagleScript.rotationAccel *= 1.5f;
         float stompTimer = 0f;
         while (stompTimer < 0.075f)
         {
-            rigidEagle.velocity -= new Vector2(rigidEagle.velocity.x * 0.1f, rigidEagle.velocity.y * 0.4f);
+            rigidBody.velocity -= new Vector2(rigidBody.velocity.x * 0.1f, rigidBody.velocity.y * 0.4f);
             stompTimer += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-        rigidEagle.centerOfMass = new Vector2(0, -2f);
-        while (rigidEagle.velocity.y > eagleScript.stompSpeedLimit && !eagleScript.Collided)
+        rigidBody.centerOfMass = new Vector2(0, -2f);
+        while (rigidBody.velocity.y > eagleScript.stompSpeedLimit && !eagleScript.Collided)
         {
-            rigidEagle.velocity -= new Vector2(0, 0.15f * Mathf.Abs(rigidEagle.velocity.y));
-            rigidEagle.velocity = new Vector2(rigidEagle.velocity.x, Mathf.Clamp(rigidEagle.velocity.y, eagleScript.stompSpeedLimit, -64));
+            rigidBody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(rigidBody.velocity.y));
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Clamp(rigidBody.velocity.y, eagleScript.stompSpeedLimit, -64));
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitUntil(() => eagleScript.Collided);
         eagleScript.Stomping = false;
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(AddBoost(eagleScript.flipBoost, 1.8f));
+        eagleScript.TriggerBoost(eagleScript.flipBoost, 1.8f);
         eagleScript.rotationAccel = originalRotationAccel;
     }
 
 
-    public IEnumerator DampenLanding()
+    public static IEnumerator DampenLanding(Rigidbody2D rigidBody)
     {
-        rigidEagle.angularVelocity = Mathf.Clamp(rigidEagle.angularVelocity, -300, 300);
+        rigidBody.angularVelocity = Mathf.Clamp(rigidBody.angularVelocity, -300, 300);
         float timer = 0;
         int underThresholdCount = 0;
         float threshold = 180;
-        dampening = true;
+        //eagleScript.dampening = true;
         while (timer < 0.2f && underThresholdCount < 2)
         {
-            if (Mathf.Abs(rigidEagle.angularVelocity) > 60)
+            if (Mathf.Abs(rigidBody.angularVelocity) > 60)
             {
-                rigidEagle.angularVelocity *= 0.3f;
+                rigidBody.angularVelocity *= 0.3f;
             }
-            if (rigidEagle.angularVelocity < threshold)
+            if (rigidBody.angularVelocity < threshold)
             {
                 underThresholdCount++;
             }
@@ -74,32 +61,29 @@ public class PlayerCoroutines : MonoBehaviour
             yield return new WaitForFixedUpdate();
 
         }
-        rigidEagle.centerOfMass = new Vector2(0, -2f);
-        dampening = false;
+        rigidBody.centerOfMass = new Vector2(0, -2f);
+        //eagleScript.dampening = false;
     }
 
 
-    public IEnumerator JumpCountDelay()
+    public static IEnumerator JumpCountDelay(EagleScript eagleScript)
     {
-        countingDownJump = true;
-        yield return new WaitForSeconds(0.2f); 
-        rigidEagle.centerOfMass = new Vector2(0, 0f);
-        eagleScript.Airborne = true;
-        //eagleScript.playerAudio.Airborne();
-        StopCoroutine(eagleScript.dampen);
+        CountingDownJump = true;
+        yield return new WaitForSeconds(0.2f);
         if (eagleScript.JumpCount < 1)
         {
             eagleScript.JumpCount = 1;
+            eagleScript.Airborne = true;
         }
-        countingDownJump = false;
+        CountingDownJump = false;
     }
 
-    public IEnumerator BoostTrail()
+    public static IEnumerator BoostTrail(TrailRenderer trail, bool directionIsForward)
     {
-        Vector3 originalPosition = boostTrail.transform.localPosition;
-        if (!eagleScript.DirectionForward)
+        Vector3 originalPosition = trail.transform.localPosition;
+        if (!directionIsForward)
         {
-            boostTrail.transform.localPosition = new Vector3(-boostTrail.transform.localPosition.x, boostTrail.transform.localPosition.y);
+            trail.transform.localPosition = new Vector3(-trail.transform.localPosition.x, trail.transform.localPosition.y);
         }
         float maxTime = 0.08f;
         float currentTime = 0;
@@ -107,10 +91,6 @@ public class PlayerCoroutines : MonoBehaviour
         trail.emitting = true;
         while (currentTime < maxTime)
         {
-            if (logic.runState != RunState.Active)
-            {
-                trail.emitting = false;
-            }
             currentTime += Time.deltaTime;
             trail.time = currentTime;
             yield return null;
@@ -118,57 +98,54 @@ public class PlayerCoroutines : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         while (currentTime > 0)
         {
-            if (logic.runState != RunState.Active)
-            {
-                trail.emitting = false;
-            }
             currentTime -= Time.deltaTime / 2;
             trail.time = currentTime;
             yield return null;
         }
         trail.emitting = false;
-        boostTrail.transform.localPosition = originalPosition;
+        trail.transform.localPosition = originalPosition;
     }
 
-    public IEnumerator CheckForSecondJump()
+    public static IEnumerator CheckForSecondJump(EagleScript eagleScript)
     {
-        checkingForSecondJump = true;
+        CheckingForSecondJump = true;
         float timer = 0;
         while (timer < 0.2f)
         {
-            if (eagleScript.JumpCount == 2 && !delayedDampenJump)
+            if (eagleScript.JumpCount == 2)
             {
-                rigidEagle.AddForce(new Vector2(0, eagleScript.jumpForce * 300 * eagleScript.jumpMultiplier));
+                eagleScript.rigidEagle.AddForce(new Vector2(0, eagleScript.jumpForce * 300 * eagleScript.jumpMultiplier));
                 break;
             }
             //if second jump, don't dampen first or second jump
             timer += Time.deltaTime;
             yield return null;
         }
-        checkingForSecondJump = false;
+        CheckingForSecondJump = false;
     }
 
-    public IEnumerator DelayedJump(float delayTimeInSeconds)
+    public static IEnumerator DelayedJump(EagleScript eagleScript, float delayTimeInSeconds)
     {
         yield return new WaitForSeconds(delayTimeInSeconds);
         eagleScript.Jump();
     }
 
-    public IEnumerator SlowToStop()
+    public static IEnumerator SlowToStop(EagleScript eagleScript)
     {
+        Rigidbody2D rigidbody = eagleScript.rigidEagle;
         int frameCount = 0;
-        while (rigidEagle.velocity.x > 0.1f)
+        while (rigidbody.velocity.x > 0.1f)
         {
             frameCount++;
-            if (Mathf.Abs(rigidEagle.velocity.x) < 1 && Mathf.Abs(rigidEagle.velocity.y) < 1)
+            if (Mathf.Abs(rigidbody.velocity.x) < 1 && Mathf.Abs(rigidbody.velocity.y) < 1)
             {
-                rigidEagle.velocity = new Vector2(0, 0);
+                rigidbody.velocity = new Vector2(0, 0);
             }
             else
             {
-                rigidEagle.velocity -= rigidEagle.velocity * 0.08f;
+                rigidbody.velocity -= rigidbody.velocity * 0.08f;
             }
-            if (rigidEagle.velocity.x < 10f && eagleScript.animator.GetBool("OnBoard"))
+            if (rigidbody.velocity.x < 10f && eagleScript.animator.GetBool("OnBoard"))
             {
                 eagleScript.Dismount();
             }
@@ -177,49 +154,46 @@ public class PlayerCoroutines : MonoBehaviour
     }
 
 
-    public IEnumerator DelayedJumpDampen(float delayTimerInSeconds)
+    public static IEnumerator DelayedJumpDampen(EagleScript eagleScript, float delayTimerInSeconds)
     {
         yield return new WaitForSeconds(delayTimerInSeconds);
-        rigidEagle.AddForce(new Vector2(0, -eagleScript.jumpForce * 250 * eagleScript.jumpMultiplier));
+        eagleScript.rigidEagle.AddForce(new Vector2(0, -eagleScript.jumpForce * 250 * eagleScript.jumpMultiplier));
 
     }
 
-    public IEnumerator EndFlip(float flipDelay, double spins)
+    public static IEnumerator EndFlip(EagleScript eagleScript, float flipDelay, double spins)
     {
         yield return new WaitForSeconds(flipDelay * 0.1f);
-        if (logic.runState != RunState.Active)
+        if (eagleScript.logic.runState != RunState.Active)
         {
             yield break;
         }
-        if (logic.StompCharge < logic.StompThreshold)
+        if (eagleScript.logic.StompCharge < eagleScript.logic.StompThreshold)
         {
-            logic.StompCharge += (int)spins;
+            eagleScript.logic.StompCharge += (int)spins;
         }
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
-        StartCoroutine(AddBoost(eagleScript.flipBoost, boostMultiplier));
+        eagleScript.TriggerBoost(eagleScript.flipBoost, boostMultiplier);
     }
 
-    public IEnumerator DelayedFreeze(float timer)
+    public static IEnumerator DelayedFreeze(EagleScript eagleScript, float timer)
     {
         yield return new WaitForSeconds(timer);
-        rigidEagle.bodyType = RigidbodyType2D.Kinematic;
-        rigidEagle.velocity = new Vector2(0, 0);
-        rigidEagle.freezeRotation = true;
+        eagleScript.rigidEagle.bodyType = RigidbodyType2D.Kinematic;
+        eagleScript.rigidEagle.velocity = new Vector2(0, 0);
+        eagleScript.rigidEagle.freezeRotation = true;
         eagleScript.Die();
     }
 
-    public IEnumerator AddBoost(float boostValue, float boostMultiplier)
+    public static IEnumerator AddBoost(Rigidbody2D rigidBody, float boostValue, float boostMultiplier)
     {
-        StartCoroutine(BoostTrail());
         float boostCount = 0;
         while (boostCount < 4)
         {
             boostCount++;
-            rigidEagle.AddForce(new Vector2(boostValue * boostMultiplier, 0));
+            rigidBody.AddForce(new Vector2(boostValue * boostMultiplier, 0));
             yield return new WaitForFixedUpdate();
         }
     }
-
-    public bool stomping = false;
 
 }

@@ -6,19 +6,17 @@ public class EagleScript : MonoBehaviour
 {
     public Rigidbody2D rigidEagle;
     public Animator animator;
-    [HideInInspector] public float rotationSpeed = 0;
-    [HideInInspector] public float jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
+    [HideInInspector] public float rotationSpeed = 0, jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
     private int jumpCount = 0, jumpLimit = 2;
-    private bool airborne = false, stomping = false, facingForward = true, crouched = false;
+    private bool airborne = false, facingForward = true, crouched = false;
     private IEnumerator jumpCoroutine, stompCoroutine, trailCoroutine;
     public IEnumerator dampen;
     public LiveRunManager logic;
     public FlipTextGenerator textGen;
     public TrailRenderer trail;
     public PlayerController playerController;
-    public PlayerCoroutines coroutines;
     public PlayerAudio playerAudio;
     [SerializeField] private CollisionTracker collisionTracker;
 
@@ -38,10 +36,10 @@ public class EagleScript : MonoBehaviour
     private void AssignComponents()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        jumpCoroutine = coroutines.JumpCountDelay();
-        stompCoroutine = coroutines.Stomp();
-        dampen = coroutines.DampenLanding();
-        trailCoroutine = coroutines.BoostTrail();
+        jumpCoroutine = PlayerCoroutines.JumpCountDelay(this);
+        stompCoroutine = PlayerCoroutines.Stomp(this);
+        dampen = PlayerCoroutines.DampenLanding(rigidEagle);
+        trailCoroutine = PlayerCoroutines.BoostTrail(trail, DirectionForward);
     }
 
     void Update()
@@ -74,8 +72,9 @@ public class EagleScript : MonoBehaviour
         if (playerController.stomp)
         {
             playerController.stomp = false;
-            if (logic.StompCharge == logic.StompThreshold)
+            if (logic.StompCharge >= logic.StompThreshold)
             {
+                logic.StompCharge = 0;
                 Stomp();
             }
         }
@@ -90,7 +89,7 @@ public class EagleScript : MonoBehaviour
         {
             return;
         }
-        if (playerController.down && !stomping)
+        if (playerController.down && !PlayerCoroutines.Stomping)
         {
             rigidEagle.AddForce(new Vector2(0, -downForce * 20));
         }
@@ -101,7 +100,7 @@ public class EagleScript : MonoBehaviour
 
     public void Stomp()
     {
-        stompCoroutine = coroutines.Stomp();
+        stompCoroutine = PlayerCoroutines.Stomp(this);
         StartCoroutine(stompCoroutine);
     }
 
@@ -116,7 +115,7 @@ public class EagleScript : MonoBehaviour
         float timeSinceLastJump = Time.time - jumpStartTime;
         if (jumpCount > 0 && timeSinceLastJump < jumpDuration)
         {
-            StartCoroutine(coroutines.DelayedJump(jumpDuration - timeSinceLastJump));
+            StartCoroutine(PlayerCoroutines.DelayedJump(this, jumpDuration - timeSinceLastJump));
         }
         else
         {
@@ -133,17 +132,18 @@ public class EagleScript : MonoBehaviour
         jumpMultiplier = 1 - (jumpCount * 0.25f);
         playerAudio.Jump(jumpCount);
         jumpStartTime = Time.time;
-        collisionTracker.RemoveAllCollisions();
         if (rigidEagle.velocity.y < 0)
         {
             rigidEagle.velocity = new Vector2(rigidEagle.velocity.x, 0);
         }
-        if (!airborne)
+        if (jumpCount == 0)
         {
             rigidEagle.angularVelocity *= 0.1f;
             rigidEagle.centerOfMass = new Vector2(0, 0.0f);
         }
         rigidEagle.AddForce(new Vector2(0, jumpForce * 1000 * jumpMultiplier));
+        collisionTracker.RemoveAllCollisions();
+        airborne = true;
     }
 
     public void JumpRelease()
@@ -159,11 +159,11 @@ public class EagleScript : MonoBehaviour
             }
             else
             {
-                StartCoroutine(coroutines.DelayedJumpDampen(scaledMinimumJumpDuration - timeChange));
+                StartCoroutine(PlayerCoroutines.DelayedJumpDampen(this, scaledMinimumJumpDuration - timeChange));
             }
             if (jumpCount == 1)
             {
-                StartCoroutine(coroutines.CheckForSecondJump());
+                StartCoroutine(PlayerCoroutines.CheckForSecondJump(this));
             }
         }
     }
@@ -174,19 +174,19 @@ public class EagleScript : MonoBehaviour
         {
             return;
         }
-        collisionTracker.UpdateCollision(collision, true);
-        if (coroutines.countingDownJump)
+        /*
+        if (PlayerCoroutines.CountingDownJump)
         {
             StopCoroutine(jumpCoroutine);
-            coroutines.countingDownJump = false;
-        }
+            PlayerCoroutines.CountingDownJump = false;
+        }*/
         jumpCount = 0;
-        if (airborne)
+        if (!Collided)
         {
             animator.SetFloat("forceDelta", ForceDelta);
             animator.SetTrigger("Land");
             StopCoroutine(dampen);
-            dampen = coroutines.DampenLanding();
+            dampen = PlayerCoroutines.DampenLanding(rigidEagle);
             StartCoroutine(dampen);
         }
         airborne = false;
@@ -195,18 +195,21 @@ public class EagleScript : MonoBehaviour
             Die();
             return;
         }
+        collisionTracker.UpdateCollision(collision, true);
 
         FlipCheck();
 
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
-        airborne = false;
+        //airborne = false;
+        /*
+         * UNCOMMENT IF LOSING SECOND JUMP
         if (coroutines.countingDownJump)
         {
             StopCoroutine(jumpCoroutine);
             coroutines.countingDownJump = false;
-        }
+        }*/
         if (logic.runState == RunState.GameOver)
         {
             rigidEagle.velocity *= 1 - (Time.deltaTime);
@@ -218,11 +221,11 @@ public class EagleScript : MonoBehaviour
     {
         collisionTracker.UpdateCollision(collision, false);
         rotationStart = rigidEagle.rotation;
-        if (!coroutines.countingDownJump)
+        /*if (!PlayerCoroutines.CountingDownJump)
         {
-            jumpCoroutine = coroutines.JumpCountDelay();
+            jumpCoroutine = PlayerCoroutines.JumpCountDelay(this);
             StartCoroutine(jumpCoroutine);
-        }
+        }*/
     }
 
 
@@ -245,7 +248,7 @@ public class EagleScript : MonoBehaviour
         animator.SetBool("FacingForward", facingForward);
         animator.SetBool("Airborne", airborne);
         animator.SetBool("Crouched", playerController.down);
-        if (airborne)
+        if (!Collided)
         {
             animator.SetBool("AirborneUp", rigidEagle.velocity.y >= 0);
         }
@@ -254,9 +257,17 @@ public class EagleScript : MonoBehaviour
 
     public void SlowToStop()
     {
+        StopCoroutine(trailCoroutine);
+        trail.emitting = false;
         playerAudio.Finish();
         animator.SetTrigger("Brake");
-        StartCoroutine(coroutines.SlowToStop());
+        StartCoroutine(PlayerCoroutines.SlowToStop(this));
+    }
+
+    public void TriggerBoost(float boostValue, float boostMultiplier)
+    {
+        StartCoroutine(PlayerCoroutines.AddBoost(rigidEagle, boostValue, boostMultiplier));
+        StartCoroutine(PlayerCoroutines.BoostTrail(trail, DirectionForward));
     }
 
 
@@ -301,7 +312,7 @@ public class EagleScript : MonoBehaviour
 
     public void Fall()
     {
-        StartCoroutine(coroutines.DelayedFreeze(0.5f));
+        StartCoroutine(PlayerCoroutines.DelayedFreeze(this, 0.5f));
         logic.runState = RunState.Fallen;
     }
 
@@ -312,7 +323,7 @@ public class EagleScript : MonoBehaviour
         if (spins >= 1 && logic.runState != RunState.GameOver)
         {
             textGen.NewFlipText(spins);
-            StartCoroutine(coroutines.EndFlip(flipDelay, spins));
+            StartCoroutine(PlayerCoroutines.EndFlip(this, flipDelay, spins));
         }
     }
 
@@ -341,6 +352,11 @@ public class EagleScript : MonoBehaviour
         set
         {
             airborne = value;
+            if(value == true)
+            {
+                StopCoroutine(dampen);
+                rigidEagle.centerOfMass = new Vector2(0, 0f);
+            }
         }
     }
 
@@ -348,11 +364,11 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            return stomping;
+            return PlayerCoroutines.Stomping;
         }
         set
         {
-            stomping = value;
+            PlayerCoroutines.Stomping = value;
         }
     }
 
@@ -379,19 +395,11 @@ public class EagleScript : MonoBehaviour
         }
     }
 
-    public Vector2 LastFrameDelta
-    {
-        get
-        {
-            return new Vector2(rigidEagle.velocity.x - lastSpeed.x, rigidEagle.velocity.y - lastSpeed.y);
-        }
-    }
-
     public float ForceDelta
     {
         get
         {
-            Vector2 delta = LastFrameDelta;
+            Vector2 delta = new(rigidEagle.velocity.x - lastSpeed.x, rigidEagle.velocity.y - lastSpeed.y);
             float forceDelta = 0;
             if (lastSpeed.x > 0 && delta.x < 0)
             {

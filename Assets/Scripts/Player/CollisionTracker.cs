@@ -7,38 +7,40 @@ public enum PlayerCollider { LWheel, RWheel, Board, Body };
 public class CollisionTracker : MonoBehaviour
 {
     private List<PlayerCollider> collidedList;
-    private Dictionary<PlayerCollider, float> timerDict = new();
-    private float collisionTimer = 0.15f;
+    private OrderedDictionary<PlayerCollider, float> collisionTimes = new();
+    private float uncollideTime = 0.15f;
     [SerializeField] PlayerAudio playerAudio;
+    [SerializeField] EagleScript eagleScript;
 
 
     void Awake()
     {
         collidedList = new() { PlayerCollider.LWheel, PlayerCollider.RWheel };
+        eagleScript = gameObject.GetComponent<EagleScript>();
     }
+
+    //Set float in collisionTimers to startTime instead of current timer. Then look at currentTime-startTime.
     void Update()
     {
-        PlayerCollider[] colliders = timerDict.Keys.ToArray();
-        for(int i = 0; i < colliders.Length; i++)
+        while (collisionTimes.Count > 0)
         {
-            PlayerCollider colliderName = colliders[i];
-            timerDict[colliderName] += Time.deltaTime;
-            //Move onto next iteration if current collider is pending uncollide for less than time limit.
-            if (timerDict[colliderName] < collisionTimer)
+            if (Time.time - collisionTimes.Value(0) < uncollideTime)
             {
-                continue;
+                break;
             }
-            //If collider waiting to uncollide exceeds time limit, remove it from collided list and timer dict.
-            collidedList.Remove(colliderName);
-            timerDict.Remove(colliderName);
-            //If wheel was removed from collided list and both wheels are no longer collided, start freespin sound.
-            playerAudio.Uncollide(colliderName);
+            collidedList.Remove(collisionTimes.Key(0));
+            playerAudio.Uncollide(collisionTimes.Key(0));
+            collisionTimes.Remove(0);
+            if(collidedList.Count == 0)
+            {
+                eagleScript.JumpCount = 1;
+            }
         }
     }
 
     public void SetCollisionTimer(float newTimer)
     {
-        collisionTimer = newTimer;
+        uncollideTime = newTimer;
     }
 
     public void UpdateCollision(Collision2D collision, bool isCollided)
@@ -47,14 +49,14 @@ public class CollisionTracker : MonoBehaviour
         //If collision exit, add collider to timerDict to register collision exit after delay.
         if (!isCollided)
         {
-            timerDict[collider] = 0;
+            collisionTimes.Add(collider, Time.time);
             return;
         }
         //If collision enter and collider is already on collider list,
         //remove it from timerDict of collisions pending removal so that timer stops
         if(collidedList.Contains(collider))
         {
-            timerDict.Remove(collider);
+            collisionTimes.Remove(collider);
             return;
         }
         playerAudio.Collide(collider);
@@ -65,8 +67,8 @@ public class CollisionTracker : MonoBehaviour
 
     public void RemoveAllCollisions()
     {
-        timerDict = new();
         collidedList = new();
+        collisionTimes = new();
     }
 
     private PlayerCollider ParseCollider(Collision2D collision)
@@ -131,6 +133,18 @@ public class CollisionTracker : MonoBehaviour
         get
         {
             return collidedList.Count > 0;
+        }
+    }
+
+    private struct TimedCollision
+    {
+        public PlayerCollider colliderName;
+        public float collisionTime;
+
+        public TimedCollision(PlayerCollider name, float time)
+        {
+            colliderName = name;
+            collisionTime = time;
         }
     }
 }
