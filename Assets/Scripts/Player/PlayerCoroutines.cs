@@ -85,7 +85,7 @@ public class PlayerCoroutines : MonoBehaviour
         yield return new WaitForSeconds(0.2f); 
         rigidEagle.centerOfMass = new Vector2(0, 0f);
         eagleScript.Airborne = true;
-        eagleScript.playerAudio.Airborne();
+        //eagleScript.playerAudio.Airborne();
         StopCoroutine(eagleScript.dampen);
         if (eagleScript.JumpCount < 1)
         {
@@ -156,17 +156,23 @@ public class PlayerCoroutines : MonoBehaviour
 
     public IEnumerator SlowToStop()
     {
-        while (rigidEagle.velocity.x != 0)
+        int frameCount = 0;
+        while (rigidEagle.velocity.x > 0.1f)
         {
+            frameCount++;
             if (Mathf.Abs(rigidEagle.velocity.x) < 1 && Mathf.Abs(rigidEagle.velocity.y) < 1)
             {
-                rigidEagle.velocity *= 0;
+                rigidEagle.velocity = new Vector2(0, 0);
             }
             else
             {
-                rigidEagle.velocity -= rigidEagle.velocity * 4 * Time.deltaTime;
+                rigidEagle.velocity -= rigidEagle.velocity * 0.08f;
             }
-            yield return null;
+            if (rigidEagle.velocity.x < 10f && eagleScript.animator.GetBool("OnBoard"))
+            {
+                eagleScript.Dismount();
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
 

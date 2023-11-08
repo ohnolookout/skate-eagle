@@ -1209,7 +1209,7 @@ GameObject:
   - component: {fileID: 7609180271326240787}
   - component: {fileID: 8888236185157795164}
   m_Layer: 3
-  m_Name: WheelsCollider
+  m_Name: LWheelCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1263,7 +1263,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3480615950351611755}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 09b6d926f0d147e48bb20db2ff9ae645, type: 2}
   m_IsTrigger: 0
@@ -2105,7 +2105,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4874717933150457658}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &9180578309089200447
 BoxCollider2D:
@@ -2151,6 +2151,7 @@ GameObject:
   - component: {fileID: 5603919523911398314}
   - component: {fileID: 4674152064080632777}
   - component: {fileID: 1340608751}
+  - component: {fileID: 4471801078690981672}
   m_Layer: 3
   m_Name: Skate Eagle
   m_TagString: Player
@@ -2176,6 +2177,7 @@ Transform:
   - {fileID: 174925021298833518}
   - {fileID: 6761251144833014023}
   - {fileID: 7897843644408265201}
+  - {fileID: 4713306974541472272}
   - {fileID: 6632986102101606391}
   - {fileID: 5876770833193495684}
   - {fileID: 322709435877412731}
@@ -2487,7 +2489,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 63784
+  m_InstanceId: 34632
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2516,7 +2518,20 @@ MonoBehaviour:
   playerController: {fileID: 7546833667872202176}
   coroutines: {fileID: 7090149600255550064}
   playerAudio: {fileID: 2792353338576465276}
+  collisionTracker: {fileID: 4471801078690981672}
   jumpMultiplier: 1
+--- !u!114 &4471801078690981672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6011852464375175001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536b5c7d951dcc84ca30ef6f403e220a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6091589263151592812
 GameObject:
   m_ObjectHideFlags: 0
@@ -3422,6 +3437,91 @@ Transform:
   m_Father: {fileID: 4640673693066785738}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6197938643186264517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4713306974541472272}
+  - component: {fileID: 6062171441053050126}
+  - component: {fileID: 477847335940308920}
+  m_Layer: 3
+  m_Name: RWheelCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4713306974541472272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197938643186264517}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4874717933150457658}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &6062171441053050126
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197938643186264517}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 09b6d926f0d147e48bb20db2ff9ae645, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -1.39, y: -3.09}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.5}
+  m_EdgeRadius: 0
+--- !u!61 &477847335940308920
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197938643186264517}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 09b6d926f0d147e48bb20db2ff9ae645, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 1.21, y: -3.09}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.5}
+  m_EdgeRadius: 0
 --- !u!1 &6489789948374711380
 GameObject:
   m_ObjectHideFlags: 0
@@ -3668,7 +3768,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4874717933150457658}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2792353338576465276
 MonoBehaviour:
@@ -3683,73 +3783,84 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roll:
-    name: 
-    clips: []
-    loop: 0
-    volume: 0
-    pitch: 0
+    name: Roll
+    clips:
+    - {fileID: 8300000, guid: 241711023203d9a459207914daeb75fd, type: 3}
+    - {fileID: 8300000, guid: eb7a60bd85a856f4cb08209dc921595d, type: 3}
+    loop: 1
+    volume: 0.2
+    pitch: 1
     randomize: 0
     source: {fileID: 0}
   wind:
-    name: 
+    name: Wind
     clips: []
     loop: 0
-    volume: 0
-    pitch: 0
+    volume: 0.5
+    pitch: 1
     randomize: 0
     source: {fileID: 0}
   fxDict:
     _serializedList:
     - Key: 0
       Value:
-        name: 
-        clips: []
+        name: Jump
+        clips:
+        - {fileID: 8300000, guid: ddd24173aa9eaa84fab433d171424b45, type: 3}
         loop: 0
-        volume: 0
-        pitch: 0
+        volume: 0.2
+        pitch: 1
         randomize: 0
         source: {fileID: 0}
     - Key: 1
       Value:
-        name: 
-        clips: []
+        name: Fall
+        clips:
+        - {fileID: 8300000, guid: 10f9be0b447fa6244bd41ee45fbae6df, type: 3}
+        - {fileID: 8300000, guid: 9e15b37c81eadce4c8a7cc7fc695bbd0, type: 3}
         loop: 0
-        volume: 0
-        pitch: 0
-        randomize: 0
+        volume: 0.3
+        pitch: 1
+        randomize: 1
         source: {fileID: 0}
     - Key: 2
       Value:
-        name: 
+        name: Push
         clips: []
         loop: 0
-        volume: 0
-        pitch: 0
+        volume: 0.5
+        pitch: 1
         randomize: 0
         source: {fileID: 0}
     - Key: 3
       Value:
-        name: 
-        clips: []
+        name: Land
+        clips:
+        - {fileID: 8300000, guid: d37c899a3614ccd498ff1bef2b9b1acf, type: 3}
+        - {fileID: 8300000, guid: b0858790806d8724bbd487fb080a86e0, type: 3}
         loop: 0
-        volume: 0
-        pitch: 0
-        randomize: 0
+        volume: 0.2
+        pitch: 1
+        randomize: 1
         source: {fileID: 0}
     - Key: 4
       Value:
-        name: 
-        clips: []
+        name: Slide
+        clips:
+        - {fileID: 8300000, guid: bafb7978a9573ad4ea99fa560389f45f, type: 3}
+        - {fileID: 8300000, guid: 5ea6061f319eb184a839618fd92cfa56, type: 3}
         loop: 0
-        volume: 0
-        pitch: 0
-        randomize: 0
+        volume: 0.3
+        pitch: 1
+        randomize: 1
         source: {fileID: 0}
   rollSource: {fileID: 5802956974360164987}
   windSource: {fileID: 5432258690896923528}
   effectSource: {fileID: 378741949416408154}
-  rolling: 0
-  eagleBody: {fileID: 6091589263621437131}
+  wheelsOnGround: 0
+  fadingRoll: 0
+  eagleScript: {fileID: 1340608751}
+  runManager: {fileID: 0}
 --- !u!82 &5802956974360164987
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3762,9 +3873,9 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.505
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -4438,7 +4549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
       propertyPath: m_AnchorMax.x

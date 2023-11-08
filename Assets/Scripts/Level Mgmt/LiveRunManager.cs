@@ -107,6 +107,7 @@ public class LiveRunManager : MonoBehaviour
     {
         runState = RunState.Finished;
         float finishTime = overlay.StopTimer();
+        overlay.ActivateControls(false);
         FinishScreenData finishData = FinishUtility.GenerateFinishData(gameManager.CurrentLevel, gameManager.CurrentPlayerRecord, finishTime);
         overlay.GenerateFinishScreen(finishData);
         gameManager.UpdateRecord(finishData);
@@ -121,6 +122,7 @@ public class LiveRunManager : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
         }
+        yield return new WaitForSeconds(0.75f);
         overlay.ActivateFinishScreen();
     }
 

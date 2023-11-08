@@ -9,9 +9,13 @@ public class Sound
     public AudioClip[] clips;
     public bool loop;
     [Range(0f, 1f)]
-    public float volume;
+    public float volume = 0.5f;
     [Range(.1f, 3f)]
-    public float pitch;
+    public float pitch = 1;
+    [Range(0f, 1f)]
+    public float volumeVariance = 1;
+    [Range(0f, 1f)]
+    public float pitchVariance = 1;
     public bool randomize = false;
     [HideInInspector] public AudioSource source;
 
@@ -33,5 +37,24 @@ public class Sound
             return clips[0];
         }
         return clips[Random.Range(0, clips.Length)];
+    }
+
+    //Takes intensity between -1 and 1, applies it to variance and adds it to volume.
+    public float AdjustedVolume(float intensity)
+    {
+#if UNITY_EDITOR
+        if (Mathf.Abs(intensity) > 1)
+        {
+            Debug.LogWarning($"Intensity for adjusted volume in sound {name} is too big: {intensity}");
+        }
+#endif
+        /*Debug.Log($"Adjusting volume for {name}. Volume: {volume} Variance: {volumeVariance} Intensity: {intensity}");
+        Debug.Log($"Result: {volume + (volumeVariance * intensity)}");*/
+        return volume + (volumeVariance * intensity);
+    }
+
+    public float AdjustedPitch(float intensity)
+    {
+        return pitch + (pitchVariance * intensity);
     }
 }

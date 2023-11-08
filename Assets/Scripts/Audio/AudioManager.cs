@@ -110,19 +110,7 @@ public class AudioManager : MonoBehaviour
         sound.source.pitch = sound.pitch;
     }
 
-    public static void LoadSoundToSource(Sound sound, int? clipIndex = null)
-    {
-#if UNITY_EDITOR
-        if(sound.source == null)
-        {
-            Debug.LogWarning($"Sound {sound.name} has no source!");
-            return;
-        }
-#endif
-        LoadSoundToSource(sound, sound.source, clipIndex);
-    }
-
-    public static void LoadSoundToSource(Sound sound, AudioSource source, int? clipIndex = null)
+    public static void LoadSoundToSource(Sound sound, AudioSource source, float volMultiplier = 0, int? clipIndex = null)
     {
         if (clipIndex != null)
         {
@@ -132,8 +120,22 @@ public class AudioManager : MonoBehaviour
         {
             source.clip = sound.Clip();
         }
-        source.volume = sound.volume;
+        source.volume = sound.volume * volMultiplier;
         source.loop = sound.loop;
         source.pitch = sound.pitch;
     }
+
+    public static void LoadSoundToSource(Sound sound, float volMultiplier = 0, int? clipIndex = null)
+    {
+#if UNITY_EDITOR
+        if(sound.source == null)
+        {
+            Debug.LogWarning($"Sound {sound.name} has no source!");
+            return;
+        }
+#endif
+        LoadSoundToSource(sound, sound.source, volMultiplier, clipIndex);
+    }
+
+    
 }
