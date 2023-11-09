@@ -33,7 +33,7 @@ public class CollisionTracker : MonoBehaviour
             collisionTimes.Remove(0);
             if(collidedList.Count == 0)
             {
-                eagleScript.JumpCount = 1;
+                eagleScript.GoAirborne();
             }
         }
     }

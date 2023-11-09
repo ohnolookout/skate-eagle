@@ -46,14 +46,6 @@ public class PlayerAudio : MonoBehaviour
         {
             return;
         }
-        if(wheelTimer >= 0)
-        {
-            wheelTimer += Time.deltaTime;
-            if(wheelTimer >= wheelTimeLimit)
-            {
-                wheelTimer = -1;
-            }
-        }
         //rollIntensity ranges from -1 to 1
         rollIntensity = -1 + Mathf.Clamp(eagleScript.Velocity.magnitude / intensityDenominator, 0, 2);
         //Calculate loop sources' volumes such that the current clips' volume sits at the center of possible ranges.        
@@ -64,6 +56,7 @@ public class PlayerAudio : MonoBehaviour
         }
         windBoardLoopSource.volume = loopDict[currentLoopDict[windBoardLoopSource]].AdjustedVolume(rollIntensity);
         windBoardLoopSource.pitch = loopDict[currentLoopDict[windBoardLoopSource]].AdjustedPitch(rollIntensity);
+        UpdateWheelTimer();
     }
     public void PlayOneShot(OneShotFX effectName)
     {
@@ -134,7 +127,6 @@ public class PlayerAudio : MonoBehaviour
 
     public void Collide(PlayerCollider colliderName)
     {
-
         switch (colliderName)
         {
             case PlayerCollider.LWheel:
@@ -320,5 +312,18 @@ public class PlayerAudio : MonoBehaviour
     {
         return (Mathf.Log(1 / xVelocity) / -0.083f)/50;
         //Denominator should be equal to ln(1 - deceleration coeffeciient).
+    }
+
+    public void UpdateWheelTimer()
+    {
+        if(wheelTimer < 0)
+        {
+            return;
+        }
+        wheelTimer += Time.deltaTime;
+        if (wheelTimer >= wheelTimeLimit)
+        {
+            wheelTimer = -1;
+        }
     }
 }

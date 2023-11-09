@@ -70,6 +70,10 @@ public class LiveRunManager : MonoBehaviour
     public void StartAttempt()
     {
         overlay.StartAttempt();
+        if (startWithStomp)
+        {
+            StompCharge = 2;
+        }
         runState = RunState.Active;
         startPoint = bird.transform.position;
     }
@@ -175,7 +179,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return bird.transform.position;
+            return eagleScript.Transform.position;
         }
     }
 
@@ -184,6 +188,22 @@ public class LiveRunManager : MonoBehaviour
         get
         {
             return eagleScript.DirectionForward;
+        }
+    }
+
+    public EagleScript Player
+    {
+        get
+        {
+            return eagleScript;
+        }
+    }
+
+    public Rigidbody2D PlayerBody
+    {
+        get
+        {
+            return eagleScript.Rigidbody;
         }
     }
 

@@ -18,9 +18,6 @@ public class StompBar : MonoBehaviour
         fill = GetComponentInChildren<CutoutMask>();
 
     }
-    void Start()
-    {
-    }
 
     public void Fill(float fillAmount)
     {

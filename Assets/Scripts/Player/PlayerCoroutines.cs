@@ -42,7 +42,6 @@ public static class PlayerCoroutines
         float timer = 0;
         int underThresholdCount = 0;
         float threshold = 180;
-        //eagleScript.dampening = true;
         while (timer < 0.2f && underThresholdCount < 2)
         {
             if (Mathf.Abs(rigidBody.angularVelocity) > 60)
@@ -62,21 +61,8 @@ public static class PlayerCoroutines
 
         }
         rigidBody.centerOfMass = new Vector2(0, -2f);
-        //eagleScript.dampening = false;
     }
 
-
-    public static IEnumerator JumpCountDelay(EagleScript eagleScript)
-    {
-        CountingDownJump = true;
-        yield return new WaitForSeconds(0.2f);
-        if (eagleScript.JumpCount < 1)
-        {
-            eagleScript.JumpCount = 1;
-            eagleScript.Airborne = true;
-        }
-        CountingDownJump = false;
-    }
 
     public static IEnumerator BoostTrail(TrailRenderer trail, bool directionIsForward)
     {

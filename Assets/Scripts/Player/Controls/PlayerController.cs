@@ -57,14 +57,14 @@ public class PlayerController : MonoBehaviour
     public void OnDown(InputValue value)
     {
         down = value.isPressed;
-        if (eagleScript.Airborne && down)
+        if (!eagleScript.Collided && down)
         {
             downCount++;
             StartCoroutine(DoubleTapWindow());
         }
         if (downCount >= 2)
         {
-            if (eagleScript.Airborne)
+            if (!eagleScript.Collided)
             {
                 stomp = true;
             }
@@ -74,14 +74,14 @@ public class PlayerController : MonoBehaviour
     public void OnDown(bool isPressed)
     {
         down = isPressed;
-        if (eagleScript.Airborne && down)
+        if (!eagleScript.Collided && down)
         {
             downCount++;
             StartCoroutine(DoubleTapWindow());
         }
         if (downCount >= 2)
         {
-            if (eagleScript.Airborne)
+            if (!eagleScript.Collided)
             {
                 stomp = true;
             }
@@ -102,6 +102,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnRagdoll(InputValue value = null)
+    {
+        if ((int)logic.runState > 1)
+        {
+            eagleScript.Ragdoll();
+        }
+    }
 
 
 

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour
 {
-    private Transform bird;
-    private Rigidbody2D birdBody;
     private GroundSpawner groundSpawner;
     public Vector3 offset, lowPoint;
     public float leadingEdgeOffset = 0;
@@ -31,7 +29,7 @@ public class CameraScript : MonoBehaviour
         {
             return;
         }
-        if (Camera.main.WorldToScreenPoint(bird.position).y < 0) logic.Fall();
+        if (Camera.main.WorldToScreenPoint(logic.BirdPosition).y < 0) logic.Fall();
         UpdateZoom();
         if (logic.runState != RunState.Finished)
         {
@@ -43,6 +41,7 @@ public class CameraScript : MonoBehaviour
     {
         defaultSize = Camera.main.orthographicSize;
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        eagleScript = GameObject.FindWithTag("Player").GetComponent<EagleScript>();
         bird = GameObject.FindWithTag("Player").transform;
         groundSpawner = GameObject.FindWithTag("GroundSpawner").GetComponent<GroundSpawner>();
         birdBody = bird.GetComponent<Rigidbody2D>();
