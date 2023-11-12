@@ -19,6 +19,7 @@ public class EagleScript : MonoBehaviour
     public PlayerAudio playerAudio;
     [SerializeField] private RagdollController ragdollController;
     [SerializeField] private CollisionTracker collisionTracker;
+    [SerializeField] private Rigidbody2D ragdollBoard;
 
 
     private void Awake()
@@ -48,6 +49,7 @@ public class EagleScript : MonoBehaviour
         {
             StartCheck();
         }
+        DirectionCheck();
         if (logic.runState != RunState.Active)
         {
             return;
@@ -77,7 +79,6 @@ public class EagleScript : MonoBehaviour
                 Stomp();
             }
         }
-        DirectionCheck();
         FinishCheck();
         UpdateAnimatorParameters();
     }
@@ -200,11 +201,13 @@ public class EagleScript : MonoBehaviour
             StopCoroutine(jumpCoroutine);
             coroutines.countingDownJump = false;
         }*/
+        /*
         if (logic.runState == RunState.GameOver)
         {
-            Rigidbody.velocity *= 1 - (Time.deltaTime);
+            Rigidbody.velocity *= 0.1f * Time.deltaTime;
             return;
         }
+        */
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -220,12 +223,13 @@ public class EagleScript : MonoBehaviour
         {
             return;
         }
-        
+        collisionTracker.RemoveNonragdollColliders();
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
         textGen.CancelText();
+        ragdollController.TurnOnRagdoll(VectorChange);
+        ragdoll = true;
         logic.GameOver();
-        //ragdollController.TurnOnRagdoll();
     }
 
     private void UpdateAnimatorParameters()
@@ -272,8 +276,8 @@ public class EagleScript : MonoBehaviour
     private void DirectionCheck()
     {
         bool lastDirection = facingForward;
-        facingForward = rigidEagle.velocity.x >= 0;
-        if (lastDirection != facingForward)
+        facingForward = Rigidbody.velocity.x >= 0;
+        if (lastDirection != facingForward && !ragdoll)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
@@ -323,7 +327,9 @@ public class EagleScript : MonoBehaviour
 
     public void Ragdoll()
     {
-        GetComponent<RagdollController>().turnOnRagdoll = true;
+        ragdollController.TurnOnRagdoll(VectorChange);
+        ragdoll = true;
+        logic.GameOver();
     }
 
     public bool DirectionForward
@@ -374,7 +380,15 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            return rigidEagle.velocity;
+            return Rigidbody.velocity;
+        }
+    }
+
+    public Vector2 VectorChange
+    {
+        get
+        {
+            return new(Rigidbody.velocity.x - lastSpeed.x, Rigidbody.velocity.y - lastSpeed.y);
         }
     }
 
@@ -382,7 +396,7 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            Vector2 delta = new(rigidEagle.velocity.x - lastSpeed.x, rigidEagle.velocity.y - lastSpeed.y);
+            Vector2 delta = VectorChange;
             float forceDelta = 0;
             if (lastSpeed.x > 0 && delta.x < 0)
             {
@@ -420,5 +434,28 @@ public class EagleScript : MonoBehaviour
             return rigidEagle;
         }
     }
+
+    public bool IsRagdoll
+    {
+        get
+        {
+            return ragdoll;
+        }
+    }
+
+    public PlayerAudio Audio
+    {
+        get
+        {
+            return playerAudio;
+        }
+    }
     
+    public Rigidbody2D RagdollBoard
+    {
+        get
+        {
+            return ragdollBoard;
+        }
+    }
 }

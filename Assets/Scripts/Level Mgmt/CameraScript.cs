@@ -5,12 +5,11 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour
 {
-    private GroundSpawner groundSpawner;
     public Vector3 offset, lowPoint;
     public float leadingEdgeOffset = 0;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     private bool cameraZoomOut = false, cameraZoomIn = false;
-    private LiveRunManager logic;
+    private LiveRunManager runManager;
     private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
 
     void Awake()
@@ -19,19 +18,19 @@ public class CameraScript : MonoBehaviour
     }
     void Start()
     {
-        camY = groundSpawner.LowestPoint.y;
+        camY = runManager.LowestGroundPoint.y;
         UpdatePosition();
     }
 
     void Update()
     {
-        if (logic.runState == RunState.Fallen)
+        if (runManager.runState == RunState.Fallen)
         {
             return;
         }
-        if (Camera.main.WorldToScreenPoint(logic.BirdPosition).y < 0) logic.Fall();
+        if (Camera.main.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
         UpdateZoom();
-        if (logic.runState != RunState.Finished)
+        if (runManager.runState != RunState.Finished)
         {
             UpdatePosition();
         }
@@ -40,22 +39,18 @@ public class CameraScript : MonoBehaviour
     private void AssignComponents()
     {
         defaultSize = Camera.main.orthographicSize;
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        eagleScript = GameObject.FindWithTag("Player").GetComponent<EagleScript>();
-        bird = GameObject.FindWithTag("Player").transform;
-        groundSpawner = GameObject.FindWithTag("GroundSpawner").GetComponent<GroundSpawner>();
-        birdBody = bird.GetComponent<Rigidbody2D>();
-        transitionYCoroutine = TransitionLowY(groundSpawner.LowestPoint);
+        runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        transitionYCoroutine = TransitionLowY(runManager.LowestGroundPoint);
     }
 
     public void UpdateZoom()
     {
-        if(cameraZoomOut || bird.position.y < LeadingCorner.y - Camera.main.orthographicSize * 0.2f)
+        if(cameraZoomOut || runManager.PlayerPosition.y < LeadingCorner.y - Camera.main.orthographicSize * 0.2f)
         {
             return;
         }
 
-        if (cameraZoomIn && birdBody.velocity.y > 0)
+        if (cameraZoomIn && runManager.PlayerBody.velocity.y > 0)
         {
             StopCoroutine(zoomInRoutine);
             cameraZoomIn = false;
@@ -69,13 +64,13 @@ public class CameraScript : MonoBehaviour
 
     public void UpdatePosition()
     {
-        if (groundSpawner.LowestPoint.y != targetY)
+        if (runManager.LowestGroundPoint.y != targetY)
         {
             StopCoroutine(transitionYCoroutine);
-            transitionYCoroutine = TransitionLowY(groundSpawner.LowestPoint);
+            transitionYCoroutine = TransitionLowY(runManager.LowestGroundPoint);
             StartCoroutine(transitionYCoroutine);
         }
-        float cameraX = bird.position.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
+        float cameraX = runManager.PlayerPosition.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
         float cameraY = camY + offset.y + zoomYDelta;
         transform.position = new Vector3(cameraX, cameraY, transform.position.z);
     }
@@ -96,16 +91,24 @@ public class CameraScript : MonoBehaviour
         }
     }
 
+    public Vector3 Center
+    {
+        get
+        {
+            return Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
+        }
+    }
+
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
-        float startBirdX = bird.position.x;
-        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (bird.position.x + 20)), 15, 100);
+        float startBirdX = runManager.PlayerPosition.x;
+        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (runManager.PlayerPosition.x + 20)), 15, 100);
         float startY = camY;
         targetY = endPoint.y;
         float t = 0;
         while(Mathf.Abs(camY - endPoint.y) > 0.2)
         {
-            t = Mathf.Clamp01(Mathf.Abs(bird.position.x - startBirdX) / distance);
+            t = Mathf.Clamp01(Mathf.Abs(runManager.PlayerPosition.x - startBirdX) / distance);
             camY = Mathf.SmoothStep(startY, targetY, t);
             yield return null;
         }
@@ -114,9 +117,9 @@ public class CameraScript : MonoBehaviour
     private IEnumerator ZoomOut()
     {
         cameraZoomOut = true;
-        while(bird.position.y > LeadingCorner.y - Camera.main.orthographicSize * 0.2f || birdBody.velocity.y > 0)
+        while(runManager.PlayerPosition.y > LeadingCorner.y - Camera.main.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)
         {
-            float change = Mathf.Clamp(birdBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
             Camera.main.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();
@@ -132,7 +135,7 @@ public class CameraScript : MonoBehaviour
         cameraZoomIn = true;
         while(Camera.main.orthographicSize > defaultSize)
         {
-            float change = Mathf.Clamp(birdBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
             Camera.main.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();

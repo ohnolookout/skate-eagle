@@ -11,27 +11,28 @@ public class GroundSegment : MonoBehaviour
     private ShadowCaster2D shadowCaster;
     public SpriteShape spriteShape;
     public SpriteShapeController shapeController;
-    private EdgeCollider2D edgeCollider;
+    //private EdgeCollider2D edgeCollider;
     private Spline spline;
     private List<Vector2> unoffsetPoints;
     private int floorHeight = 100;
+    private int containmentBuffer = 20;
 
     
     void Awake()
     {
         spline = shapeController.spline;
         shapeController.spriteShape = spriteShape;
-        edgeCollider = shapeController.edgeCollider;
+        //edgeCollider = GetComponent<EdgeCollider2D>();
         shadowCaster = GetComponent<ShadowCaster2D>();
-        FormatSpline();
+        FormatSpline(spline);
     }
 
-    public void SetCurve(Curve curve, Vector3? overlapPoint = null)
+    public void SetCurve(Curve curve, List<EdgeCollider2D> colliderList, GroundSpawner spawner, PhysicsMaterial2D material, Vector3? overlapPoint = null)
     {
         this.curve = curve;
-        GenerateSpline();
-        CurveCollider.CreateCollider(this, out unoffsetPoints, overlapPoint);
-        CollisionActive = false;
+        GenerateSpline(spline, this.curve, floorHeight);
+        CurveCollider.CreateCollider(colliderList, this, spawner, material, out unoffsetPoints, overlapPoint);
+        //CollisionActive = false;
         ShadowCasterCreator.GenerateShadow(shadowCaster, this);
     }
 
@@ -45,19 +46,19 @@ public class GroundSegment : MonoBehaviour
         return curve.EndPoint.ControlPoint.x <= endX;
     }
 
-    private void GenerateSpline()
+    private static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
     {
-        InsertCurveToSpline(curve, 1);
-        UpdateCorners(floorHeight);
+        InsertCurveToSpline(spline, curve, 1);
+        UpdateCorners(spline, floorHeight);
     }
 
-    private void UpdateCorners(float lowerY)
+    private static void UpdateCorners(Spline spline, float lowerY)
     {
-        UpdateRightCorners(lowerY);
-        UpdateLeftCorners(lowerY);
+        UpdateRightCorners(spline, lowerY);
+        UpdateLeftCorners(spline, lowerY);
     }
 
-    private void UpdateRightCorners(float lowerY)
+    private static void UpdateRightCorners(Spline spline, float lowerY)
     {
         //Reassigns the lower right corner (last index on the spline) to the same x as the preceding point and the y of the preceding point - the lowerBoundY buffer.
         int lastIndex = spline.GetPointCount() - 1;
@@ -69,7 +70,7 @@ public class GroundSegment : MonoBehaviour
         spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
         spline.SetRightTangent(lastIndex - 1, new Vector2(0, -1));
     }
-    private void UpdateLeftCorners(float lowerY)
+    private static void UpdateLeftCorners(Spline spline, float lowerY)
     {
 
         spline.SetPosition(0, new Vector3(spline.GetPosition(1).x, spline.GetPosition(1).y - lowerY));
@@ -80,11 +81,11 @@ public class GroundSegment : MonoBehaviour
         spline.SetLeftTangent(1, new Vector2(0, -1));
     }
 
-    private void InsertCurveToSpline(Curve curve, int index) //Inserts curve into the spline beginning at the given index
+    private static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
     {
         for (int i = 0; i < curve.Count; i++)
         {
-            InsertCurvePointToSpline(curve.GetPoint(i), index);
+            InsertCurvePointToSpline(spline, curve.GetPoint(i), index);
             index++;
         }
         spline.SetTangentMode(index, ShapeTangentMode.Broken);
@@ -92,7 +93,7 @@ public class GroundSegment : MonoBehaviour
 
     }
 
-    private void InsertCurvePointToSpline(CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
+    private static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
         spline.InsertPointAt(index, curvePoint.ControlPoint);
         spline.SetTangentMode(index, ShapeTangentMode.Continuous);
@@ -100,7 +101,9 @@ public class GroundSegment : MonoBehaviour
         spline.SetRightTangent(index, curvePoint.RightTangent);
     }
 
-    public bool CollisionActive
+
+    /*
+    public bool CollisionActive(int colliderIndex)
     {
         get
         {
@@ -111,7 +114,7 @@ public class GroundSegment : MonoBehaviour
             edgeCollider.enabled = value;
         }
     }
-
+    */
 
     public Curve Curve
     {
@@ -131,9 +134,25 @@ public class GroundSegment : MonoBehaviour
 
     public bool ContainsX(float targetX)
     {
-        return (targetX > curve.StartPoint.ControlPoint.x - 20 && targetX < curve.EndPoint.ControlPoint.x + 20);
+        return (targetX > curve.StartPoint.ControlPoint.x - containmentBuffer && targetX < curve.EndPoint.ControlPoint.x + containmentBuffer);
     }
 
+    public Vector2 StartPoint
+    {
+        get
+        {
+            return curve.StartPoint.ControlPoint;
+        }
+    }
+
+    public Vector2 EndPoint
+    {
+        get
+        {
+            return curve.EndPoint.ControlPoint;
+        }
+    }
+    /*
     public Vector3 LastColliderPoint
     {
         get
@@ -141,14 +160,7 @@ public class GroundSegment : MonoBehaviour
             return edgeCollider.points[^1];
         }
     }
-
-    public Vector2[] ColliderPoints
-    {
-        get
-        {
-            return edgeCollider.points;
-        }
-    }
+    */
 
     public List<Vector2> UnoffsetPoints
     {
@@ -166,7 +178,7 @@ public class GroundSegment : MonoBehaviour
         }
     }
 
-    public void FormatSpline()
+    public static void FormatSpline(Spline spline)
     {
         spline.isOpenEnded = false;
         while (spline.GetPointCount() > 2)
@@ -174,5 +186,7 @@ public class GroundSegment : MonoBehaviour
             spline.RemovePointAt(2);
         }
     }
+
+    
 
 }

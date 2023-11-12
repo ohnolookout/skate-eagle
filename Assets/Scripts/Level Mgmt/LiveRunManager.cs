@@ -6,24 +6,25 @@ public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
 public class LiveRunManager : MonoBehaviour
 {
     public RunState runState = RunState.Landing;
-    private EagleScript eagleScript;
     public bool startWithStomp = false, isMobile = true;
     private Vector3 startPoint, finishPoint;
-    private float distanceToFinish = 0, distancePassed = 0f, stompThreshold = 2, stompCharge = 0;
-    public GameObject bird;
-    public Level currentLevel;
+    private float stompThreshold = 2, stompCharge = 0; //distanceToFinish = 0, distancePassed = 0f, 
+    [SerializeField] private Level currentLevel;
     private GameManager gameManager;
-    public Overlay overlay;
+    [SerializeField] private EagleScript eagleScript;
+    [SerializeField] public Overlay overlay;
+    [SerializeField] private CameraScript cameraScript;
+    [SerializeField] private GroundSpawner groundSpawner;
 
     void Awake()
     {
 
         gameManager = GameManager.Instance;
         currentLevel = gameManager.CurrentLevel;
+        /* UNCOMMENT IF LEVEL ISSUES
         if (currentLevel == null) {
             gameManager.CurrentLevel = currentLevel;
-        }
-        eagleScript = bird.GetComponent<EagleScript>();
+        }*/
     }
 
     private void Start()
@@ -33,15 +34,16 @@ public class LiveRunManager : MonoBehaviour
 
     private void Update()
     {
-
+        /*
         if (runState != RunState.Active)
         {
             return;
         }
+        
         if (Time.frameCount % 20 != 0)
         {
-            distancePassed = (bird.transform.position.x - startPoint.x) / distanceToFinish;
-        }
+            distancePassed = (PlayerPosition.x - startPoint.x) / distanceToFinish;
+        }*/
     }
 
 
@@ -62,6 +64,7 @@ public class LiveRunManager : MonoBehaviour
 
     public void GameOver()
     {
+        groundSpawner.SwitchToRagdoll();
         gameManager.AddAttempt();
         overlay.GameOverScreen();
         runState = RunState.GameOver;
@@ -75,7 +78,7 @@ public class LiveRunManager : MonoBehaviour
             StompCharge = 2;
         }
         runState = RunState.Active;
-        startPoint = bird.transform.position;
+        startPoint = PlayerPosition;
     }
 
     public void GoToStandby()
@@ -136,14 +139,14 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.GameOver;
     }
 
-
+    /*
     public float DistancePassed
     {
         get
         {
             return distancePassed;
         }
-    }
+    }*/
 
     public float StompThreshold
     {
@@ -163,7 +166,7 @@ public class LiveRunManager : MonoBehaviour
         set
         {
             finishPoint = value;
-            distanceToFinish = finishPoint.x - startPoint.x;
+            //distanceToFinish = finishPoint.x - startPoint.x;
         }
     }
 
@@ -175,7 +178,7 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
-    public Vector2 BirdPosition
+    public Vector2 PlayerPosition
     {
         get
         {
@@ -183,7 +186,7 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
-    public bool BirdDirectionForward
+    public bool PlayerDirectionForward
     {
         get
         {
@@ -204,6 +207,61 @@ public class LiveRunManager : MonoBehaviour
         get
         {
             return eagleScript.Rigidbody;
+        }
+    }
+
+    public CameraScript CameraScript
+    {
+        get
+        {
+            return cameraScript;
+        }
+    }
+
+    public Vector3 LeadingCameraCorner
+    {
+        get
+        {
+            return CameraScript.LeadingCorner;
+        }
+    }
+    public Vector3 TrailingCameraCorner
+    {
+        get
+        {
+            return CameraScript.TrailingCorner;
+        }
+    }
+
+    public Vector3 CameraCenter
+    {
+        get
+        {
+            return CameraScript.Center;
+        }
+    }
+
+    public Vector3 LowestGroundPoint
+    {
+        get
+        {
+            return groundSpawner.LowestPoint;
+        }
+    }
+
+    public bool PlayerIsRagdoll
+    {
+        get
+        {
+            return eagleScript.IsRagdoll;
+        }
+    }
+
+    public Rigidbody2D RagdollBoard
+    {
+        get
+        {
+            return eagleScript.RagdollBoard;
         }
     }
 

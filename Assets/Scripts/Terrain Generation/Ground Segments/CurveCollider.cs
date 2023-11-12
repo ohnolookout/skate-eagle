@@ -6,28 +6,29 @@ using System.Linq;
 public static class CurveCollider
 {
     private static float resolution, edgeOffset = 1.2f;
-    private static Curve curve;
-    private static EdgeCollider2D collider;
-    //private static List<Vector2> unoffsetPoints = new();
-    private static GroundSegment groundSegment;
+    //private static Curve curve;
+    //private static EdgeCollider2D collider;
 
     //Includes firstPoint to ensure exact transitions
-    public static void CreateCollider(GroundSegment segment, out List<Vector2> unoffsetPoints, Vector3? firstPoint = null, float resolutionMult = 10)
+    public static void CreateCollider(List<EdgeCollider2D> colliderList, GroundSegment segment, GroundSpawner spawner, PhysicsMaterial2D material, out List<Vector2> unoffsetPoints, Vector3? firstPoint = null, float resolutionMult = 10)
     {
-        groundSegment = segment;
         unoffsetPoints = new();
-        collider = groundSegment.GetComponent<EdgeCollider2D>();
-        curve = groundSegment.Curve;
-        if(curve.Type == CurveType.StartLine)
+        GameObject colliderObject = new("Collider");
+        colliderObject.transform.parent = spawner.transform;
+        EdgeCollider2D collider = colliderObject.AddComponent<EdgeCollider2D>();
+        collider.sharedMaterial = material;
+        //collider = segment.GetComponent<EdgeCollider2D>();
+        //curve = segment.Curve;
+        if(segment.Curve.Type == CurveType.StartLine)
         {
-            firstPoint = curve.GetPoint(0).ControlPoint;
+            firstPoint = segment.Curve.GetPoint(0).ControlPoint;
         }
         //Iterate through points that make up GroundSegment's curve.
-        for (int i = 0; i < curve.Count - 1; i++)
+        for (int i = 0; i < segment.Curve.Count - 1; i++)
         {
-            resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i]/20, 15);
+            resolution = Mathf.Max(resolutionMult * segment.Curve.SegmentLengths[i]/20, 15);
             List<Vector2> newUnoffsetPoints;
-            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), out newUnoffsetPoints, firstPoint);
+            Vector2[] newPoints = Calculate2DPoints(segment.Curve.GetPoint(i), segment.Curve.GetPoint(i + 1), out newUnoffsetPoints, firstPoint);
             if (i == 0)
             {
                 collider.points = newPoints;
@@ -39,6 +40,8 @@ public static class CurveCollider
                 unoffsetPoints.AddRange(newUnoffsetPoints);
             }
         }
+        colliderList.Add(collider);
+        colliderObject.SetActive(false);
     }    
     
     private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, out List<Vector2> unoffset, Vector3? firstVectorPoint = null)

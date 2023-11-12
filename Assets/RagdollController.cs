@@ -6,7 +6,7 @@ public class RagdollController : MonoBehaviour
 {
     
     [SerializeField] private Animator animator;
-    [SerializeField] private HingeJoint2D[] ragDollJoints;
+    [SerializeField] private Joint2D[] ragDollJoints;
     [SerializeField] private Rigidbody2D[] ragdollRigidbodies;
     [SerializeField] private Collider2D[] ragdollColliders;
     [SerializeField] private GameObject IKParent;
@@ -14,7 +14,7 @@ public class RagdollController : MonoBehaviour
     [SerializeField] private Collider2D[] normalColliders;
     [SerializeField] private GameObject rigParent;
     [SerializeField] public Rigidbody2D spine;
-    private EagleScript eagleScript;
+    [SerializeField] private Rigidbody2D[] feet;
     //[SerializeField] private Joint2D fixedJoint;
     public bool turnOnRagdoll = false, ragdoll = false;
 
@@ -22,36 +22,27 @@ public class RagdollController : MonoBehaviour
     void Start()
     {
         GetCollidersAndBodies();
-        eagleScript = this.GetComponent<EagleScript>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+
+    public void TurnOnRagdoll(Vector2 vectorChange)
     {
-        if (turnOnRagdoll)
+        if (ragdoll)
         {
-            TurnOnRagdoll();
-            turnOnRagdoll = false;
-            ragdoll = true;
-            Camera.main.GetComponent<CameraScript>().birdBody = spine;
-            Camera.main.GetComponent<CameraScript>().bird = spine.transform;
-            GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>().bird = spine.gameObject;
-            normalRigidbodies[0].velocity = new();
+            return;
         }
-    }
-
-    public void TurnOnRagdoll()
-    {
-
         animator.enabled = false;
 
         IKParent.SetActive(false);
-
-        SwitchColliders(ragdollColliders, true);
         SwitchColliders(normalColliders, false);
-        SwitchRigidbodies(ragdollRigidbodies, true);
-        SwitchRigidbodies(normalRigidbodies, false);
+        feet[0].gameObject.transform.Translate( new Vector2(0, 1));
+        SwitchColliders(ragdollColliders, true);
+        SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
+        SwitchRigidbodies(ragdollRigidbodies, true, vectorChange);
+        normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
+        ragdoll = true;
+        //SeperateFootAndBoard();
 
     }
 
@@ -59,7 +50,7 @@ public class RagdollController : MonoBehaviour
     {
         ragdollColliders = rigParent.GetComponentsInChildren<Collider2D>();
         ragdollRigidbodies = rigParent.GetComponentsInChildren<Rigidbody2D>();
-        ragDollJoints = rigParent.GetComponentsInChildren<HingeJoint2D>();
+        ragDollJoints = rigParent.GetComponentsInChildren<Joint2D>();
 
     }
 
@@ -72,20 +63,32 @@ public class RagdollController : MonoBehaviour
         }
     }
 
-    void SwitchRigidbodies(Rigidbody2D[] bodies, bool isOn)
+    void SwitchRigidbodies(Rigidbody2D[] bodies, bool isOn, Vector2 vectorChange)
     {
         foreach (var body in bodies)
         {
             body.isKinematic = !isOn;
-            body.velocity = normalRigidbodies[0].velocity;
+            if (isOn)
+            {
+                body.velocity = normalRigidbodies[0].velocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));
+            }
+        }
+        spine.angularVelocity = normalRigidbodies[0].angularVelocity * 20;
+    }
+
+    void SwitchHinges(Joint2D[] joints, bool isOn)
+    {
+        foreach(var joint in joints)
+        {
+            joint.enabled = isOn;
         }
     }
 
-    void SwitchHinges(HingeJoint2D[] hinges, bool isOn)
+    void SeperateFootAndBoard()
     {
-        foreach(var hinge in hinges)
+        foreach(var foot in feet)
         {
-            hinge.enabled = isOn;
+            foot.AddForce(new Vector2(0, 2));
         }
     }
 }

@@ -6,56 +6,61 @@ using System;
 public class GroundSpawner : MonoBehaviour
 {
     public GameObject groundSegment;
-    public List<GroundSegment> segmentList;
-    private CurvePoint currentPoint;
+    private List<GroundSegment> segmentList;
+    private List<EdgeCollider2D> colliderList;
     private Vector3 leadingActivePoint, trailingActivePoint, lowestPoint;
-    private float trailingCameraBound, leadingCameraBound, length = 0;
+    private float trailingCameraBound, leadingCameraBound;
     private int leadingSegmentIndex = 3, trailingSegmentIndex = 0, birdIndex = 0;
-    private CameraScript cameraScript;
     private float cameraBuffer = 25;
     private List<Vector3> activeLowPoints = new();
     private LiveRunManager logic;
+    private GroundColliderTracker colliderTracker;
+    [SerializeField] PhysicsMaterial2D colliderMaterial;
     public GameObject finishFlag;
-    private GameManager gameManager;
+    [SerializeField] GameObject backStop;
     public bool testMode = false;
+    private int activeColliderBuffer = 0;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
 
     void Awake()
     {
         AssignComponents();
-        currentPoint = new(logic.BirdPosition);
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
             return;
         }
-#endif
+        //Delete children if in Unity Editor due to the potential of creating children within level editor.
         DeleteChildren();
-        GenerateLevel(gameManager.CurrentLevel);
-        logic.FinishPoint = segmentList[segmentList.Count - 1].Curve.GetPoint(1).ControlPoint + new Vector3(50, 1);
-
-        Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
-        FindBirdIndex();
+#endif
+        GenerateLevel(logic.CurrentLevel);
+        ActivateInitialSegments(3);
+        colliderTracker = new(logic.PlayerBody, colliderList, segmentList, birdIndex);
     }
-    void Start()
-    {
-        TrimLevel();
-
-    }
-    void Update()
+    void FixedUpdate()
     {
         UpdateActiveSegments();
-        UpdateCollision();
+        //Exit update if run hasn't activated
+        if ((int)logic.runState < 2)
+        {
+            return;
+        }
+        colliderTracker.UpdateColliders();
     }
 
     private void AssignComponents()
     {
-        gameManager = GameManager.Instance;
-        cameraScript = Camera.main.GetComponent<CameraScript>();
         transform.position = new Vector2(0, 0);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         segmentList = new();
+    }
+
+    public void SwitchToRagdoll()
+    {
+        colliderTracker.ResetTrackedBodies();
+        colliderTracker.AddBody(logic.PlayerBody, birdIndex);
+        colliderTracker.AddBody(logic.RagdollBoard, birdIndex);
     }
 
     public void GenerateLevel(Level level)
@@ -65,135 +70,140 @@ public class GroundSpawner : MonoBehaviour
         {
             throw new Exception("Level must contain at least one section");
         }
+        //If called outside of play mode in unity editor (i.e., in level editor), exit generate script and call Awake();
+#if UNITY_EDITOR
         if (!Application.isPlaying)
         {
             Awake();
-        }
-        DeleteChildren();
-        segmentList = new();
-        currentPoint = new(logic.BirdPosition);
-        AddSegment(CurveFactory.StartLine(currentPoint));
-        Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
-        foreach(KeyValuePair<Grade, Sequence> sequence in curveSequences)
-        {
-            Grade grade = sequence.Key;
-            foreach(CurveDefinition curveDef in sequence.Value.Curves)
-            {
-                Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, currentPoint, grade.MinClimb, grade.MaxClimb);
-                AddSegment(nextCurve);
-            }
-        }
-        AddSegment(CurveFactory.FinishLine(currentPoint));
-        leadingSegmentIndex = -1;
-        for (int i = 0; i < 2; i++)
-        {
-            ActivateSegment(SegmentPosition.Leading);
-        }
-    }
-
-    private void AddSegment(Curve curve)
-    {
-        Vector3? overlapPoint = null;
-        GameObject newSegment = Instantiate(groundSegment, transform, true);
-        segmentList.Add(newSegment.GetComponent<GroundSegment>());
-        if(segmentList.Count > 1)
-        {
-            overlapPoint = segmentList[^2].LastColliderPoint;
-        }
-        segmentList[^1].SetCurve(curve, overlapPoint);
-        currentPoint = segmentList[^1].Curve.EndPoint;
-        if (!testMode)
-        {
-            newSegment.SetActive(false);
-        }
-        length += segmentList[^1].Curve.Length;
-    }
-
-    private void UpdateCollision()
-    {
-        if(logic.BirdDirectionForward && birdIndex >= segmentList.Count - 1 || (!logic.BirdDirectionForward && birdIndex == 0))
-        {
             return;
         }
-        if ((logic.BirdDirectionForward && !segmentList[birdIndex + 1].CollisionActive) ||
-            (!logic.BirdDirectionForward && !segmentList[birdIndex - 1].CollisionActive))
+        //DeleteChildren();
+#endif
+        segmentList = new();
+        colliderList = new();
+        //Create startline at location of player
+        CurvePoint endOfLastSegment = AddSegment(CurveFactory.StartLine(new (logic.PlayerPosition)));
+        //Create dictionary of sequences with corresponding grades
+        Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
+        foreach(var sequence in curveSequences)
         {
-            ChangeCollisionDirection(logic.BirdDirectionForward);
+            Grade grade = sequence.Key;
+            //Instantiate segments for each curve from sequence using sequence's grade.
+            foreach(CurveDefinition curveDef in sequence.Value.Curves)
+            {
+                //First create curve values, then add segment with corresponding gameobject
+                Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, endOfLastSegment, grade.MinClimb, grade.MaxClimb);
+                endOfLastSegment = AddSegment(nextCurve);
+            }
         }
-
-        CheckCurrentSegment();
-
-
+        //Add finishline at end of final segment
+        AddSegment(CurveFactory.FinishLine(endOfLastSegment));
+        AddFinishObjects(segmentList[^1].Curve.GetPoint(1).ControlPoint, segmentList[^1].EndPoint);
     }
 
+    //Instantiate a new deactivated segment, add it to the segment list, and update the current point and length
+    private CurvePoint AddSegment(Curve curve)
+    {
+        Vector3? overlapPoint = null;
+        //Instantiate segment object and add its script to segmentList
+        GroundSegment newSegment = Instantiate(groundSegment, transform, true).GetComponent<GroundSegment>();
+        segmentList.Add(newSegment);
+        //If segment is not the first segment, get the last point from the preceding segment
+        //to use as the first point in the new segment's collider
+        if(colliderList.Count > 0)
+        {
+            overlapPoint = colliderList[^1].points[^1];
+        }
+        //Set the new segment's curve and overlap point, update the currentpoint to be the end of the new segment
+        segmentList[^1].SetCurve(curve, colliderList, this, colliderMaterial, overlapPoint);
+        //Exit here in unity editor if in test mode so that all segments remain active
+        //Return endpoint of added segment
+#if UNITY_EDITOR
+        if (testMode)
+        {
+            return segmentList[^1].Curve.EndPoint; ;
+        }
+#endif
+        //Otherwise deactivate segment on creation.
+        newSegment.gameObject.SetActive(false);
+        return segmentList[^1].Curve.EndPoint;
+    }
+
+    
     private void UpdateActiveSegments()
     {
         UpdateCameraBounds();
+        //If current leadingSegmentIndex starts after the leading edge of the camera + buffer,
+        //deactivate it and decrease leadingSegmentIndex
+        if (segmentList[leadingSegmentIndex].StartsAfterX(leadingCameraBound))
+        {
+            DeactivateSegment(SegmentPosition.Leading);
+        }
+        else if (leadingSegmentIndex < segmentList.Count - 1)
+        {
+            //If the segment after the current leading segment starts before the leading edge of the camera + buffer,
+            //Activate it and increase leadingSegmentIndex
+            if (!segmentList[leadingSegmentIndex + 1].StartsAfterX(leadingCameraBound))
+            {
+                ActivateSegment(SegmentPosition.Leading);
+            }
+        }
+        //Exit if trailingSegment index is outside the bounds of the segment array
+        //Because player is on finishline segment.
+        if(trailingSegmentIndex >= segmentList.Count)
+        {
+            return;
+        }
+        //If the trailingSegment ends before the trailing edge of the camera + buffer,
+        //Deactivate it and increment the trailing index.
         if (segmentList[trailingSegmentIndex].EndsBeforeX(trailingCameraBound))
         {
             DeactivateSegment(SegmentPosition.Trailing);
         }
         else if (trailingSegmentIndex > 0)
         {
+            //If the segment before the trailing segment index ends after the trailing edge of the camera + buffer,
+            //Activate it and decrement the trailing index.
             if (!segmentList[trailingSegmentIndex - 1].EndsBeforeX(trailingCameraBound))
             {
                 ActivateSegment(SegmentPosition.Trailing);
             }
         }
-        if (segmentList[leadingSegmentIndex].StartsAfterX(leadingCameraBound))
+    }
+
+    private void AddFinishObjects(Vector3 finishLineBound, Vector3 backstopBound)
+    {
+        //Assign locations finishPoint, backstop, and finishflag
+        logic.FinishPoint = finishLineBound + new Vector3(50, 1);
+        finishFlag = Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
+        finishFlag.SetActive(false);
+        backStop.transform.position = backstopBound - new Vector3(75, 0);
+    }
+    
+    //Activate the given number of segments from the start of the level.
+    //Only activate colliders for the first two segments.
+    private void ActivateInitialSegments(int segmentCount)
+    {
+        leadingSegmentIndex = -1;
+        for (int i = 0; i < segmentCount; i++)
         {
-            DeactivateSegment(SegmentPosition.Leading);
-        } 
-        else if (leadingSegmentIndex < segmentList.Count - 1)
-        {
-            if (!segmentList[leadingSegmentIndex + 1].StartsAfterX(leadingCameraBound))
+            ActivateSegment(SegmentPosition.Leading);
+            if (i < 2)
             {
-                ActivateSegment(SegmentPosition.Leading);
+                colliderList[i].gameObject.SetActive(true);
             }
         }
     }
 
-    private void UpdateTrailingPoint()
-    {
-        trailingActivePoint = segmentList[trailingSegmentIndex].Curve.StartPoint.ControlPoint;
-    }
-
-    private void UpdateLeadingPoint()
-    {
-        leadingActivePoint = segmentList[leadingSegmentIndex].Curve.StartPoint.ControlPoint;
-    }
-
-    //Can speed this up by starting at birdIndex and finding leading and trailing indices by working out from there.
-    private void TrimLevel()
-    {
-        while(segmentList[leadingSegmentIndex].StartsAfterX(leadingCameraBound) || segmentList[trailingSegmentIndex].EndsBeforeX(trailingCameraBound))
-        {
-            UpdateActiveSegments();
-        }
-        for(int i = trailingSegmentIndex; i <= leadingSegmentIndex; i++)
-        {
-            activeLowPoints.Add(segmentList[i].Curve.LowPoint);
-        }
-        CacheLowestPoint(CacheStatus.New, transform.position);            
-    }
-
-    private void FindBirdIndex()
-    {
-        while (!segmentList[birdIndex].ContainsX(logic.BirdPosition.x) && birdIndex < segmentList.Count - 1)
-        {
-            birdIndex++;
-        }
-        segmentList[birdIndex].CollisionActive = true;
-        if (birdIndex < segmentList.Count - 1) segmentList[birdIndex + 1].CollisionActive = true;
-    }
-
+    //Update camera bounds based on lower corners of camera view and camera buffer.
     private void UpdateCameraBounds()
     {
-        leadingCameraBound = cameraScript.LeadingCorner.x + cameraBuffer;
-        trailingCameraBound = cameraScript.TrailingCorner.x - cameraBuffer;
+        leadingCameraBound = logic.LeadingCameraCorner.x + cameraBuffer;
+        trailingCameraBound = logic.TrailingCameraCorner.x - cameraBuffer;
     }
 
 
+    //Activate trailing or leading segment, update leading or trailing segment index
     private void ActivateSegment(SegmentPosition position)
     {
         Vector3 addedPoint = transform.position;
@@ -204,6 +214,11 @@ public class GroundSpawner : MonoBehaviour
             activeLowPoints.Add(segmentList[index].Curve.LowPoint);
             addedPoint = activeLowPoints[activeLowPoints.Count - 1];
             leadingSegmentIndex++;
+            if(leadingSegmentIndex >= segmentList.Count - 1)
+            {
+                backStop.SetActive(true);
+                finishFlag.SetActive(true);
+            }
         } else if(position == SegmentPosition.Trailing && trailingSegmentIndex > 0)
         {
             index = trailingSegmentIndex - 1;
@@ -274,41 +289,6 @@ public class GroundSpawner : MonoBehaviour
         
     }
 
-    private void CheckCurrentSegment()
-    {
-        if (!segmentList[birdIndex].ContainsX(logic.BirdPosition.x))
-        {
-            if (logic.BirdDirectionForward)
-            {
-                birdIndex++;
-            }
-            else
-            {
-                birdIndex--;
-            }
-        }
-    }
-
-    private void ChangeCollisionDirection(bool forward)
-    {
-        //Checks to see if bird is contained by the segment at previous index.
-        //Decrements birdIndex if true.
-        int indexModifier = -1;
-        if (!forward)
-        {
-            indexModifier = 1;
-        }
-        if (segmentList[birdIndex + indexModifier].ContainsX(logic.BirdPosition.x))
-        {
-            birdIndex+= indexModifier;
-        }
-        segmentList[birdIndex - indexModifier].CollisionActive = true;
-        //If birdIndex isn't at 0, it deactives that preceding index.
-        if ((forward && birdIndex >  0) || (!forward && birdIndex < segmentList.Count - 1))
-        {
-            segmentList[birdIndex + indexModifier].CollisionActive = false;
-        }
-    }
 
     public void DeleteChildren()
     {
@@ -325,14 +305,6 @@ public class GroundSpawner : MonoBehaviour
         get
         {
             return lowestPoint;
-        }
-    }
-
-    public CurvePoint CurrentEndPoint
-    {
-        get
-        {
-            return currentPoint;
         }
     }
 }

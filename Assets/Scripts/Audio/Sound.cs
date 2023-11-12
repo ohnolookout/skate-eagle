@@ -16,7 +16,12 @@ public class Sound
     public float volumeVariance = 1;
     [Range(0f, 1f)]
     public float pitchVariance = 1;
+    [Range(0f, 2f)]
+    public float ragdollVolModifier = 1f;
+    [Range(0f, 2f)]
+    public float ragdollPitchModifier = 1f;
     public bool randomize = false;
+    public GameObject localizedSource;
     [HideInInspector] public AudioSource source;
 
     public AudioClip Clip(int? index = null)
@@ -40,21 +45,21 @@ public class Sound
     }
 
     //Takes intensity between -1 and 1, applies it to variance and adds it to volume.
-    public float AdjustedVolume(float intensity)
+    public float AdjustedVolume(float intensity, bool ragdoll = false)
     {
-#if UNITY_EDITOR
-        if (Mathf.Abs(intensity) > 1)
+        if (ragdoll)
         {
-            Debug.LogWarning($"Intensity for adjusted volume in sound {name} is too big: {intensity}");
+            return (volume + (volumeVariance * intensity)) * ragdollVolModifier;
         }
-#endif
-        /*Debug.Log($"Adjusting volume for {name}. Volume: {volume} Variance: {volumeVariance} Intensity: {intensity}");
-        Debug.Log($"Result: {volume + (volumeVariance * intensity)}");*/
         return volume + (volumeVariance * intensity);
     }
 
-    public float AdjustedPitch(float intensity)
+    public float AdjustedPitch(float intensity, bool ragdoll = false)
     {
+        if (ragdoll)
+        {
+            return (pitch + (pitchVariance * intensity)) * ragdollPitchModifier;
+        }
         return pitch + (pitchVariance * intensity);
     }
 }

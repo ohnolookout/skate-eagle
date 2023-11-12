@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8534229130528223513}
   - component: {fileID: 8534229130528223512}
   - component: {fileID: 8534229130528223515}
-  - component: {fileID: -3861121229800239333}
   m_Layer: 0
   m_Name: GroundSegment
   m_TagString: Untagged
@@ -207,25 +206,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteShape: {fileID: 11400000, guid: b90c67b90ab7f5f46b04946c86a2cc9b, type: 2}
   shapeController: {fileID: 8534229130528223513}
---- !u!68 &-3861121229800239333
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8534229130528223514}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -1.0000001, y: -0.63999987}
-  - {x: 1.0000001, y: -0.63999987}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0

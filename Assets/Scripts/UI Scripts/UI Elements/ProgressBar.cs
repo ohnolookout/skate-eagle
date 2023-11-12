@@ -13,8 +13,9 @@ public class ProgressBar : MonoBehaviour
         slider = GetComponent<Slider>();
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
     }
+    
     void Update()
     {
-        slider.value = Mathf.Clamp01(logic.DistancePassed);
+        //slider.value = Mathf.Clamp01(logic.DistancePassed); DO NOT NEED
     }
 }

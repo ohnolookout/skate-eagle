@@ -10,27 +10,25 @@ public static class ShadowCasterCreator
     private static FieldInfo meshField = typeof(ShadowCaster2D).GetField("m_Mesh", accessFlagsPrivate);
     private static FieldInfo shapePathField = typeof(ShadowCaster2D).GetField("m_ShapePath", accessFlagsPrivate);
     private static MethodInfo onEnableMethod = typeof(ShadowCaster2D).GetMethod("OnEnable", accessFlagsPrivate);
-    private static GroundSegment groundSegment;
     private static Vector3[] shadowPointArray;
     public static void GenerateShadow(ShadowCaster2D shadow, GroundSegment ground)
     {
-        groundSegment = ground;
-        shadowPointArray = ShadowPoints();
+        shadowPointArray = ShadowPoints(ground);
         shapePathField.SetValue(shadow, shadowPointArray);
         meshField.SetValue(shadow, null);
         onEnableMethod.Invoke(shadow, new object[0]);
 
     }
 
-    private static Vector3[] ShadowPoints()
+    private static Vector3[] ShadowPoints(GroundSegment groundSegment)
     {
+        List<Vector2> colliderPoints = groundSegment.UnoffsetPoints;
         List<Vector3> shadowPointList = new();
-        Vector2[] colliderPoints = groundSegment.UnoffsetPoints.ToArray();
         shadowPointList.Add(colliderPoints[^1]);
         shadowPointList.Add(groundSegment.Spline.GetPosition(groundSegment.Spline.GetPointCount() - 1));
         shadowPointList.Add(groundSegment.Spline.GetPosition(0));
-        int increment = (int)Mathf.Min(5, Mathf.Ceil(colliderPoints.Length / 20));
-        for (int i = 0; i < colliderPoints.Length - 2; i += increment)
+        int increment = (int)Mathf.Min(5, Mathf.Ceil(colliderPoints.Count / 20));
+        for (int i = 0; i < colliderPoints.Count - 2; i += increment)
         {
             shadowPointList.Add(colliderPoints[i]);
         }
