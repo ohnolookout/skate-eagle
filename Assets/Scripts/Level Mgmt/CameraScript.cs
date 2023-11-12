@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class CameraScript : MonoBehaviour
 {
     public Vector3 offset, lowPoint;
-    public float leadingEdgeOffset = 0;
+    public float leadingEdgeOffset = 45;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     private bool cameraZoomOut = false, cameraZoomIn = false;
     private LiveRunManager runManager;

@@ -36,6 +36,11 @@ public class OrderedDictionary<TKey, TValue>
         order.RemoveAt(index);
     }
 
+    public TValue Value(TKey key)
+    {
+        return dict[key];
+    }
+
     public TValue Value(int index)
     {
         return dict[order[index]];

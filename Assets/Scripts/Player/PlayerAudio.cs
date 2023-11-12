@@ -28,7 +28,7 @@ public class PlayerAudio : MonoBehaviour
     private float wheelTimeLimit = 0.2f;
     private Dictionary<GameObject, float> localObjectModifiers = new();
     [SerializeField]
-    private float maxSoundDistance = 1000;
+    private float maxSoundDistance = 115;
 
     private void Awake()
     {
@@ -92,11 +92,9 @@ public class PlayerAudio : MonoBehaviour
     private void UpdateLocalModifiers()
     {
         foreach (var localObj in localObjectModifiers.Keys.ToList())
-        {
-            //THIS NEEDS WORK
-
-            localObjectModifiers[localObj] = 1;
-            //localObjectModifiers[localObj] = (maxSoundDistance - Mathf.Abs(localObj.transform.TransformPoint(localObj.transform.position).x - runManager.CameraCenter.x)) / maxSoundDistance;
+        {            
+            localObjectModifiers[localObj] = 
+                (maxSoundDistance - Mathf.Abs(localObj.transform.position.x - runManager.CameraCenter.x)) / maxSoundDistance;            
         }
     }
 
@@ -215,7 +213,7 @@ public class PlayerAudio : MonoBehaviour
 
     public void BodyCollision()
     {
-        if(eagleScript.ForceDelta > 120)
+        if(eagleScript.ForceDelta > 140)
         {
             PlayOneShot(OneShotFX.HardBody);
         }

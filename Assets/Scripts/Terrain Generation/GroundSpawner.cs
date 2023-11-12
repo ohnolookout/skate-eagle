@@ -17,7 +17,7 @@ public class GroundSpawner : MonoBehaviour
     private GroundColliderTracker colliderTracker;
     [SerializeField] PhysicsMaterial2D colliderMaterial;
     public GameObject finishFlag;
-    [SerializeField] GameObject backStop;
+    [SerializeField] GameObject backstop;
     public bool testMode = false;
     private int activeColliderBuffer = 0;
     private enum SegmentPosition { Leading, Trailing };
@@ -36,9 +36,9 @@ public class GroundSpawner : MonoBehaviour
 #endif
         GenerateLevel(logic.CurrentLevel);
         ActivateInitialSegments(3);
-        colliderTracker = new(logic.PlayerBody, colliderList, segmentList, birdIndex);
+        colliderTracker = new(logic.PlayerBody, colliderList, segmentList, backstop, birdIndex);
     }
-    void FixedUpdate()
+    void Update()
     {
         UpdateActiveSegments();
         //Exit update if run hasn't activated
@@ -58,7 +58,7 @@ public class GroundSpawner : MonoBehaviour
 
     public void SwitchToRagdoll()
     {
-        colliderTracker.ResetTrackedBodies();
+        colliderTracker.RemoveBody(logic.Player.rigidEagle);
         colliderTracker.AddBody(logic.PlayerBody, birdIndex);
         colliderTracker.AddBody(logic.RagdollBoard, birdIndex);
     }
@@ -177,7 +177,7 @@ public class GroundSpawner : MonoBehaviour
         logic.FinishPoint = finishLineBound + new Vector3(50, 1);
         finishFlag = Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
         finishFlag.SetActive(false);
-        backStop.transform.position = backstopBound - new Vector3(75, 0);
+        backstop.transform.position = backstopBound - new Vector3(75, 0);
     }
     
     //Activate the given number of segments from the start of the level.
@@ -216,7 +216,6 @@ public class GroundSpawner : MonoBehaviour
             leadingSegmentIndex++;
             if(leadingSegmentIndex >= segmentList.Count - 1)
             {
-                backStop.SetActive(true);
                 finishFlag.SetActive(true);
             }
         } else if(position == SegmentPosition.Trailing && trailingSegmentIndex > 0)

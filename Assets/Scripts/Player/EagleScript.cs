@@ -142,7 +142,6 @@ public class EagleScript : MonoBehaviour
             rigidEagle.centerOfMass = new Vector2(0, 0.0f);
         }
         rigidEagle.AddForce(new Vector2(0, jumpForce * 1000 * jumpMultiplier));
-        collisionTracker.RemoveAllCollisions();
     }
 
     public void JumpRelease()

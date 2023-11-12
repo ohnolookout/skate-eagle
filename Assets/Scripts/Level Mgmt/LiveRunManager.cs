@@ -265,4 +265,12 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
+    public float CameraOffset
+    {
+        get
+        {
+            return CameraScript.leadingEdgeOffset;
+        }
+    }
+
 }

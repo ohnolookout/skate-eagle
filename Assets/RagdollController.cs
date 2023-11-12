@@ -14,8 +14,6 @@ public class RagdollController : MonoBehaviour
     [SerializeField] private Collider2D[] normalColliders;
     [SerializeField] private GameObject rigParent;
     [SerializeField] public Rigidbody2D spine;
-    [SerializeField] private Rigidbody2D[] feet;
-    //[SerializeField] private Joint2D fixedJoint;
     public bool turnOnRagdoll = false, ragdoll = false;
 
     // Start is called before the first frame update
@@ -35,7 +33,6 @@ public class RagdollController : MonoBehaviour
 
         IKParent.SetActive(false);
         SwitchColliders(normalColliders, false);
-        feet[0].gameObject.transform.Translate( new Vector2(0, 1));
         SwitchColliders(ragdollColliders, true);
         SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
         SwitchRigidbodies(ragdollRigidbodies, true, vectorChange);
@@ -84,11 +81,4 @@ public class RagdollController : MonoBehaviour
         }
     }
 
-    void SeperateFootAndBoard()
-    {
-        foreach(var foot in feet)
-        {
-            foot.AddForce(new Vector2(0, 2));
-        }
-    }
 }

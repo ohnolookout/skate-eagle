@@ -9,15 +9,17 @@ public class GroundColliderTracker
     private List<GroundSegment> segmentList;
     private List<EdgeCollider2D> colliderList;
     private List<int> activeSegments = new();
+    private GameObject backstop;
 
-    public GroundColliderTracker(Rigidbody2D body, List<EdgeCollider2D> colliders, List<GroundSegment> segments, int startingIndex = 0)
+    public GroundColliderTracker(Rigidbody2D body, List<EdgeCollider2D> colliders, List<GroundSegment> segments, GameObject backstop, int startingIndex = 0)
     {
         bodyIndices = new() { { body, startingIndex } };
         segmentList = segments;
         colliderList = colliders;
+        this.backstop = backstop;
     }
 
-    public GroundColliderTracker(List<Rigidbody2D> bodies, List<EdgeCollider2D> colliders, List<GroundSegment> segments, int startingIndex = 0)
+    public GroundColliderTracker(List<Rigidbody2D> bodies, List<EdgeCollider2D> colliders, List<GroundSegment> segments, GameObject backstop, int startingIndex = 0)
     {
         bodyIndices = new();
         foreach(var body in bodies)
@@ -26,16 +28,15 @@ public class GroundColliderTracker
         }
         segmentList = segments;
         colliderList = colliders;
+        this.backstop = backstop;
     }
 
-    // Update is called once per frame
     public void UpdateColliders()
     {
         List<int> toActivate = new();
         List<int> toDeactivate = new();
         foreach (var body in bodyIndices.Keys.ToList())
         {
-            Debug.Log($"Updating {body.name}");
             UpdateBodyIndex(body);
             //Update body index to make sure it represents the current segment 
             //If current colliders are not valid, update colliders.
@@ -43,7 +44,9 @@ public class GroundColliderTracker
             {
                 BuildActivateList(body, toActivate, toDeactivate);
             }
-            else
+            //If current colliders are valid and there are multiple bodies being tracked,
+            //add indices to the activate list so they will not be deactivated
+            else if(bodyIndices.Count > 1)
             {
                 AddCurrentIndicesToList(body, toActivate);
             }
@@ -58,7 +61,6 @@ public class GroundColliderTracker
     //Evaluate whether to current active colliders are correct based on direction
     private bool ValidateCurrentColliders(Rigidbody2D body)
     {
-        Debug.Log($"Validating {body.name}");
         int bodyIndex = bodyIndices[body];
         //Return true if player is on the first or final segment and heading in the direction of that segment
         if (MovingForward(body) && bodyIndex >= colliderList.Count - 1 || (!MovingForward(body) && bodyIndex == 0))
@@ -86,7 +88,6 @@ public class GroundColliderTracker
     {
         while (!segmentList[bodyIndices[body]].ContainsX(body.position.x))
         {
-            Debug.Log($"Adjusting indices for {body.gameObject.name}");
             if (MovingForward(body))
             {
                 bodyIndices[body]++;
@@ -100,7 +101,6 @@ public class GroundColliderTracker
 
     private void BuildActivateList(Rigidbody2D body, List<int> activate, List<int> deactivate)
     {
-        Debug.Log($"Building activate list for {body.gameObject.name}");
         //Sets the index change value based on the body's direction
         int indexDirection = 1;
         bool forward = MovingForward(body);
@@ -112,7 +112,6 @@ public class GroundColliderTracker
             bodyIndices[body] -= indexDirection;
         }
         //Adds current index and index ahead of current index to activate list.
-        Debug.Log($"Adding indices {bodyIndices[body]} and {bodyIndices[body] + indexDirection} for {body.name}");
         AddIfUnique(activate, bodyIndices[body]);
         AddIfUnique(activate, bodyIndices[body] + indexDirection);
         //segmentList[bodyIndices[body] + indexDirection].CollisionActive = true;
@@ -124,6 +123,8 @@ public class GroundColliderTracker
         }
     }
 
+    //Add current and next index to the given list
+    //Validate next index to ensure it is in range.
     private void AddCurrentIndicesToList(Rigidbody2D body, List<int> activate)
     {
         int indexDirection = 1;
@@ -138,24 +139,28 @@ public class GroundColliderTracker
     }
     private void ActivateColliders(List<int> activated, List<int> toActivate, List<int> toDeactivate)
     {       
-
+        //Activate any colliders in toActivate list that aren't already active
         foreach (var index in toActivate)
         {
             if (!activated.Contains(index))
             {
-                Debug.Log($"Activating {index}");
                 colliderList[index].gameObject.SetActive(true);
+                if(index == colliderList.Count - 1)
+                {
+                    backstop.SetActive(true);
+                }
             }
         }
-
+        //Deactivate any colliders not current in the toActivate list.
         foreach (var index in toDeactivate)
         {
             if (!toActivate.Contains(index))
             {
-                Debug.Log($"Deactivating {index}");
                 colliderList[index].gameObject.SetActive(false);
             }
         }
+
+        activated = toActivate;
     }
 
     private void AddIfUnique<T>(List<T> list, T value)
@@ -169,6 +174,12 @@ public class GroundColliderTracker
     public void ResetTrackedBodies()
     {
         bodyIndices = new();
+    }
+
+    public void RemoveBody(Rigidbody2D body)
+    {
+
+        bodyIndices.Remove(body);
     }
 
     public void AddBody(Rigidbody2D body, int startIndex)

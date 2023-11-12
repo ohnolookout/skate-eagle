@@ -15,14 +15,14 @@ public class CollisionTracker : MonoBehaviour
 
     void Awake()
     {
-        collidedCategories[ColliderCategory.LWheel] = new List<string> { "LWheelCollider" };
-        collidedCategories[ColliderCategory.RWheel] = new List<string> { "RWheelCollider" };
+        //collidedCategories[ColliderCategory.LWheel] = new List<string> { "LWheelCollider" };
+        //collidedCategories[ColliderCategory.RWheel] = new List<string> { "RWheelCollider" };
         eagleScript = gameObject.GetComponent<EagleScript>();
         playerAudio = eagleScript.Audio;
     }
 
     //Set float in collisionTimers to startTime instead of current timer. Then look at currentTime-startTime.
-    void FixedUpdate()
+    void Update()
     {
         //While there are pending collisions, continue checking the first pending collision
         //until one is found that has not exceeded the time limit
@@ -34,18 +34,12 @@ public class CollisionTracker : MonoBehaviour
                 //If first collision in list does not exceed time limit, break loop
                 break;
             }
-            //Debug.Log($"{collision.ColliderName} has exceeded timer. Removing from {collision.Category}.");
             //If collision does exceed time limit, remove it from the list of colliders that are currently collided in its category
             //And remove it from the list of pending collisions.
             collidedCategories[collision.Category].Remove(collision.ColliderName);
             pendingUncollisions.Remove(0);
             //If the current category has no more active collisions, remove it from the dictionary and send call to audio
-            if(collidedCategories[collision.Category].Count == 0)
-            {
-                collidedCategories.Remove(collision.Category);
-                playerAudio.Uncollide(collision.Category);
-                //Debug.Log($"Category {collision.Category} has no colliders. Removing category from collidedCategories.");
-            }
+            RemoveCategoryIfEmpty(collision.Category);
             //If no categories are collided, send eagle into airborne mode
             if(collidedCategories.Count == 0)
             {
@@ -62,6 +56,15 @@ public class CollisionTracker : MonoBehaviour
     public void UpdateCollision(Collision2D collision, bool isCollided)
     {
         UpdateCollision(collision.otherCollider.name, ParseCollider(collision), isCollided);
+    }
+
+    private void RemoveCategoryIfEmpty(ColliderCategory category)
+    {
+        if (collidedCategories[category].Count == 0)
+        {
+            collidedCategories.Remove(category);
+            playerAudio.Uncollide(category);
+        }
     }
 
     public void UpdateCollision(string name, ColliderCategory category, bool isCollided)
@@ -89,11 +92,6 @@ public class CollisionTracker : MonoBehaviour
 
     }
 
-    public void RemoveAllCollisions()
-    {
-        //pendingUncollisions = new();
-        //collidedCategories = new();
-    }
 
     private ColliderCategory ParseCollider(Collision2D collision)
     {
@@ -119,18 +117,36 @@ public class CollisionTracker : MonoBehaviour
     {
         if (collidedCategories.ContainsKey(ColliderCategory.Body)){
             collidedCategories[ColliderCategory.Body].Remove("Skate Eagle");
+            RemoveCategoryIfEmpty(ColliderCategory.Body);
         }
         if (collidedCategories.ContainsKey(ColliderCategory.LWheel))
         {
-            collidedCategories[ColliderCategory.Body].Remove("LWheelCollider");
+            collidedCategories[ColliderCategory.LWheel].Remove("LWheelCollider");
+            RemoveCategoryIfEmpty(ColliderCategory.LWheel);
         }
         if (collidedCategories.ContainsKey(ColliderCategory.RWheel))
         {
-            collidedCategories[ColliderCategory.Body].Remove("RWheelCollider");
+            collidedCategories[ColliderCategory.RWheel].Remove("RWheelCollider");
+            RemoveCategoryIfEmpty(ColliderCategory.RWheel);
         }
         if (collidedCategories.ContainsKey(ColliderCategory.Board))
         {
-            collidedCategories[ColliderCategory.Body].Remove("BoardCollider");
+            collidedCategories[ColliderCategory.Board].Remove("BoardCollider");
+            RemoveCategoryIfEmpty(ColliderCategory.Board);
+        }
+        foreach(var colliderName in pendingUncollisions.Dictionary.Keys.ToList())
+        {
+            if(colliderName == "Skate Eagle" || colliderName == "LWheelCollider" || colliderName == "RWheelCollider" || colliderName == "BoardCollider")
+            {
+                pendingUncollisions.Remove(colliderName);
+                continue;
+            }
+            ColliderCategory category = pendingUncollisions.Value(colliderName).Category;
+            if (!collidedCategories.ContainsKey(category)){
+                collidedCategories[category] = new() { colliderName };
+            } else if (!collidedCategories[category].Contains(colliderName)){
+                collidedCategories[category].Add(colliderName);
+            }
         }
     }
 

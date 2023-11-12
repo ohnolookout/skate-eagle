@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7480008847169198994}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -37.75, y: 9.23, z: 0}
   m_LocalScale: {x: 1.1999999, y: 1.1999999, z: 1.1999999}
   m_ConstrainProportionsScale: 0
@@ -63,8 +63,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -81,8 +81,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -103,8 +103,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.4
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 0.5
+        ragdollPitchModifier: 1.2
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -122,8 +122,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.4
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 0.5
+        ragdollPitchModifier: 1.2
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -140,8 +140,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.25
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -158,8 +158,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.25
         pitchVariance: 0
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -175,8 +175,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.5
         pitchVariance: 0.075
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 0.5
+        ragdollPitchModifier: 1.2
         randomize: 0
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -190,8 +190,8 @@ MonoBehaviour:
         pitch: 1.1
         volumeVariance: 0.05
         pitchVariance: 0.2
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 0.7
+        ragdollPitchModifier: 1
         randomize: 0
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -205,8 +205,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.1
         pitchVariance: 0.05
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 0.5
+        ragdollPitchModifier: 1.1
         randomize: 0
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -221,8 +221,8 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.5
         pitchVariance: 0.1
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         source: {fileID: 0}
@@ -236,15 +236,15 @@ MonoBehaviour:
         pitch: 1
         volumeVariance: 0.5
         pitchVariance: 0.1
-        ragdollVolModifier: 0
-        ragdollPitchModifier: 0
+        ragdollVolModifier: 1
+        ragdollPitchModifier: 1
         randomize: 0
         localizedSource: {fileID: 0}
         source: {fileID: 0}
-  boardSource: {fileID: 0}
-  wheelSource: {fileID: 0}
-  windBodySource: {fileID: 0}
-  oneShotSource: {fileID: 327447396171730716}
+  wheelSource: {fileID: 711343922017202512}
+  windBodySource: {fileID: 6910931747231761847}
+  boardSource: {fileID: 327447396171730716}
+  oneShotSource: {fileID: 1099534767356640581}
   eagleScript: {fileID: 0}
   runManager: {fileID: 0}
   collisionTracker: {fileID: 0}
