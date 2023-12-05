@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
     private static AudioManager instance;
-    [SerializeField] public Sound[] sounds;
-    private Sound soundtrack;
-    private Dictionary<string, Sound> soundDict;
+    [SerializeField] private AudioSource[] audioSources; //Minimum 3 audiosources
+    private Soundtrack soundtrack;
+    public Dictionary<AudioSource, Sound> playingSounds = new();
+    public Dictionary<AudioSource, IEnumerator> fadingSources = new();
+    private Dictionary<Rigidbody2D, SoundModifiers> modifiers = new();
+    private LiveRunManager runManager;
+    public static float intensityDenominator = 300, maxSoundDistance = 80, zoomLimit = 110, zoomModifier = 1;
 
     void Awake()
     {
@@ -19,20 +24,177 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        soundDict = new();
     }
 
-    void Start()
+    private void Start()
     {
-        BuildAudioSources();
-        BuildSoundtrack();
+        if (soundtrack != null)
+        {
+            PlaySoundtrack(soundtrack);
+        }
     }
 
-    public void Refresh()
+    private void FixedUpdate()
     {
-
+        if (modifiers.Count < 0 || runManager == null)
+        {
+            return;
+        }
+        if ((int)runManager.runState < 2)
+        {
+            return;
+        }
+        zoomModifier = AudioUtility.CalculateZoomModifier(runManager, zoomLimit);
+        AudioUtility.UpdateModifiers(modifiers, runManager, maxSoundDistance);
+        foreach (var source in playingSounds.Keys)
+        {
+            if (!fadingSources.ContainsKey(source))
+            {
+                UpdateLoopSource(source);
+            }
+        }
+    }
+    public void StopLoops()
+    {
+        intensityDenominator = 300;
+        for (int i = 1; i < audioSources.Length; i++)
+        {
+            audioSources[i].Stop();
+        }
+    }
+    //Plays soundtrack on audioSources[0]
+    public void PlaySoundtrack(Soundtrack soundtrack)
+    {
+        Sound track = soundtrack.tracks;
+        audioSources[0].clip = track.Clip();
+        audioSources[0].volume = track.volume;
+        track.source = audioSources[0];
+        audioSources[0].Play();
     }
 
+    //Plays soundtrack on audioSources[1]
+    public void PlayOneShot(Sound sound)
+    {
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
+        if (sound.trackIntensity)
+        {
+            float intensity = -1 + Mathf.Clamp(runManager.Player.ForceDelta / 100, 0, 2);
+            audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, runManager.PlayerIsRagdoll);
+        }
+        else
+        {
+            audioSources[1].volume = sound.volume * modifier;
+        }
+        //One shots don't have pitch variance.
+        audioSources[1].panStereo = modifiers[sound.localizedSource].pan;
+        audioSources[1].pitch = sound.pitch;
+        //Debug.Log("Playing oneshot for sound " + sound.name + " at volume " + audioSources[1].volume);
+        audioSources[1].PlayOneShot(sound.Clip());
+    }
+
+    //Plays loop on first unused source beginning at audioSources[2]
+    public void StartLoop(Sound sound, float fadeTime = 0)
+    {
+        for (int i = 2; i < audioSources.Length; i++)
+        {
+            if (!audioSources[i].isPlaying)
+            {
+                LoadSoundWithModifiers(sound, audioSources[i]);
+                audioSources[i].Play();
+                playingSounds[audioSources[i]] = sound;
+                if (fadeTime > 0)
+                {
+                    fadingSources[sound.source] = FadeAudioSource(sound.source, 0, fadeTime);
+                    StartCoroutine(fadingSources[sound.source]);
+                }
+                return;
+            }
+        }
+        Debug.LogError("No available audiosource to play sound " + sound.name);
+    }
+
+    public void StopLoop(Sound sound)
+    {
+        if (sound.source != null)
+        {
+            sound.source.Stop();
+        }
+        if (fadingSources.ContainsKey(sound.source))
+        {
+            StopCoroutine(fadingSources[sound.source]);
+            fadingSources.Remove(sound.source);
+        }
+        playingSounds.Remove(sound.source);
+    }
+
+    private void UpdateLoopSource(AudioSource loopSource)
+    {
+        Rigidbody2D trackingBody = playingSounds[loopSource].localizedSource;
+        //Apply updated modifiers
+        Sound sound = playingSounds[loopSource];
+        //Debug.Log($"Updating loop source for " + sound.name);
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
+        //Debug.Log($"Modifier: {modifier}");
+        loopSource.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
+        //Debug.Log($"New volume: {loopSource.volume}");
+        loopSource.panStereo = modifiers[sound.localizedSource].pan;
+        loopSource.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.PlayerIsRagdoll);
+    }
+    private IEnumerator FadeAudioSource(AudioSource source, float finishVolume, float fadeDuration)
+    {
+        float startVolume = source.volume;
+        float timeElapsed = 0;
+        while (timeElapsed < fadeDuration)
+        {
+            timeElapsed += Time.deltaTime;
+            float t = timeElapsed / fadeDuration;
+            source.volume = Mathf.Lerp(startVolume, finishVolume, t) * zoomModifier;
+            yield return new WaitForFixedUpdate();
+        }
+        source.Stop();
+        playingSounds.Remove(source);
+        fadingSources.Remove(source);
+    }
+
+
+    private void LoadSoundWithModifiers(Sound sound, AudioSource source)
+    {
+        source.clip = sound.Clip();
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
+        source.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
+        source.panStereo = modifiers[sound.localizedSource].pan;
+        source.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.PlayerIsRagdoll);
+        sound.source = source;
+
+    }
+    //Called by player audio to send localized objects and runManager (runManager must exist for localization).
+    public void BuildModifierDict(Rigidbody2D[] trackedBodies)
+    {
+        foreach (var body in trackedBodies)
+        {
+            if (!modifiers.ContainsKey(body))
+            {
+                modifiers[body] = new(1);
+            }
+        }
+    }
+    private static void LoadSoundToSource(Sound sound, AudioSource source, float volume, float pitch = 1, float pan = 0)
+    {
+        source.clip = sound.Clip();
+        source.volume = volume;
+        source.pitch = pitch;
+        source.panStereo = pan;
+        sound.source = source;
+    }
+
+    private static void LoadSoundToSource(Sound sound, AudioSource source)
+    {
+        source.clip = sound.Clip();
+        source.volume = sound.volume;
+        source.pitch = sound.pitch;
+        source.panStereo = 0;
+        sound.source = source;
+    }
     public static AudioManager Instance
     {
         get
@@ -42,100 +204,36 @@ public class AudioManager : MonoBehaviour
                 return instance;
             }
             Debug.Log("No instance found. Creating instance.");
-            GameObject managerObject = new GameObject("GameManager");
+            GameObject managerObject = new GameObject("AudioManager");
             instance = managerObject.AddComponent<AudioManager>();
             return instance;
         }
     }
 
-    public void BuildAudioSources()
+    public LiveRunManager RunManager
     {
-        foreach (var s in sounds)
+        set
         {
-            AssignSourceToSound(s, gameObject.AddComponent<AudioSource>());
-            soundDict[s.name] = s;
+            runManager = value;
         }
     }
-
-    public void BuildSoundtrack()
+}
+public class SoundModifiers
+{
+    public float intensity, distance, pan;
+    public SoundModifiers(float intensity, float distance, float pan)
     {
-        soundtrack = GameObject.FindGameObjectWithTag("Soundtrack").GetComponent<Soundtrack>().tracks;
-        if (soundtrack == null)
-        {
-            Debug.LogWarning("No soundtrack found!");
-            return;
-        }
-        AssignSourceToSound(soundtrack, gameObject.AddComponent<AudioSource>());
-        soundtrack.source.Play();
+        this.intensity = intensity;
+        this.distance = distance;
+        this.pan = pan;
     }
 
-    public void Play(string name)
+    public SoundModifiers(float intensity)
     {
-        if (!soundDict.ContainsKey(name))
-        {
-            Debug.LogWarning($"Sound {name} not found!");
-            return;
-        }
-        if (soundDict[name].randomize)
-        {
-            soundDict[name].source.clip = soundDict[name].Clip();
-        }
-        soundDict[name].source.Play();
-
+        this.intensity = intensity;
+        distance = 1;
+        pan = 0;
     }
 
-    public static IEnumerator FadeAudioSource(AudioSource source, float finishVolume, float fadeDuration)
-    {
-        float startVolume = source.volume;
-        float timeElapsed = 0;
-        while(timeElapsed < fadeDuration)
-        {
-            timeElapsed += Time.deltaTime;
-            float t = timeElapsed / fadeDuration;
-            source.volume = Mathf.Lerp(startVolume, finishVolume, t);
-            yield return new WaitForFixedUpdate();
-        }
-        if(finishVolume == 0)
-        {
-            source.Stop();
-        }
-    }
 
-    public static void AssignSourceToSound(Sound sound, AudioSource source)
-    {
-        sound.source = source;
-        sound.source.clip = sound.Clip();
-        sound.source.volume = sound.volume;
-        sound.source.loop = sound.loop;
-        sound.source.pitch = sound.pitch;
-    }
-
-    public static void LoadSoundToSource(Sound sound, AudioSource source, float volMultiplier = 0, int? clipIndex = null)
-    {
-        if (clipIndex != null)
-        {
-            source.clip = sound.Clip((int)clipIndex);
-        }
-        else
-        {
-            source.clip = sound.Clip();
-        }
-        source.volume = sound.volume * volMultiplier;
-        source.loop = sound.loop;
-        source.pitch = sound.pitch;
-    }
-
-    public static void LoadSoundToSource(Sound sound, float volMultiplier = 0, int? clipIndex = null)
-    {
-#if UNITY_EDITOR
-        if(sound.source == null)
-        {
-            Debug.LogWarning($"Sound {sound.name} has no source!");
-            return;
-        }
-#endif
-        LoadSoundToSource(sound, sound.source, volMultiplier, clipIndex);
-    }
-
-    
 }

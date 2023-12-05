@@ -454,6 +454,10 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
+            if (!IsRagdoll)
+            {
+                return null;
+            }
             return ragdollBoard;
         }
     }

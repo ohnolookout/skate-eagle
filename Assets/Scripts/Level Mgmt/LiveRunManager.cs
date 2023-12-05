@@ -11,6 +11,7 @@ public class LiveRunManager : MonoBehaviour
     private float stompThreshold = 2, stompCharge = 0; //distanceToFinish = 0, distancePassed = 0f, 
     [SerializeField] private Level currentLevel;
     private GameManager gameManager;
+    private AudioManager audioManager;
     [SerializeField] private EagleScript eagleScript;
     [SerializeField] public Overlay overlay;
     [SerializeField] private CameraScript cameraScript;
@@ -18,7 +19,6 @@ public class LiveRunManager : MonoBehaviour
 
     void Awake()
     {
-
         gameManager = GameManager.Instance;
         currentLevel = gameManager.CurrentLevel;
         /* UNCOMMENT IF LEVEL ISSUES
@@ -29,6 +29,8 @@ public class LiveRunManager : MonoBehaviour
 
     private void Start()
     {
+        audioManager = AudioManager.Instance;
+        audioManager.RunManager = this;
         overlay.StartScreen(gameManager.CurrentPlayerRecord);
     }
 
@@ -58,6 +60,7 @@ public class LiveRunManager : MonoBehaviour
         {
             gameManager.AddAttempt();
         }
+        audioManager.StopLoops();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         runState = RunState.Landing;
     }
@@ -121,8 +124,7 @@ public class LiveRunManager : MonoBehaviour
         StartCoroutine(SlowToFinish());
     }
 
-
-    public IEnumerator SlowToFinish()
+    private IEnumerator SlowToFinish()
     {
         eagleScript.SlowToStop();
         while (eagleScript.Velocity.x > 0.2f)
@@ -139,14 +141,6 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.GameOver;
     }
 
-    /*
-    public float DistancePassed
-    {
-        get
-        {
-            return distancePassed;
-        }
-    }*/
 
     public float StompThreshold
     {
@@ -218,18 +212,26 @@ public class LiveRunManager : MonoBehaviour
         }
     }
 
+    public float CameraSize
+    {
+        get
+        {
+            return cameraScript.Camera.orthographicSize;
+        }
+    }
+
     public Vector3 LeadingCameraCorner
     {
         get
         {
-            return CameraScript.LeadingCorner;
+            return cameraScript.LeadingCorner;
         }
     }
     public Vector3 TrailingCameraCorner
     {
         get
         {
-            return CameraScript.TrailingCorner;
+            return cameraScript.TrailingCorner;
         }
     }
 
@@ -237,7 +239,7 @@ public class LiveRunManager : MonoBehaviour
     {
         get
         {
-            return CameraScript.Center;
+            return cameraScript.Center;
         }
     }
 
@@ -270,6 +272,14 @@ public class LiveRunManager : MonoBehaviour
         get
         {
             return CameraScript.leadingEdgeOffset;
+        }
+    }
+
+    public float DefaultCameraSize
+    {
+        get
+        {
+            return cameraScript.DefaultSize;
         }
     }
 

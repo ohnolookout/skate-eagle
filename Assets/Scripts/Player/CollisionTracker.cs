@@ -36,10 +36,12 @@ public class CollisionTracker : MonoBehaviour
             }
             //If collision does exceed time limit, remove it from the list of colliders that are currently collided in its category
             //And remove it from the list of pending collisions.
-            collidedCategories[collision.Category].Remove(collision.ColliderName);
+            if (collidedCategories.ContainsKey(collision.Category)){
+                collidedCategories[collision.Category].Remove(collision.ColliderName);
+                RemoveCategoryIfEmpty(collision.Category);
+            }
             pendingUncollisions.Remove(0);
             //If the current category has no more active collisions, remove it from the dictionary and send call to audio
-            RemoveCategoryIfEmpty(collision.Category);
             //If no categories are collided, send eagle into airborne mode
             if(collidedCategories.Count == 0)
             {

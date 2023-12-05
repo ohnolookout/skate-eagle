@@ -178,12 +178,31 @@ public class GroundColliderTracker
 
     public void RemoveBody(Rigidbody2D body)
     {
-
-        bodyIndices.Remove(body);
+        if (bodyIndices.ContainsKey(body))
+        {
+            bodyIndices.Remove(body);
+        }
     }
 
     public void AddBody(Rigidbody2D body, int startIndex)
     {
         bodyIndices.Add(body, startIndex);
+    }
+
+    public void SwapBodies(Rigidbody2D[] currentBodies, Rigidbody2D[] newBodies)
+    {
+        int currentBodyIndex = 0;
+        if (currentBodies.Length > 0 && bodyIndices.ContainsKey(currentBodies[0])){
+            currentBodyIndex = bodyIndices[currentBodies[0]];
+        }
+        foreach(var body in currentBodies)
+        {
+            RemoveBody(body);
+        }
+        foreach (var body in newBodies)
+        {
+            AddBody(body, currentBodyIndex);
+        }
+
     }
 }

@@ -19,7 +19,6 @@ public class GroundSpawner : MonoBehaviour
     public GameObject finishFlag;
     [SerializeField] GameObject backstop;
     public bool testMode = false;
-    private int activeColliderBuffer = 0;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
 
@@ -58,11 +57,8 @@ public class GroundSpawner : MonoBehaviour
 
     public void SwitchToRagdoll()
     {
-        colliderTracker.RemoveBody(logic.Player.rigidEagle);
-        colliderTracker.AddBody(logic.PlayerBody, birdIndex);
-        colliderTracker.AddBody(logic.RagdollBoard, birdIndex);
+        colliderTracker.SwapBodies(new Rigidbody2D[] { logic.Player.rigidEagle }, new Rigidbody2D[] { logic.PlayerBody, logic.RagdollBoard });
     }
-
     public void GenerateLevel(Level level)
     {
         List<LevelSection> levelSections = level.LevelSections;
@@ -260,6 +256,7 @@ public class GroundSpawner : MonoBehaviour
         }
     }
 
+    //***Needs to be reworked because birdIndex no longer gets changed***
     private void CacheLowestPoint(CacheStatus status, Vector3 point)
     {
         if (activeLowPoints.Count == 0)

@@ -21,7 +21,8 @@ public class Sound
     [Range(0f, 2f)]
     public float ragdollPitchModifier = 1f;
     public bool randomize = false;
-    public GameObject localizedSource;
+    public Rigidbody2D localizedSource;
+    public bool trackZoom = false, trackIntensity = false, trackDistance = false, trackPan = false;
     [HideInInspector] public AudioSource source;
 
     public AudioClip Clip(int? index = null)
@@ -45,13 +46,13 @@ public class Sound
     }
 
     //Takes intensity between -1 and 1, applies it to variance and adds it to volume.
-    public float AdjustedVolume(float intensity, bool ragdoll = false)
+    public float AdjustedVolume(float intensity, float modifier, bool ragdoll = false)
     {
         if (ragdoll)
         {
-            return (volume + (volumeVariance * intensity)) * ragdollVolModifier;
+            modifier *= ragdollVolModifier;
         }
-        return volume + (volumeVariance * intensity);
+        return (volume + (volumeVariance * intensity)) * modifier;
     }
 
     public float AdjustedPitch(float intensity, bool ragdoll = false)

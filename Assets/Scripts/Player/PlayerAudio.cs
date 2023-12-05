@@ -4,162 +4,82 @@ using UnityEngine;
 using AYellowpaper.SerializedCollections;
 using System.Linq;
 
-public enum OneShotFX { Jump, SecondJump, Wheel, Board, Body, HardBody}
+public enum OneShotFX { Jump, SecondJump, Wheel, Board, Body, HardBody};
 public enum LoopFX { Roll, Freewheel, Board, Body, Wind };
+
+
 public class PlayerAudio : MonoBehaviour
 {
     [SerializeField]
     private SerializedDictionary<OneShotFX, Sound> oneShotDict = new();
     [SerializeField]
     private SerializedDictionary<LoopFX, Sound> loopDict = new();
-    [SerializeField]
-    private AudioSource wheelSource, windBodySource, boardSource, oneShotSource;
-    private bool wheelsOnGround = false, fadingRoll = false;
+    private bool wheelsOnGround = false;
     [SerializeField]
     private EagleScript eagleScript;
-    private IEnumerator rollFade;
-    private float rollIntensity = 0.4f, airborneFadeTime = 2f, intensityDenominator = 300f;
-    [SerializeField]
-    private LiveRunManager runManager;
     [SerializeField]
     private CollisionTracker collisionTracker;
-    private Dictionary<AudioSource, LoopFX> currentLoopDict = new();
-    private float wheelTimer = -1;
-    private float wheelTimeLimit = 0.2f;
-    private Dictionary<GameObject, float> localObjectModifiers = new();
-    [SerializeField]
-    private float maxSoundDistance = 115;
+    private float wheelTimer = -1, wheelTimeLimit = 0.2f, wheelFadeCoefficient = 0.01f;
+    private AudioManager audioManager;
 
     private void Awake()
     {
-        runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        currentLoopDict[wheelSource] = LoopFX.Roll;
-        currentLoopDict[windBodySource] = LoopFX.Wind;
-        currentLoopDict[boardSource] = LoopFX.Board;
         List<Sound> sounds = oneShotDict.Values.ToList();
         sounds.AddRange(loopDict.Values.ToList());
-        localObjectModifiers = BuildLocalObjDict(sounds);
-    }
-
-    void Start()
-    {
-        rollFade = AudioManager.FadeAudioSource(wheelSource, 0, airborneFadeTime * (eagleScript.Velocity.magnitude / intensityDenominator));
-        StartLoop(wheelSource, LoopFX.Roll);
-        wheelSource.volume = 0;
+        audioManager = AudioManager.Instance;
+        audioManager.BuildModifierDict(TrackedBodies(sounds));
     }
 
     void FixedUpdate()
     {
-        if ((int)runManager.runState < 2)
-        {
-            return;
-        }
-        if (runManager.PlayerIsRagdoll)
-        {
-            UpdateLocalModifiers();
-        }
-        //rollIntensity ranges from -1 to 1
-        rollIntensity = -1 + Mathf.Clamp(eagleScript.Velocity.magnitude / intensityDenominator, 0, 2);
-        //Calculate loop sources' volumes such that the current clips' volume sits at the center of possible ranges.        
-        UpdateLoopSource(windBodySource, eagleScript.Rigidbody);
-        Rigidbody2D boardBody = null;
-        if (eagleScript.IsRagdoll)
-        {
-            boardBody = eagleScript.RagdollBoard;
-        }
-        UpdateLoopSource(boardSource, boardBody);
-        if (!fadingRoll)
-        {
-            UpdateLoopSource(wheelSource);
-        }
         UpdateWheelTimer();
     }
 
-    private void UpdateLoopSource(AudioSource loopSource, Rigidbody2D trackingBody = null)
+    private Rigidbody2D[] TrackedBodies(List<Sound> sounds)
     {
-        if (trackingBody != null)
+        List<Rigidbody2D> bodies = new();
+        foreach(var sound in sounds)
         {
-            rollIntensity = Intensity(trackingBody);
+            if (!bodies.Contains(sound.localizedSource))
+            {
+                bodies.Add(sound.localizedSource);
+            }
         }
-        if (!loopSource.isPlaying)
-        {
-            return;
-        }
-        loopSource.volume = SoundVolume(loopDict[currentLoopDict[loopSource]], rollIntensity);
-        loopSource.pitch = loopDict[currentLoopDict[loopSource]].AdjustedPitch(rollIntensity, eagleScript.IsRagdoll);
+        return bodies.ToArray();
     }
-
-    private void UpdateLocalModifiers()
-    {
-        foreach (var localObj in localObjectModifiers.Keys.ToList())
-        {            
-            localObjectModifiers[localObj] = 
-                (maxSoundDistance - Mathf.Abs(localObj.transform.position.x - runManager.CameraCenter.x)) / maxSoundDistance;            
-        }
-    }
-
-    public void PlayOneShot(OneShotFX effectName)
-    {
-#if UNITY_EDITOR
-        if (!oneShotDict.ContainsKey(effectName))
-        {
-            Debug.LogWarning($"Effect {effectName} not found!");
-            return;
-        }
-#endif
-        Sound sound = oneShotDict[effectName];
-        //Adjust source volume to use volume adjusted by intensity only if variance is > 0
-        if (sound.volumeVariance == 0 && sound.localizedSource == null)
-        {
-            oneShotSource.volume = sound.volume;
-        }
-        else
-        {
-            float intensity = -1 + Mathf.Clamp(eagleScript.ForceDelta / 100, 0, 2);
-            oneShotSource.volume = 0.1f + SoundVolume(sound, intensity);
-        }
-        //One shots don't have pitch variance.
-        oneShotSource.pitch = sound.pitch;
-        oneShotSource.PlayOneShot(sound.Clip());
-    }
-
     public void Jump(float jumpCount)
     {
         if (jumpCount == 0)
         {
-            PlayOneShot(OneShotFX.Jump);
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
             wheelTimer = 0;
+            if (!audioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
+            {
+                audioManager.StopLoop(loopDict[LoopFX.Roll]);
+                audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
+            }
         }
         else
         {
-            PlayOneShot(OneShotFX.SecondJump);
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.SecondJump]);
         }
-        if (currentLoopDict[wheelSource] != LoopFX.Freewheel)
-        {
-            StartLoop(wheelSource, LoopFX.Freewheel);
-        }
-        StopLoop(boardSource);
         wheelsOnGround = false;
     }
 
 
     public void Finish()
     {
-        fadingRoll = false;
         wheelsOnGround = true;
-        StopCoroutine(rollFade);
-        float stopDuration = StopDuration(eagleScript.Velocity.x);
+        float stopDuration = AudioUtility.StopDuration(eagleScript.Velocity.x);
         StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
-        StartLoop(boardSource, LoopFX.Board);
+        audioManager.StartLoop(loopDict[LoopFX.Board]);
 
     }
 
     public void Dismount()
     {
-        StopLoop(wheelSource);
-        StopLoop(windBodySource);
-        StopLoop(boardSource);
-        PlayOneShot(OneShotFX.Jump);
+        audioManager.StopLoops();
+        audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
     }
 
     public void Collide(ColliderCategory colliderName)
@@ -204,9 +124,10 @@ public class PlayerAudio : MonoBehaviour
     {
         if (!wheelsOnGround && wheelTimer < 0)
         {
-            PlayOneShot(OneShotFX.Wheel);
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.Wheel]);
             wheelsOnGround = true;
-            StartLoop(wheelSource, LoopFX.Roll);
+            audioManager.StopLoop(loopDict[LoopFX.Freewheel]);
+            audioManager.StartLoop(loopDict[LoopFX.Roll]);
             wheelTimer = 0;
         }
     }
@@ -215,93 +136,58 @@ public class PlayerAudio : MonoBehaviour
     {
         if(eagleScript.ForceDelta > 140)
         {
-            PlayOneShot(OneShotFX.HardBody);
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.HardBody]);
         }
         else
         {
-            PlayOneShot(OneShotFX.Body);
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.Body]);
         }
-        StartLoop(windBodySource, LoopFX.Body);
+        audioManager.StartLoop(loopDict[LoopFX.Body]);
     }
 
     public void BoardCollision()
     {
-        PlayOneShot(OneShotFX.Board);
-        StartLoop(boardSource, LoopFX.Board);
+        audioManager.PlayOneShot(oneShotDict[OneShotFX.Board]);
+        audioManager.StartLoop(loopDict[LoopFX.Board]);
     }
 
     public void WheelExit()
     {
-        if (!collisionTracker.WheelsCollided)
+        if (collisionTracker.WheelsCollided)
         {
-            StartLoop(wheelSource, LoopFX.Freewheel);
-            wheelsOnGround = false;
+            return;
         }
+        if (!audioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
+        {
+            audioManager.StopLoop(loopDict[LoopFX.Roll]);
+            audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
+        }
+        wheelsOnGround = false;
     }
 
     public void BoardExit()
     {
-        StopLoop(boardSource);
+        audioManager.StopLoop(loopDict[LoopFX.Board]);
     }
 
     public void BodyExit()
     {
-        StopLoop(windBodySource);
-    }
-
-    private void StartLoop(AudioSource source, LoopFX loopName)
-    {
-        if (source == wheelSource && loopName != LoopFX.Freewheel)
-        {
-            fadingRoll = false;
-            StopCoroutine(rollFade);
-        }
-        source.clip = loopDict[loopName].Clip();
-        source.volume = SoundVolume(loopDict[loopName], rollIntensity);
-        source.pitch = loopDict[loopName].AdjustedPitch(rollIntensity, eagleScript.IsRagdoll);
-        source.Play();
-        currentLoopDict[source] = loopName;
-        if (loopName == LoopFX.Freewheel)
-        {
-            StopCoroutine(rollFade);
-            //Need to add rollfade method in this class that factors in distance
-            rollFade = AudioManager.FadeAudioSource(source, 0, FreewheelFadeTime);
-            StartCoroutine(rollFade);
-            fadingRoll = true;
-        }
-    }
-
-    private void StopLoop(AudioSource source)
-    {
-        source.Stop();
-    }
-
-    private float SoundVolume(Sound sound, float intensity)
-    {
-        if(sound.localizedSource == null || !eagleScript.IsRagdoll)
-        {
-            return sound.AdjustedVolume(intensity);
-        }
-        //Debug.Log($"Localizing sound {sound.name} with modifier {localObjectModifiers[sound.localizedSource]}");
-        return sound.AdjustedVolume(intensity, eagleScript.IsRagdoll) * localObjectModifiers[sound.localizedSource];
-        
+        audioManager.StopLoop(loopDict[LoopFX.Body]);
     }
 
     private IEnumerator SpikeIntensityDenom(float duration, float denomMultiplier)
     {
-        float startDuration = duration * 0f;
         float accelDuration = duration * 0.05f;
         float holdDuration = duration * 0.45f;
         float decelDuration = duration * 0.5f;
         float timeElapsed = 0;
-        float startDenom = intensityDenominator;
-        float floor = intensityDenominator/denomMultiplier;
+        float startDenom = AudioManager.intensityDenominator;
+        float floor = AudioManager.intensityDenominator /denomMultiplier;
         float shelf = startDenom;
-        yield return new WaitForSeconds(startDuration);
         while (timeElapsed < accelDuration)
         {
             timeElapsed += Time.deltaTime;
-            intensityDenominator = Mathf.Lerp(startDenom, floor, EaseInOut(timeElapsed / accelDuration));
+            AudioManager.intensityDenominator = Mathf.Lerp(startDenom, floor, AudioUtility.EaseInOut(timeElapsed / accelDuration));
             yield return null;
         }
         timeElapsed = 0;
@@ -309,50 +195,9 @@ public class PlayerAudio : MonoBehaviour
         while (timeElapsed < decelDuration)
         {
             timeElapsed += Time.deltaTime;
-            intensityDenominator = Mathf.Lerp(floor, shelf, EaseOut(timeElapsed / decelDuration));
+            AudioManager.intensityDenominator = Mathf.Lerp(floor, shelf, AudioUtility.EaseOut(timeElapsed / decelDuration));
             yield return null;
         }
-    }
-
-    private Dictionary<GameObject, float> BuildLocalObjDict(List<Sound> sounds)
-    {
-        Dictionary<GameObject, float> objDict = new();
-        foreach(var sound in sounds)
-        {
-            if (sound.localizedSource != null && !objDict.ContainsKey(sound.localizedSource))
-            {
-                objDict[sound.localizedSource] = 0;
-            }
-        }
-        return objDict;
-    }
-
-    
-
-    public static float EaseIn(float t)
-    {
-        return t * t;
-    }
-
-    public static float EaseOut(float t)
-    {
-        return Flip(EaseIn(Flip(t)));
-    }
-
-    static float Flip(float x)
-    {
-        return 1 - x;
-    }
-
-    public static float EaseInOut(float t)
-    {
-        return Mathf.Lerp(EaseIn(t), EaseOut(t), t);
-    }
-
-    public float StopDuration(float xVelocity)
-    {
-        return (Mathf.Log(1 / xVelocity) / -0.083f)/50;
-        //Denominator should be equal to ln(1 - deceleration coeffeciient).
     }
 
     public void UpdateWheelTimer()
@@ -368,16 +213,12 @@ public class PlayerAudio : MonoBehaviour
         }
     }
 
-    public float FreewheelFadeTime
+    private float WheelFadeTime
     {
         get
         {
-            return airborneFadeTime * ((Intensity(eagleScript.Rigidbody) + 1) * 2);
+            return wheelFadeCoefficient * eagleScript.Rigidbody.velocity.magnitude;
         }
     }
 
-    public float Intensity(Rigidbody2D trackingBody)
-    {
-        return -1 + Mathf.Clamp(trackingBody.velocity.magnitude / intensityDenominator, 0, 2);
-    }
 }

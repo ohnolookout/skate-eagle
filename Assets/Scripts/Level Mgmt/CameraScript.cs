@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour
 {
-    public Vector3 offset, lowPoint;
+    public Vector3 offset, lowPoint, leadingCorner, trailingCorner;
     public float leadingEdgeOffset = 45;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     private bool cameraZoomOut = false, cameraZoomIn = false;
     private LiveRunManager runManager;
     private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
+    private Camera cam;
 
     void Awake()
     {
@@ -28,7 +29,7 @@ public class CameraScript : MonoBehaviour
         {
             return;
         }
-        if (Camera.main.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
+        if (cam.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
         UpdateZoom();
         if (runManager.runState != RunState.Finished)
         {
@@ -41,6 +42,7 @@ public class CameraScript : MonoBehaviour
         defaultSize = Camera.main.orthographicSize;
         runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         transitionYCoroutine = TransitionLowY(runManager.LowestGroundPoint);
+        cam = GetComponent<Camera>();
     }
 
     public void UpdateZoom()
@@ -73,13 +75,15 @@ public class CameraScript : MonoBehaviour
         float cameraX = runManager.PlayerPosition.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
         float cameraY = camY + offset.y + zoomYDelta;
         transform.position = new Vector3(cameraX, cameraY, transform.position.z);
+        leadingCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        trailingCorner = cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
     }
 
     public Vector3 LeadingCorner
     {
         get
         {
-            return Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
+            return leadingCorner;
         }
     }
 
@@ -87,7 +91,7 @@ public class CameraScript : MonoBehaviour
     {
         get
         {
-            return Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0));
+            return trailingCorner;
         }
     }
 
@@ -95,7 +99,7 @@ public class CameraScript : MonoBehaviour
     {
         get
         {
-            return Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
+            return cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
         }
     }
 
@@ -117,10 +121,10 @@ public class CameraScript : MonoBehaviour
     private IEnumerator ZoomOut()
     {
         cameraZoomOut = true;
-        while(runManager.PlayerPosition.y > LeadingCorner.y - Camera.main.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)
+        while(runManager.PlayerPosition.y > LeadingCorner.y - cam.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)
         {
             float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
-            Camera.main.orthographicSize += change;
+            cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();
         }
@@ -133,10 +137,10 @@ public class CameraScript : MonoBehaviour
     private IEnumerator ZoomIn()
     {
         cameraZoomIn = true;
-        while(Camera.main.orthographicSize > defaultSize)
+        while(cam.orthographicSize > defaultSize)
         {
             float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
-            Camera.main.orthographicSize += change;
+            cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();
         }
@@ -148,6 +152,22 @@ public class CameraScript : MonoBehaviour
         get
         {
             return zoomYDelta;
+        }
+    }
+
+    public Camera Camera
+    {
+        get
+        {
+            return cam;
+        }
+    }
+
+    public float DefaultSize
+    {
+        get
+        {
+            return defaultSize;
         }
     }
 }
