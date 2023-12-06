@@ -3353,7 +3353,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 1511240
+  m_InstanceId: 119406
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5596,25 +5596,53 @@ PrefabInstance:
       value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[3].Value.loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[4].Value.loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[3].Value.trackZoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[4].Value.trackZoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[4].Value.zoomVariance
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[3].Value.trackDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: loopDict._serializedList.Array.data[3].Value.trackIntensity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: loopDict._serializedList.Array.data[0].Value.localizedSource
       value: 
-      objectReference: {fileID: 7403047370052103976}
+      objectReference: {fileID: 4006063796826378406}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: loopDict._serializedList.Array.data[1].Value.localizedSource
       value: 
-      objectReference: {fileID: 7403047370052103976}
+      objectReference: {fileID: 4006063796826378406}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: loopDict._serializedList.Array.data[2].Value.localizedSource
       value: 
-      objectReference: {fileID: 7403047370052103976}
+      objectReference: {fileID: 4006063796826378406}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: oneShotDict._serializedList.Array.data[2].Value.localizedSource
       value: 
-      objectReference: {fileID: 7403047370052103976}
+      objectReference: {fileID: 4006063796826378406}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: oneShotDict._serializedList.Array.data[3].Value.localizedSource
       value: 
-      objectReference: {fileID: 7403047370052103976}
+      objectReference: {fileID: 4006063796826378406}
     - target: {fileID: 7480008847169198994, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: m_Name
       value: PlayerAudio

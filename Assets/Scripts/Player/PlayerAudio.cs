@@ -53,7 +53,7 @@ public class PlayerAudio : MonoBehaviour
         {
             audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
             wheelTimer = 0;
-            if (!audioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
+            if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
             {
                 audioManager.StopLoop(loopDict[LoopFX.Roll]);
                 audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
@@ -157,8 +157,9 @@ public class PlayerAudio : MonoBehaviour
         {
             return;
         }
-        if (!audioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
+        if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
         {
+            Debug.Log("Stopping roll and starting freewheel");
             audioManager.StopLoop(loopDict[LoopFX.Roll]);
             audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
         }

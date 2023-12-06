@@ -7,13 +7,14 @@ public class Sound
 {
     public string name;
     public AudioClip[] clips;
-    public bool loop;
     [Range(0f, 1f)]
     public float volume = 0.5f;
     [Range(.1f, 3f)]
     public float pitch = 1;
     [Range(0f, 1f)]
     public float volumeVariance = 1;
+    [Range(-3f, 3f)]
+    public float zoomVariance = 1;
     [Range(0f, 1f)]
     public float pitchVariance = 1;
     [Range(0f, 2f)]
@@ -22,7 +23,7 @@ public class Sound
     public float ragdollPitchModifier = 1f;
     public bool randomize = false;
     public Rigidbody2D localizedSource;
-    public bool trackZoom = false, trackIntensity = false, trackDistance = false, trackPan = false;
+    public bool loop, trackZoom = false, trackIntensity = false, trackDistance = false, trackPan = false;
     [HideInInspector] public AudioSource source;
 
     public AudioClip Clip(int? index = null)
@@ -52,11 +53,19 @@ public class Sound
         {
             modifier *= ragdollVolModifier;
         }
+        if (!trackIntensity)
+        {
+            intensity = 1;
+        }
         return (volume + (volumeVariance * intensity)) * modifier;
     }
 
     public float AdjustedPitch(float intensity, bool ragdoll = false)
     {
+        if (!trackIntensity)
+        {
+            intensity = 1;
+        }
         if (ragdoll)
         {
             return (pitch + (pitchVariance * intensity)) * ragdollPitchModifier;

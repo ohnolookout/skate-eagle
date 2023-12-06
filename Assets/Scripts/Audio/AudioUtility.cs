@@ -41,7 +41,17 @@ public static class AudioUtility
         float totalMod = 1;
         if (sound.trackZoom)
         {
-            totalMod *= zoomModifier;
+            //If zoom variance is positive, scale as zoom out increases
+            if(sound.zoomVariance > 0)
+            {
+                totalMod *= zoomModifier * sound.zoomVariance;
+            }
+            //If negative, scale inversely as zoom out increases (abs(zoomModifier) * 1/zoomModifier)
+            else
+            {
+                totalMod *= -sound.zoomVariance / zoomModifier;
+            }
+            //Add something to factor in zoom variance
         }
         if (!playerIsRagdoll)
         {
@@ -114,5 +124,28 @@ public static class AudioUtility
         float halfCamWidth = runManager.LeadingCameraCorner.x - runManager.CameraCenter.x;
         float distanceFromCenter = panBody.position.x - playerBody.position.x;
         return distanceFromCenter / halfCamWidth;
+    }
+
+    public static IEnumerator FadeAudioSource(AudioSource source, float finishVolume, float fadeDuration, bool trackZoom)
+    {
+        float startVolume = source.volume;
+        float timeElapsed = 0;
+        while (timeElapsed < fadeDuration)
+        {
+            timeElapsed += Time.deltaTime;
+            float t = timeElapsed / fadeDuration;
+            if (trackZoom)
+            {
+                source.volume = Mathf.Lerp(startVolume, finishVolume, t) * AudioManager.zoomModifier;                
+            }
+            else
+            {
+                source.volume = Mathf.Lerp(startVolume, finishVolume, t);
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        source.Stop();
+        AudioManager.playingSounds.Remove(source);
+        AudioManager.fadingSources.Remove(source);
     }
 }

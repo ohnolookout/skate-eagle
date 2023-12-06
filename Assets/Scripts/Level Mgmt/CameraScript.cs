@@ -8,10 +8,12 @@ public class CameraScript : MonoBehaviour
     public Vector3 offset, lowPoint, leadingCorner, trailingCorner;
     public float leadingEdgeOffset = 45;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
-    private bool cameraZoomOut = false, cameraZoomIn = false;
+    public bool cameraZoomOut = false, cameraZoomIn = false;
     private LiveRunManager runManager;
     private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
     private Camera cam;
+    [SerializeField]
+    private Sound wind;
 
     void Awake()
     {
@@ -120,6 +122,10 @@ public class CameraScript : MonoBehaviour
 
     private IEnumerator ZoomOut()
     {
+        if (!AudioManager.playingSounds.ContainsValue(wind))
+        {
+            AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 2f, defaultSize);
+        }
         cameraZoomOut = true;
         while(runManager.PlayerPosition.y > LeadingCorner.y - cam.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)
         {
@@ -145,6 +151,7 @@ public class CameraScript : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         cameraZoomIn = false;
+        AudioManager.Instance.StopLoop(wind);
     }
 
     public float ZoomYDelta

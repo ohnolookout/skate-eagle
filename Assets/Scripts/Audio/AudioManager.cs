@@ -8,8 +8,8 @@ public class AudioManager : MonoBehaviour
     private static AudioManager instance;
     [SerializeField] private AudioSource[] audioSources; //Minimum 3 audiosources
     private Soundtrack soundtrack;
-    public Dictionary<AudioSource, Sound> playingSounds = new();
-    public Dictionary<AudioSource, IEnumerator> fadingSources = new();
+    public static Dictionary<AudioSource, Sound> playingSounds = new();
+    public static Dictionary<AudioSource, IEnumerator> fadingSources = new();
     private Dictionary<Rigidbody2D, SoundModifiers> modifiers = new();
     private LiveRunManager runManager;
     public static float intensityDenominator = 300, maxSoundDistance = 80, zoomLimit = 110, zoomModifier = 1;
@@ -95,66 +95,115 @@ public class AudioManager : MonoBehaviour
     //Plays loop on first unused source beginning at audioSources[2]
     public void StartLoop(Sound sound, float fadeTime = 0)
     {
-        for (int i = 2; i < audioSources.Length; i++)
+        Debug.Log($"Starting loop for {sound.name}");
+        AudioSource source = FirstAvailableSource();
+        LoadSoundWithModifiers(sound, source);
+        source.time = Random.Range(0, source.clip.length);
+        Debug.Log($"Playing loop for {sound.name}");
+        source.Play();
+        AddPlayingSound(source, sound);
+        if (fadeTime > 0)
         {
-            if (!audioSources[i].isPlaying)
-            {
-                LoadSoundWithModifiers(sound, audioSources[i]);
-                audioSources[i].Play();
-                playingSounds[audioSources[i]] = sound;
-                if (fadeTime > 0)
-                {
-                    fadingSources[sound.source] = FadeAudioSource(sound.source, 0, fadeTime);
-                    StartCoroutine(fadingSources[sound.source]);
-                }
-                return;
-            }
+            fadingSources[source] = AudioUtility.FadeAudioSource(sound.source, 0, fadeTime, sound.trackZoom);
+            StartCoroutine(fadingSources[source]);
         }
-        Debug.LogError("No available audiosource to play sound " + sound.name);
+    }
+
+    public void TimedFadeInZoomFadeOut(Sound sound, float initialDelay, float fadeInTime, float cameraSizeThreshold)
+    {
+        AudioSource source = FirstAvailableSource();
+        LoadSoundWithModifiers(sound, source);
+        IEnumerator thisFade = TimedInZoomOut(source, sound.volume, initialDelay, fadeInTime, cameraSizeThreshold);
+        AddPlayingSound(source, sound, thisFade);
+        StartCoroutine(thisFade);
+    }
+
+    private IEnumerator TimedInZoomOut(AudioSource source, float maxVolume, float initialDelay, float fadeInTime, float cameraSizeThreshold)
+    {
+        source.volume = 0;
+        float timeElapsed = 0;
+        Camera camera = Camera.main;
+        while(timeElapsed < initialDelay)
+        {
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        if (camera.GetComponent<CameraScript>().cameraZoomIn)
+        {
+            yield break;
+        }
+        source.Play();
+        float maxCamSize = camera.orthographicSize;
+        cameraSizeThreshold += 2f;
+        timeElapsed = 0;
+        while (timeElapsed < fadeInTime && camera.orthographicSize >= cameraSizeThreshold)
+        {
+            source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / (fadeInTime));
+            maxCamSize = Mathf.Max(maxCamSize, camera.orthographicSize);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        while(camera.orthographicSize >= maxCamSize)
+        {
+            yield return null;
+        }
+        while(camera.orthographicSize > cameraSizeThreshold)
+        {
+            source.volume = Mathf.Lerp(maxVolume, 0, 1 / (camera.orthographicSize / (cameraSizeThreshold)));
+            yield return null;
+        }
+        StopLoop(source);
+
+    }
+
+    private void AddPlayingSound(AudioSource source, Sound sound, IEnumerator fadeRoutine = null)
+    {
+        playingSounds[source] = sound;
+        if (fadeRoutine != null)
+        {
+            fadingSources[source] = fadeRoutine;
+        }
+    }
+
+    private void RemovePlayingSound(AudioSource source, bool removeFade)
+    {
+        playingSounds.Remove(source);
+        if (removeFade)
+        {
+            fadingSources.Remove(source);
+        }
+    }
+
+    public void StopLoop(AudioSource source)
+    {
+        if (fadingSources.ContainsKey(source))
+        {
+            StopCoroutine(fadingSources[source]);
+            fadingSources.Remove(source);
+        }
+        RemovePlayingSound(source, false);
+        source.Stop();
     }
 
     public void StopLoop(Sound sound)
     {
+        Debug.Log($"Stopping loop for {sound.name}");
         if (sound.source != null)
         {
-            sound.source.Stop();
+            StopLoop(sound.source);
         }
-        if (fadingSources.ContainsKey(sound.source))
-        {
-            StopCoroutine(fadingSources[sound.source]);
-            fadingSources.Remove(sound.source);
-        }
-        playingSounds.Remove(sound.source);
     }
 
     private void UpdateLoopSource(AudioSource loopSource)
     {
-        Rigidbody2D trackingBody = playingSounds[loopSource].localizedSource;
         //Apply updated modifiers
         Sound sound = playingSounds[loopSource];
-        //Debug.Log($"Updating loop source for " + sound.name);
         float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
-        //Debug.Log($"Modifier: {modifier}");
         loopSource.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
-        //Debug.Log($"New volume: {loopSource.volume}");
         loopSource.panStereo = modifiers[sound.localizedSource].pan;
         loopSource.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.PlayerIsRagdoll);
     }
-    private IEnumerator FadeAudioSource(AudioSource source, float finishVolume, float fadeDuration)
-    {
-        float startVolume = source.volume;
-        float timeElapsed = 0;
-        while (timeElapsed < fadeDuration)
-        {
-            timeElapsed += Time.deltaTime;
-            float t = timeElapsed / fadeDuration;
-            source.volume = Mathf.Lerp(startVolume, finishVolume, t) * zoomModifier;
-            yield return new WaitForFixedUpdate();
-        }
-        source.Stop();
-        playingSounds.Remove(source);
-        fadingSources.Remove(source);
-    }
+    
 
 
     private void LoadSoundWithModifiers(Sound sound, AudioSource source)
@@ -195,6 +244,20 @@ public class AudioManager : MonoBehaviour
         source.panStereo = 0;
         sound.source = source;
     }
+
+    private AudioSource FirstAvailableSource()
+    {
+        for (int i = 2; i < audioSources.Length; i++)
+        {
+            if (!audioSources[i].isPlaying)
+            {
+                Debug.Log("Returning audio source " + i);
+                return audioSources[i];
+            }
+        }
+        Debug.LogError("No available audiosource. Overwriting final audiosource.");
+        return audioSources[^1];
+    }
     public static AudioManager Instance
     {
         get
@@ -209,6 +272,7 @@ public class AudioManager : MonoBehaviour
             return instance;
         }
     }
+
 
     public LiveRunManager RunManager
     {
