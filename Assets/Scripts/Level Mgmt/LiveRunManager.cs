@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen}
+public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen, GameOverAfterFinished}
 public class LiveRunManager : MonoBehaviour
 {
     public RunState runState = RunState.Landing;
-    public bool startWithStomp = false, isMobile = true;
+    public bool startWithStomp = false, isMobile = true, pendingFinish = false;
     private Vector3 startPoint, finishPoint;
+    private IEnumerator finishCoroutine;
     private float stompThreshold = 2, stompCharge = 0; //distanceToFinish = 0, distancePassed = 0f, 
     [SerializeField] private Level currentLevel;
     private GameManager gameManager;
@@ -21,6 +22,8 @@ public class LiveRunManager : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         currentLevel = gameManager.CurrentLevel;
+        audioManager = AudioManager.Instance;
+        audioManager.RunManager = this;
         /* UNCOMMENT IF LEVEL ISSUES
         if (currentLevel == null) {
             gameManager.CurrentLevel = currentLevel;
@@ -29,23 +32,7 @@ public class LiveRunManager : MonoBehaviour
 
     private void Start()
     {
-        audioManager = AudioManager.Instance;
-        audioManager.RunManager = this;
         overlay.StartScreen(gameManager.CurrentPlayerRecord);
-    }
-
-    private void Update()
-    {
-        /*
-        if (runState != RunState.Active)
-        {
-            return;
-        }
-        
-        if (Time.frameCount % 20 != 0)
-        {
-            distancePassed = (PlayerPosition.x - startPoint.x) / distanceToFinish;
-        }*/
     }
 
 
@@ -56,21 +43,22 @@ public class LiveRunManager : MonoBehaviour
 
     public void RestartGame()
     {
-        if (runState == RunState.Active)
-        {
-            gameManager.AddAttempt();
-        }
-        audioManager.StopLoops();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        audioManager.ClearLoops();
         runState = RunState.Landing;
     }
 
     public void GameOver()
     {
         groundSpawner.SwitchToRagdoll();
-        gameManager.AddAttempt();
-        overlay.GameOverScreen();
-        runState = RunState.GameOver;
+        if (!pendingFinish)
+        {
+            overlay.GameOverScreen();
+            runState = RunState.GameOver;
+        }
+        else { 
+            runState = RunState.GameOverAfterFinished;
+        }
     }
 
     public void StartAttempt()
@@ -119,20 +107,23 @@ public class LiveRunManager : MonoBehaviour
         float finishTime = overlay.StopTimer();
         overlay.ActivateControls(false);
         FinishScreenData finishData = FinishUtility.GenerateFinishData(gameManager.CurrentLevel, gameManager.CurrentPlayerRecord, finishTime);
-        overlay.GenerateFinishScreen(finishData);
         gameManager.UpdateRecord(finishData);
-        StartCoroutine(SlowToFinish());
+        overlay.GenerateFinishScreen(finishData);
+        finishCoroutine = SlowToFinish();
+        StartCoroutine(finishCoroutine);
     }
 
     private IEnumerator SlowToFinish()
     {
+        pendingFinish = true;
         eagleScript.SlowToStop();
-        while (eagleScript.Velocity.x > 0.2f)
+        while (eagleScript.Velocity.x > 0.2f && runState != RunState.GameOverAfterFinished) 
         {
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitForSeconds(0.75f);
         overlay.ActivateFinishScreen();
+        pendingFinish = false;
     }
 
     public void Fall()
@@ -160,7 +151,6 @@ public class LiveRunManager : MonoBehaviour
         set
         {
             finishPoint = value;
-            //distanceToFinish = finishPoint.x - startPoint.x;
         }
     }
 

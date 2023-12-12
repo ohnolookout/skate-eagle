@@ -18,7 +18,6 @@ public class CollisionTracker : MonoBehaviour
         //collidedCategories[ColliderCategory.LWheel] = new List<string> { "LWheelCollider" };
         //collidedCategories[ColliderCategory.RWheel] = new List<string> { "RWheelCollider" };
         eagleScript = gameObject.GetComponent<EagleScript>();
-        playerAudio = eagleScript.Audio;
     }
 
     //Set float in collisionTimers to startTime instead of current timer. Then look at currentTime-startTime.
@@ -157,6 +156,14 @@ public class CollisionTracker : MonoBehaviour
         get
         {
             return collidedCategories.ContainsKey(ColliderCategory.LWheel) || collidedCategories.ContainsKey(ColliderCategory.RWheel);
+        }
+    }
+
+    public bool BothWheelsCollided
+    {
+        get
+        {
+            return collidedCategories.ContainsKey(ColliderCategory.LWheel) && collidedCategories.ContainsKey(ColliderCategory.RWheel);
         }
     }
 

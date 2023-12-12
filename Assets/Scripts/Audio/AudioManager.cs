@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     public static Dictionary<AudioSource, IEnumerator> fadingSources = new();
     private Dictionary<Rigidbody2D, SoundModifiers> modifiers = new();
     private LiveRunManager runManager;
-    public static float intensityDenominator = 300, maxSoundDistance = 80, zoomLimit = 110, zoomModifier = 1;
+    public static float intensityDenominator = 300, maxSoundDistance = 160, zoomLimit = 110, zoomModifier = 1;
 
     void Awake()
     {
@@ -34,7 +34,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (modifiers.Count < 0 || runManager == null)
         {
@@ -54,13 +54,20 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
-    public void StopLoops()
+    public void ClearLoops()
     {
-        intensityDenominator = 300;
-        for (int i = 1; i < audioSources.Length; i++)
+        for (int i = 2; i < audioSources.Length; i++)
         {
             audioSources[i].Stop();
         }
+        foreach(var coroutine in fadingSources.Values)
+        {
+            StopCoroutine(coroutine);
+        }
+        intensityDenominator = 300;
+        playingSounds = new();
+        fadingSources = new();
+        modifiers = new();
     }
     //Plays soundtrack on audioSources[0]
     public void PlaySoundtrack(Soundtrack soundtrack)
@@ -72,7 +79,7 @@ public class AudioManager : MonoBehaviour
         audioSources[0].Play();
     }
 
-    //Plays soundtrack on audioSources[1]
+    //Plays one shots on audioSources[1]
     public void PlayOneShot(Sound sound)
     {
         float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
@@ -88,18 +95,15 @@ public class AudioManager : MonoBehaviour
         //One shots don't have pitch variance.
         audioSources[1].panStereo = modifiers[sound.localizedSource].pan;
         audioSources[1].pitch = sound.pitch;
-        //Debug.Log("Playing oneshot for sound " + sound.name + " at volume " + audioSources[1].volume);
         audioSources[1].PlayOneShot(sound.Clip());
     }
 
     //Plays loop on first unused source beginning at audioSources[2]
     public void StartLoop(Sound sound, float fadeTime = 0)
     {
-        Debug.Log($"Starting loop for {sound.name}");
         AudioSource source = FirstAvailableSource();
         LoadSoundWithModifiers(sound, source);
         source.time = Random.Range(0, source.clip.length);
-        Debug.Log($"Playing loop for {sound.name}");
         source.Play();
         AddPlayingSound(source, sound);
         if (fadeTime > 0)
@@ -121,24 +125,30 @@ public class AudioManager : MonoBehaviour
     private IEnumerator TimedInZoomOut(AudioSource source, float maxVolume, float initialDelay, float fadeInTime, float cameraSizeThreshold)
     {
         source.volume = 0;
-        float timeElapsed = 0;
+        source.Play();
         Camera camera = Camera.main;
-        while(timeElapsed < initialDelay)
+        while (camera.orthographicSize < cameraSizeThreshold)
+        {
+            yield return null;
+        }
+        float timeElapsed = 0;
+        
+        while (timeElapsed < initialDelay)
         {
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        if (camera.GetComponent<CameraScript>().cameraZoomIn)
+        if (!camera.GetComponent<CameraScript>().cameraZoomOut)
         {
+            RemovePlayingSound(source, true);
+            StopLoop(source);
             yield break;
         }
-        source.Play();
         float maxCamSize = camera.orthographicSize;
-        cameraSizeThreshold += 2f;
         timeElapsed = 0;
-        while (timeElapsed < fadeInTime && camera.orthographicSize >= cameraSizeThreshold)
+        while (timeElapsed < fadeInTime && camera.orthographicSize >= maxCamSize * 0.7f)
         {
-            source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / (fadeInTime));
+            source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / fadeInTime);
             maxCamSize = Mathf.Max(maxCamSize, camera.orthographicSize);
             timeElapsed += Time.deltaTime;
             yield return null;
@@ -147,16 +157,20 @@ public class AudioManager : MonoBehaviour
         {
             yield return null;
         }
-        while(camera.orthographicSize > cameraSizeThreshold)
+        float fadeOutTime = Mathf.Max(timeElapsed, 1.5f);
+        timeElapsed = 0;
+        float peakVolume = source.volume;
+        while(timeElapsed < fadeOutTime)
         {
-            source.volume = Mathf.Lerp(maxVolume, 0, 1 / (camera.orthographicSize / (cameraSizeThreshold)));
+            source.volume = Mathf.Lerp(peakVolume, 0, timeElapsed / fadeOutTime);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
         StopLoop(source);
 
     }
 
-    private void AddPlayingSound(AudioSource source, Sound sound, IEnumerator fadeRoutine = null)
+    public void AddPlayingSound(AudioSource source, Sound sound, IEnumerator fadeRoutine = null)
     {
         playingSounds[source] = sound;
         if (fadeRoutine != null)
@@ -165,7 +179,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void RemovePlayingSound(AudioSource source, bool removeFade)
+    public void RemovePlayingSound(AudioSource source, bool removeFade)
     {
         playingSounds.Remove(source);
         if (removeFade)
@@ -187,8 +201,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopLoop(Sound sound)
     {
-        Debug.Log($"Stopping loop for {sound.name}");
-        if (sound.source != null)
+        if (playingSounds.ContainsKey(sound.source) && playingSounds[sound.source] == sound) 
         {
             StopLoop(sound.source);
         }
@@ -198,6 +211,7 @@ public class AudioManager : MonoBehaviour
     {
         //Apply updated modifiers
         Sound sound = playingSounds[loopSource];
+        //Key "null" is sometimes not found in modifiers when called by Update on startup.
         float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
         loopSource.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
         loopSource.panStereo = modifiers[sound.localizedSource].pan;
@@ -219,6 +233,7 @@ public class AudioManager : MonoBehaviour
     //Called by player audio to send localized objects and runManager (runManager must exist for localization).
     public void BuildModifierDict(Rigidbody2D[] trackedBodies)
     {
+        modifiers = new();
         foreach (var body in trackedBodies)
         {
             if (!modifiers.ContainsKey(body))
@@ -251,7 +266,6 @@ public class AudioManager : MonoBehaviour
         {
             if (!audioSources[i].isPlaying)
             {
-                Debug.Log("Returning audio source " + i);
                 return audioSources[i];
             }
         }
@@ -266,7 +280,7 @@ public class AudioManager : MonoBehaviour
             {
                 return instance;
             }
-            Debug.Log("No instance found. Creating instance.");
+            Debug.Log("No AudioManager instance found. Creating instance.");
             GameObject managerObject = new GameObject("AudioManager");
             instance = managerObject.AddComponent<AudioManager>();
             return instance;

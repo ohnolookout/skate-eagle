@@ -3353,7 +3353,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 119406
+  m_InstanceId: 68714
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3380,7 +3380,7 @@ MonoBehaviour:
   textGen: {fileID: 5876770833193495704}
   trail: {fileID: 5270781511123226311}
   playerController: {fileID: 7546833667872202176}
-  playerAudio: {fileID: 0}
+  playerAudio: {fileID: 9144770901242682473}
   ragdollController: {fileID: 1670789331119934252}
   collisionTracker: {fileID: 4471801078690981672}
   ragdollBoard: {fileID: 4006063796826378406}
@@ -3397,8 +3397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536b5c7d951dcc84ca30ef6f403e220a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAudio: {fileID: 0}
-  eagleScript: {fileID: 0}
+  playerAudio: {fileID: 9144770901242682473}
+  eagleScript: {fileID: 1340608751}
 --- !u!212 &1670789331119934240
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5654,3 +5654,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3232842473005677222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
   m_PrefabInstance: {fileID: 4169428557921687191}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9144770901242682473 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+  m_PrefabInstance: {fileID: 4169428557921687191}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae39c654008a4a43a98127a559d8756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

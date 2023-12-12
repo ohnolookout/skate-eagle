@@ -14,7 +14,6 @@ public class PlayerRecord
 	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
-	public int attemptsCount = 0;
 	public CompletionStatus status;
 
 	public PlayerRecord(Level level)
@@ -42,7 +41,6 @@ public class PlayerRecord
 
 	public bool Update(FinishScreenData finishData, SessionData sessionData)
     {
-		AddAttempt();
 		if (finishData.finishType == FinishScreenType.Participant)
 		{
 			return false;
@@ -57,11 +55,6 @@ public class PlayerRecord
 		bestTime = finishData.attemptTime;
 		return true;
 	}
-
-	public void AddAttempt()
-    {
-		attemptsCount++;
-    }
 
 	public string UID
     {

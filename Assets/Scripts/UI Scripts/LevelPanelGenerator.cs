@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class LevelPanelGenerator : MonoBehaviour
 {
-    public GameObject bestBlock, incompleteText, attemptsBlock, medal, lockedBlock, playButton;
-    public TMP_Text attemptsCount, attemptsTitle, bestTime, levelName, lockedText;
+    public GameObject bestBlock, incompleteText, medal, lockedBlock, playButton;
+    public TMP_Text bestTime, levelName, lockedText;
     public Image medalImage;
     public Sprite[] medalSprites;
     public MainMenu menu;
@@ -28,15 +28,6 @@ public class LevelPanelGenerator : MonoBehaviour
             return;
         }
         playButton.SetActive(true);
-        attemptsCount.text = record.attemptsCount.ToString();
-        if (record.status == CompletionStatus.Incomplete)
-        {
-            attemptsCount.color = Color.gray;
-            attemptsTitle.color = Color.gray;
-            return;
-        }
-        attemptsCount.color = Color.white;
-        attemptsTitle.color = Color.white;
         bestTime.text = record.bestTime.ToString();
         medalImage.sprite = medalSprites[(int)record.medal];
 
@@ -76,12 +67,10 @@ public class LevelPanelGenerator : MonoBehaviour
         {
             bestBlock.SetActive(false);
             incompleteText.SetActive(false);
-            attemptsBlock.SetActive(false);
             medal.SetActive(false);
             lockedBlock.SetActive(true);
             return;
         }
-        attemptsBlock.SetActive(true);
         lockedBlock.SetActive(false);
         if (panelType == CompletionStatus.Incomplete)
         {

@@ -49,15 +49,16 @@ public class EagleScript : MonoBehaviour
         {
             StartCheck();
         }
-        DirectionCheck();
         if (logic.runState != RunState.Active)
         {
             return;
         }
+        DirectionCheck();
         if (playerController.down)
         {
             if (!crouched)
             {
+                Debug.Log("Triggering crouch");
                 animator.SetTrigger("Crouch");
                 crouched = true;
             }
@@ -66,6 +67,7 @@ public class EagleScript : MonoBehaviour
         {
             if (crouched)
             {
+                Debug.Log("Triggering stand up");
                 animator.SetTrigger("Stand Up");
                 crouched = false;
             }
@@ -168,8 +170,19 @@ public class EagleScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (logic.runState == RunState.Finished)
+        /*if (logic.runState == RunState.Finished)
         {
+            return;
+        }*/
+        if (ragdoll)
+        {
+            collisionTracker.UpdateCollision(collision, true);
+            return;
+        }
+        if (collision.otherCollider.name == "Skate Eagle")
+        {
+            Die();
+            collisionTracker.UpdateCollision(collision, true);
             return;
         }
         jumpCount = 0;
@@ -182,12 +195,6 @@ public class EagleScript : MonoBehaviour
             StartCoroutine(dampen);
         }
         collisionTracker.UpdateCollision(collision, true);
-        if (collision.otherCollider.name == "Skate Eagle")
-        {
-            Die();
-            return;
-        }
-
         FlipCheck();
 
     }
@@ -294,7 +301,7 @@ public class EagleScript : MonoBehaviour
 
     private void FinishCheck()
     {
-        if (transform.position.x >= logic.FinishPoint.x && Collided)
+        if (transform.position.x >= logic.FinishPoint.x && collisionTracker.BothWheelsCollided)
         {
             logic.Finish();
         }

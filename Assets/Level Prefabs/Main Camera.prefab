@@ -233,8 +233,8 @@ GameObject:
   - component: {fileID: 6576770770109524140}
   - component: {fileID: 6576770770109524141}
   - component: {fileID: 6576770770109524142}
-  - component: {fileID: 6576770770109524143}
   - component: {fileID: 2154577717214287977}
+  - component: {fileID: 3860007187873430008}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -310,21 +310,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6576770770109524128}
   m_Enabled: 1
---- !u!114 &6576770770109524143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6576770770109524128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ad4e2f2c1efeaf44967bdf38a148680, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offset: {x: 0, y: 0, z: 0}
-  lowPoint: {x: 0, y: 0, z: 0}
-  leadingEdgeOffset: 0
 --- !u!114 &2154577717214287977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,3 +343,40 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &3860007187873430008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6576770770109524128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ad4e2f2c1efeaf44967bdf38a148680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 27, y: 30, z: 0}
+  lowPoint: {x: 0, y: 0, z: 0}
+  leadingCorner: {x: 0, y: 0, z: 0}
+  trailingCorner: {x: 0, y: 0, z: 0}
+  leadingEdgeOffset: 45
+  cameraZoomOut: 0
+  cameraZoomIn: 0
+  wind:
+    name: 
+    clips:
+    - {fileID: 8300000, guid: d4eb49d27008ec94a80fe055d881451a, type: 3}
+    volume: 0.1
+    pitch: 1
+    volumeVariance: 0
+    pitchVariance: 0
+    ragdollVolModifier: 1
+    ragdollPitchModifier: 1
+    randomize: 0
+    localizedSource: {fileID: 0}
+    loop: 1
+    trackZoom: 1
+    trackIntensity: 0
+    trackDistance: 0
+    trackPan: 0
+    source: {fileID: 0}

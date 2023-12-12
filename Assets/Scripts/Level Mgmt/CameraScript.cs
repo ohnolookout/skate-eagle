@@ -33,7 +33,7 @@ public class CameraScript : MonoBehaviour
         }
         if (cam.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
         UpdateZoom();
-        if (runManager.runState != RunState.Finished)
+        if (runManager.runState != RunState.Finished && runManager.runState != RunState.GameOverAfterFinished)
         {
             UpdatePosition();
         }
@@ -124,7 +124,7 @@ public class CameraScript : MonoBehaviour
     {
         if (!AudioManager.playingSounds.ContainsValue(wind))
         {
-            AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 2f, defaultSize);
+            AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 3f, defaultSize * 2f);
         }
         cameraZoomOut = true;
         while(runManager.PlayerPosition.y > LeadingCorner.y - cam.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)

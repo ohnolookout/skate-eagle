@@ -57,14 +57,14 @@ MonoBehaviour:
         volume: 0.5
         pitch: 1
         volumeVariance: 0
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 1
         ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
+        trackZoom: 1
         trackIntensity: 0
         trackDistance: 0
         trackPan: 0
@@ -80,14 +80,14 @@ MonoBehaviour:
         volume: 0.3
         pitch: 1
         volumeVariance: 0
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 1
         ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
+        trackZoom: 1
         trackIntensity: 0
         trackDistance: 0
         trackPan: 0
@@ -107,17 +107,17 @@ MonoBehaviour:
         volume: 0.5
         pitch: 1
         volumeVariance: 0.4
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 0.5
         ragdollPitchModifier: 1.2
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
-        trackIntensity: 0
-        trackDistance: 0
-        trackPan: 0
+        trackZoom: 1
+        trackIntensity: 1
+        trackDistance: 1
+        trackPan: 1
         source: {fileID: 0}
     - Key: 3
       Value:
@@ -131,17 +131,17 @@ MonoBehaviour:
         volume: 0.5
         pitch: 1
         volumeVariance: 0.4
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 0.5
         ragdollPitchModifier: 1.2
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
-        trackIntensity: 0
-        trackDistance: 0
-        trackPan: 0
+        trackZoom: 1
+        trackIntensity: 1
+        trackDistance: 1
+        trackPan: 1
         source: {fileID: 0}
     - Key: 4
       Value:
@@ -154,15 +154,15 @@ MonoBehaviour:
         volume: 0.3
         pitch: 1
         volumeVariance: 0.25
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 1
         ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
-        trackIntensity: 0
+        trackZoom: 1
+        trackIntensity: 1
         trackDistance: 0
         trackPan: 0
         source: {fileID: 0}
@@ -177,15 +177,15 @@ MonoBehaviour:
         volume: 0.25
         pitch: 1
         volumeVariance: 0.25
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0
         ragdollVolModifier: 1
         ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
-        trackIntensity: 0
+        trackZoom: 1
+        trackIntensity: 1
         trackDistance: 0
         trackPan: 0
         source: {fileID: 0}
@@ -199,7 +199,7 @@ MonoBehaviour:
         volume: 0.5
         pitch: 1
         volumeVariance: 0.5
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0.075
         ragdollVolModifier: 0.5
         ragdollPitchModifier: 1.2
@@ -208,8 +208,8 @@ MonoBehaviour:
         loop: 1
         trackZoom: 1
         trackIntensity: 1
-        trackDistance: 0
-        trackPan: 0
+        trackDistance: 1
+        trackPan: 1
         source: {fileID: 0}
     - Key: 1
       Value:
@@ -219,7 +219,7 @@ MonoBehaviour:
         volume: 0.05
         pitch: 1.1
         volumeVariance: 0.05
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0.2
         ragdollVolModifier: 0.7
         ragdollPitchModifier: 1
@@ -228,8 +228,8 @@ MonoBehaviour:
         loop: 1
         trackZoom: 1
         trackIntensity: 1
-        trackDistance: 0
-        trackPan: 0
+        trackDistance: 1
+        trackPan: 1
         source: {fileID: 0}
     - Key: 2
       Value:
@@ -239,7 +239,7 @@ MonoBehaviour:
         volume: 0.1
         pitch: 1
         volumeVariance: 0.1
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0.05
         ragdollVolModifier: 0.5
         ragdollPitchModifier: 1.1
@@ -260,35 +260,15 @@ MonoBehaviour:
         volume: 0.5
         pitch: 1
         volumeVariance: 0.5
-        zoomVariance: 1
+        zoomVariance: 0.1
         pitchVariance: 0.1
         ragdollVolModifier: 1
         ragdollPitchModifier: 1
         randomize: 1
         localizedSource: {fileID: 0}
         loop: 0
-        trackZoom: 0
-        trackIntensity: 0
-        trackDistance: 0
-        trackPan: 0
-        source: {fileID: 0}
-    - Key: 4
-      Value:
-        name: WindLoop
-        clips:
-        - {fileID: 8300000, guid: 78f4f23a26f05604aa431c3da99bc697, type: 3}
-        volume: 0.5
-        pitch: 1
-        volumeVariance: 0.5
-        zoomVariance: 1
-        pitchVariance: 0
-        ragdollVolModifier: 1
-        ragdollPitchModifier: 1
-        randomize: 0
-        localizedSource: {fileID: 0}
-        loop: 0
-        trackZoom: 0
-        trackIntensity: 0
+        trackZoom: 1
+        trackIntensity: 1
         trackDistance: 0
         trackPan: 0
         source: {fileID: 0}

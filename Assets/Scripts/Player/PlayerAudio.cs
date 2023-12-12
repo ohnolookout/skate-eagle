@@ -5,7 +5,7 @@ using AYellowpaper.SerializedCollections;
 using System.Linq;
 
 public enum OneShotFX { Jump, SecondJump, Wheel, Board, Body, HardBody};
-public enum LoopFX { Roll, Freewheel, Board, Body, Wind };
+public enum LoopFX { Roll, Freewheel, Board, Body };
 
 
 public class PlayerAudio : MonoBehaviour
@@ -78,8 +78,8 @@ public class PlayerAudio : MonoBehaviour
 
     public void Dismount()
     {
-        audioManager.StopLoops();
         audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
+        audioManager.ClearLoops();
     }
 
     public void Collide(ColliderCategory colliderName)
@@ -159,7 +159,6 @@ public class PlayerAudio : MonoBehaviour
         }
         if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
         {
-            Debug.Log("Stopping roll and starting freewheel");
             audioManager.StopLoop(loopDict[LoopFX.Roll]);
             audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
         }

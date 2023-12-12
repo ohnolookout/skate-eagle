@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Services.Core;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
@@ -78,6 +79,7 @@ public class GameManager : MonoBehaviour
     {
         currentLevel = level;
         SceneManager.LoadScene("City");
+        AudioManager.Instance.ClearLoops();
     }
 
 
@@ -85,6 +87,7 @@ public class GameManager : MonoBehaviour
     {
         goToLevelMenu = true;
         SceneManager.LoadScene("Start_Menu");
+        AudioManager.Instance.ClearLoops();
     }
 
     public void NextLevel()
@@ -131,10 +134,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddAttempt()
-    {
-        CurrentPlayerRecord.AddAttempt();
-    }
 
     public static GameManager Instance
     {
