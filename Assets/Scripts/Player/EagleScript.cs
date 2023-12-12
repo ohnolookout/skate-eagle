@@ -58,7 +58,6 @@ public class EagleScript : MonoBehaviour
         {
             if (!crouched)
             {
-                Debug.Log("Triggering crouch");
                 animator.SetTrigger("Crouch");
                 crouched = true;
             }
@@ -67,7 +66,6 @@ public class EagleScript : MonoBehaviour
         {
             if (crouched)
             {
-                Debug.Log("Triggering stand up");
                 animator.SetTrigger("Stand Up");
                 crouched = false;
             }
