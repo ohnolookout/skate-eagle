@@ -80,7 +80,10 @@ public class EagleScript : MonoBehaviour
             }
         }
         FinishCheck();
-        UpdateAnimatorParameters();
+        if (!ragdoll)
+        {
+            UpdateAnimatorParameters();
+        }
     }
 
     private void FixedUpdate()
@@ -187,6 +190,7 @@ public class EagleScript : MonoBehaviour
         if (!Collided)
         {
             animator.SetFloat("forceDelta", ForceDelta);
+            Debug.Log("Landed!");
             animator.SetTrigger("Land");
             StopCoroutine(dampen);
             dampen = PlayerCoroutines.DampenLanding(rigidEagle);
