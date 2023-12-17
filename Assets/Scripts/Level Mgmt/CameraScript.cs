@@ -27,13 +27,13 @@ public class CameraScript : MonoBehaviour
 
     void Update()
     {
-        if (runManager.runState == RunState.Fallen)
+        if (LiveRunManager.runState == RunState.Fallen)
         {
             return;
         }
         if (cam.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
         UpdateZoom();
-        if (runManager.runState != RunState.Finished && runManager.runState != RunState.GameOverAfterFinished)
+        if (LiveRunManager.runState != RunState.Finished && LiveRunManager.runState != RunState.GameOverAfterFinished)
         {
             UpdatePosition();
         }

@@ -15,9 +15,8 @@ public class CollisionTracker : MonoBehaviour
 
     void Awake()
     {
-        //collidedCategories[ColliderCategory.LWheel] = new List<string> { "LWheelCollider" };
-        //collidedCategories[ColliderCategory.RWheel] = new List<string> { "RWheelCollider" };
         eagleScript = gameObject.GetComponent<EagleScript>();
+        GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>().EnterGameOver += (_) => RemoveNonragdollColliders();
     }
 
     //Set float in collisionTimers to startTime instead of current timer. Then look at currentTime-startTime.

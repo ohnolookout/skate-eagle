@@ -7,24 +7,19 @@ public class FlipTextGenerator : MonoBehaviour
 {
     public GameObject popText;
     public float wordSpread = 10;
-    private GameObject bird;
-    private FlipText flipText;
+    [SerializeField] private EagleScript playerScript;
+    [SerializeField] private FlipText flipText;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
-    private void Awake()
+    void Awake()
     {
-
-        flipText = transform.GetChild(0).gameObject.GetComponent<FlipText>();
+        playerScript.EndFlip += (_, flipCount) => NewFlipText(flipCount);
     }
 
-    void Start()
-    {
-        bird = GameObject.FindWithTag("Player");
-    }
-    public void NewFlipText(double flipCount = 1)
+    public void NewFlipText(int flipCount = 1)
     {
         Vector3 location = GenerateLocation(wordSpread);
-        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, bird.transform.position + location);
+        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, playerScript.gameObject.transform.position + location);
         Vector3 finalPosition = viewportPosition + location;
         flipText.transform.position = finalPosition; 
         float randomZ = Random.Range(-45, 45);
@@ -35,18 +30,10 @@ public class FlipTextGenerator : MonoBehaviour
     }
 
 
-    public void CancelText()
-    {
-        if(!flipText.Canceled)
-        {
-            flipText.CancelText();
-        }
-    }
-
     private Vector3 GenerateLocation(float scale)
     {
         float xCoord;
-        if(bird.GetComponent<Rigidbody2D>().velocity.x >= 0)
+        if(playerScript.Rigidbody.velocity.x >= 0)
         {
             xCoord = Random.Range(-scale, -scale/2);
         } else

@@ -15,7 +15,33 @@ public class Overlay : MonoBehaviour
     public Timer timer;
     //public OverlayManager overlayManager;
 
-    public void StartScreen(PlayerRecord playerRecord)
+    void Awake()
+    {
+        runManager.EnterLanding += _ => LandingScreen();
+        runManager.EnterLanding += landingLoader.GenerateLanding;
+        runManager.EnterStandby += _ => StandbyScreen();
+        runManager.EnterAttempt += _ => StartAttempt();
+        runManager.EnterGameOver += _ => GameOverScreen();
+        runManager.EnterFinish += finishLoader.GenerateFinishScreen;
+        runManager.EnterFinishScreen += _ => ActivateFinishScreen();
+    }
+
+    void Start()
+    {
+        runManager.Player.EndFlip += (playerScript, _) => UpdateStompBar(playerScript);
+        runManager.Player.StompEvent += (playerScript) => UpdateStompBar(playerScript);
+    }
+
+    public void LandingScreen()
+    {
+        landing.SetActive(true);
+        gameOver.SetActive(false);
+        finish.SetActive(false);
+        standby.SetActive(false);
+        hud.SetActive(false);
+        ActivateControls(false);
+    }
+    public void LandingScreen(PlayerRecord playerRecord)
     {
         landing.SetActive(true);
         gameOver.SetActive(false);
@@ -32,7 +58,11 @@ public class Overlay : MonoBehaviour
         standby.SetActive(true);
         hud.SetActive(true);
         ActivateControls(true);
-        runManager.runState = RunState.Standby;
+        LiveRunManager.runState = RunState.Standby;
+        if (runManager.Player.StompCharge > 0)
+        {
+            UpdateStompBar(runManager.Player);
+        }
     }
 
 
@@ -49,21 +79,19 @@ public class Overlay : MonoBehaviour
         ActivateControls(false);
     }
 
-    public void GenerateFinishScreen(FinishScreenData screenData)
-    {
-        finishLoader.GenerateFinishScreen(screenData);
-    }
-
     public void ActivateFinishScreen()
     {
         finish.SetActive(true);
         hud.SetActive(false);
         ActivateControls(false);
     }
-
-    public void FillStompBar(float fillAmount)
+    public void UpdateStompBar(EagleScript playerScript)
     {
-        stompBar.Fill(fillAmount);
+        float fillAmount = (float)playerScript.StompCharge / (float)playerScript.StompThreshold;
+        if(fillAmount != stompBar.SliderValue)
+        {
+            stompBar.Fill(fillAmount);
+        }
     }
 
     public void BackToMenu()

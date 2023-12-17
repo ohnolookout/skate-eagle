@@ -34,14 +34,19 @@ public class GroundSpawner : MonoBehaviour
         DeleteChildren();
 #endif
         GenerateLevel(logic.CurrentLevel);
+        logic.EnterGameOver += _ => TrackRagdoll();
         ActivateInitialSegments(3);
         colliderTracker = new(logic.PlayerBody, colliderList, segmentList, backstop, birdIndex);
     }
     void Update()
     {
+        if(LiveRunManager.runState == RunState.Finished)
+        {
+            return;
+        }
         UpdateActiveSegments();
         //Exit update if run hasn't activated
-        if ((int)logic.runState < 2)
+        if ((int)LiveRunManager.runState < 2)
         {
             return;
         }
@@ -55,7 +60,7 @@ public class GroundSpawner : MonoBehaviour
         segmentList = new();
     }
 
-    public void SwitchToRagdoll()
+    public void TrackRagdoll()
     {
         colliderTracker.SwapBodies(new Rigidbody2D[] { logic.Player.rigidEagle }, new Rigidbody2D[] { logic.PlayerBody, logic.RagdollBoard });
     }

@@ -59,15 +59,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void CheckForOtherManagers()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(this);
-            return;
-        }
-        instance = this;
-    }
 
     public void ResetSaveData()
     {
@@ -109,6 +100,15 @@ public class GameManager : MonoBehaviour
     {
         Session.UpdateRecord(finishData, CurrentLevel);
         SaveSerial.SaveGame(saveData);
+    }
+
+    public void UpdateRecord(LiveRunManager runManager)
+    {
+        if (runManager.FinishData != null)
+        {
+            Session.UpdateRecord((FinishScreenData)runManager.FinishData, CurrentLevel);
+            SaveSerial.SaveGame(saveData);
+        }
     }
 
 

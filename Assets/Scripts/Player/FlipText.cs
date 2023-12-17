@@ -39,7 +39,8 @@ public class FlipText : MonoBehaviour
     {
         bird = GameObject.FindWithTag("Player");
         birdBody = bird.GetComponent<Rigidbody2D>();
-        gameObject.SetActive(false);
+        GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>().EnterGameOver += (_) => CancelText();
+       gameObject.SetActive(false);
     }
 
     public void SetText(string text)

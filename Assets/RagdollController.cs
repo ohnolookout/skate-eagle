@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RagdollController : MonoBehaviour
 {
-    
+    [SerializeField] private LiveRunManager runManager;
     [SerializeField] private Animator animator;
     [SerializeField] private Joint2D[] ragDollJoints;
     [SerializeField] private Rigidbody2D[] ragdollRigidbodies;
@@ -19,10 +19,30 @@ public class RagdollController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        runManager.EnterGameOver += TurnOnRagdoll;
         GetCollidersAndBodies();
     }
 
+    public void TurnOnRagdoll(LiveRunManager runManager)
+    {
+        if (ragdoll)
+        {
+            return;
+        }
+        animator.enabled = false;
 
+        IKParent.SetActive(false);
+        SwitchColliders(normalColliders, false);
+        SwitchColliders(ragdollColliders, true);
+        SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
+        SwitchRigidbodies(ragdollRigidbodies, true, runManager.Player.VectorChange);
+        normalRigidbodies[0].velocity = new();
+        SwitchHinges(ragDollJoints, true);
+        ragdoll = true;
+        //SeperateFootAndBoard();
+
+    }
     public void TurnOnRagdoll(Vector2 vectorChange)
     {
         if (ragdoll)
@@ -78,6 +98,14 @@ public class RagdollController : MonoBehaviour
         foreach(var joint in joints)
         {
             joint.enabled = isOn;
+        }
+    }
+
+    public bool IsRagdoll
+    {
+        get
+        {
+            return ragdoll;
         }
     }
 

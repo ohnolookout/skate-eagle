@@ -9,14 +9,17 @@ public class EagleScript : MonoBehaviour
     [HideInInspector] public float rotationSpeed = 0, jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
-    private int jumpCount = 0, jumpLimit = 2;
-    private bool facingForward = true, crouched = false, ragdoll = false;
-    private IEnumerator stompCoroutine, trailCoroutine, dampen;
+    private int jumpCount = 0, jumpLimit = 2, stompThreshold = 2;
+    [SerializeField] private int stompCharge = 0;
+    private bool facingForward = true, crouched = false;
+    private IEnumerator trailCoroutine, dampen;
     public LiveRunManager logic;
     public FlipTextGenerator textGen;
     public TrailRenderer trail;
     public PlayerController playerController;
     public PlayerAudio playerAudio;
+    public Action<EagleScript, int> EndFlip; //Pass in context and flipcount
+    public Action<EagleScript> StompEvent;
     [SerializeField] private RagdollController ragdollController;
     [SerializeField] private CollisionTracker collisionTracker;
     [SerializeField] private Rigidbody2D ragdollBoard;
@@ -27,6 +30,12 @@ public class EagleScript : MonoBehaviour
         AssignComponents();
         rigidEagle.bodyType = RigidbodyType2D.Kinematic;
         rigidEagle.centerOfMass = new Vector2(0, -2f);
+        logic.EnterAttempt += _ => StartAttempt();
+        EndFlip += (_, flipCount) => DelayedFlipBoost(flipCount);
+        StompEvent += _ => Stomp();
+        logic.EnterGameOver += _ => StopTrail();
+        logic.EnterFinish += _ => SlowToStop();
+        logic.EnterFinish += _ => StopTrail();
     }
 
     private void Start()
@@ -37,7 +46,6 @@ public class EagleScript : MonoBehaviour
     private void AssignComponents()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        stompCoroutine = PlayerCoroutines.Stomp(this);
         dampen = PlayerCoroutines.DampenLanding(rigidEagle);
         trailCoroutine = PlayerCoroutines.BoostTrail(trail, DirectionForward);
     }
@@ -45,11 +53,11 @@ public class EagleScript : MonoBehaviour
     void Update()
     {
 
-        if (logic.runState == RunState.Standby)
+        if (LiveRunManager.runState == RunState.Standby)
         {
             StartCheck();
         }
-        if (logic.runState != RunState.Active)
+        if (LiveRunManager.runState != RunState.Active)
         {
             return;
         }
@@ -73,14 +81,13 @@ public class EagleScript : MonoBehaviour
         if (playerController.stomp)
         {
             playerController.stomp = false;
-            if (logic.StompCharge >= logic.StompThreshold)
+            if (StompCharge >= StompThreshold)
             {
-                logic.StompCharge = 0;
-                Stomp();
+                StompEvent?.Invoke(this);
             }
         }
         FinishCheck();
-        if (!ragdoll)
+        if (!IsRagdoll)
         {
             UpdateAnimatorParameters();
         }
@@ -88,7 +95,7 @@ public class EagleScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (logic.runState != RunState.Active)
+        if (LiveRunManager.runState != RunState.Active)
         {
             return;
         }
@@ -103,15 +110,15 @@ public class EagleScript : MonoBehaviour
 
     public void Stomp()
     {
-        stompCoroutine = PlayerCoroutines.Stomp(this);
-        StartCoroutine(stompCoroutine);
+        StompCharge = 0;
+        StartCoroutine(PlayerCoroutines.Stomp(this));
     }
 
     private float jumpDuration = 0.25f;
     private float minimumJumpDuration = 0.1f;
     public void JumpValidation()
     {
-        if (jumpCount >= jumpLimit || logic.runState != RunState.Active)
+        if (jumpCount >= jumpLimit || LiveRunManager.runState != RunState.Active)
         {
             return;
         }
@@ -171,11 +178,7 @@ public class EagleScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        /*if (logic.runState == RunState.Finished)
-        {
-            return;
-        }*/
-        if (ragdoll)
+        if (IsRagdoll)
         {
             collisionTracker.UpdateCollision(collision, true);
             return;
@@ -200,24 +203,6 @@ public class EagleScript : MonoBehaviour
         FlipCheck();
 
     }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        /*
-         * UNCOMMENT IF LOSING SECOND JUMP
-        if (coroutines.countingDownJump)
-        {
-            StopCoroutine(jumpCoroutine);
-            coroutines.countingDownJump = false;
-        }*/
-        /*
-        if (logic.runState == RunState.GameOver)
-        {
-            Rigidbody.velocity *= 0.1f * Time.deltaTime;
-            return;
-        }
-        */
-    }
-
     private void OnCollisionExit2D(Collision2D collision)
     {
         collisionTracker.UpdateCollision(collision, false);
@@ -227,17 +212,17 @@ public class EagleScript : MonoBehaviour
 
     public void Die()
     {
-        if (logic.runState == RunState.GameOver)
+        if (LiveRunManager.runState == RunState.GameOver)
         {
             return;
         }
-        collisionTracker.RemoveNonragdollColliders();
+        logic.GameOver();
+    }
+
+    private void StopTrail()
+    {        
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
-        textGen.CancelText();
-        ragdollController.TurnOnRagdoll(VectorChange);
-        ragdoll = true;
-        logic.GameOver();
     }
 
     private void UpdateAnimatorParameters()
@@ -256,8 +241,6 @@ public class EagleScript : MonoBehaviour
 
     public void SlowToStop()
     {
-        StopCoroutine(trailCoroutine);
-        trail.emitting = false;
         playerAudio.Finish();
         animator.SetTrigger("Brake");
         StartCoroutine(PlayerCoroutines.SlowToStop(this));
@@ -275,17 +258,21 @@ public class EagleScript : MonoBehaviour
         if (playerController.down)
         {
             logic.StartAttempt();
-            animator.SetBool("OnBoard", true);
-            rigidEagle.bodyType = RigidbodyType2D.Dynamic;
-            rigidEagle.velocity += new Vector2(15, 0);
         }
+    }
+
+    private void StartAttempt()
+    {
+        animator.SetBool("OnBoard", true);
+        rigidEagle.bodyType = RigidbodyType2D.Dynamic;
+        rigidEagle.velocity += new Vector2(15, 0);
     }
 
     private void DirectionCheck()
     {
         bool lastDirection = facingForward;
         facingForward = Rigidbody.velocity.x >= 0;
-        if (lastDirection != facingForward && !ragdoll)
+        if (lastDirection != facingForward && !IsRagdoll)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
@@ -312,18 +299,31 @@ public class EagleScript : MonoBehaviour
     public void Fall()
     {
         StartCoroutine(PlayerCoroutines.DelayedFreeze(this, 0.5f));
-        logic.runState = RunState.Fallen;
+        LiveRunManager.runState = RunState.Fallen;
     }
 
     private void FlipCheck()
     {
-        double spins = Math.Round(Math.Abs(rotationStart - rigidEagle.rotation) / 360);
+        int flipCount = (int)Math.Round(Math.Abs(rotationStart - rigidEagle.rotation) / 360);
         rotationStart = rigidEagle.rotation;
-        if (spins >= 1 && logic.runState != RunState.GameOver)
+        if (flipCount >= 1 && LiveRunManager.runState != RunState.GameOver)
         {
-            textGen.NewFlipText(spins);
-            StartCoroutine(PlayerCoroutines.EndFlip(this, flipDelay, spins));
+            AddStompCharge(flipCount);
+            EndFlip?.Invoke(this, flipCount);
         }
+    }
+
+    private void AddStompCharge(int flipCount)
+    {
+        if (StompCharge < StompThreshold)
+        {
+            StompCharge = Mathf.Clamp(flipCount + StompCharge, 0, StompThreshold);
+        }
+    }
+
+    private void DelayedFlipBoost(int flipCount)
+    {
+        StartCoroutine(PlayerCoroutines.FlipBoost(this, flipDelay, flipCount));
     }
 
     public void GoAirborne()
@@ -336,7 +336,6 @@ public class EagleScript : MonoBehaviour
     public void Ragdoll()
     {
         ragdollController.TurnOnRagdoll(VectorChange);
-        ragdoll = true;
         logic.GameOver();
     }
 
@@ -423,7 +422,7 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            if (ragdoll)
+            if (IsRagdoll)
             {
                 return ragdollController.spine.transform;
             }
@@ -435,7 +434,7 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            if (ragdoll)
+            if (IsRagdoll)
             {
                 return ragdollController.spine;
             }
@@ -447,7 +446,7 @@ public class EagleScript : MonoBehaviour
     {
         get
         {
-            return ragdoll;
+            return ragdollController.IsRagdoll;
         }
     }
 
@@ -468,6 +467,26 @@ public class EagleScript : MonoBehaviour
                 return null;
             }
             return ragdollBoard;
+        }
+    }
+
+    public int StompCharge
+    {
+        get
+        {
+            return stompCharge;
+        }
+        set
+        {
+            stompCharge = value;
+        }
+    }
+
+    public int StompThreshold
+    {
+        get
+        {
+            return stompThreshold;
         }
     }
 }

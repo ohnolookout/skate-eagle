@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class LandingScreenLoader : MonoBehaviour
+public class LandingScreenLoader: MonoBehaviour
 {
     public TMP_Text levelName, playerTime, blueTime, goldTime, silverTime;
     public Image playerMedal;
@@ -19,6 +19,14 @@ public class LandingScreenLoader : MonoBehaviour
         levelName.text = playerRecord.levelName;
         GenerateLevelTimes(level.MedalTimes);
         GeneratePlayerBadge(playerRecord);
+        nextLevelButton.SetActive(GameManager.Instance.NextLevelUnlocked());
+    }
+
+    public void GenerateLanding(LiveRunManager runManager)
+    {
+        levelName.text = runManager.CurrentPlayerRecord.levelName;
+        GenerateLevelTimes(runManager.CurrentLevel.MedalTimes);
+        GeneratePlayerBadge(runManager.CurrentPlayerRecord);
         nextLevelButton.SetActive(GameManager.Instance.NextLevelUnlocked());
     }
 

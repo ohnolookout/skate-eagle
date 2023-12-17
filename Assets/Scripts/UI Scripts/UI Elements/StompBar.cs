@@ -7,9 +7,9 @@ public class StompBar : MonoBehaviour
 {
     private bool filling = false;
     public GameObject stompBlast;
-    private Slider slider;
+    [SerializeField] private Slider slider;
     private IEnumerator fillRoutine;
-    public Sprite jaggedOutline, smoothOutline;
+    [SerializeField] private Sprite jaggedOutline, smoothOutline;
     private CutoutMask fill;
 
     void Awake()
@@ -52,5 +52,13 @@ public class StompBar : MonoBehaviour
     public static bool FastApproximately(float a, float b, float threshold)
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
+    }
+
+    public float SliderValue
+    {
+        get
+        {
+            return slider.value;
+        }
     }
 }

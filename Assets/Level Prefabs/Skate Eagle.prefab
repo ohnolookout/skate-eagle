@@ -3353,7 +3353,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 68714
+  m_InstanceId: 57248
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3376,6 +3376,7 @@ MonoBehaviour:
   flipDelay: 0.75
   flipBoost: 70
   stompSpeedLimit: -250
+  stompCharge: 0
   logic: {fileID: 0}
   textGen: {fileID: 5876770833193495704}
   trail: {fileID: 5270781511123226311}
@@ -3463,6 +3464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3f4803d076ab264aa20a624d40b027e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  runManager: {fileID: 0}
   animator: {fileID: 6091589263621437134}
   ragDollJoints: []
   ragdollRigidbodies: []
@@ -5410,6 +5412,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4874717933150457658}
     m_Modifications:
+    - target: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+      propertyPath: bird
+      value: 
+      objectReference: {fileID: 6011852464375175001}
+    - target: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+      propertyPath: flipText
+      value: 
+      objectReference: {fileID: 1062325721428549574}
+    - target: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+      propertyPath: playerScript
+      value: 
+      objectReference: {fileID: 1340608751}
     - target: {fileID: 5876770832551207241, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
       propertyPath: m_Name
       value: Pop-Up Canvas
@@ -5500,6 +5514,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+--- !u!114 &1062325721428549574 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1062325720460218902, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+  m_PrefabInstance: {fileID: 1044942288}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c8c6f5a3479f44491a4f1ec6739f40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5876770833193495684 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}

@@ -40,7 +40,7 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
-        if ((int)runManager.runState < 2)
+        if ((int)LiveRunManager.runState < 2)
         {
             return;
         }
@@ -54,6 +54,14 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+    /*
+    public void RestartLevel(LiveRunManager context)
+    {
+        runManager = context;
+        ClearLoops();
+        //Handle soundtrack.
+    }*/
+
     public void ClearLoops()
     {
         for (int i = 2; i < audioSources.Length; i++)
@@ -258,6 +266,12 @@ public class AudioManager : MonoBehaviour
         source.pitch = sound.pitch;
         source.panStereo = 0;
         sound.source = source;
+    }
+
+    public void AddRunManager(LiveRunManager manager)
+    {
+        runManager = manager;
+        runManager.RestartLevel += _ => ClearLoops();
     }
 
     private AudioSource FirstAvailableSource()

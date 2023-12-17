@@ -91,12 +91,12 @@ public class PlayerController : MonoBehaviour
 
     public void OnRestartLevel(InputValue value = null)
     {
-        if ((int)logic.runState > 1)
+        if ((int)LiveRunManager.runState > 1)
         {
             logic.RestartGame();
             return;
         }
-        if(logic.runState == RunState.Landing)
+        if(LiveRunManager.runState == RunState.Landing)
         {
             logic.GoToStandby();
         }
@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnRagdoll(InputValue value = null)
     {
-        if ((int)logic.runState > 1)
+        if ((int)LiveRunManager.runState > 1)
         {
             eagleScript.Ragdoll();
         }

@@ -118,7 +118,7 @@ public static class PlayerCoroutines
 
     public static IEnumerator SlowToStop(EagleScript eagleScript)
     {
-        Rigidbody2D rigidbody = eagleScript.rigidEagle;
+        Rigidbody2D rigidbody = eagleScript.Rigidbody;
         int frameCount = 0;
         while (rigidbody.velocity.x > 0.1f)
         {
@@ -134,6 +134,7 @@ public static class PlayerCoroutines
             if (rigidbody.velocity.x < 10f && eagleScript.animator.GetBool("OnBoard"))
             {
                 eagleScript.Dismount();
+                Debug.Log("Dismounting");
             }
             yield return new WaitForFixedUpdate();
         }
@@ -147,16 +148,12 @@ public static class PlayerCoroutines
 
     }
 
-    public static IEnumerator EndFlip(EagleScript eagleScript, float flipDelay, double spins)
+    public static IEnumerator FlipBoost(EagleScript eagleScript, float flipDelay, double spins)
     {
         yield return new WaitForSeconds(flipDelay * 0.1f);
-        if (eagleScript.logic.runState != RunState.Active)
+        if (LiveRunManager.runState != RunState.Active)
         {
             yield break;
-        }
-        if (eagleScript.logic.StompCharge < eagleScript.logic.StompThreshold)
-        {
-            eagleScript.logic.StompCharge += (int)spins;
         }
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
         eagleScript.TriggerBoost(eagleScript.flipBoost, boostMultiplier);
