@@ -18,8 +18,8 @@ public class EagleScript : MonoBehaviour
     public TrailRenderer trail;
     public PlayerController playerController;
     public PlayerAudio playerAudio;
-    public Action<EagleScript, int> EndFlip; //Pass in context and flipcount
-    public Action<EagleScript> StompEvent;
+    public event Action<EagleScript, int> EndFlip; //Pass in context and flipcount
+    public event Action<EagleScript> StompEvent;
     [SerializeField] private RagdollController ragdollController;
     [SerializeField] private CollisionTracker collisionTracker;
     [SerializeField] private Rigidbody2D ragdollBoard;
@@ -36,6 +36,7 @@ public class EagleScript : MonoBehaviour
         logic.EnterGameOver += _ => StopTrail();
         logic.EnterFinish += _ => SlowToStop();
         logic.EnterFinish += _ => StopTrail();
+        collisionTracker.OnUncollide += _ => CheckForAirborne();
     }
 
     private void Start()
@@ -241,7 +242,6 @@ public class EagleScript : MonoBehaviour
 
     public void SlowToStop()
     {
-        playerAudio.Finish();
         animator.SetTrigger("Brake");
         StartCoroutine(PlayerCoroutines.SlowToStop(this));
     }
@@ -278,6 +278,13 @@ public class EagleScript : MonoBehaviour
         }
     }
 
+    private void CheckForAirborne()
+    {
+        if (!collisionTracker.Collided)
+        {
+            GoAirborne();
+        }
+    }
     public void Dismount()
     {
         animator.SetBool("OnBoard", false);
@@ -489,4 +496,13 @@ public class EagleScript : MonoBehaviour
             return stompThreshold;
         }
     }
+
+    public LiveRunManager RunManager
+    {
+        get
+        {
+            return logic;
+        }
+    }
+
 }

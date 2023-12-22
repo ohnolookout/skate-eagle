@@ -18,6 +18,8 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField]
     private EagleScript eagleScript;
     [SerializeField]
+    private PlayerStateMachine _playerMachine;
+    [SerializeField]
     private CollisionTracker collisionTracker;
     private float wheelTimer = -1, wheelTimeLimit = 0.2f, wheelFadeCoefficient = 0.01f;
     private AudioManager audioManager;
@@ -28,6 +30,10 @@ public class PlayerAudio : MonoBehaviour
         sounds.AddRange(loopDict.Values.ToList());
         audioManager = AudioManager.Instance;
         audioManager.BuildModifierDict(TrackedBodies(sounds));
+        eagleScript.RunManager.EnterFinish += _ => Finish();
+        collisionTracker.OnCollide += Collide;
+        collisionTracker.OnUncollide += Uncollide;
+        _playerMachine.OnJump += Jump;
     }
 
     void FixedUpdate()
@@ -47,6 +53,26 @@ public class PlayerAudio : MonoBehaviour
         }
         return bodies.ToArray();
     }
+
+    public void Jump(PlayerStateMachine playerMachine)
+    {
+        if (playerMachine.JumpCount == 0)
+        {
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
+            wheelTimer = 0;
+            if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
+            {
+                audioManager.StopLoop(loopDict[LoopFX.Roll]);
+                audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
+            }
+        }
+        else
+        {
+            audioManager.PlayOneShot(oneShotDict[OneShotFX.SecondJump]);
+        }
+        wheelsOnGround = false;
+    }
+
     public void Jump(float jumpCount)
     {
         if (jumpCount == 0)

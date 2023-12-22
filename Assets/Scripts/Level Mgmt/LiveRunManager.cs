@@ -25,7 +25,7 @@ public class LiveRunManager : MonoBehaviour
         gameManager = GameManager.Instance;
         currentLevel = gameManager.CurrentLevel;
         AudioManager.Instance.AddRunManager(this);
-        EnterFinish += _ => WaitForStop();
+        EnterFinish += _ => StartCoroutine(SlowToFinish());
         EnterFinish += gameManager.UpdateRecord;
         timer = GameObject.FindGameObjectWithTag("Timer").GetComponent<Timer>();
         if (currentLevel == null) {
@@ -87,11 +87,6 @@ public class LiveRunManager : MonoBehaviour
         runState = RunState.Finished;
     }
 
-    private void WaitForStop() 
-    {
-        finishCoroutine = SlowToFinish();
-        StartCoroutine(finishCoroutine);
-    }
 
     private IEnumerator SlowToFinish()
     {

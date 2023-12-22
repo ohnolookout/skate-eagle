@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public enum ColliderCategory { LWheel, RWheel, Board, Body };
 public class CollisionTracker : MonoBehaviour
@@ -9,13 +10,14 @@ public class CollisionTracker : MonoBehaviour
     private OrderedDictionary<string, TimedCollision> pendingUncollisions = new();
     private Dictionary<ColliderCategory, List<string>> collidedCategories = new();
     private float uncollideTime = 0.15f;
-    [SerializeField] PlayerAudio playerAudio;
-    [SerializeField] EagleScript eagleScript;
+    //[SerializeField] PlayerAudio playerAudio;
+    //[SerializeField] EagleScript eagleScript;
+    public event Action<ColliderCategory> OnCollide, OnUncollide;
 
 
     void Awake()
     {
-        eagleScript = gameObject.GetComponent<EagleScript>();
+        //eagleScript = gameObject.GetComponent<EagleScript>();
         GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>().EnterGameOver += (_) => RemoveNonragdollColliders();
     }
 
@@ -41,10 +43,10 @@ public class CollisionTracker : MonoBehaviour
             pendingUncollisions.Remove(0);
             //If the current category has no more active collisions, remove it from the dictionary and send call to audio
             //If no categories are collided, send eagle into airborne mode
-            if(collidedCategories.Count == 0)
+            /*if(collidedCategories.Count == 0)
             {
                 eagleScript.GoAirborne();
-            }
+            }*/
         }
     }
 
@@ -63,7 +65,8 @@ public class CollisionTracker : MonoBehaviour
         if (collidedCategories[category].Count == 0)
         {
             collidedCategories.Remove(category);
-            playerAudio.Uncollide(category);
+            OnUncollide?.Invoke(category);
+            //playerAudio.Uncollide(category);
         }
     }
 
@@ -80,7 +83,8 @@ public class CollisionTracker : MonoBehaviour
         if (!collidedCategories.ContainsKey(category))
         {
             collidedCategories[category] = new();
-            playerAudio.Collide(category);
+            OnCollide?.Invoke(category);
+            //playerAudio.Collide(category);
         } else if (collidedCategories[category].Contains(name))
         {
             pendingUncollisions.Remove(name);

@@ -3,27 +3,26 @@ public class PlayerStandbyState : PlayerBaseState
 {
     public PlayerStandbyState(PlayerStateMachine currentContext, PlayerStateFactory factory) : base(currentContext, factory)
     {
-
+        _isRootState = true;
     }
     public override void EnterState()
     {
-        _context.runManager.EnterAttempt += _ => NextState();
+        _context.RunManager.EnterAttempt += _ => SwitchState(_factory.Active());
+        _context.PlayerControls.Inputs.Player.Down.started += _ => _context.RunManager.StartAttempt();
     }
     public override void UpdateState()
     {
-        //If controller down, trigger EnterActive;
-        if (_context.playerController.down)
-        {
-            _context.runManager.StartAttempt();
-        }
+        
+    }
+    public override void FixedUpdateState()
+    {
     }
 
-    //Remove StartAttempt from playerScript
     public override void ExitState()
     {
-        _context.animator.SetBool("OnBoard", true);
-        _context.rigidEagle.bodyType = RigidbodyType2D.Dynamic;
-        _context.rigidEagle.velocity += new Vector2(15, 0);
+        _context.Animator.SetBool("OnBoard", true);
+        _context.RigidEagle.bodyType = RigidbodyType2D.Dynamic;
+        _context.RigidEagle.velocity += new Vector2(15, 0);
     }
     public override void CheckSwitchStates()
     {
@@ -32,9 +31,11 @@ public class PlayerStandbyState : PlayerBaseState
     public override void InitializeSubState()
     {
     }
-
-    private void NextState()
+    public override void CollisionEnter(Collision2D collision)
     {
-        SwitchState(_factory.Active());
     }
+    public override void CollisionExit(Collision2D collision)
+    {
+    }
+
 }

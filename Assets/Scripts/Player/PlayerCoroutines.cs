@@ -115,6 +115,11 @@ public static class PlayerCoroutines
         yield return new WaitForSeconds(delayTimeInSeconds);
         eagleScript.Jump();
     }
+    public static IEnumerator DelayedJump(PlayerStateMachine playerMachine, float delayTimeInSeconds)
+    {
+        yield return new WaitForSeconds(delayTimeInSeconds);
+        playerMachine.DoJump();
+    }
 
     public static IEnumerator SlowToStop(EagleScript eagleScript)
     {
@@ -168,8 +173,12 @@ public static class PlayerCoroutines
         eagleScript.Die();
     }
 
-    public static IEnumerator AddBoost(Rigidbody2D rigidBody, float boostValue, float boostMultiplier)
+    public static IEnumerator AddBoost(Rigidbody2D rigidBody, float boostValue, float boostMultiplier, float delay = 0)
     {
+        if(delay > 0)
+        {
+            yield return new WaitForSeconds(delay);
+        }
         float boostCount = 0;
         while (boostCount < 4)
         {

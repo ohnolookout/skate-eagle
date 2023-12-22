@@ -134,7 +134,6 @@ public class PlayerController : MonoBehaviour
         float doubleTapDelay = 0.25f;
         yield return new WaitForSeconds(doubleTapDelay);
         downCount = Mathf.Clamp(downCount - 1, 0, 3);
-
     }
     
 }

@@ -1,8 +1,7 @@
 using UnityEngine;
-
-public class PlayerDeadState : PlayerBaseState
+public class PlayerStoppedState : PlayerBaseState
 {
-    public PlayerDeadState(PlayerStateMachine currentContext, PlayerStateFactory factory) : base(currentContext, factory)
+    public PlayerStoppedState(PlayerStateMachine currentContext, PlayerStateFactory factory) : base(currentContext, factory)
     {
         _isRootState = true;
     }
@@ -12,11 +11,11 @@ public class PlayerDeadState : PlayerBaseState
     }
     public override void UpdateState()
     {
-        
+
     }
     public override void FixedUpdateState()
     {
-        
+
     }
     public override void ExitState()
     {
@@ -30,10 +29,9 @@ public class PlayerDeadState : PlayerBaseState
     }
     public override void CollisionEnter(Collision2D collision)
     {
-        _context.CollisionTracker.UpdateCollision(collision, true);
     }
     public override void CollisionExit(Collision2D collision)
     {
-        _context.CollisionTracker.UpdateCollision(collision, false);
     }
+
 }

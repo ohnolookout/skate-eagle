@@ -2,7 +2,7 @@ using System.Collections.Generic;
 public class PlayerStateFactory
 {
     PlayerStateMachine _context;
-    enum StateType { Inactive, Standby, Active, Dead, Fallen, Finished }
+    enum StateType { Inactive, Standby, Active, Dead, Fallen, Finished, Stopped, Crouch, Stand, Stomp, Jump, Airborne, Grounded }
     Dictionary<StateType, PlayerBaseState> _states = new();
     
 
@@ -15,6 +15,11 @@ public class PlayerStateFactory
         _states[StateType.Dead] = new PlayerDeadState(_context, this);
         _states[StateType.Fallen] = new PlayerFallenState(_context, this);
         _states[StateType.Finished] = new PlayerFinishedState(_context, this);
+        _states[StateType.Stopped] = new PlayerStoppedState(_context, this);
+        _states[StateType.Stomp] = new StompState(_context, this);
+        _states[StateType.Jump] = new JumpState(_context, this);
+        _states[StateType.Airborne] = new AirborneState(_context, this);
+        _states[StateType.Grounded] = new GroundedState(_context, this);
     }
 
     public PlayerBaseState Inactive()
@@ -45,5 +50,26 @@ public class PlayerStateFactory
     public PlayerBaseState Finished()
     {
         return _states[StateType.Finished];
+    }
+
+    public PlayerBaseState Stopped()
+    {
+        return _states[StateType.Stopped];
+    }
+    public PlayerBaseState Stomp()
+    {
+        return _states[StateType.Stomp];
+    }
+    public PlayerBaseState Jump()
+    {
+        return _states[StateType.Jump];
+    }
+    public PlayerBaseState Airborne()
+    {
+        return _states[StateType.Airborne];
+    }
+    public PlayerBaseState Grounded()
+    {
+        return _states[StateType.Grounded];
     }
 }
