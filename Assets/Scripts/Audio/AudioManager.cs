@@ -82,11 +82,11 @@ public class AudioManager : MonoBehaviour
     //Plays one shots on audioSources[1]
     public void PlayOneShot(Sound sound)
     {
-        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.Player.IsRagdoll);
         if (sound.trackIntensity)
         {
-            float intensity = -1 + Mathf.Clamp(runManager.Player.ForceDelta / 100, 0, 2);
-            audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, runManager.PlayerIsRagdoll);
+            float intensity = -1 + Mathf.Clamp(runManager.Player.ForceDelta() / 100, 0, 2);
+            audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, runManager.Player.IsRagdoll);
         }
         else
         {
@@ -212,10 +212,10 @@ public class AudioManager : MonoBehaviour
         //Apply updated modifiers
         Sound sound = playingSounds[loopSource];
         //Key "null" is sometimes not found in modifiers when called by Update on startup.
-        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
-        loopSource.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.Player.IsRagdoll);
+        loopSource.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.Player.IsRagdoll);
         loopSource.panStereo = modifiers[sound.localizedSource].pan;
-        loopSource.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.PlayerIsRagdoll);
+        loopSource.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.Player.IsRagdoll);
     }
     
 
@@ -223,10 +223,10 @@ public class AudioManager : MonoBehaviour
     private void LoadSoundWithModifiers(Sound sound, AudioSource source)
     {
         source.clip = sound.Clip();
-        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.PlayerIsRagdoll);
-        source.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.PlayerIsRagdoll);
+        float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.Player.IsRagdoll);
+        source.volume = sound.AdjustedVolume(modifiers[sound.localizedSource].intensity, modifier, runManager.Player.IsRagdoll);
         source.panStereo = modifiers[sound.localizedSource].pan;
-        source.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.PlayerIsRagdoll);
+        source.pitch = sound.AdjustedPitch(modifiers[sound.localizedSource].intensity, runManager.Player.IsRagdoll);
         sound.source = source;
 
     }

@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
+using System;
 
 
 public class Overlay : MonoBehaviour
@@ -10,53 +8,89 @@ public class Overlay : MonoBehaviour
     public GameObject gameOver, finish, standby, mobileControls, hud, landing;
     public LandingScreenLoader landingLoader;
     public FinishScreenLoader finishLoader;
-    public LiveRunManager runManager;
+    [SerializeField] private LiveRunManager _runManager;
+    private Action<LiveRunManager> onLanding, onGameOver;
+    private Action<FinishScreenData> onFinish;
     public StompBar stompBar;
     public Timer timer;
-    //public OverlayManager overlayManager;
 
+    private void Awake()
+    {
+        _runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+    }
+
+    private void OnEnable()
+    {
+        onLanding += _ => ActivateStartScreen();
+        LiveRunManager.OnLanding += onLanding;
+        onGameOver += _ => ActivateGameOverScreen();
+        LiveRunManager.OnGameOver += onGameOver;
+        LiveRunManager.OnAttempt += StartAttempt;
+        LiveRunManager.OnStandby += ActivateStandbyScreen;
+        onFinish += _ => ActivateControls(false);
+        LiveRunManager.OnFinish += onFinish;
+        LiveRunManager.OnResultsScreen += ActivateFinishScreen;
+    }
+
+    private void OnDisable()
+    {
+        LiveRunManager.OnLanding -= onLanding;
+        LiveRunManager.OnGameOver -= onGameOver;
+        LiveRunManager.OnAttempt -= StartAttempt;
+        LiveRunManager.OnStandby -= ActivateStandbyScreen;
+        LiveRunManager.OnFinish -= onFinish;
+        LiveRunManager.OnResultsScreen -= ActivateFinishScreen;
+    }
+    public void ActivateStartScreen()
+    {
+        landing.SetActive(true);
+        gameOver.SetActive(false);
+        standby.SetActive(false);
+        hud.SetActive(false);
+        ActivateControls(false);
+    }
     public void StartScreen(PlayerRecord playerRecord)
     {
         landing.SetActive(true);
         gameOver.SetActive(false);
-        finish.SetActive(false);
         standby.SetActive(false);
         hud.SetActive(false);
         ActivateControls(false);
-        landingLoader.GenerateLanding(runManager.CurrentLevel, playerRecord);
+        landingLoader.GenerateLanding(GameManager.Instance.CurrentLevel, playerRecord);
     }
 
-    public void StandbyScreen()
+    public void ActivateStandbyScreen()
     {
         landing.SetActive(false);
         standby.SetActive(true);
         hud.SetActive(true);
         ActivateControls(true);
-        runManager.runState = RunState.Standby;
+    }
+
+    public void StandbyScreen()
+    {
+        _runManager.GoToStandby();
     }
 
 
     public void StartAttempt()
     {
         standby.SetActive(false);
-        timer.StartTimer();
     }
 
     public void GameOverScreen()
     {
         gameOver.SetActive(true);
+        ActivateControls(false);
+    }
+    public void ActivateGameOverScreen()
+    {
+        gameOver.SetActive(true);
         timer.StopTimer();
         ActivateControls(false);
     }
-
-    public void GenerateFinishScreen(FinishScreenData screenData)
-    {
-        finishLoader.GenerateFinishScreen(screenData);
-    }
-
     public void ActivateFinishScreen()
     {
-        finish.SetActive(true);
         hud.SetActive(false);
         ActivateControls(false);
     }
@@ -87,19 +121,13 @@ public class Overlay : MonoBehaviour
 
     public void RestartLevel()
     {
-        runManager.RestartGame();
+        _runManager.RestartGame();
     }
 
     public void NextLevel()
     {
         GameManager.Instance.NextLevel();
     }
-
-    public float StopTimer()
-    {
-        return timer.StopTimer();
-    }
-
 
 }
 

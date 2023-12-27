@@ -10,6 +10,17 @@ public class Timer : MonoBehaviour
     private float timeElapsed = 0;
     private bool running = false;
 
+    private void OnEnable()
+    {
+        LiveRunManager.OnAttempt += StartTimer;
+        LiveRunManager.OnGameOver += _ => StopTimer();
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnAttempt -= StartTimer;
+        LiveRunManager.OnGameOver += _ => StopTimer();
+    }
+
     void Update()
     {
         if (!running)

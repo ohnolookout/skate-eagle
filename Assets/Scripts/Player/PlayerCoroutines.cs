@@ -137,6 +137,8 @@ public static class PlayerCoroutines
             }
             yield return new WaitForFixedUpdate();
         }
+        yield return new WaitForSeconds(0.5f);
+        eagleScript.TriggerFinishStop();
     }
 
 
@@ -147,20 +149,13 @@ public static class PlayerCoroutines
 
     }
 
-    public static IEnumerator EndFlip(EagleScript eagleScript, float flipDelay, double spins)
+    public static IEnumerator EndFlip(EagleScript eagleScript, double spins)
     {
-        yield return new WaitForSeconds(flipDelay * 0.1f);
-        if (eagleScript.logic.runState != RunState.Active)
-        {
-            yield break;
-        }
-        if (eagleScript.logic.StompCharge < eagleScript.logic.StompThreshold)
-        {
-            eagleScript.logic.StompCharge += (int)spins;
-        }
+        yield return new WaitForSeconds(eagleScript.flipDelay * 0.1f);
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
         eagleScript.TriggerBoost(eagleScript.flipBoost, boostMultiplier);
     }
+
 
     public static IEnumerator DelayedFreeze(EagleScript eagleScript, float timer)
     {

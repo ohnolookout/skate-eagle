@@ -14,6 +14,7 @@ public class CameraScript : MonoBehaviour
     private Camera cam;
     [SerializeField]
     private Sound wind;
+    private bool isTracking = true, isFinished = false;
 
     void Awake()
     {
@@ -21,19 +22,19 @@ public class CameraScript : MonoBehaviour
     }
     void Start()
     {
-        camY = runManager.LowestGroundPoint.y;
+        camY = runManager.GroundSpawner.LowestPoint.y;
         UpdatePosition();
     }
 
     void Update()
     {
-        if (runManager.runState == RunState.Fallen)
+        if (!isTracking)
         {
             return;
         }
-        if (cam.WorldToScreenPoint(runManager.PlayerPosition).y < 0) runManager.Fall();
+        if (cam.WorldToScreenPoint(runManager.Player.Rigidbody.position).y < 0) runManager.Fall();
         UpdateZoom();
-        if (runManager.runState != RunState.Finished && runManager.runState != RunState.GameOverAfterFinished)
+        if (runManager.runState != RunState.Finished)
         {
             UpdatePosition();
         }
@@ -43,18 +44,18 @@ public class CameraScript : MonoBehaviour
     {
         defaultSize = Camera.main.orthographicSize;
         runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
-        transitionYCoroutine = TransitionLowY(runManager.LowestGroundPoint);
+        transitionYCoroutine = TransitionLowY(runManager.GroundSpawner.LowestPoint);
         cam = GetComponent<Camera>();
     }
 
     public void UpdateZoom()
     {
-        if(cameraZoomOut || runManager.PlayerPosition.y < LeadingCorner.y - Camera.main.orthographicSize * 0.2f)
+        if(cameraZoomOut || runManager.Player.Rigidbody.position.y < LeadingCorner.y - Camera.main.orthographicSize * 0.2f)
         {
             return;
         }
 
-        if (cameraZoomIn && runManager.PlayerBody.velocity.y > 0)
+        if (cameraZoomIn && runManager.Player.Rigidbody.velocity.y > 0)
         {
             StopCoroutine(zoomInRoutine);
             cameraZoomIn = false;
@@ -68,13 +69,13 @@ public class CameraScript : MonoBehaviour
 
     public void UpdatePosition()
     {
-        if (runManager.LowestGroundPoint.y != targetY)
+        if (runManager.GroundSpawner.LowestPoint.y != targetY)
         {
             StopCoroutine(transitionYCoroutine);
-            transitionYCoroutine = TransitionLowY(runManager.LowestGroundPoint);
+            transitionYCoroutine = TransitionLowY(runManager.GroundSpawner.LowestPoint);
             StartCoroutine(transitionYCoroutine);
         }
-        float cameraX = runManager.PlayerPosition.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
+        float cameraX = runManager.Player.Rigidbody.position.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
         float cameraY = camY + offset.y + zoomYDelta;
         transform.position = new Vector3(cameraX, cameraY, transform.position.z);
         leadingCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
@@ -107,14 +108,14 @@ public class CameraScript : MonoBehaviour
 
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
-        float startBirdX = runManager.PlayerPosition.x;
-        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (runManager.PlayerPosition.x + 20)), 15, 100);
+        float startBirdX = runManager.Player.Rigidbody.position.x;
+        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (runManager.Player.Rigidbody.position.x + 20)), 15, 100);
         float startY = camY;
         targetY = endPoint.y;
         float t = 0;
         while(Mathf.Abs(camY - endPoint.y) > 0.2)
         {
-            t = Mathf.Clamp01(Mathf.Abs(runManager.PlayerPosition.x - startBirdX) / distance);
+            t = Mathf.Clamp01(Mathf.Abs(runManager.Player.Rigidbody.position.x - startBirdX) / distance);
             camY = Mathf.SmoothStep(startY, targetY, t);
             yield return null;
         }
@@ -127,9 +128,10 @@ public class CameraScript : MonoBehaviour
             AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 3f, defaultSize * 2f);
         }
         cameraZoomOut = true;
-        while(runManager.PlayerPosition.y > LeadingCorner.y - cam.orthographicSize * 0.2f || runManager.PlayerBody.velocity.y > 0)
+        while(runManager.Player.Rigidbody.position.y > LeadingCorner.y - cam.orthographicSize * 0.2f 
+            || runManager.Player.Rigidbody.velocity.y > 0)
         {
-            float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(runManager.Player.Rigidbody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
             cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();
@@ -145,7 +147,7 @@ public class CameraScript : MonoBehaviour
         cameraZoomIn = true;
         while(cam.orthographicSize > defaultSize)
         {
-            float change = Mathf.Clamp(runManager.PlayerBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(runManager.Player.Rigidbody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
             cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();

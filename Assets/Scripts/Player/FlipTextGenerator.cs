@@ -2,24 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class FlipTextGenerator : MonoBehaviour
 {
     public GameObject popText;
     public float wordSpread = 10;
     private GameObject bird;
+    private EagleScript playerScript;
     private FlipText flipText;
+    private Action<LiveRunManager> cancelText;
+    private Action<EagleScript, double> newFlipText;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
     private void Awake()
     {
-
         flipText = transform.GetChild(0).gameObject.GetComponent<FlipText>();
+        bird = GameObject.FindWithTag("Player");
+        playerScript = bird.GetComponent<EagleScript>();
     }
 
-    void Start()
+    private void OnEnable()
     {
-        bird = GameObject.FindWithTag("Player");
+        newFlipText += (_, flipCount) => NewFlipText(flipCount);
+        playerScript.OnFlip += newFlipText;
+        cancelText += _ => CancelText();
+        LiveRunManager.OnGameOver += cancelText;
+        
+    }
+    private void OnDisable()
+    {
+        playerScript.OnFlip -= newFlipText;
+        LiveRunManager.OnGameOver -= cancelText;
     }
     public void NewFlipText(double flipCount = 1)
     {
@@ -27,7 +41,7 @@ public class FlipTextGenerator : MonoBehaviour
         Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, bird.transform.position + location);
         Vector3 finalPosition = viewportPosition + location;
         flipText.transform.position = finalPosition; 
-        float randomZ = Random.Range(-45, 45);
+        float randomZ = UnityEngine.Random.Range(-45, 45);
         flipText.transform.eulerAngles = new Vector3(0, 0, randomZ);
         flipText.SetText(GenerateText());
         flipText.StartLifecycle();
@@ -48,12 +62,12 @@ public class FlipTextGenerator : MonoBehaviour
         float xCoord;
         if(bird.GetComponent<Rigidbody2D>().velocity.x >= 0)
         {
-            xCoord = Random.Range(-scale, -scale/2);
+            xCoord = UnityEngine.Random.Range(-scale, -scale/2);
         } else
         {
-            xCoord = Random.Range(scale/2, scale);
+            xCoord = UnityEngine.Random.Range(scale/2, scale);
         }
-        float yCoord = Random.Range(scale * 0.5f, scale);
+        float yCoord = UnityEngine.Random.Range(scale * 0.5f, scale);
         return new Vector3(xCoord, yCoord);
     }
 
@@ -61,7 +75,7 @@ public class FlipTextGenerator : MonoBehaviour
 
     private string GenerateText()
     {
-        int index = Random.Range(1, affirmations.Count);
+        int index = UnityEngine.Random.Range(1, affirmations.Count);
         string returnString = affirmations[index];
         MoveStringToFront(index);
         return returnString;

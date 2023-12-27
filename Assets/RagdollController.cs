@@ -16,13 +16,37 @@ public class RagdollController : MonoBehaviour
     [SerializeField] public Rigidbody2D spine;
     public bool turnOnRagdoll = false, ragdoll = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         GetCollidersAndBodies();
     }
+    private void OnEnable()
+    {
+        LiveRunManager.OnGameOver += TurnOnRagdoll;
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnGameOver -= TurnOnRagdoll;
+    }
 
+    public void TurnOnRagdoll(LiveRunManager runManager)
+    {
+        if (ragdoll)
+        {
+            return;
+        }
+        animator.enabled = false;
 
+        IKParent.SetActive(false);
+        SwitchColliders(normalColliders, false);
+        SwitchColliders(ragdollColliders, true);
+        SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
+        SwitchRigidbodies(ragdollRigidbodies, true, runManager.Player.VectorChange);
+        normalRigidbodies[0].velocity = new();
+        SwitchHinges(ragDollJoints, true);
+        ragdoll = true;
+
+    }
     public void TurnOnRagdoll(Vector2 vectorChange)
     {
         if (ragdoll)
@@ -39,7 +63,6 @@ public class RagdollController : MonoBehaviour
         normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
         ragdoll = true;
-        //SeperateFootAndBoard();
 
     }
 

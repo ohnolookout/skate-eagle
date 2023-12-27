@@ -9,17 +9,22 @@ public class EagleScript : MonoBehaviour
     [HideInInspector] public float rotationSpeed = 0, jumpForce = 40, downForce = 95, rotationAccel = 1200, minBoost = 0.6f, flipDelay = 0.75f, flipBoost = 70, stompSpeedLimit = -250;
     private float rotationStart = 0, jumpStartTime;
     private Vector2 lastSpeed;
-    private int jumpCount = 0, jumpLimit = 2;
+    private int jumpCount = 0, jumpLimit = 2, _stompThreshold = 2;
+    private float jumpDuration = 0.25f;
+    private float minimumJumpDuration = 0.1f;
+    [SerializeField] private int _stompCharge = 0;
     private bool facingForward = true, crouched = false, ragdoll = false;
     private IEnumerator stompCoroutine, trailCoroutine, dampen;
     public LiveRunManager logic;
-    public FlipTextGenerator textGen;
     public TrailRenderer trail;
     public PlayerController playerController;
-    public PlayerAudio playerAudio;
-    [SerializeField] private RagdollController ragdollController;
     [SerializeField] private CollisionTracker collisionTracker;
-    [SerializeField] private Rigidbody2D ragdollBoard;
+    [SerializeField] private Rigidbody2D ragdollBoard, ragdollSpine;
+    public Action FinishStop, OnStomp, OnDismount;
+    public Action<EagleScript, double> OnFlip, flipRoutine;
+    public Action<int> OnJump;
+    public Action<Collision2D, bool> AddCollision;
+    private Action<FinishScreenData> onFinish;
 
 
     private void Awake()
@@ -34,12 +39,25 @@ public class EagleScript : MonoBehaviour
         lastSpeed = Rigidbody.velocity;
     }
 
+    private void OnEnable()
+    {
+        onFinish += _ => SlowToStop();
+        LiveRunManager.OnFinish += onFinish;
+        flipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
+        OnFlip += flipRoutine;
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnFinish -= onFinish;
+        OnFlip -= flipRoutine;
+    }
+
     private void AssignComponents()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         stompCoroutine = PlayerCoroutines.Stomp(this);
         dampen = PlayerCoroutines.DampenLanding(rigidEagle);
-        trailCoroutine = PlayerCoroutines.BoostTrail(trail, DirectionForward);
+        trailCoroutine = PlayerCoroutines.BoostTrail(trail, facingForward);
     }
 
     void Update()
@@ -73,9 +91,9 @@ public class EagleScript : MonoBehaviour
         if (playerController.stomp)
         {
             playerController.stomp = false;
-            if (logic.StompCharge >= logic.StompThreshold)
+            if (_stompCharge >= _stompThreshold)
             {
-                logic.StompCharge = 0;
+                _stompCharge = 0;
                 Stomp();
             }
         }
@@ -103,12 +121,11 @@ public class EagleScript : MonoBehaviour
 
     public void Stomp()
     {
+        OnStomp?.Invoke();
         stompCoroutine = PlayerCoroutines.Stomp(this);
         StartCoroutine(stompCoroutine);
     }
 
-    private float jumpDuration = 0.25f;
-    private float minimumJumpDuration = 0.1f;
     public void JumpValidation()
     {
         if (jumpCount >= jumpLimit || logic.runState != RunState.Active)
@@ -133,7 +150,7 @@ public class EagleScript : MonoBehaviour
     {
         animator.SetTrigger("Jump");
         jumpMultiplier = 1 - (jumpCount * 0.25f);
-        playerAudio.Jump(jumpCount);
+        OnJump?.Invoke(jumpCount);
         jumpStartTime = Time.time;
         if (rigidEagle.velocity.y < 0)
         {
@@ -171,56 +188,36 @@ public class EagleScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        /*if (logic.runState == RunState.Finished)
+        if (logic.runState == RunState.Finished)
         {
             return;
-        }*/
+        }
+        AddCollision?.Invoke(collision, true);
         if (ragdoll)
         {
-            collisionTracker.UpdateCollision(collision, true);
             return;
         }
         if (collision.otherCollider.name == "Skate Eagle")
         {
             Die();
-            collisionTracker.UpdateCollision(collision, true);
             return;
         }
         jumpCount = 0;
         if (!Collided)
         {
-            animator.SetFloat("forceDelta", ForceDelta);
-            Debug.Log("Landed!");
+            animator.SetFloat("forceDelta", ForceDelta());
             animator.SetTrigger("Land");
             StopCoroutine(dampen);
             dampen = PlayerCoroutines.DampenLanding(rigidEagle);
             StartCoroutine(dampen);
         }
-        collisionTracker.UpdateCollision(collision, true);
         FlipCheck();
 
-    }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        /*
-         * UNCOMMENT IF LOSING SECOND JUMP
-        if (coroutines.countingDownJump)
-        {
-            StopCoroutine(jumpCoroutine);
-            coroutines.countingDownJump = false;
-        }*/
-        /*
-        if (logic.runState == RunState.GameOver)
-        {
-            Rigidbody.velocity *= 0.1f * Time.deltaTime;
-            return;
-        }
-        */
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        collisionTracker.UpdateCollision(collision, false);
+        AddCollision?.Invoke(collision, false);
         rotationStart = rigidEagle.rotation;
     }
 
@@ -231,11 +228,8 @@ public class EagleScript : MonoBehaviour
         {
             return;
         }
-        collisionTracker.RemoveNonragdollColliders();
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
-        textGen.CancelText();
-        ragdollController.TurnOnRagdoll(VectorChange);
         ragdoll = true;
         logic.GameOver();
     }
@@ -258,15 +252,19 @@ public class EagleScript : MonoBehaviour
     {
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
-        playerAudio.Finish();
         animator.SetTrigger("Brake");
         StartCoroutine(PlayerCoroutines.SlowToStop(this));
+    }
+
+    public void TriggerFinishStop()
+    {
+        FinishStop?.Invoke();
     }
 
     public void TriggerBoost(float boostValue, float boostMultiplier)
     {
         StartCoroutine(PlayerCoroutines.AddBoost(rigidEagle, boostValue, boostMultiplier));
-        StartCoroutine(PlayerCoroutines.BoostTrail(trail, DirectionForward));
+        StartCoroutine(PlayerCoroutines.BoostTrail(trail, facingForward));
     }
 
 
@@ -298,7 +296,7 @@ public class EagleScript : MonoBehaviour
 
     public void DismountSound()
     {
-        playerAudio.Dismount();
+        OnDismount?.Invoke();
     }
 
     private void FinishCheck()
@@ -321,8 +319,11 @@ public class EagleScript : MonoBehaviour
         rotationStart = rigidEagle.rotation;
         if (spins >= 1 && logic.runState != RunState.GameOver)
         {
-            textGen.NewFlipText(spins);
-            StartCoroutine(PlayerCoroutines.EndFlip(this, flipDelay, spins));
+            if (_stompCharge < _stompThreshold)
+            {
+                _stompCharge = Mathf.Min((int)spins + _stompCharge, _stompThreshold);
+            }
+            OnFlip?.Invoke(this, spins);
         }
     }
 
@@ -335,88 +336,24 @@ public class EagleScript : MonoBehaviour
 
     public void Ragdoll()
     {
-        ragdollController.TurnOnRagdoll(VectorChange);
         ragdoll = true;
         logic.GameOver();
     }
 
-    public bool DirectionForward
+    public float ForceDelta()
     {
-        get
+        Vector2 delta = VectorChange;
+        float forceDelta = 0;
+        if (lastSpeed.x > 0 && delta.x < 0)
         {
-            return facingForward;
+            forceDelta -= delta.x;
         }
-    }
-
-    public bool Collided
-    {
-        get
+        else if (lastSpeed.x < 0 && delta.x > 0)
         {
-            return collisionTracker.Collided;
+            forceDelta += delta.x;
         }
-    }
-
-
-    public bool Stomping
-    {
-        get
-        {
-            return PlayerCoroutines.Stomping;
-        }
-        set
-        {
-            PlayerCoroutines.Stomping = value;
-        }
-    }
-
-    public int JumpCount
-    {
-        get
-        {
-            return jumpCount;
-        }
-        set
-        {
-            if (value >= 0 && value <= 2)
-            {
-                jumpCount = value;
-            }
-        }
-    }
-
-    public Vector2 Velocity
-    {
-        get
-        {
-            return Rigidbody.velocity;
-        }
-    }
-
-    public Vector2 VectorChange
-    {
-        get
-        {
-            return new(Rigidbody.velocity.x - lastSpeed.x, Rigidbody.velocity.y - lastSpeed.y);
-        }
-    }
-
-    public float ForceDelta
-    {
-        get
-        {
-            Vector2 delta = VectorChange;
-            float forceDelta = 0;
-            if (lastSpeed.x > 0 && delta.x < 0)
-            {
-                forceDelta -= delta.x;
-            }
-            else if (lastSpeed.x < 0 && delta.x > 0)
-            {
-                forceDelta += delta.x;
-            }
-            forceDelta += delta.y;
-            return forceDelta;
-        }
+        forceDelta += delta.y;
+        return forceDelta;
     }
 
     public Transform Transform
@@ -425,7 +362,7 @@ public class EagleScript : MonoBehaviour
         {
             if (ragdoll)
             {
-                return ragdollController.spine.transform;
+                return ragdollSpine.transform;
             }
             return rigidEagle.transform;
         }
@@ -437,28 +374,12 @@ public class EagleScript : MonoBehaviour
         {
             if (ragdoll)
             {
-                return ragdollController.spine;
+                return ragdollSpine;
             }
             return rigidEagle;
         }
     }
 
-    public bool IsRagdoll
-    {
-        get
-        {
-            return ragdoll;
-        }
-    }
-
-    public PlayerAudio Audio
-    {
-        get
-        {
-            return playerAudio;
-        }
-    }
-    
     public Rigidbody2D RagdollBoard
     {
         get
@@ -470,4 +391,14 @@ public class EagleScript : MonoBehaviour
             return ragdollBoard;
         }
     }
+
+    public bool FacingForward { get => facingForward; }
+    public bool Collided { get => collisionTracker.Collided; }
+    public bool Stomping { get => PlayerCoroutines.Stomping; set => PlayerCoroutines.Stomping = value; }
+    public int JumpCount { get => jumpCount; set => jumpCount = Mathf.Min(2, value); }
+    public Vector2 Velocity { get => Rigidbody.velocity; }
+    public Vector2 VectorChange { get => new (Rigidbody.velocity.x - lastSpeed.x, Rigidbody.velocity.y - lastSpeed.y); }
+    public bool IsRagdoll { get => ragdoll; }
+    public int StompCharge { get => _stompCharge; set => _stompCharge = value; }
+    public int StompThreshold { get => _stompThreshold; }
 }

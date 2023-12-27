@@ -9,11 +9,25 @@ public enum FinishScreenType { NewMedal, NewBestTime, Participant}
 
 public class FinishScreenLoader : MonoBehaviour
 {
-    public GameObject medal, newMedal, newBest, previousBlock;
-    public TMP_Text previousTime, playerTime;
-    public Sprite[] medalSprites;
-    public GameObject[] statusTexts;
+    [SerializeField] private GameObject display, medal, newMedal, newBest, previousBlock;
+    [SerializeField] private TMP_Text previousTime, playerTime;
+    [SerializeField] private Sprite[] medalSprites;
+    [SerializeField] private GameObject[] statusTexts;
+    private Action<LiveRunManager> deactivateDisplay;
 
+    private void OnEnable()
+    {
+        LiveRunManager.OnFinish += GenerateFinishScreen;
+        LiveRunManager.OnResultsScreen += ActivateDisplay;
+        deactivateDisplay += _ => DeactivateDisplay();
+        LiveRunManager.OnLanding += deactivateDisplay;
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnFinish -= GenerateFinishScreen;
+        LiveRunManager.OnResultsScreen -= ActivateDisplay;
+        LiveRunManager.OnLanding -= deactivateDisplay;
+    }
     public void GenerateFinishScreen(FinishScreenData finishData)
     {
         ClearOptionalText();
@@ -39,6 +53,15 @@ public class FinishScreenLoader : MonoBehaviour
         newBest.SetActive(false);
         medal.SetActive(false);
 
+    }
+
+    public void ActivateDisplay()
+    {
+        display.SetActive(true);
+    }
+    public void DeactivateDisplay()
+    {
+        display.SetActive(false);
     }
 }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public enum ColliderCategory { LWheel, RWheel, Board, Body };
 public class CollisionTracker : MonoBehaviour
@@ -9,15 +10,26 @@ public class CollisionTracker : MonoBehaviour
     private OrderedDictionary<string, TimedCollision> pendingUncollisions = new();
     private Dictionary<ColliderCategory, List<string>> collidedCategories = new();
     private float uncollideTime = 0.15f;
-    [SerializeField] PlayerAudio playerAudio;
     [SerializeField] EagleScript eagleScript;
+    public Action<ColliderCategory> OnCollide, OnUncollide;
+    private Action<LiveRunManager> onGameOver;
 
 
     void Awake()
     {
-        //collidedCategories[ColliderCategory.LWheel] = new List<string> { "LWheelCollider" };
-        //collidedCategories[ColliderCategory.RWheel] = new List<string> { "RWheelCollider" };
         eagleScript = gameObject.GetComponent<EagleScript>();
+    }
+
+    private void OnEnable()
+    {
+        eagleScript.AddCollision += UpdateCollision;
+        onGameOver += _ => RemoveNonragdollColliders();
+        LiveRunManager.OnGameOver += onGameOver;
+    }
+    private void OnDisable()
+    {
+        eagleScript.AddCollision -= UpdateCollision;
+        LiveRunManager.OnGameOver -= onGameOver;
     }
 
     //Set float in collisionTimers to startTime instead of current timer. Then look at currentTime-startTime.
@@ -64,7 +76,7 @@ public class CollisionTracker : MonoBehaviour
         if (collidedCategories[category].Count == 0)
         {
             collidedCategories.Remove(category);
-            playerAudio.Uncollide(category);
+            OnUncollide?.Invoke(category);
         }
     }
 
@@ -81,7 +93,7 @@ public class CollisionTracker : MonoBehaviour
         if (!collidedCategories.ContainsKey(category))
         {
             collidedCategories[category] = new();
-            playerAudio.Collide(category);
+            OnCollide?.Invoke(category);
         } else if (collidedCategories[category].Contains(name))
         {
             pendingUncollisions.Remove(name);
@@ -89,7 +101,6 @@ public class CollisionTracker : MonoBehaviour
         }
         //Send collision to player audio and add collision to list of colliders that are collided.
         collidedCategories[category].Add(name);
-        //Debug.Log($"Updated category {category} to add {name}");
 
     }
 

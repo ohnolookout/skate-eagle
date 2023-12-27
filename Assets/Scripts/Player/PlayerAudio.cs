@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 using System.Linq;
+using System;
 
 public enum OneShotFX { Jump, SecondJump, Wheel, Board, Body, HardBody};
 public enum LoopFX { Roll, Freewheel, Board, Body };
@@ -21,6 +22,7 @@ public class PlayerAudio : MonoBehaviour
     private CollisionTracker collisionTracker;
     private float wheelTimer = -1, wheelTimeLimit = 0.2f, wheelFadeCoefficient = 0.01f;
     private AudioManager audioManager;
+    private Action<FinishScreenData> onFinish; 
 
     private void Awake()
     {
@@ -30,6 +32,23 @@ public class PlayerAudio : MonoBehaviour
         audioManager.BuildModifierDict(TrackedBodies(sounds));
     }
 
+    private void OnEnable()
+    {
+        onFinish += _ => Finish();
+        LiveRunManager.OnFinish += onFinish;
+        collisionTracker.OnCollide += Collide;
+        collisionTracker.OnUncollide += Uncollide;
+        eagleScript.OnJump += Jump;
+        eagleScript.OnDismount += Dismount;
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnFinish -= onFinish;
+        collisionTracker.OnCollide -= Collide;
+        collisionTracker.OnUncollide -= Uncollide;
+        eagleScript.OnJump -= Jump;
+        eagleScript.OnDismount -= Dismount;
+    }
     void FixedUpdate()
     {
         UpdateWheelTimer();
@@ -47,7 +66,7 @@ public class PlayerAudio : MonoBehaviour
         }
         return bodies.ToArray();
     }
-    public void Jump(float jumpCount)
+    public void Jump(int jumpCount)
     {
         if (jumpCount == 0)
         {
@@ -134,7 +153,7 @@ public class PlayerAudio : MonoBehaviour
 
     public void BodyCollision()
     {
-        if(eagleScript.ForceDelta > 140)
+        if(eagleScript.ForceDelta() > 140)
         {
             audioManager.PlayOneShot(oneShotDict[OneShotFX.HardBody]);
         }

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     private static GameManager instance;
     private SaveData saveData;
     public bool goToLevelMenu = false;
+    private bool levelIsLoaded = false;
     
     private void Awake()
     {
@@ -78,6 +79,7 @@ public class GameManager : MonoBehaviour
     public void LoadLevel(Level level)
     {
         currentLevel = level;
+        levelIsLoaded = true;
         SceneManager.LoadScene("City");
         AudioManager.Instance.ClearLoops();
     }
@@ -86,6 +88,7 @@ public class GameManager : MonoBehaviour
     public void BackToLevelMenu()
     {
         goToLevelMenu = true;
+        levelIsLoaded = false;
         SceneManager.LoadScene("Start_Menu");
         AudioManager.Instance.ClearLoops();
     }
@@ -174,4 +177,5 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool LevelIsLoaded { get => levelIsLoaded; set => levelIsLoaded = value; }
 }

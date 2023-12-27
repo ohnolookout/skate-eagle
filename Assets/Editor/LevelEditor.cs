@@ -13,7 +13,7 @@ public class LevelEditor : EditorWindow
     public GroundSpawner _groundSpawner;
     private LiveRunManager _logic;
     private bool isLevelEditor;
-    private GameManager gameManager;
+    //private GameManager gameManager;
     ScriptableObject _target;
     SerializedObject _so;
     SerializedProperty _serializedMedalTimes, _serializedLevelSections;
@@ -27,14 +27,21 @@ public class LevelEditor : EditorWindow
         GetWindow<LevelEditor>();
     }
 
+    /*
+     * TO DO:
+     * Uncouple LevelEditor from GameManager
+     * Fix in editor level generation (or move to play mode?)
+     * Resolve errors from unsubscribing after objects are disabled.
+     * Improve GameManager Instance checking (can't be sure on causes of this until LevelEditor is fixed)
+     */
     private void OnEnable()
     {
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";
         if (isLevelEditor)
         {
-            gameManager = GameManager.Instance;
+            //gameManager = GameManager.Instance;
             AddTerrainGeneration();
-            gameManager.CurrentLevel = _currentLevel;
+            //gameManager.CurrentLevel = _currentLevel;
         }
         _target = this;
         _so = new(_target);
@@ -64,6 +71,7 @@ public class LevelEditor : EditorWindow
             }
             if (GUILayout.Button("Clear Level", GUILayout.ExpandWidth(false)))
             {
+                AddTerrainGeneration();
                 _groundSpawner.DeleteChildren();
             }
         }
@@ -119,7 +127,7 @@ public class LevelEditor : EditorWindow
         }
         UpdateLevel();
         _logic.SetLevel(_currentLevel);
-        gameManager.CurrentLevel = _currentLevel;
+        //gameManager.CurrentLevel = _currentLevel;
         bool testModeStatus = _groundSpawner.testMode;
         _groundSpawner.testMode = true;
         _groundSpawner.GenerateLevel(_currentLevel);

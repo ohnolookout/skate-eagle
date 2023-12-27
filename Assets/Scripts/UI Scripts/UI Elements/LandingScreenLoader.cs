@@ -10,9 +10,23 @@ public class LandingScreenLoader : MonoBehaviour
     public TMP_Text levelName, playerTime, blueTime, goldTime, silverTime;
     public Image playerMedal;
     public Sprite[] medalSprites;
-    public GameObject globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, bestTimeBadgeGrayOut;
+    [SerializeField] private GameObject display, globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, bestTimeBadgeGrayOut;
     public GameObject[] levelTimeGrays, strikeThroughs;
     public bool nextLevelUnlocked = false;
+    private Action<LiveRunManager> atLanding;
+
+    private void OnEnable()
+    {
+        atLanding += (ctx) => GenerateLanding(GameManager.Instance.CurrentLevel, GameManager.Instance.CurrentPlayerRecord);
+        atLanding += _ => ActivateDisplay();
+        LiveRunManager.OnLanding += atLanding;
+    }
+
+
+    private void OnDisable()
+    {
+        LiveRunManager.OnLanding -= atLanding;
+    }
 
     public void GenerateLanding(Level level, PlayerRecord playerRecord)
     {
@@ -63,6 +77,16 @@ public class LandingScreenLoader : MonoBehaviour
     private void DeactivatePlayerBadge()
     {
         bestTimeBadgeGrayOut.SetActive(true);
+    }
+
+    private void ActivateDisplay()
+    {
+        display.SetActive(true);
+    }
+
+    private void DeactivateDisplay()
+    {
+        display.SetActive(false);
     }
 
 }

@@ -7,16 +7,33 @@ public class StompBar : MonoBehaviour
 {
     private bool filling = false;
     public GameObject stompBlast;
-    private Slider slider;
+    [SerializeField] private Slider slider;
     private IEnumerator fillRoutine;
     public Sprite jaggedOutline, smoothOutline;
-    private CutoutMask fill;
+    [SerializeField] private CutoutMask fill;
+    private EagleScript player;
 
     void Awake()
     {
-        slider = GetComponent<Slider>();
-        fill = GetComponentInChildren<CutoutMask>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<EagleScript>();
+    }
+    private void Start()
+    {
+        if(player.StompCharge > 0)
+        {
+            Fill((float)player.StompCharge / (float)player.StompThreshold);
+        }
+    }
 
+    private void OnEnable()
+    {
+        player.OnFlip += (_, _) => Fill((float)player.StompCharge / (float)player.StompThreshold);
+        player.OnStomp += () => Fill(0);
+    }
+    private void OnDisable()
+    {
+        player.OnFlip -= (_, _) => Fill((float)player.StompCharge / (float)player.StompThreshold);
+        player.OnStomp -= () => Fill(0);
     }
 
     public void Fill(float fillAmount)

@@ -11,17 +11,17 @@ public static class AudioUtility
         foreach (var body in modifiers.Keys.ToList())
         {
             //If body is null, track intensity of playerBody, pulled from runManager so it updates to lowSpine if ragdoll
-            if (body == null || !runManager.PlayerIsRagdoll)
+            if (body == null || !runManager.Player.IsRagdoll)
             {
                 //modifiers[body].SetIntensity(AudioUtility.Intensity(runManager.PlayerBody, intensityDenominator));
-                modifiers[body].intensity = Intensity(runManager.PlayerBody, AudioManager.intensityDenominator);
+                modifiers[body].intensity = Intensity(runManager.Player.Rigidbody, AudioManager.intensityDenominator);
                 //Distance and pan are not relevant for playerbody, so continue to next body.
                 continue;
             }
             modifiers[body].intensity = Intensity(body, AudioManager.intensityDenominator);
-            float soundDistance = Mathf.Max(Mathf.Abs(body.position.x - runManager.PlayerPosition.x) - distanceBuffer, 0);
+            float soundDistance = Mathf.Max(Mathf.Abs(body.position.x - runManager.Player.Rigidbody.position.x) - distanceBuffer, 0);
             modifiers[body].distance = (maxSoundDistance - soundDistance) / maxSoundDistance;
-            modifiers[body].pan = GetPan(runManager.PlayerBody, body, runManager);
+            modifiers[body].pan = GetPan(runManager.Player.Rigidbody, body, runManager);
         }
     }
 
@@ -91,16 +91,16 @@ public static class AudioUtility
 
     public static float CalculateZoomModifier(LiveRunManager runManager, float zoomLimit)
     {
-        if (Mathf.Abs(runManager.DefaultCameraSize - runManager.CameraSize) < 0.3f)
+        if (Mathf.Abs(runManager.CameraScript.DefaultSize - runManager.CameraScript.Camera.orthographicSize) < 0.3f)
         {
             return 1;
         }
-        return InterpolateValue(runManager.DefaultCameraSize, zoomLimit, runManager.CameraSize, 1, 0.1f);
+        return InterpolateValue(runManager.CameraScript.DefaultSize, zoomLimit, runManager.CameraScript.Camera.orthographicSize, 1, 0.1f);
     }
 
     public static float GetPan(Rigidbody2D playerBody, Rigidbody2D panBody, LiveRunManager runManager)
     {
-        float halfCamWidth = runManager.LeadingCameraCorner.x - runManager.CameraCenter.x;
+        float halfCamWidth = runManager.CameraScript.LeadingCorner.x - runManager.CameraScript.Center.x;
         float distanceFromCenter = panBody.position.x - playerBody.position.x;
         return distanceFromCenter / (halfCamWidth * 1.5f);
     }

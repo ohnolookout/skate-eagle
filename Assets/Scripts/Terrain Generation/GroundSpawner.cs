@@ -16,12 +16,25 @@ public class GroundSpawner : MonoBehaviour
     private LiveRunManager logic;
     private GroundColliderTracker colliderTracker;
     [SerializeField] PhysicsMaterial2D colliderMaterial;
-    public GameObject finishFlag;
+    [HideInInspector] public GameObject finishFlag; 
+    public GameObject finishFlagPrefab;
     [SerializeField] GameObject backstop;
     public bool testMode = false;
+    private Action<LiveRunManager> onGameOver;
     private enum SegmentPosition { Leading, Trailing };
     private enum CacheStatus { New, Removed, Added };
 
+    private void OnEnable()
+    {
+        onGameOver += _ => SwitchToRagdoll();
+        LiveRunManager.OnGameOver += onGameOver;
+        //LiveRunManager.OnLanding += GenerateLevel;
+    }
+    private void OnDisable()
+    {
+        LiveRunManager.OnGameOver -= onGameOver;
+        //LiveRunManager.OnLanding -= GenerateLevel;
+    }
     void Awake()
     {
         AssignComponents();
@@ -33,9 +46,13 @@ public class GroundSpawner : MonoBehaviour
         //Delete children if in Unity Editor due to the potential of creating children within level editor.
         DeleteChildren();
 #endif
-        GenerateLevel(logic.CurrentLevel);
+        GenerateLevel(GameManager.Instance.CurrentLevel);
+        colliderTracker = new(logic.Player.Rigidbody, colliderList, segmentList, backstop, birdIndex);
         ActivateInitialSegments(3);
-        colliderTracker = new(logic.PlayerBody, colliderList, segmentList, backstop, birdIndex);
+    }
+
+    private void Start()
+    {
     }
     void Update()
     {
@@ -57,7 +74,8 @@ public class GroundSpawner : MonoBehaviour
 
     public void SwitchToRagdoll()
     {
-        colliderTracker.SwapBodies(new Rigidbody2D[] { logic.Player.rigidEagle }, new Rigidbody2D[] { logic.PlayerBody, logic.RagdollBoard });
+        colliderTracker.SwapBodies(new Rigidbody2D[] { logic.Player.rigidEagle }, 
+            new Rigidbody2D[] { logic.Player.Rigidbody, logic.Player.RagdollBoard });
     }
     public void GenerateLevel(Level level)
     {
@@ -70,15 +88,14 @@ public class GroundSpawner : MonoBehaviour
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
-            Awake();
-            return;
+            AssignComponents();
+            DeleteChildren();
         }
-        //DeleteChildren();
 #endif
         segmentList = new();
         colliderList = new();
         //Create startline at location of player
-        CurvePoint endOfLastSegment = AddSegment(CurveFactory.StartLine(new (logic.PlayerPosition)));
+        CurvePoint endOfLastSegment = AddSegment(CurveFactory.StartLine(new (logic.Player.Rigidbody.position)));
         //Create dictionary of sequences with corresponding grades
         Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
         foreach(var sequence in curveSequences)
@@ -95,6 +112,11 @@ public class GroundSpawner : MonoBehaviour
         //Add finishline at end of final segment
         AddSegment(CurveFactory.FinishLine(endOfLastSegment));
         AddFinishObjects(segmentList[^1].Curve.GetPoint(1).ControlPoint, segmentList[^1].EndPoint);
+    }
+    public void GenerateLevel(LiveRunManager runManager)
+    {
+        Debug.Log("Generating level from runManager");
+        GenerateLevel(runManager.CurrentLevel);
     }
 
     //Instantiate a new deactivated segment, add it to the segment list, and update the current point and length
@@ -171,7 +193,7 @@ public class GroundSpawner : MonoBehaviour
     {
         //Assign locations finishPoint, backstop, and finishflag
         logic.FinishPoint = finishLineBound + new Vector3(50, 1);
-        finishFlag = Instantiate(finishFlag, logic.FinishPoint, transform.rotation, transform);
+        finishFlag = Instantiate(finishFlagPrefab, logic.FinishPoint, transform.rotation, transform);
         finishFlag.SetActive(false);
         backstop.transform.position = backstopBound - new Vector3(75, 0);
     }
@@ -194,8 +216,8 @@ public class GroundSpawner : MonoBehaviour
     //Update camera bounds based on lower corners of camera view and camera buffer.
     private void UpdateCameraBounds()
     {
-        leadingCameraBound = logic.LeadingCameraCorner.x + cameraBuffer;
-        trailingCameraBound = logic.TrailingCameraCorner.x - cameraBuffer;
+        leadingCameraBound = logic.CameraScript.LeadingCorner.x + cameraBuffer;
+        trailingCameraBound = logic.CameraScript.TrailingCorner.x - cameraBuffer;
     }
 
 
@@ -256,7 +278,6 @@ public class GroundSpawner : MonoBehaviour
         }
     }
 
-    //***Needs to be reworked because birdIndex no longer gets changed***
     private void CacheLowestPoint(CacheStatus status, Vector3 point)
     {
         if (activeLowPoints.Count == 0)
