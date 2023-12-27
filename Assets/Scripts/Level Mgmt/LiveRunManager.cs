@@ -50,6 +50,7 @@ public class LiveRunManager : MonoBehaviour
     }
     private void OnDisable()
     {
+        ResetStaticEvents();
         if (gameManager != null)
         {
             OnFinish -= gameManager.UpdateRecord;
@@ -66,7 +67,16 @@ public class LiveRunManager : MonoBehaviour
         OnLanding?.Invoke(this);
     }
 
-
+    private void ResetStaticEvents()
+    {
+        OnLanding = null;
+        OnAttempt = null;
+        OnFinish = null;
+        OnGameOver = null;
+        OnResultsScreen = null;
+        OnStandby = null;
+        OnRestart = null;    
+    }
     public void BackToMenu()
     {
         SceneManager.LoadScene("Start_Menu");
