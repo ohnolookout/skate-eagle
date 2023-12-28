@@ -34,12 +34,14 @@ public class Overlay : MonoBehaviour
 
     private void OnDisable()
     {
+        /*
         LiveRunManager.OnLanding -= onLanding;
         LiveRunManager.OnGameOver -= onGameOver;
         LiveRunManager.OnAttempt -= StartAttempt;
         LiveRunManager.OnStandby -= ActivateStandbyScreen;
         LiveRunManager.OnFinish -= onFinish;
         LiveRunManager.OnResultsScreen -= ActivateFinishScreen;
+        */
     }
     public void ActivateStartScreen()
     {

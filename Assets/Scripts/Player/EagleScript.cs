@@ -45,11 +45,14 @@ public class EagleScript : MonoBehaviour
         LiveRunManager.OnFinish += onFinish;
         flipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
         OnFlip += flipRoutine;
+        collisionTracker.OnAirborne += GoAirborne;
+        AddCollision += collisionTracker.UpdateCollision;
     }
     private void OnDisable()
     {
-        LiveRunManager.OnFinish -= onFinish;
+        //LiveRunManager.OnFinish -= onFinish;
         OnFlip -= flipRoutine;
+        AddCollision -= collisionTracker.UpdateCollision;
     }
 
     private void AssignComponents()
@@ -192,6 +195,12 @@ public class EagleScript : MonoBehaviour
         {
             return;
         }
+        if (!ragdoll)
+        {
+            StopCoroutine(dampen);
+            dampen = PlayerCoroutines.DampenLanding(rigidEagle);
+            StartCoroutine(dampen);
+        }
         AddCollision?.Invoke(collision, true);
         if (ragdoll)
         {
@@ -207,9 +216,6 @@ public class EagleScript : MonoBehaviour
         {
             animator.SetFloat("forceDelta", ForceDelta());
             animator.SetTrigger("Land");
-            StopCoroutine(dampen);
-            dampen = PlayerCoroutines.DampenLanding(rigidEagle);
-            StartCoroutine(dampen);
         }
         FlipCheck();
 
@@ -221,7 +227,7 @@ public class EagleScript : MonoBehaviour
         rotationStart = rigidEagle.rotation;
     }
 
-
+    
     public void Die()
     {
         if (logic.runState == RunState.GameOver)

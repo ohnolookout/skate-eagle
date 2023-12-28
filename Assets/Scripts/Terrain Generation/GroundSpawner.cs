@@ -32,7 +32,7 @@ public class GroundSpawner : MonoBehaviour
     }
     private void OnDisable()
     {
-        LiveRunManager.OnGameOver -= onGameOver;
+        //LiveRunManager.OnGameOver -= onGameOver;
         //LiveRunManager.OnLanding -= GenerateLevel;
     }
     void Awake()

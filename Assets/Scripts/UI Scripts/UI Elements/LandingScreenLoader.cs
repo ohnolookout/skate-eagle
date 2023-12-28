@@ -25,7 +25,7 @@ public class LandingScreenLoader : MonoBehaviour
 
     private void OnDisable()
     {
-        LiveRunManager.OnLanding -= atLanding;
+        //LiveRunManager.OnLanding -= atLanding;
     }
 
     public void GenerateLanding(Level level, PlayerRecord playerRecord)

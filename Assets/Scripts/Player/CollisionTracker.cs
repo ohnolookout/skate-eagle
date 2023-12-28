@@ -10,25 +10,22 @@ public class CollisionTracker : MonoBehaviour
     private OrderedDictionary<string, TimedCollision> pendingUncollisions = new();
     private Dictionary<ColliderCategory, List<string>> collidedCategories = new();
     private float uncollideTime = 0.15f;
-    [SerializeField] EagleScript eagleScript;
     public Action<ColliderCategory> OnCollide, OnUncollide;
+    public Action OnAirborne;
     private Action<LiveRunManager> onGameOver;
 
 
     void Awake()
     {
-        eagleScript = gameObject.GetComponent<EagleScript>();
     }
 
     private void OnEnable()
     {
-        eagleScript.AddCollision += UpdateCollision;
         onGameOver += _ => RemoveNonragdollColliders();
         LiveRunManager.OnGameOver += onGameOver;
     }
     private void OnDisable()
     {
-        eagleScript.AddCollision -= UpdateCollision;
         LiveRunManager.OnGameOver -= onGameOver;
     }
 
@@ -56,7 +53,7 @@ public class CollisionTracker : MonoBehaviour
             //If no categories are collided, send eagle into airborne mode
             if(collidedCategories.Count == 0)
             {
-                eagleScript.GoAirborne();
+                OnAirborne?.Invoke();
             }
         }
     }
