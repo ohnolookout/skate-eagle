@@ -81,31 +81,6 @@ public class CameraScript : MonoBehaviour
         leadingCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
         trailingCorner = cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
     }
-
-    public Vector3 LeadingCorner
-    {
-        get
-        {
-            return leadingCorner;
-        }
-    }
-
-    public Vector3 TrailingCorner
-    {
-        get
-        {
-            return trailingCorner;
-        }
-    }
-
-    public Vector3 Center
-    {
-        get
-        {
-            return cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
-        }
-    }
-
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
         float startBirdX = runManager.Player.Rigidbody.position.x;
@@ -155,28 +130,10 @@ public class CameraScript : MonoBehaviour
         cameraZoomIn = false;
         AudioManager.Instance.StopLoop(wind);
     }
-
-    public float ZoomYDelta
-    {
-        get
-        {
-            return zoomYDelta;
-        }
-    }
-
-    public Camera Camera
-    {
-        get
-        {
-            return cam;
-        }
-    }
-
-    public float DefaultSize
-    {
-        get
-        {
-            return defaultSize;
-        }
-    }
+    public Vector3 LeadingCorner { get => leadingCorner; }
+    public Vector3 TrailingCorner { get => trailingCorner; }
+    public Vector3 Center { get => cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)); }
+    public float ZoomYDelta { get => zoomYDelta; }
+    public Camera Camera { get => cam; }
+    public float DefaultSize { get => defaultSize; }
 }

@@ -85,7 +85,7 @@ public class AudioManager : MonoBehaviour
         float modifier = AudioUtility.TotalModifier(sound, modifiers[sound.localizedSource], zoomModifier, runManager.Player.IsRagdoll);
         if (sound.trackIntensity)
         {
-            float intensity = -1 + Mathf.Clamp(runManager.Player.ForceDelta() / 100, 0, 2);
+            float intensity = -1 + Mathf.Clamp(runManager.Player.MagnitudeDelta() / 100, 0, 2);
             audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, runManager.Player.IsRagdoll);
         }
         else

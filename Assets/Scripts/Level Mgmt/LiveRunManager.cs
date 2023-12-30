@@ -22,7 +22,6 @@ public class LiveRunManager : MonoBehaviour
 
     void Awake()
     {
-
         Debug.Log("Subscribed event counts:");
         if(OnLanding == null)
         {

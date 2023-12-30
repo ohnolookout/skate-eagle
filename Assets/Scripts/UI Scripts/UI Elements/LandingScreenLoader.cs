@@ -21,13 +21,6 @@ public class LandingScreenLoader : MonoBehaviour
         atLanding += _ => ActivateDisplay();
         LiveRunManager.OnLanding += atLanding;
     }
-
-
-    private void OnDisable()
-    {
-        //LiveRunManager.OnLanding -= atLanding;
-    }
-
     public void GenerateLanding(Level level, PlayerRecord playerRecord)
     {
         levelName.text = playerRecord.levelName;

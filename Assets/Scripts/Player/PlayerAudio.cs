@@ -34,20 +34,19 @@ public class PlayerAudio : MonoBehaviour
 
     private void OnEnable()
     {
-        onFinish += _ => Finish();
-        LiveRunManager.OnFinish += onFinish;
         collisionTracker.OnCollide += Collide;
         collisionTracker.OnUncollide += Uncollide;
         eagleScript.OnJump += Jump;
         eagleScript.OnDismount += Dismount;
+        eagleScript.OnSlowToStop += SlowToStop;
     }
     private void OnDisable()
     {
-        LiveRunManager.OnFinish -= onFinish;
         collisionTracker.OnCollide -= Collide;
         collisionTracker.OnUncollide -= Uncollide;
         eagleScript.OnJump -= Jump;
         eagleScript.OnDismount -= Dismount;
+        eagleScript.OnSlowToStop -= SlowToStop;
     }
     void FixedUpdate()
     {
@@ -66,16 +65,17 @@ public class PlayerAudio : MonoBehaviour
         }
         return bodies.ToArray();
     }
-    public void Jump(int jumpCount)
+
+    public void Jump(EagleScript player)        
     {
-        if (jumpCount == 0)
+        if (player.JumpCount == 0)
         {
             audioManager.PlayOneShot(oneShotDict[OneShotFX.Jump]);
             wheelTimer = 0;
             if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
             {
                 audioManager.StopLoop(loopDict[LoopFX.Roll]);
-                audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
+                audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime(player.Velocity.magnitude));
             }
         }
         else
@@ -84,12 +84,10 @@ public class PlayerAudio : MonoBehaviour
         }
         wheelsOnGround = false;
     }
-
-
-    public void Finish()
+    public void SlowToStop(EagleScript player)
     {
         wheelsOnGround = true;
-        float stopDuration = AudioUtility.StopDuration(eagleScript.Velocity.x);
+        float stopDuration = AudioUtility.StopDuration(player.Velocity.x);
         StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
         audioManager.StartLoop(loopDict[LoopFX.Board]);
 
@@ -101,7 +99,7 @@ public class PlayerAudio : MonoBehaviour
         audioManager.ClearLoops();
     }
 
-    public void Collide(ColliderCategory colliderName)
+    public void Collide(ColliderCategory colliderName, float magnitudeDelta)
     {
         switch (colliderName)
         {
@@ -115,20 +113,20 @@ public class PlayerAudio : MonoBehaviour
                 BoardCollision();
                 break;
             case ColliderCategory.Body:
-                BodyCollision();
+                BodyCollision(magnitudeDelta);
                 break;
         }
     }
 
-    public void Uncollide(ColliderCategory colliderName)
+    public void Uncollide(ColliderCategory colliderName, float magnitudeAtCollisionExit)
     {
         switch (colliderName)
         {
             case ColliderCategory.LWheel:
-                WheelExit();
+                WheelExit(magnitudeAtCollisionExit);
                 break;
             case ColliderCategory.RWheel:
-                WheelExit();
+                WheelExit(magnitudeAtCollisionExit);
                 break;
             case ColliderCategory.Board:
                 BoardExit();
@@ -151,9 +149,9 @@ public class PlayerAudio : MonoBehaviour
         }
     }
 
-    public void BodyCollision()
+    public void BodyCollision(float magnitudeDelta)
     {
-        if(eagleScript.ForceDelta() > 140)
+        if(magnitudeDelta > 140)
         {
             audioManager.PlayOneShot(oneShotDict[OneShotFX.HardBody]);
         }
@@ -170,7 +168,7 @@ public class PlayerAudio : MonoBehaviour
         audioManager.StartLoop(loopDict[LoopFX.Board]);
     }
 
-    public void WheelExit()
+    public void WheelExit(float magnitudeAtCollisionExit)
     {
         if (collisionTracker.WheelsCollided)
         {
@@ -179,7 +177,7 @@ public class PlayerAudio : MonoBehaviour
         if (!AudioManager.playingSounds.ContainsValue(loopDict[LoopFX.Freewheel]))
         {
             audioManager.StopLoop(loopDict[LoopFX.Roll]);
-            audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime);
+            audioManager.StartLoop(loopDict[LoopFX.Freewheel], WheelFadeTime(magnitudeAtCollisionExit));
         }
         wheelsOnGround = false;
     }
@@ -232,12 +230,9 @@ public class PlayerAudio : MonoBehaviour
         }
     }
 
-    private float WheelFadeTime
+    private float WheelFadeTime(float magnitudeAtCollisionExit)
     {
-        get
-        {
-            return wheelFadeCoefficient * eagleScript.Rigidbody.velocity.magnitude;
-        }
+        return wheelFadeCoefficient * magnitudeAtCollisionExit;
     }
 
 }

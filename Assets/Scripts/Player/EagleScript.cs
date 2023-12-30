@@ -22,8 +22,8 @@ public class EagleScript : MonoBehaviour
     [SerializeField] private Rigidbody2D ragdollBoard, ragdollSpine;
     public Action FinishStop, OnStomp, OnDismount;
     public Action<EagleScript, double> OnFlip, flipRoutine;
-    public Action<int> OnJump;
-    public Action<Collision2D, bool> AddCollision;
+    public Action<EagleScript> OnJump, OnSlowToStop;
+    public Action<Collision2D, float> AddCollision, RemoveCollision;
     private Action<FinishScreenData> onFinish;
 
 
@@ -42,17 +42,19 @@ public class EagleScript : MonoBehaviour
     private void OnEnable()
     {
         onFinish += _ => SlowToStop();
+        onFinish += _ => OnSlowToStop?.Invoke(this);
         LiveRunManager.OnFinish += onFinish;
         flipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
         OnFlip += flipRoutine;
         collisionTracker.OnAirborne += GoAirborne;
-        AddCollision += collisionTracker.UpdateCollision;
+        AddCollision += collisionTracker.AddCollision;
+        RemoveCollision += collisionTracker.RemoveCollision;
     }
     private void OnDisable()
     {
-        //LiveRunManager.OnFinish -= onFinish;
         OnFlip -= flipRoutine;
-        AddCollision -= collisionTracker.UpdateCollision;
+        AddCollision -= collisionTracker.AddCollision;
+        RemoveCollision += collisionTracker.RemoveCollision;
     }
 
     private void AssignComponents()
@@ -153,7 +155,7 @@ public class EagleScript : MonoBehaviour
     {
         animator.SetTrigger("Jump");
         jumpMultiplier = 1 - (jumpCount * 0.25f);
-        OnJump?.Invoke(jumpCount);
+        OnJump?.Invoke(this);
         jumpStartTime = Time.time;
         if (rigidEagle.velocity.y < 0)
         {
@@ -201,7 +203,7 @@ public class EagleScript : MonoBehaviour
             dampen = PlayerCoroutines.DampenLanding(rigidEagle);
             StartCoroutine(dampen);
         }
-        AddCollision?.Invoke(collision, true);
+        AddCollision?.Invoke(collision, MagnitudeDelta());
         if (ragdoll)
         {
             return;
@@ -214,7 +216,7 @@ public class EagleScript : MonoBehaviour
         jumpCount = 0;
         if (!Collided)
         {
-            animator.SetFloat("forceDelta", ForceDelta());
+            animator.SetFloat("forceDelta", MagnitudeDelta());
             animator.SetTrigger("Land");
         }
         FlipCheck();
@@ -223,7 +225,7 @@ public class EagleScript : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        AddCollision?.Invoke(collision, false);
+        RemoveCollision?.Invoke(collision, Velocity.magnitude);
         rotationStart = rigidEagle.rotation;
     }
 
@@ -346,7 +348,7 @@ public class EagleScript : MonoBehaviour
         logic.GameOver();
     }
 
-    public float ForceDelta()
+    public float MagnitudeDelta()
     {
         Vector2 delta = VectorChange;
         float forceDelta = 0;

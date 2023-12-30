@@ -318,6 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 1
+  _rigidbody: {fileID: 4006063796826378406}
 --- !u!1 &881294006627254535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,6 +1144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &2618284089506142569
 GameObject:
   m_ObjectHideFlags: 0
@@ -1385,6 +1387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &3247364717013293513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,6 +1690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 0
+  _rigidbody: {fileID: 4006063796826378406}
 --- !u!1 &3916919242367507355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,6 +1958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &4192077792079467727
 GameObject:
   m_ObjectHideFlags: 0
@@ -2202,6 +2207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &4650529428372904149
 GameObject:
   m_ObjectHideFlags: 0
@@ -2350,6 +2356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &4713757589348162686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2471,6 +2478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &4805001290441920939
 GameObject:
   m_ObjectHideFlags: 0
@@ -2851,6 +2859,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &5684080967047800755
 GameObject:
   m_ObjectHideFlags: 0
@@ -3353,7 +3362,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 68714
+  m_InstanceId: 61852
 --- !u!114 &1340608751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3376,14 +3385,13 @@ MonoBehaviour:
   flipDelay: 0.75
   flipBoost: 70
   stompSpeedLimit: -250
+  _stompCharge: 0
   logic: {fileID: 0}
-  textGen: {fileID: 5876770833193495704}
   trail: {fileID: 5270781511123226311}
   playerController: {fileID: 7546833667872202176}
-  playerAudio: {fileID: 9144770901242682473}
-  ragdollController: {fileID: 1670789331119934252}
   collisionTracker: {fileID: 4471801078690981672}
   ragdollBoard: {fileID: 4006063796826378406}
+  ragdollSpine: {fileID: 1993744441552184471}
   jumpMultiplier: 1
 --- !u!114 &4471801078690981672
 MonoBehaviour:
@@ -3397,8 +3405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536b5c7d951dcc84ca30ef6f403e220a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAudio: {fileID: 9144770901242682473}
-  eagleScript: {fileID: 1340608751}
 --- !u!212 &1670789331119934240
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4598,6 +4604,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &6795189242417188243
 GameObject:
   m_ObjectHideFlags: 0
@@ -4841,10 +4848,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7403047370052103976}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbe7d5ac0ae438d45945276b2c0af345, type: 3}
+  m_Script: {fileID: 11500000, guid: 6182b4cfc2bea4d4a89d5ba337e7be85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
+  category: 2
+  _rigidbody: {fileID: 0}
 --- !u!1 &7643768561412542756
 GameObject:
   m_ObjectHideFlags: 0
@@ -5013,6 +5022,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionTracker: {fileID: 4471801078690981672}
   category: 3
+  _rigidbody: {fileID: 0}
 --- !u!1 &8589161692901624757
 GameObject:
   m_ObjectHideFlags: 0
@@ -5024,6 +5034,7 @@ GameObject:
   - component: {fileID: 1354747426478070453}
   - component: {fileID: 7436982174917170842}
   - component: {fileID: 5808339213761897711}
+  - component: {fileID: 2349136938621632023}
   m_Layer: 8
   m_Name: BoardRagdoll
   m_TagString: Untagged
@@ -5088,6 +5099,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2349136938621632023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8589161692901624757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6182b4cfc2bea4d4a89d5ba337e7be85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionTracker: {fileID: 4471801078690981672}
+  category: 2
+  _rigidbody: {fileID: 4006063796826378406}
 --- !u!1 &8635263280573427015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5505,17 +5531,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
   m_PrefabInstance: {fileID: 1044942288}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5876770833193495704 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
-  m_PrefabInstance: {fileID: 1044942288}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fd2022fda893a64d9873a45ec3e40f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4169428557921687191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5654,14 +5669,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3232842473005677222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
   m_PrefabInstance: {fileID: 4169428557921687191}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &9144770901242682473 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
-  m_PrefabInstance: {fileID: 4169428557921687191}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae39c654008a4a43a98127a559d8756, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -28,12 +28,6 @@ public class GroundSpawner : MonoBehaviour
     {
         onGameOver += _ => SwitchToRagdoll();
         LiveRunManager.OnGameOver += onGameOver;
-        //LiveRunManager.OnLanding += GenerateLevel;
-    }
-    private void OnDisable()
-    {
-        //LiveRunManager.OnGameOver -= onGameOver;
-        //LiveRunManager.OnLanding -= GenerateLevel;
     }
     void Awake()
     {
