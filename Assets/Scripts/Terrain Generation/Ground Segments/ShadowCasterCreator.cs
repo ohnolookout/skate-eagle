@@ -11,18 +11,18 @@ public static class ShadowCasterCreator
     private static FieldInfo shapePathField = typeof(ShadowCaster2D).GetField("m_ShapePath", accessFlagsPrivate);
     private static MethodInfo onEnableMethod = typeof(ShadowCaster2D).GetMethod("OnEnable", accessFlagsPrivate);
     private static Vector3[] shadowPointArray;
-    public static void GenerateShadow(ShadowCaster2D shadow, GroundSegment ground)
+    public static void GenerateShadow(GroundSegment groundSegment, List<Vector2> colliderPoints)
     {
-        shadowPointArray = ShadowPoints(ground);
+        ShadowCaster2D shadow = groundSegment.ShadowCaster;
+        shadowPointArray = ShadowPoints(groundSegment, colliderPoints);
         shapePathField.SetValue(shadow, shadowPointArray);
         meshField.SetValue(shadow, null);
         onEnableMethod.Invoke(shadow, new object[0]);
 
     }
 
-    private static Vector3[] ShadowPoints(GroundSegment groundSegment)
+    private static Vector3[] ShadowPoints(GroundSegment groundSegment, List<Vector2> colliderPoints)
     {
-        List<Vector2> colliderPoints = groundSegment.UnoffsetPoints;
         List<Vector3> shadowPointList = new();
         shadowPointList.Add(colliderPoints[^1]);
         shadowPointList.Add(groundSegment.Spline.GetPosition(groundSegment.Spline.GetPointCount() - 1));

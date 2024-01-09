@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             {
                 return instance;
             }
-            Debug.Log("No instance found. Creating instance.");
+            Debug.Log("No game manager found. Creating instance.");
             GameObject managerObject = new GameObject("GameManager");
             instance = managerObject.AddComponent<GameManager>();
             return instance;
@@ -165,17 +165,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Level CurrentLevel
-    {
-        get
-        {
-            return currentLevel;
-        }
-        set
-        {
-            currentLevel = value;
-        }
-    }
-
+    public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }
     public bool LevelIsLoaded { get => levelIsLoaded; set => levelIsLoaded = value; }
 }

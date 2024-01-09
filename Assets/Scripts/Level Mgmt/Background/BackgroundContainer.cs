@@ -6,7 +6,7 @@ public class BackgroundContainer : MonoBehaviour
 {
     private Vector3 startPosition, startScale;
     private Camera mainCam;
-    private CameraScript camScript;
+    private ICameraOperator camScript;
     private float camSize;
     public float scaleRatio, scaleChange;
 
@@ -18,7 +18,7 @@ public class BackgroundContainer : MonoBehaviour
     void Start()
     {
         mainCam = Camera.main;
-        camScript = mainCam.GetComponent<CameraScript>();
+        camScript = mainCam.GetComponent<ICameraOperator>();
         camSize = mainCam.orthographicSize;
     }
 

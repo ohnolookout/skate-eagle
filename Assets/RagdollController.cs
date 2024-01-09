@@ -6,6 +6,7 @@ public class RagdollController : MonoBehaviour
 {
     
     [SerializeField] private Animator animator;
+    [SerializeField] private RagdollCollision[] ragdollScripts;
     [SerializeField] private Joint2D[] ragDollJoints;
     [SerializeField] private Rigidbody2D[] ragdollRigidbodies;
     [SerializeField] private Collider2D[] ragdollColliders;
@@ -18,18 +19,21 @@ public class RagdollController : MonoBehaviour
 
     void Start()
     {
-        GetCollidersAndBodies();
+        if (ragdollColliders.Length == 0)
+        {
+            GetCollidersAndBodies();
+        }
     }
     private void OnEnable()
     {
-        LiveRunManager.OnGameOver += TurnOnRagdoll;
+        LevelManager.OnGameOver += TurnOnRagdoll;
     }
     private void OnDisable()
     {
-        LiveRunManager.OnGameOver -= TurnOnRagdoll;
+        LevelManager.OnGameOver -= TurnOnRagdoll;
     }
 
-    public void TurnOnRagdoll(LiveRunManager runManager)
+    public void TurnOnRagdoll(ILevelManager runManager)
     {
         if (ragdoll)
         {
@@ -41,7 +45,7 @@ public class RagdollController : MonoBehaviour
         SwitchColliders(normalColliders, false);
         SwitchColliders(ragdollColliders, true);
         SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
-        SwitchRigidbodies(ragdollRigidbodies, true, runManager.Player.VectorChange);
+        SwitchRigidbodies(ragdollRigidbodies, true, runManager.Player.VectorChange(TrackingBody.PlayerNormal));
         normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
         ragdoll = true;
@@ -71,6 +75,7 @@ public class RagdollController : MonoBehaviour
         ragdollColliders = rigParent.GetComponentsInChildren<Collider2D>();
         ragdollRigidbodies = rigParent.GetComponentsInChildren<Rigidbody2D>();
         ragDollJoints = rigParent.GetComponentsInChildren<Joint2D>();
+        ragdollScripts = rigParent.GetComponentsInChildren<RagdollCollision>();
 
     }
 
@@ -101,6 +106,14 @@ public class RagdollController : MonoBehaviour
         foreach(var joint in joints)
         {
             joint.enabled = isOn;
+        }
+    }
+
+    void SwitchScripts(RagdollCollision[] scripts, bool isOn)
+    {
+        foreach(var script in scripts)
+        {
+            script.enabled = isOn;
         }
     }
 

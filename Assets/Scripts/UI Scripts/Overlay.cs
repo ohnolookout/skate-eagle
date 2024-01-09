@@ -10,12 +10,15 @@ public class Overlay : MonoBehaviour
     public FinishScreenLoader finishLoader;
     [SerializeField] private LiveRunManager _runManager;
     private Action<LiveRunManager> onLanding, onGameOver;
+    private Action<LevelManager> newOnLanding, newOnGameOver;
     private Action<FinishScreenData> onFinish;
     public StompBar stompBar;
     public Timer timer;
+    public static Action OnOverlayLoaded, OnStandbyButton, OnRestartButton;
 
     private void Awake()
     {
+        OnOverlayLoaded?.Invoke();
         _runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
     }
 
@@ -29,11 +32,22 @@ public class Overlay : MonoBehaviour
         LiveRunManager.OnStandby += ActivateStandbyScreen;
         onFinish += _ => ActivateControls(false);
         LiveRunManager.OnFinish += onFinish;
-        LiveRunManager.OnResultsScreen += ActivateFinishScreen;
+        LiveRunManager.OnResultsScreen += ActivateFinishScreen; onLanding += _ => ActivateStartScreen();
+        LevelManager.OnLanding += newOnLanding;
+        onGameOver += _ => ActivateGameOverScreen();
+        LevelManager.OnGameOver += newOnGameOver;
+        LevelManager.OnAttempt += StartAttempt;
+        LevelManager.OnStandby += ActivateStandbyScreen;
+        onFinish += _ => ActivateControls(false);
+        LevelManager.OnFinish += onFinish;
+        LevelManager.OnResultsScreen += ActivateFinishScreen;
     }
 
     private void OnDisable()
     {
+        OnOverlayLoaded = null;
+        OnStandbyButton = null;
+        OnRestartButton = null;
         /*
         LiveRunManager.OnLanding -= onLanding;
         LiveRunManager.OnGameOver -= onGameOver;
@@ -71,6 +85,7 @@ public class Overlay : MonoBehaviour
 
     public void StandbyScreen()
     {
+        OnStandbyButton?.Invoke();
         _runManager.GoToStandby();
     }
 
@@ -123,6 +138,7 @@ public class Overlay : MonoBehaviour
 
     public void RestartLevel()
     {
+        OnRestartButton?.Invoke();
         _runManager.RestartGame();
     }
 

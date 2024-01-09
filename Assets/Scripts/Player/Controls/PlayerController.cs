@@ -9,37 +9,38 @@ public class PlayerController : MonoBehaviour
     public KeyState jumpState = KeyState.Off, downState = KeyState.Off, stompState = KeyState.Off;
     public bool down = false, stomp = false;
     public Vector2 rotation = new(0,0);
-    public EagleScript eagleScript;
+    private IPlayer _player;
     private int downCount;
-    private LiveRunManager logic;
+    private ILevelManager _levelManager;
 
     void Awake()
     {
+        _player = GetComponent<Player>();
     }
 
     void Start()
     {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
     }
 
     public void OnJump(InputValue value = null)
     {
         if (value.isPressed)
         {
-            eagleScript.JumpValidation();
+            _player.JumpValidation();
             return;
         }
-        eagleScript.JumpRelease();
+        _player.JumpRelease();
     }
 
     public void OnJump(bool isPressed)
     {
         if (isPressed)
         {
-            eagleScript.JumpValidation();
+            _player.JumpValidation();
             return;
         }
-        eagleScript.JumpRelease();
+        _player.JumpRelease();
     }
 
 
@@ -57,14 +58,14 @@ public class PlayerController : MonoBehaviour
     public void OnDown(InputValue value)
     {
         down = value.isPressed;
-        if (!eagleScript.Collided && down)
+        if (!_player.Collided && down)
         {
             downCount++;
             StartCoroutine(DoubleTapWindow());
         }
         if (downCount >= 2)
         {
-            if (!eagleScript.Collided)
+            if (!_player.Collided)
             {
                 stomp = true;
             }
@@ -74,14 +75,14 @@ public class PlayerController : MonoBehaviour
     public void OnDown(bool isPressed)
     {
         down = isPressed;
-        if (!eagleScript.Collided && down)
+        if (!_player.Collided && down)
         {
             downCount++;
             StartCoroutine(DoubleTapWindow());
         }
         if (downCount >= 2)
         {
-            if (!eagleScript.Collided)
+            if (!_player.Collided)
             {
                 stomp = true;
             }
@@ -91,22 +92,22 @@ public class PlayerController : MonoBehaviour
 
     public void OnRestartLevel(InputValue value = null)
     {
-        if ((int)logic.runState > 1)
+        if ((int)_levelManager.RunState > 1)
         {
-            logic.RestartGame();
+            _levelManager.RestartGame();
             return;
         }
-        if(logic.runState == RunState.Landing)
+        if(_levelManager.RunState == RunState.Landing)
         {
-            logic.GoToStandby();
+            _levelManager.GoToStandby();
         }
     }
 
     public void OnRagdoll(InputValue value = null)
     {
-        if ((int)logic.runState > 1)
+        if ((int)_levelManager.RunState > 1)
         {
-            eagleScript.Ragdoll();
+            _player.Ragdoll();
         }
     }
 

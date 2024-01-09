@@ -6,14 +6,14 @@ public static class PlayerCoroutines
     public enum EagleCoroutines { Stomp, Dampen, JumpCountDelay, BoostTrail, EndFlip, DelayedFreeze, AddBoost }
     public static bool Stomping = false, CountingDownJump = false, CheckingForSecondJump = false, DelayedSecondJump = false;
 
-    public static IEnumerator Stomp(EagleScript eagleScript)
+    public static IEnumerator Stomp(IPlayer player)
     {
-        eagleScript.Stomping = true;
-        eagleScript.JumpCount = 2;
-        Rigidbody2D rigidBody = eagleScript.rigidEagle;
+        player.Stomping = true;
+        player.JumpCount = 2;
+        Rigidbody2D rigidBody = player.Rigidbody;
         rigidBody.angularVelocity = 0;
-        float originalRotationAccel = eagleScript.rotationAccel;
-        eagleScript.rotationAccel *= 1.5f;
+        float originalRotationAccel = player.RotationAccel;
+        player.RotationAccel *= 1.5f;
         float stompTimer = 0f;
         while (stompTimer < 0.075f)
         {
@@ -22,17 +22,17 @@ public static class PlayerCoroutines
             yield return new WaitForFixedUpdate();
         }
         rigidBody.centerOfMass = new Vector2(0, -2f);
-        while (rigidBody.velocity.y > eagleScript.stompSpeedLimit && !eagleScript.Collided)
+        while (rigidBody.velocity.y > player.StompSpeedLimit && !player.Collided)
         {
             rigidBody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(rigidBody.velocity.y));
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Clamp(rigidBody.velocity.y, eagleScript.stompSpeedLimit, -64));
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Clamp(rigidBody.velocity.y, player.StompSpeedLimit, -64));
             yield return new WaitForFixedUpdate();
         }
-        yield return new WaitUntil(() => eagleScript.Collided);
-        eagleScript.Stomping = false;
+        yield return new WaitUntil(() => player.Collided);
+        player.Stomping = false;
         yield return new WaitForSeconds(0.2f);
-        eagleScript.TriggerBoost(eagleScript.flipBoost, 1.8f);
-        eagleScript.rotationAccel = originalRotationAccel;
+        player.TriggerBoost(player.FlipBoost, 1.8f);
+        player.RotationAccel = originalRotationAccel;
     }
 
 
@@ -92,15 +92,15 @@ public static class PlayerCoroutines
         trail.transform.localPosition = originalPosition;
     }
 
-    public static IEnumerator CheckForSecondJump(EagleScript eagleScript)
+    public static IEnumerator CheckForSecondJump(IPlayer player)
     {
         CheckingForSecondJump = true;
         float timer = 0;
         while (timer < 0.2f)
         {
-            if (eagleScript.JumpCount == 2)
+            if (player.JumpCount == 2)
             {
-                eagleScript.rigidEagle.AddForce(new Vector2(0, eagleScript.jumpForce * 300 * eagleScript.jumpMultiplier));
+                player.Rigidbody.AddForce(new Vector2(0, player.JumpForce * 300 * player.JumpMultiplier));
                 break;
             }
             //if second jump, don't dampen first or second jump
@@ -110,15 +110,15 @@ public static class PlayerCoroutines
         CheckingForSecondJump = false;
     }
 
-    public static IEnumerator DelayedJump(EagleScript eagleScript, float delayTimeInSeconds)
+    public static IEnumerator DelayedJump(IPlayer player, float delayTimeInSeconds)
     {
         yield return new WaitForSeconds(delayTimeInSeconds);
-        eagleScript.Jump();
+        player.Jump();
     }
 
-    public static IEnumerator SlowToStop(EagleScript eagleScript)
+    public static IEnumerator SlowToStop(IPlayer player)
     {
-        Rigidbody2D rigidbody = eagleScript.rigidEagle;
+        Rigidbody2D rigidbody = player.Rigidbody;
         int frameCount = 0;
         while (rigidbody.velocity.x > 0.1f)
         {
@@ -131,39 +131,39 @@ public static class PlayerCoroutines
             {
                 rigidbody.velocity -= rigidbody.velocity * 0.08f;
             }
-            if (rigidbody.velocity.x < 10f && eagleScript.animator.GetBool("OnBoard"))
+            if (rigidbody.velocity.x < 10f && player.Animator.GetBool("OnBoard"))
             {
-                eagleScript.Dismount();
+                player.Dismount();
             }
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitForSeconds(0.5f);
-        eagleScript.TriggerFinishStop();
+        player.TriggerFinishStop();
     }
 
 
-    public static IEnumerator DelayedJumpDampen(EagleScript eagleScript, float delayTimerInSeconds)
+    public static IEnumerator DelayedJumpDampen(IPlayer player, float delayTimerInSeconds)
     {
         yield return new WaitForSeconds(delayTimerInSeconds);
-        eagleScript.rigidEagle.AddForce(new Vector2(0, -eagleScript.jumpForce * 250 * eagleScript.jumpMultiplier));
+        player.Rigidbody.AddForce(new Vector2(0, -player.JumpForce * 250 * player.JumpMultiplier));
 
     }
 
-    public static IEnumerator EndFlip(EagleScript eagleScript, double spins)
+    public static IEnumerator EndFlip(IPlayer player, double spins)
     {
-        yield return new WaitForSeconds(eagleScript.flipDelay * 0.1f);
+        yield return new WaitForSeconds(player.FlipDelay * 0.1f);
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
-        eagleScript.TriggerBoost(eagleScript.flipBoost, boostMultiplier);
+        player.TriggerBoost(player.FlipBoost, boostMultiplier);
     }
 
 
-    public static IEnumerator DelayedFreeze(EagleScript eagleScript, float timer)
+    public static IEnumerator DelayedFreeze(IPlayer player, float timer)
     {
         yield return new WaitForSeconds(timer);
-        eagleScript.rigidEagle.bodyType = RigidbodyType2D.Kinematic;
-        eagleScript.rigidEagle.velocity = new Vector2(0, 0);
-        eagleScript.rigidEagle.freezeRotation = true;
-        eagleScript.Die();
+        player.Rigidbody.bodyType = RigidbodyType2D.Kinematic;
+        player.Rigidbody.velocity = new Vector2(0, 0);
+        player.Rigidbody.freezeRotation = true;
+        player.Die();
     }
 
     public static IEnumerator AddBoost(Rigidbody2D rigidBody, float boostValue, float boostMultiplier)

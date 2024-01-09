@@ -9,7 +9,7 @@ public class ParallaxBackground : MonoBehaviour
     private Transform[] panels = new Transform[3];
     private Vector3 startPosition;
     private Camera cam;
-    private CameraScript camScript;
+    private ICameraOperator camScript;
     private SpriteRenderer[] spriteRenderers = new SpriteRenderer[3];
     public float parallaxMagnitude;
     public BackgroundContainer container;
@@ -25,7 +25,7 @@ public class ParallaxBackground : MonoBehaviour
         defaultPanelLength = spriteRenderers[1].bounds.size.x;
         defaultHalfLayerWidth = defaultPanelLength * 1.5f;
         cam = Camera.main;
-        camScript = cam.GetComponent<CameraScript>();
+        camScript = cam.GetComponent<ICameraOperator>();
         transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, transform.position.z);
         startPosition = transform.position;
         lastShiftX = startPosition.x;

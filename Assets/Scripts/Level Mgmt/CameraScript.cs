@@ -1,24 +1,28 @@
 using UnityEngine;
 using UnityEngine.U2D;
 using System.Collections;
-using System.Collections.Generic;
+using System;
 
-public class CameraScript : MonoBehaviour
+public class CameraScript : MonoBehaviour, ICameraOperator
 {
     public Vector3 offset, lowPoint, leadingCorner, trailingCorner;
     public float leadingEdgeOffset = 45;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     public bool cameraZoomOut = false, cameraZoomIn = false;
     private LiveRunManager runManager;
+    private IPlayer _player;
     private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
     private Camera cam;
     [SerializeField]
     private Sound wind;
-    private bool isTracking = true, isFinished = false;
+    private bool _playerExists = true, _isFinished = false;
+    public Action<ICameraOperator> OnZoomOut { get; set; }
+    public Action OnFinishZoomIn { get; set; }
 
     void Awake()
     {
         AssignComponents();
+        LiveRunManager.OnFinish += _ => _isFinished = true;
     }
     void Start()
     {
@@ -28,13 +32,13 @@ public class CameraScript : MonoBehaviour
 
     void Update()
     {
-        if (!isTracking)
+        if (!_playerExists)
         {
             return;
         }
-        if (cam.WorldToScreenPoint(runManager.Player.Rigidbody.position).y < 0) runManager.Fall();
+        if (cam.WorldToScreenPoint(_player.Rigidbody.position).y < 0) runManager.Fall();
         UpdateZoom();
-        if (runManager.runState != RunState.Finished)
+        if (!_isFinished)
         {
             UpdatePosition();
         }
@@ -46,6 +50,8 @@ public class CameraScript : MonoBehaviour
         runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
         transitionYCoroutine = TransitionLowY(runManager.GroundSpawner.LowestPoint);
         cam = GetComponent<Camera>();
+        _player = runManager.Player;
+        _playerExists = _player == null;
     }
 
     public void UpdateZoom()
@@ -98,10 +104,12 @@ public class CameraScript : MonoBehaviour
 
     private IEnumerator ZoomOut()
     {
+        /*
         if (!AudioManager.playingSounds.ContainsValue(wind))
         {
-            AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 3f, defaultSize * 2f);
-        }
+            //Deprecated camera script
+            //AudioManager.Instance.TimedFadeInZoomFadeOut(wind, 0.5f, 3f, defaultSize * 2f);
+        }*/
         cameraZoomOut = true;
         while(runManager.Player.Rigidbody.position.y > LeadingCorner.y - cam.orthographicSize * 0.2f 
             || runManager.Player.Rigidbody.velocity.y > 0)
@@ -136,4 +144,5 @@ public class CameraScript : MonoBehaviour
     public float ZoomYDelta { get => zoomYDelta; }
     public Camera Camera { get => cam; }
     public float DefaultSize { get => defaultSize; }
+    public bool CameraZoomOut { get => cameraZoomOut; }
 }

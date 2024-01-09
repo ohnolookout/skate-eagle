@@ -27,13 +27,6 @@ public class LevelEditor : EditorWindow
         GetWindow<LevelEditor>();
     }
 
-    /*
-     * TO DO:
-     * Uncouple LevelEditor from GameManager
-     * Fix in editor level generation (or move to play mode?)
-     * Resolve errors from unsubscribing after objects are disabled.
-     * Improve GameManager Instance checking (can't be sure on causes of this until LevelEditor is fixed)
-     */
     private void OnEnable()
     {
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Editor";

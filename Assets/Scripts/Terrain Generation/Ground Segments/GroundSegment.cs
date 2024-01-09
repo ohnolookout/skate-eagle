@@ -8,12 +8,11 @@ using System.Reflection;
 public class GroundSegment : MonoBehaviour
 {
     private Curve curve;
-    private ShadowCaster2D shadowCaster;
+    private ShadowCaster2D _shadowCaster;
     public SpriteShape spriteShape;
     public SpriteShapeController shapeController;
-    //private EdgeCollider2D edgeCollider;
     private Spline spline;
-    private List<Vector2> unoffsetPoints;
+    private List<Vector2> _unoffsetPoints;
     private int floorHeight = 100;
     private int containmentBuffer = 20;
 
@@ -22,18 +21,22 @@ public class GroundSegment : MonoBehaviour
     {
         spline = shapeController.spline;
         shapeController.spriteShape = spriteShape;
-        //edgeCollider = GetComponent<EdgeCollider2D>();
-        shadowCaster = GetComponent<ShadowCaster2D>();
+        _shadowCaster = GetComponent<ShadowCaster2D>();
         FormatSpline(spline);
     }
 
-    public void SetCurve(Curve curve, List<EdgeCollider2D> colliderList, GroundSpawner spawner, PhysicsMaterial2D material, Vector3? overlapPoint = null)
+    public void SetCurve(Curve curve, List<EdgeCollider2D> colliderList, PhysicsMaterial2D material, Vector3? overlapPoint = null)
     {
         this.curve = curve;
         GenerateSpline(spline, this.curve, floorHeight);
-        CurveCollider.CreateCollider(colliderList, this, spawner, material, out unoffsetPoints, overlapPoint);
-        //CollisionActive = false;
-        ShadowCasterCreator.GenerateShadow(shadowCaster, this);
+        CurveCollider.CreateCollider(colliderList, this, transform.parent, material, out _unoffsetPoints, overlapPoint);
+        ShadowCasterCreator.GenerateShadow(this, _unoffsetPoints);
+    }
+
+    public void ApplyCurve(Curve curve)
+    {
+        this.curve = curve;
+        GenerateSpline(spline, curve, floorHeight);
     }
 
     public bool StartsAfterX(float startX)
@@ -102,20 +105,6 @@ public class GroundSegment : MonoBehaviour
     }
 
 
-    /*
-    public bool CollisionActive(int colliderIndex)
-    {
-        get
-        {
-            return edgeCollider.enabled;
-        }
-        set
-        {
-            edgeCollider.enabled = value;
-        }
-    }
-    */
-
     public Curve Curve
     {
         get
@@ -152,21 +141,12 @@ public class GroundSegment : MonoBehaviour
             return curve.EndPoint.ControlPoint;
         }
     }
-    /*
-    public Vector3 LastColliderPoint
-    {
-        get
-        {
-            return edgeCollider.points[^1];
-        }
-    }
-    */
 
     public List<Vector2> UnoffsetPoints
     {
         get
         {
-            return unoffsetPoints;
+            return _unoffsetPoints;
         }
     }
 
@@ -177,6 +157,8 @@ public class GroundSegment : MonoBehaviour
             return curve.Type;
         }
     }
+
+    public ShadowCaster2D ShadowCaster { get => _shadowCaster; set => _shadowCaster = value; }
 
     public static void FormatSpline(Spline spline)
     {

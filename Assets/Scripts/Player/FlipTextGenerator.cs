@@ -8,37 +8,32 @@ public class FlipTextGenerator : MonoBehaviour
 {
     public GameObject popText;
     public float wordSpread = 10;
-    private GameObject bird;
-    private EagleScript playerScript;
     private FlipText flipText;
     private Action<LiveRunManager> cancelText;
-    private Action<EagleScript, double> newFlipText;
+    private Action<IPlayer, double> newFlipText;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
     private void Awake()
     {
         flipText = transform.GetChild(0).gameObject.GetComponent<FlipText>();
-        bird = GameObject.FindWithTag("Player");
-        playerScript = bird.GetComponent<EagleScript>();
     }
 
     private void OnEnable()
     {
-        newFlipText += (_, flipCount) => NewFlipText(flipCount);
-        playerScript.OnFlip += newFlipText;
+        IPlayer.OnFlip += NewFlipText;
         cancelText += _ => CancelText();
         LiveRunManager.OnGameOver += cancelText;
         
     }
     private void OnDisable()
     {
-        playerScript.OnFlip -= newFlipText;
+        IPlayer.OnFlip -= newFlipText;
         LiveRunManager.OnGameOver -= cancelText;
     }
-    public void NewFlipText(double flipCount = 1)
+    public void NewFlipText(IPlayer player, double flipCount = 1)
     {
-        Vector3 location = GenerateLocation(wordSpread);
-        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, bird.transform.position + location);
+        Vector3 location = GenerateLocation(player, wordSpread);
+        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, player.Rigidbody.position + (Vector2) location);
         Vector3 finalPosition = viewportPosition + location;
         flipText.transform.position = finalPosition; 
         float randomZ = UnityEngine.Random.Range(-45, 45);
@@ -57,10 +52,10 @@ public class FlipTextGenerator : MonoBehaviour
         }
     }
 
-    private Vector3 GenerateLocation(float scale)
+    private Vector3 GenerateLocation(IPlayer player, float scale)
     {
         float xCoord;
-        if(bird.GetComponent<Rigidbody2D>().velocity.x >= 0)
+        if(player.Rigidbody.velocity.x >= 0)
         {
             xCoord = UnityEngine.Random.Range(-scale, -scale/2);
         } else
