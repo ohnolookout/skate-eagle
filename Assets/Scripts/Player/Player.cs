@@ -107,11 +107,6 @@ public class Player : MonoBehaviour, IPlayer
 
     void Update()
     {
-
-        if (_levelManager.RunState == RunState.Standby)
-        {
-            StartCheck();
-        }
         if (_levelManager.RunState != RunState.Active)
         {
             return;
@@ -324,6 +319,7 @@ public class Player : MonoBehaviour, IPlayer
 
     public void SlowToStop()
     {
+        _inputEvents.DisableInputs();
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
         _animator.SetTrigger("Brake");
@@ -348,16 +344,6 @@ public class Player : MonoBehaviour, IPlayer
         _body.bodyType = RigidbodyType2D.Dynamic;
         _body.velocity += new Vector2(15, 0);
         _inputEvents.OnDownPress -= DoStart;
-    }
-    private void StartCheck()
-    {
-        /*if (playerController.down)
-        {
-            _levelManager.StartAttempt();
-            _animator.SetBool("OnBoard", true);
-            _body.bodyType = RigidbodyType2D.Dynamic;
-            _body.velocity += new Vector2(15, 0);
-        }*/
     }
 
     private void DirectionCheck()

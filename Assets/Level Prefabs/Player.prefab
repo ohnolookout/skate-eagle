@@ -70,7 +70,6 @@ MonoBehaviour:
   _ragdollBoard: {fileID: 7318712294945239054}
   _stompCharge: 0
   trail: {fileID: 1958146756901301871}
-  playerController: {fileID: 4229604621760740712}
   _collisionManager: {fileID: 8238468194511545187}
 --- !u!50 &468519406916343395
 Rigidbody2D:
@@ -3498,7 +3497,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 52484
+  m_InstanceId: 153660
 --- !u!1 &5631769265776119019
 GameObject:
   m_ObjectHideFlags: 0
@@ -5772,6 +5771,18 @@ PrefabInstance:
       value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _loopDict._serializedList.Array.data[0].Value.localizedSource
+      value: 
+      objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _loopDict._serializedList.Array.data[1].Value.localizedSource
+      value: 
+      objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _loopDict._serializedList.Array.data[2].Value.localizedSource
+      value: 
+      objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: oneShotDict._serializedList.Array.data[2].Value.localizedSource
       value: 
       objectReference: {fileID: 7318712294945239054}
@@ -5779,6 +5790,18 @@ PrefabInstance:
       propertyPath: oneShotDict._serializedList.Array.data[3].Value.localizedSource
       value: 
       objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _oneShotDict._serializedList.Array.data[2].Value.localizedSource
+      value: 
+      objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _oneShotDict._serializedList.Array.data[3].Value.localizedSource
+      value: 
+      objectReference: {fileID: 7318712294945239054}
+    - target: {fileID: 5130736328621460222, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
+      propertyPath: _oneShotDict._serializedList.Array.data[4].Value.localizedSource
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7480008847169198994, guid: 4118f2abd9165754d9b5c1faeb609ef7, type: 3}
       propertyPath: m_Name
       value: PlayerAudio
