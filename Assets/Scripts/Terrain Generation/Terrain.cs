@@ -8,7 +8,7 @@ public class Terrain : MonoBehaviour
     private List<GroundSegment> _segmentList;
     private List<EdgeCollider2D> _colliderList;
     private GameObject _finishFlag, _backstop;
-    [SerializeField] GameObject _segmentPrefab;
+    [SerializeField] GroundSegment _segmentPrefab;
     [SerializeField] private GameObject _finishFlagPrefab, _backstopPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
 
@@ -20,7 +20,7 @@ public class Terrain : MonoBehaviour
 
     public GroundSegment InstantiateSegment()
     {
-        return Instantiate(_segmentPrefab, transform, true).GetComponent<GroundSegment>();
+        return Instantiate(_segmentPrefab, transform, true);
     }
 
     public void InstantiateFinish(Vector3 finishLinePoint, Vector3 backstopPoint)
@@ -40,6 +40,6 @@ public class Terrain : MonoBehaviour
     public GameObject FinishFlag { get => _finishFlag; set => _finishFlag = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
     public GameObject Backstop { get => _backstop; set => _backstop = value; }
-    public GameObject SegmentPrefab { get => _segmentPrefab; set => _segmentPrefab = value; }
+    public GroundSegment SegmentPrefab { get => _segmentPrefab; set => _segmentPrefab = value; }
     public GameObject FinishFlagPrefab { get => _finishFlagPrefab; set => _finishFlagPrefab = value; }
 }

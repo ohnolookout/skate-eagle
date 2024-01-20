@@ -150,6 +150,9 @@ public class PlayerAudio : MonoBehaviour
             case ColliderCategory.Body:
                 BodyCollision(magnitudeDelta);
                 break;
+            case ColliderCategory.BodyAndBoard:
+                BodyAndBoardCollision(magnitudeDelta);
+                break;
         }
     }
 
@@ -184,9 +187,25 @@ public class PlayerAudio : MonoBehaviour
         }
     }
 
+    private void BodyAndBoardCollision(float magnitudeDelta)
+    {
+        if(magnitudeDelta > 200)
+        {
+            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.HardBody]);
+        } else if(magnitudeDelta > 80)
+        {
+            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Body]);
+        }
+        else if(magnitudeDelta > 15)
+        {
+            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Board]);
+        }
+    }
+
     private void BodyCollision(float magnitudeDelta)
     {
-        if(magnitudeDelta > 120)
+        //Debug.Log($"Playing body with magnitude {magnitudeDelta}");
+        if (magnitudeDelta > 210)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.HardBody]);
         }

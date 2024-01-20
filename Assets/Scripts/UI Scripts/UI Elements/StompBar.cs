@@ -11,7 +11,6 @@ public class StompBar : MonoBehaviour
     private IEnumerator fillRoutine;
     public Sprite jaggedOutline, smoothOutline;
     [SerializeField] private CutoutMask fill;
-    private IPlayer player;
 
 
     private void OnEnable()

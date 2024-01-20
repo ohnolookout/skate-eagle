@@ -6,9 +6,12 @@ using System.Linq;
 
 public class CollisionManager: MonoBehaviour, ICollisionManager
 {
-    private OrderedDictionary<string, TimedCollisionExit> _pendingExits = new();
-    private Dictionary<ColliderCategory, List<string>> collidedCategories = new();
-    private float uncollideTime = 0.15f;
+    private PendingExitManager _exitManager;
+    private Dictionary<ColliderCategory, List<string>> _collidedCategories = new();
+    private MomentumTracker _momentumTracker;
+    private bool _checkForExits = false;
+    [SerializeField] private IPlayer _player;
+    private float _uncollideTime = 0.15f, _bodyBoardUncollideTime = 0.5f;
     public Action<ColliderCategory, float> OnCollide { get; set; }
     public Action<ColliderCategory, float> OnUncollide { get; set; }
     public Action OnAirborne { get; set; }
@@ -16,124 +19,124 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
     void OnEnable()
     {
         LevelManager.OnGameOver += _ => RemoveNonragdollColliders();
+        //Increase uncollide timer on gameOver to reduce number of incidental sound hits.
+        LevelManager.OnGameOver += _ => IncreaseCollisionTimer(CollisionType.Ground, 1.5f);
+        LevelManager.OnAttempt += () => _checkForExits = true;
+        LevelManager.OnResultsScreen += () => _checkForExits = false;
     }
+
+    void Awake()
+    {
+        _exitManager = new();
+        _exitManager.RemoveCollision += CollisionExitCompleted;
+    }
+
 
     void Update()
     {
-        CheckPendingExits();
-    }
-
-    public void CheckPendingExits()
-    {
-        //While there are pending collisions, continue checking the first pending collision
-        //until one is found that has not exceeded the time limit
-        while (_pendingExits.Count > 0)
-        {
-            TimedCollisionExit collision = _pendingExits.Value(0);
-            if (Time.time - collision.Time < uncollideTime)
-            {
-                //If first collision in list does not exceed time limit, break loop
-                break;
-            }
-            //If collision does exceed time limit, remove it from the list of colliders that are currently collided in its category
-            //And remove it from the list of pending collisions.
-            if (collidedCategories.ContainsKey(collision.Category))
-            {
-                collidedCategories[collision.Category].Remove(collision.ColliderName);
-                RemoveCategoryIfEmpty(collision.Category, collision.MagnitudeAtCollisionExit);
-            }
-            _pendingExits.Remove(0);
-            //If the current category has no more active collisions, remove it from the dictionary and send call to audio
-            //If no categories are collided, send eagle into airborne mode
-        }
-        if (collidedCategories.Count == 0)
+        _exitManager.CheckAllExits();
+        //If there are no more active collisions, invoke the OnAirborne event.
+        if (_collidedCategories.Count == 0)
         {
             OnAirborne?.Invoke();
         }
     }
-    public void AddCollision(Collision2D collision, float magnitudeDelta, ColliderCategory? inputCategory = null)
+
+    public void AddPlayerEvents(IPlayer player)
+    {
+        _player = player;
+        _momentumTracker = _player.MomentumTracker;
+        _player.AddCollision += AddCollision;
+        _player.RemoveCollision += RemoveCollision;
+    }
+
+    void OnDisable()
+    {
+        _player.AddCollision -= AddCollision;
+        _player.RemoveCollision -= RemoveCollision;
+        _exitManager.RemoveCollision -= CollisionExitCompleted;
+    }
+   
+    public void AddCollision(Collision2D collision, ColliderCategory? inputCategory = null, TrackingType? trackingType = null)
     {
         string colliderName = collision.otherCollider.name;
-        ColliderCategory category = inputCategory ?? ParseCollider(collision);
-        if (!collidedCategories.ContainsKey(category))
+        ColliderCategory category = FindCategory(collision, inputCategory);
+        if (!_collidedCategories.ContainsKey(category))
         {
-            collidedCategories[category] = new();
-            OnCollide?.Invoke(category, magnitudeDelta);
+            float magDelta = _momentumTracker.ReboundMagnitudeFromBody(collision.otherRigidbody, ParseTrackingType(trackingType));
+            _collidedCategories[category] = new();
+            OnCollide?.Invoke(category, magDelta);
         }
-        else if (collidedCategories[category].Contains(colliderName))
+        else if (_collidedCategories[category].Contains(colliderName))
         {
-            _pendingExits.Remove(colliderName);
+            _exitManager.RemovePendingExit(category, colliderName);
             return;
         }
         //Send collision to player audio and add collision to list of colliders that are collided.
-        collidedCategories[category].Add(colliderName);
+        _collidedCategories[category].Add(colliderName);
     }
-    public void SetCollisionTimer(float newTimer)
+
+    private ColliderCategory FindCategory(Collision2D collision, ColliderCategory? inputCategory)
     {
-        uncollideTime = newTimer;
-    }
-    public void RemoveCollision(Collision2D collision, float magnitudeAtCollisionExit, ColliderCategory? inputCategory = null)
-    {
-        string colliderName = collision.otherCollider.name;
-        ColliderCategory category = inputCategory ?? ParseCollider(collision);
-        //Instantly remove collision if it's not the last collider in the cateory to minimize the number of pending exits.
-        if (collidedCategories.ContainsKey(category) && collidedCategories[category].Count > 1)
+        if (collision.collider.name != "Collider")
         {
-            collidedCategories[category].Remove(colliderName);
+            return ColliderCategory.BodyAndBoard;
         }
         else
         {
-            _pendingExits.Add(colliderName, new(colliderName, category, Time.time, magnitudeAtCollisionExit));
+            return inputCategory ?? ParseCollider(collision);
         }
+    }
+
+    private void IncreaseCollisionTimer(CollisionType type, float multiplier)
+    {
+        _exitManager.SetUncollideTimer(type, _exitManager.GetUncollideTimer(type) * multiplier);
+    }
+
+    public void RemoveCollision(Collision2D collision, ColliderCategory? inputCategory = null)
+    {
+        string colliderName = collision.otherCollider.name;
+        ColliderCategory category = FindCategory(collision, inputCategory);
+        //Instantly remove collision if it's not the last collider in the cateory to minimize the number of pending exits.
+        if (_collidedCategories.ContainsKey(category) && _collidedCategories[category].Count > 1)
+        {
+            _collidedCategories[category].Remove(colliderName);
+            return;
+        }
+        TimedCollisionExit collisionExit = new(colliderName, category, Time.time, collision.otherRigidbody.velocity.magnitude);
+        _exitManager.AddPendingExit(collisionExit);
+    }
+
+    private void CollisionExitCompleted(TimedCollisionExit collision)
+    {
+        if (IsCollided(collision.Category))
+        {
+            RemoveColliderFromCategory(collision);
+        }
+    }
+    private bool IsCollided(ColliderCategory category)
+    {
+        return _collidedCategories.ContainsKey(category);
+    }
+
+    private void RemoveColliderFromCategory(TimedCollisionExit collision)
+    {
+        _collidedCategories[collision.Category].Remove(collision.ColliderName);
+        RemoveCategoryIfEmpty(collision.Category, collision.MagnitudeAtCollisionExit);
     }
     private void RemoveCategoryIfEmpty(ColliderCategory category, float magnitudeAtCollisionExit)
     {
-        if (collidedCategories[category].Count == 0)
+        if (_collidedCategories[category].Count == 0)
         {
-            collidedCategories.Remove(category);
+            _collidedCategories.Remove(category);
             OnUncollide?.Invoke(category, magnitudeAtCollisionExit);
         }
     }
 
-    public void RemoveNonragdollColliders()
+    private void RemoveNonragdollColliders()
     {
-        if (collidedCategories.ContainsKey(ColliderCategory.Body))
-        {
-            collidedCategories[ColliderCategory.Body].Remove("Player");
-            RemoveCategoryIfEmpty(ColliderCategory.Body, 0);
-        }
-        if (collidedCategories.ContainsKey(ColliderCategory.LWheel))
-        {
-            collidedCategories[ColliderCategory.LWheel].Remove("LWheelCollider");
-            RemoveCategoryIfEmpty(ColliderCategory.LWheel, 0);
-        }
-        if (collidedCategories.ContainsKey(ColliderCategory.RWheel))
-        {
-            collidedCategories[ColliderCategory.RWheel].Remove("RWheelCollider");
-            RemoveCategoryIfEmpty(ColliderCategory.RWheel, 0);
-        }
-        if (collidedCategories.ContainsKey(ColliderCategory.Board))
-        {
-            collidedCategories[ColliderCategory.Board].Remove("BoardCollider");
-            RemoveCategoryIfEmpty(ColliderCategory.Board, 0);
-        }
-        foreach (var colliderName in _pendingExits.Dictionary.Keys.ToList())
-        {
-            if (colliderName == "Player" || colliderName == "LWheelCollider" || colliderName == "RWheelCollider" || colliderName == "BoardCollider")
-            {
-                _pendingExits.Remove(colliderName);
-                continue;
-            }
-            ColliderCategory category = _pendingExits.Value(colliderName).Category;
-            if (!collidedCategories.ContainsKey(category))
-            {
-                collidedCategories[category] = new() { colliderName };
-            }
-            else if (!collidedCategories[category].Contains(colliderName))
-            {
-                collidedCategories[category].Add(colliderName);
-            }
-        }
+        _collidedCategories = new();
+        _exitManager.ResetAllExits();
     }
     
     private static ColliderCategory ParseCollider(Collision2D collision)
@@ -155,36 +158,30 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
                 return ColliderCategory.Body;
         }
     }
+
+    private static TrackingType ParseTrackingType(TrackingType? inputType)
+    {
+        if(inputType == null)
+        {
+            return TrackingType.PlayerNormal;
+        }
+        return (TrackingType)inputType;
+    }
     public bool WheelsCollided
     {
-        get => collidedCategories.ContainsKey(ColliderCategory.LWheel)
-|| collidedCategories.ContainsKey(ColliderCategory.RWheel);
+        get => _collidedCategories.ContainsKey(ColliderCategory.LWheel)
+        || _collidedCategories.ContainsKey(ColliderCategory.RWheel);
     }
     public bool BothWheelsCollided
     {
-        get => collidedCategories.ContainsKey(ColliderCategory.LWheel)
-&& collidedCategories.ContainsKey(ColliderCategory.RWheel);
+        get => _collidedCategories.ContainsKey(ColliderCategory.LWheel)
+        && _collidedCategories.ContainsKey(ColliderCategory.RWheel);
     }
-    public bool LWheel { get => collidedCategories.ContainsKey(ColliderCategory.LWheel); }
-    public bool RWheel { get => collidedCategories.ContainsKey(ColliderCategory.RWheel); }
-    public bool Body { get => collidedCategories.ContainsKey(ColliderCategory.Body); }
-    public bool Board { get => collidedCategories.ContainsKey(ColliderCategory.Board); }
-    public bool Collided { get => collidedCategories.Count > 0; }
+    public bool LWheel { get => _collidedCategories.ContainsKey(ColliderCategory.LWheel); }
+    public bool RWheel { get => _collidedCategories.ContainsKey(ColliderCategory.RWheel); }
+    public bool Body { get => _collidedCategories.ContainsKey(ColliderCategory.Body); }
+    public bool Board { get => _collidedCategories.ContainsKey(ColliderCategory.Board); }
+    public bool Collided { get => _collidedCategories.Count > 0; }
+    public Dictionary<ColliderCategory, List<string>> CollidedCategories { get => _collidedCategories; set => _collidedCategories = value; }
 
-    
-    private struct TimedCollisionExit
-    {
-        public ColliderCategory Category;
-        public string ColliderName;
-        public float Time;
-        public float MagnitudeAtCollisionExit;
-
-        public TimedCollisionExit(string colliderName, ColliderCategory category, float time, float magnitude)
-        {
-            ColliderName = colliderName;
-            Category = category;
-            Time = time;
-            MagnitudeAtCollisionExit = magnitude;
-        }
-    }
 }

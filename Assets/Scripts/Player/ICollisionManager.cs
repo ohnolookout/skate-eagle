@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
-public enum ColliderCategory { LWheel, RWheel, Board, Body };
+public enum ColliderCategory { LWheel, RWheel, Board, Body, BodyAndBoard };
 public interface ICollisionManager
 {
+    Dictionary<ColliderCategory, List<string>> CollidedCategories { get;}
     bool Board { get; }
     bool Body { get; }
     bool BothWheelsCollided { get; }
@@ -15,10 +17,6 @@ public interface ICollisionManager
     Action<ColliderCategory, float> OnCollide { get; set; }
     Action<ColliderCategory, float> OnUncollide { get; set; }
     Action OnAirborne { get; set; }
-
-    void CheckPendingExits();
-    void AddCollision(Collision2D collision, float velocityDelta, ColliderCategory? inputCategory);
-    void RemoveCollision(Collision2D collision, float magnitudeAtCollisionExit, ColliderCategory? inputCategory);
-    void RemoveNonragdollColliders();
-    void SetCollisionTimer(float newTimer);
+    void AddCollision(Collision2D collision, ColliderCategory? inputCategory = null, TrackingType? trackingType = null);
+    void RemoveCollision(Collision2D collision, ColliderCategory? inputCategory = null);
 }

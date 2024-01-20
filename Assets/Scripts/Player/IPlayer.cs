@@ -11,6 +11,7 @@ public interface IPlayer
     Rigidbody2D RagdollBoard { get; }
     Rigidbody2D RagdollBody { get; }
     Rigidbody2D Rigidbody { get; }
+    MomentumTracker MomentumTracker { get; }
     int StompCharge { get; set; }
     bool Stomping { get; set; }
     int StompThreshold { get; }
@@ -23,11 +24,14 @@ public interface IPlayer
     float JumpForce { get; }
     float JumpMultiplier { get; }
     float FlipDelay { get; }
-    static Action<Collision2D, float> AddCollision { get; set; }
-    static Action<Collision2D, float> RemoveCollision { get; set; }
+    float DownForce { get; }
+    InputEventController InputEvents { get; set; }
+    Action<Collision2D, ColliderCategory?, TrackingType?> AddCollision { get; set; }
+    public Action<Collision2D, ColliderCategory?> RemoveCollision { get; set; }
     static Action FinishStop { get; set; }
     static Action OnStomp { get; set; }
     static Action OnDismount { get; set; }
+    static Action OnStartAttempt { get; set; }
     static Action<IPlayer, double> OnFlip { get; set; }
     static Action<IPlayer, double> FlipRoutine { get; set; }
     static Action<IPlayer> OnJump { get; set; }
@@ -46,9 +50,10 @@ public interface IPlayer
     void Ragdoll();
     void SlowToStop();
     void Stomp();
+    void DoStart();
     void TriggerBoost(float boostValue, float boostMultiplier);
     void TriggerFinishStop();
-    float MagnitudeDelta(TrackingBody body);
+    float MagnitudeDelta(TrackingType body);
     float MagnitudeDelta();
-    Vector2 VectorChange(TrackingBody body);
+    Vector2 VectorChange(TrackingType body);
 }

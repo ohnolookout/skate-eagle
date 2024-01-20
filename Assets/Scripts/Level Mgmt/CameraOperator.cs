@@ -62,7 +62,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         }
         if (_levelManager.HasPlayer)
         {
-            _player = _levelManager.Player;
+            _player = _levelManager.GetPlayer;
         }
         cam = GetComponent<Camera>();
     }
@@ -94,7 +94,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
             transitionYCoroutine = TransitionLowY(_lowPoints.LowestPoint);
             StartCoroutine(transitionYCoroutine);
         }
-        float cameraX = _levelManager.Player.Rigidbody.position.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
+        float cameraX = _levelManager.GetPlayer.Rigidbody.position.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
         float cameraY = camY + offset.y + zoomYDelta;
         transform.position = new Vector3(cameraX, cameraY, transform.position.z);
         leadingCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
@@ -103,7 +103,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
         float startBirdX = _player.Rigidbody.position.x;
-        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (_levelManager.Player.Rigidbody.position.x + 20)), 15, 100);
+        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (_levelManager.GetPlayer.Rigidbody.position.x + 20)), 15, 100);
         float startY = camY;
         targetY = endPoint.y;
         float t = 0;
@@ -123,7 +123,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         while (_player.Rigidbody.position.y > LeadingCorner.y - cam.orthographicSize * 0.2f
             || _player.Rigidbody.velocity.y > 0)
         {
-            float change = Mathf.Clamp(_levelManager.Player.Rigidbody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(_levelManager.GetPlayer.Rigidbody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
             cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();
@@ -139,7 +139,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         _cameraZoomIn = true;
         while (cam.orthographicSize > defaultSize)
         {
-            float change = Mathf.Clamp(_levelManager.Player.Rigidbody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
+            float change = Mathf.Clamp(_levelManager.GetPlayer.Rigidbody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
             cam.orthographicSize += change;
             zoomYDelta += change;
             yield return new WaitForFixedUpdate();

@@ -117,7 +117,7 @@ public class LiveRunManager : MonoBehaviour, ILevelManager
     }
 
     public Vector3 FinishPoint { get => finishPoint; set => finishPoint = value; }
-    public IPlayer Player { get => eagleScript; }
+    public IPlayer GetPlayer { get => eagleScript; }
     public ICameraOperator CameraOperator{ get => cameraScript; }
     public GroundSpawner GroundSpawner { get => groundSpawner; }
     public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }

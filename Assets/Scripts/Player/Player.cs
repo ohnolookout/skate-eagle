@@ -18,10 +18,9 @@ public class Player : MonoBehaviour, IPlayer
     private IEnumerator stompCoroutine, trailCoroutine, dampen;
     public ILevelManager _levelManager;
     public TrailRenderer trail;
-    //public PlayerController playerController;
     private InputEventController _inputEvents;
     [SerializeField] private CollisionManager _collisionManager;
-    public MomentumTracker BodyTracker { get; set; }
+    public MomentumTracker MomentumTracker { get; set; }
     public static Action FinishStop { get; set; }
     public static Action OnStomp { get; set; }
     public static Action OnDismount { get; set; }
@@ -30,9 +29,10 @@ public class Player : MonoBehaviour, IPlayer
     public static Action<IPlayer> OnStartWithStomp { get; set; }
     public static Action<IPlayer> OnJump { get; set; }
     public static Action<IPlayer> OnSlowToStop { get; set; }
-    public static Action<Collision2D, float, ColliderCategory?> AddCollision { get; set; }
-    public static Action<Collision2D, float, ColliderCategory?> RemoveCollision { get; set; }
+    public Action<Collision2D, ColliderCategory?, TrackingType?> AddCollision { get; set; }
+    public Action<Collision2D, ColliderCategory?> RemoveCollision { get; set; }
     public static Action<FinishScreenData> OnFinish { get; set; }
+    public static Action OnStartAttempt { get; set; }
 
 
     private void Awake()
@@ -40,7 +40,7 @@ public class Player : MonoBehaviour, IPlayer
         AssignComponents();
         _body.bodyType = RigidbodyType2D.Kinematic;
         _body.centerOfMass = new Vector2(0, -2f);
-        BodyTracker = new(_body, _ragdollBoard, _ragdollBody, 20);
+        MomentumTracker = new(_body, _ragdollBoard, _ragdollBody, 12);
     }
 
     private void Start()
@@ -59,8 +59,7 @@ public class Player : MonoBehaviour, IPlayer
         FlipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
         OnFlip += FlipRoutine;
         _collisionManager.OnAirborne += GoAirborne;
-        AddCollision += _collisionManager.AddCollision;
-        RemoveCollision += _collisionManager.RemoveCollision;
+        _collisionManager.AddPlayerEvents(this);
         _inputEvents = new(InputType.Player);
         _inputEvents.OnJumpPress += JumpValidation;
         _inputEvents.OnJumpRelease += JumpRelease;
@@ -75,8 +74,6 @@ public class Player : MonoBehaviour, IPlayer
     private void OnDisable()
     {
         OnFlip -= FlipRoutine;
-        AddCollision -= _collisionManager.AddCollision;
-        RemoveCollision += _collisionManager.RemoveCollision;
         FinishStop = null;
         OnStomp = null;
         OnDismount = null;
@@ -87,6 +84,7 @@ public class Player : MonoBehaviour, IPlayer
         AddCollision = null;
         RemoveCollision = null;
         OnFinish = null;
+        OnStartAttempt = null;
         _inputEvents.OnJumpPress -= JumpValidation;
         _inputEvents.OnJumpRelease -= JumpRelease;
         _inputEvents.OnDownPress -= StartCrouch;
@@ -111,7 +109,6 @@ public class Player : MonoBehaviour, IPlayer
         {
             return;
         }
-        BodyTracker.Update();
         DirectionCheck();
         FinishCheck();
         if (!ragdoll)
@@ -122,10 +119,12 @@ public class Player : MonoBehaviour, IPlayer
 
     private void FixedUpdate()
     {
+        MomentumTracker.Update();
         if (_levelManager.RunState != RunState.Active)
         {
             return;
         }
+        //Start added to active state
         if (crouched && !PlayerCoroutines.Stomping)
         {
             _body.AddForce(new Vector2(0, -_downForce * 20));
@@ -135,11 +134,10 @@ public class Player : MonoBehaviour, IPlayer
             _body.AddTorque(-_rotationAccel * _rotationInput.x);
         }
     }
-
     private void StopCrouch()
     {
         _animator.SetBool("Crouched", false);
-        if (!PlayerCoroutines.Stomping)
+        if (!PlayerCoroutines.Stomping && _levelManager.RunState == RunState.Active)
         {
             _animator.SetTrigger("Stand Up");
             crouched = false;
@@ -148,6 +146,7 @@ public class Player : MonoBehaviour, IPlayer
 
     private void StartCrouch()
     {
+        //End added to active state
         if (!Collided)
         {
             _downCount++;
@@ -160,6 +159,7 @@ public class Player : MonoBehaviour, IPlayer
             }
             StartCoroutine(DoubleTapWindow());
         }
+        //Start added to active state
         _animator.SetBool("Crouched", true);
         if (!PlayerCoroutines.Stomping)
         {
@@ -167,7 +167,6 @@ public class Player : MonoBehaviour, IPlayer
             crouched = true;
         }
     }
-
     private void StartRotate(Vector2 rotation)
     {
         doRotate = true;
@@ -179,7 +178,7 @@ public class Player : MonoBehaviour, IPlayer
         doRotate = false;
         _rotationInput = new(0, 0);
     }
-
+    //End added to active state
     public void Stomp()
     {
         OnStomp?.Invoke();
@@ -189,7 +188,6 @@ public class Player : MonoBehaviour, IPlayer
 
     public void JumpValidation()
     {
-        Debug.Log("Validating jump");
         if (jumpCount >= jumpLimit || _levelManager.RunState != RunState.Active)
         {
             return;
@@ -261,22 +259,21 @@ public class Player : MonoBehaviour, IPlayer
         }
         if (ragdoll)
         {
-            AddCollision?.Invoke(collision, MagnitudeDelta(TrackingBody.PlayerRagdoll), null);
             return;
         }
-        else
+        else if(collision.otherCollider.name != "Player")
         {
-            AddCollision?.Invoke(collision, MagnitudeDelta(TrackingBody.PlayerNormal), null);
-        }
-        if (collision.otherCollider.name == "Player")
+            AddCollision?.Invoke(collision, null, TrackingType.PlayerNormal);
+        }else
         {
+            AddCollision?.Invoke(collision, ColliderCategory.Body, TrackingType.PlayerNormal);
             Die();
             return;
         }
         jumpCount = 0;
         if (!Collided)
         {
-            _animator.SetFloat("forceDelta", MagnitudeDelta(TrackingBody.PlayerNormal));
+            _animator.SetFloat("forceDelta", MagnitudeDelta(TrackingType.PlayerNormal));
             _animator.SetTrigger("Land");
         }
         FlipCheck();
@@ -285,7 +282,7 @@ public class Player : MonoBehaviour, IPlayer
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        RemoveCollision?.Invoke(collision, Velocity.magnitude, null);
+        RemoveCollision?.Invoke(collision, null);
         _rotationStart = _body.rotation;
     }
 
@@ -307,9 +304,7 @@ public class Player : MonoBehaviour, IPlayer
     {
         _animator.SetFloat("Speed", _body.velocity.magnitude);
         _animator.SetFloat("YSpeed", _body.velocity.y);
-        _animator.SetBool("FacingForward", facingForward);
         _animator.SetBool("Airborne", !Collided);
-        //_animator.SetBool("Crouched", playerController.down);
         if (!Collided)
         {
             _animator.SetBool("AirborneUp", _body.velocity.y >= 0);
@@ -319,10 +314,10 @@ public class Player : MonoBehaviour, IPlayer
 
     public void SlowToStop()
     {
+        _animator.SetTrigger("Brake");
         _inputEvents.DisableInputs();
         StopCoroutine(trailCoroutine);
         trail.emitting = false;
-        _animator.SetTrigger("Brake");
         StartCoroutine(PlayerCoroutines.SlowToStop(this));
     }
 
@@ -337,21 +332,26 @@ public class Player : MonoBehaviour, IPlayer
         StartCoroutine(PlayerCoroutines.BoostTrail(trail, facingForward));
     }
 
-    private void DoStart()
+    //Can probably move standby exit input to UI controls and eliminate need for player startattempt event
+    public void DoStart()
     {
-        _levelManager.StartAttempt();
+        OnStartAttempt?.Invoke();
+        //Begin add to standbystate onexit
         _animator.SetBool("OnBoard", true);
         _body.bodyType = RigidbodyType2D.Dynamic;
         _body.velocity += new Vector2(15, 0);
         _inputEvents.OnDownPress -= DoStart;
+        //end
     }
 
     private void DirectionCheck()
     {
         bool lastDirection = facingForward;
         facingForward = Rigidbody.velocity.x >= 0;
-        if (lastDirection != facingForward && !ragdoll)
+        if (facingForward != lastDirection && !ragdoll)
         {
+            //What is this animator bool used for?
+            _animator.SetBool("FacingForward", facingForward);
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
     }
@@ -413,23 +413,23 @@ public class Player : MonoBehaviour, IPlayer
         _levelManager.GameOver();
     }
 
-    public float MagnitudeDelta(TrackingBody body)
+    public float MagnitudeDelta(TrackingType body)
     {
-        return BodyTracker.MagnitudeDelta(body);
+        return MomentumTracker.ReboundMagnitude(body);
     }
 
     public float MagnitudeDelta()
     {
         if (ragdoll)
         {
-            return BodyTracker.MagnitudeDelta(TrackingBody.PlayerRagdoll);
+            return MomentumTracker.ReboundMagnitude(TrackingType.PlayerRagdoll);
         }
-        return BodyTracker.MagnitudeDelta(TrackingBody.PlayerNormal);
+        return MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal);
     }
 
-    public Vector2 VectorChange(TrackingBody body)
+    public Vector2 VectorChange(TrackingType body)
     {
-        return BodyTracker.VectorChange(body);
+        return MomentumTracker.VectorChange(body);
     }
 
     public Transform Transform
@@ -476,4 +476,5 @@ public class Player : MonoBehaviour, IPlayer
     public float FlipDelay { get => _flipDelay; set => _flipDelay = value; }
     public float JumpMultiplier { get => _jumpMultiplier; set => _jumpMultiplier = value; }
     public InputEventController InputEvents { get => _inputEvents; set => _inputEvents = value; }
+    public float DownForce { get => _downForce; set => _downForce = value; }
 }

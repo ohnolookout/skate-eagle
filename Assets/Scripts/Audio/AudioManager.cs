@@ -58,15 +58,16 @@ public class AudioManager : MonoBehaviour
     public void AssignLevelEvents()
     {
         LevelManager.OnRestart += ClearLoops;
+        LevelManager.OnGameOver += _ => ClearLoops();
         LevelManager.OnLanding += LoadComponents;
-        LevelManager.OnFinish += _ => SetModifierFramerate(1);
         LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
+        LevelManager.OnFinish += _ => SetModifierFramerate(1);
         LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
     }
 
     public void LoadComponents(ILevelManager levelManager)
     {
-        _player = levelManager.Player;
+        _player = levelManager.GetPlayer;
         _camera = levelManager.CameraOperator;
     }
 
@@ -118,6 +119,7 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLoops()
     {
+        Debug.Log("Clearing loops");
         if (audioSources == null) return;
         for (int i = 2; i < audioSources.Length; i++)
         {
@@ -130,6 +132,7 @@ public class AudioManager : MonoBehaviour
         intensityDenominator = 300;
         playingSounds = new();
         fadingSources = new();
+        _soundModFrameRate = 6;
     }
     //Plays soundtrack on audioSources[0]
     private void PlaySoundtrack(Soundtrack soundtrack)

@@ -45,7 +45,7 @@ public class GroundSpawner : MonoBehaviour
         DeleteChildren();
 #endif
         GenerateLevel(GameManager.Instance.CurrentLevel);
-        colliderTracker = new(_levelManager.Player.Rigidbody, colliderList, Backstop, BirdIndex);
+        colliderTracker = new(_levelManager.GetPlayer.Rigidbody, colliderList, Backstop, BirdIndex);
         ActivateInitialSegments(3);
     }
 
@@ -72,8 +72,8 @@ public class GroundSpawner : MonoBehaviour
 
     public void SwitchToRagdoll()
     {
-        colliderTracker.SwapBodies(new Rigidbody2D[] { _levelManager.Player.Rigidbody }, 
-            new Rigidbody2D[] { _levelManager.Player.Rigidbody, _levelManager.Player.RagdollBoard });
+        colliderTracker.SwapBodies(new Rigidbody2D[] { _levelManager.GetPlayer.Rigidbody }, 
+            new Rigidbody2D[] { _levelManager.GetPlayer.Rigidbody, _levelManager.GetPlayer.RagdollBoard });
     }
     public void GenerateLevel(Level level)
     {
@@ -93,7 +93,7 @@ public class GroundSpawner : MonoBehaviour
         segmentList = new();
         colliderList = new();
         //Create startline at location of player
-        CurvePoint endOfLastSegment = AddSegment(CurveFactory.StartLine(new (_levelManager.Player.Rigidbody.position)));
+        CurvePoint endOfLastSegment = AddSegment(CurveFactory.StartLine(new (_levelManager.GetPlayer.Rigidbody.position)));
         //Create dictionary of sequences with corresponding grades
         Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
         foreach(var sequence in curveSequences)

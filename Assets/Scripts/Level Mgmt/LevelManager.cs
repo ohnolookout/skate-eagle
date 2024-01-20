@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ResetStaticEvents();
         if (_player != null)
         {
-            IPlayer.FinishStop -= finishStop;
+            Player.FinishStop -= finishStop;
         }
         _inputEvents.OnRestart -= RestartGame;
         _inputEvents.OnSubmit -= Submit;
@@ -101,15 +101,20 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnFinish += _gameManager.UpdateRecord;
         if (HasAudioManager)
         {
+            _audioManager.AssignLevelEvents();
+            /*
             OnRestart += _audioManager.ClearLoops;
             OnLanding += _audioManager.LoadComponents;
             OnAttempt += () => _audioManager.StartUpdatingModifiers(true);
             OnResultsScreen += () => _audioManager.StartUpdatingModifiers(false);
+            */
         }
         if (HasPlayer)
         {
             finishStop += () => OnResultsScreen?.Invoke();
-            IPlayer.FinishStop += finishStop;
+            Player.FinishStop += finishStop;
+            Player.OnStartAttempt += StartAttempt;
+
         }
     }
 
@@ -189,7 +194,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
 
     public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
-    public IPlayer Player { get => _player; }
+    public IPlayer GetPlayer { get => _player; }
     public ICameraOperator CameraOperator { get => _cameraOperator; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }

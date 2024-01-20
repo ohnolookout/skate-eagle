@@ -18,12 +18,13 @@ public class EagleScript : MonoBehaviour, IPlayer
     public LiveRunManager logic;
     public TrailRenderer trail;
     public PlayerController playerController;
-    [SerializeField] private CollisionTracker collisionTracker;
+    [SerializeField] private CollisionManager collisionTracker;
     [SerializeField] private Rigidbody2D ragdollBoard, ragdollSpine;
     private static Action _finishStop, _onStomp, _onDismount;
     private static Action<IPlayer, double> _onFlip, _flipRoutine;
     private static Action<IPlayer> _onStartWithStomp, _onJump, _onSlowToStop;
-    private static Action<Collision2D, float, ColliderCategory?> _addCollision, _removeCollision;
+    public Action<Collision2D, ColliderCategory?, TrackingType?> AddCollision;
+    public Action<Collision2D, ColliderCategory?> RemoveCollision;
     private static Action<FinishScreenData> onFinish;
 
 
@@ -47,14 +48,10 @@ public class EagleScript : MonoBehaviour, IPlayer
         _flipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
         _onFlip += _flipRoutine;
         collisionTracker.OnAirborne += GoAirborne;
-        _addCollision += collisionTracker.AddCollision;
-        _removeCollision += collisionTracker.RemoveCollision;
     }
     private void OnDisable()
     {
         _onFlip -= _flipRoutine;
-        _addCollision -= collisionTracker.AddCollision;
-        _removeCollision += collisionTracker.RemoveCollision;
     }
 
     private void AssignComponents()
@@ -204,7 +201,7 @@ public class EagleScript : MonoBehaviour, IPlayer
             dampen = PlayerCoroutines.DampenLanding(rigidEagle);
             StartCoroutine(dampen);
         }
-        _addCollision?.Invoke(collision, MagnitudeDelta(TrackingBody.PlayerNormal), null);
+        AddCollision?.Invoke(collision, null, null);
         if (ragdoll)
         {
             return;
@@ -217,7 +214,7 @@ public class EagleScript : MonoBehaviour, IPlayer
         jumpCount = 0;
         if (!Collided)
         {
-            animator.SetFloat("forceDelta", MagnitudeDelta(TrackingBody.PlayerNormal));
+            animator.SetFloat("forceDelta", MagnitudeDelta(TrackingType.PlayerNormal));
             animator.SetTrigger("Land");
         }
         FlipCheck();
@@ -226,7 +223,7 @@ public class EagleScript : MonoBehaviour, IPlayer
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        _removeCollision?.Invoke(collision, Velocity.magnitude, null);
+        RemoveCollision?.Invoke(collision, null);
         rotationStart = rigidEagle.rotation;
     }
 
@@ -348,13 +345,13 @@ public class EagleScript : MonoBehaviour, IPlayer
         ragdoll = true;
         logic.GameOver();
     }
-    public float MagnitudeDelta(TrackingBody body)
+    public float MagnitudeDelta(TrackingType body)
     {
         return MagnitudeDelta();
     }
     public float MagnitudeDelta()
     {
-        Vector2 delta = VectorChange(TrackingBody.PlayerNormal);
+        Vector2 delta = VectorChange(TrackingType.PlayerNormal);
         float forceDelta = 0;
         if (lastSpeed.x > 0 && delta.x < 0)
         {
@@ -367,9 +364,14 @@ public class EagleScript : MonoBehaviour, IPlayer
         forceDelta += delta.y;
         return forceDelta;
     }
-    public Vector2 VectorChange(TrackingBody body)
+    public Vector2 VectorChange(TrackingType body)
     {
         return new(Rigidbody.velocity.x - lastSpeed.x, Rigidbody.velocity.y - lastSpeed.y);
+    }
+
+    void IPlayer.DoStart()
+    {
+        throw new NotImplementedException();
     }
 
     public Transform Transform
@@ -417,11 +419,15 @@ public class EagleScript : MonoBehaviour, IPlayer
     public static Action FinishStop { get => _finishStop; set => _finishStop = value; }
     public static Action OnStomp { get => _onStomp; set => _onStomp = value; }
     public static Action OnDismount { get => _onDismount; set => _onDismount = value; }
-    public static Action<Collision2D, float, ColliderCategory?> AddCollision { get => _addCollision; set => _addCollision = value; }
-    public static Action<Collision2D, float, ColliderCategory?> RemoveCollision { get => _removeCollision; set => _removeCollision = value; }
     public static Action<IPlayer> OnJump { get => _onJump; set => _onJump = value; }
     public static Action<IPlayer> OnSlowToStop { get => _onSlowToStop; set => _onSlowToStop = value; }
     public static Action<IPlayer, double> OnFlip { get => _onFlip; set => _onFlip = value; }
     public static Action<IPlayer, double> FlipRoutine { get => _flipRoutine; set => _flipRoutine = value; }
     public static Action<IPlayer> OnStartWithStomp { get => _onStartWithStomp; set => _onStartWithStomp = value; }
+
+    MomentumTracker IPlayer.MomentumTracker => throw new NotImplementedException();
+
+    Action<Collision2D, ColliderCategory?, TrackingType?> IPlayer.AddCollision { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    Action<Collision2D, ColliderCategory?> IPlayer.RemoveCollision { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    InputEventController IPlayer.InputEvents { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

@@ -5,7 +5,7 @@ public interface ILevelManager
     ICameraOperator CameraOperator{ get; }
     Level CurrentLevel { get; set; }
     Vector3 FinishPoint { get; set; }
-    IPlayer Player { get; }
+    IPlayer GetPlayer { get; }
     TerrainManager TerrainManager { get; set; }
     RunState RunState { get; set; }
     bool HasCameraOperator { get; }
