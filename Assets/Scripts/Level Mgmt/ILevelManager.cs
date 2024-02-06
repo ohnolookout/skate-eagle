@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-
+public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen }
 public interface ILevelManager
 {
     ICameraOperator CameraOperator{ get; }
     Level CurrentLevel { get; set; }
     Vector3 FinishPoint { get; set; }
-    IPlayer GetPlayer { get; }
+    static IPlayer GetPlayer { get; }
     TerrainManager TerrainManager { get; set; }
     RunState RunState { get; set; }
     bool HasCameraOperator { get; }

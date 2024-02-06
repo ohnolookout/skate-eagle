@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class ProgressBar : MonoBehaviour
 {
     private Slider slider;
-    private LiveRunManager logic;
+    private ILevelManager logic;
 
     void Start()
     {
         slider = GetComponent<Slider>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<ILevelManager>();
     }
     
     void Update()

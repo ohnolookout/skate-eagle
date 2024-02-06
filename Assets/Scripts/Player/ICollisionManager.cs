@@ -17,6 +17,6 @@ public interface ICollisionManager
     Action<ColliderCategory, float> OnCollide { get; set; }
     Action<ColliderCategory, float> OnUncollide { get; set; }
     Action OnAirborne { get; set; }
-    void AddCollision(Collision2D collision, ColliderCategory? inputCategory = null, TrackingType? trackingType = null);
-    void RemoveCollision(Collision2D collision, ColliderCategory? inputCategory = null);
+    void AddCollision(Collision2D collision, MomentumTracker momentumTracker, ColliderCategory inputCategory, TrackingType trackingType);
+    void RemoveCollision(Collision2D collision, ColliderCategory inputCategory);
 }

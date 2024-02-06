@@ -10,21 +10,35 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private Level _currentLevel;
     private GameManager _gameManager;
     private AudioManager _audioManager;
-    [SerializeField] private Player _player;
+    private static IPlayer _player;
     [SerializeField] private TerrainManager _terrainManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private Timer timer;
-    public static Action<LevelManager> OnLanding, OnGameOver;
+    public static Action<ILevelManager> OnLanding, OnGameOver;
     public static Action<FinishScreenData> OnFinish;
     public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart;
+    public static Action<Vector2> OnActivateFinish { get; set; }
     private Action finishStop;
     private bool _overlayLoaded = false;
     [SerializeField] private CameraOperator _cameraOperator;
 
     void Awake()
     {
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
+        Vector3 startPosition;
+        if (HasPlayer)
+        {
+            startPosition = _player.Rigidbody.position;
+            _terrainManager.NormalBodies = new() { _player.Rigidbody };
+            _terrainManager.RagdollBodies = new() { _player.RagdollBody, _player.RagdollBoard };
+        }
+        else
+        {
+            Debug.LogWarning("No player found. Spawning level at default location.");
+            startPosition = new(0, 0);
+        }
         AddSingletonManagers();
-        ActivateTerrainManager();
+        ActivateTerrainManager(startPosition);
     }
 
     private void OnEnable()
@@ -41,7 +55,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ResetStaticEvents();
         if (_player != null)
         {
-            Player.FinishStop -= finishStop;
+            _player.FinishStop -= finishStop;
         }
         _inputEvents.OnRestart -= RestartGame;
         _inputEvents.OnSubmit -= Submit;
@@ -58,7 +72,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
     }
 
-    private void ActivateTerrainManager()
+    private void ActivateTerrainManager(Vector3 startPosition)
     {
         if (_gameManager.CurrentLevel == null)
         {
@@ -70,19 +84,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Debug.LogWarning("No terrain manager found. Skipping terrain creation.");
             return;
         }
-        Vector3 startPosition;
-        if (HasPlayer)
-        {
-            startPosition = _player.Rigidbody.position;
-            _terrainManager.NormalBodies = new() { _player.Rigidbody };
-            _terrainManager.RagdollBodies = new() { _player.RagdollBody, _player.RagdollBoard };
-        }
-        else
-        {
-            Debug.LogWarning("No player found. Spawning level at default location.");
-            startPosition = new(0, 0);
-        }
-        _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition, this);
+        _finishPoint = _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition);
+        _terrainManager.ColliderManager.OnActivateLastSegment += () => OnActivateFinish?.Invoke(_finishPoint);
     }
 
     private void AddSingletonManagers()
@@ -112,8 +115,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
         if (HasPlayer)
         {
             finishStop += () => OnResultsScreen?.Invoke();
-            Player.FinishStop += finishStop;
-            Player.OnStartAttempt += StartAttempt;
+            _player.FinishStop += finishStop;
+            _player.OnStartAttempt += StartAttempt;
+            _player.OnDie += GameOver;
 
         }
     }
@@ -127,6 +131,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnResultsScreen = null;
         OnStandby = null;
         OnRestart = null;
+        OnActivateFinish = null;
     }
     public void BackToMenu()
     {
@@ -172,6 +177,11 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         CurrentLevel = level;
     }
+
+    public void ActivateFinish(Vector2 finishPoint)
+    {
+        OnActivateFinish?.Invoke(finishPoint);
+    }
     public void Finish()
     {
         _runState = RunState.Finished;
@@ -194,7 +204,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
 
     public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
-    public IPlayer GetPlayer { get => _player; }
+    public static IPlayer GetPlayer { get => _player; }
     public ICameraOperator CameraOperator { get => _cameraOperator; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }

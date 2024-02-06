@@ -8,32 +8,34 @@ public class FlipTextGenerator : MonoBehaviour
 {
     public GameObject popText;
     public float wordSpread = 10;
-    private FlipText flipText;
-    private Action<LiveRunManager> cancelText;
+    [SerializeField] private FlipText flipText;
+    private IPlayer _player;
+    private Action<ILevelManager> cancelText;
     private Action<IPlayer, double> newFlipText;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
-    private void Awake()
+    private void Start()
     {
-        flipText = transform.GetChild(0).gameObject.GetComponent<FlipText>();
+        _player = LevelManager.GetPlayer;
+        _player.OnFlip += NewFlipText;
     }
 
     private void OnEnable()
     {
-        IPlayer.OnFlip += NewFlipText;
+        
         cancelText += _ => CancelText();
-        LiveRunManager.OnGameOver += cancelText;
+        LevelManager.OnGameOver += cancelText;
         
     }
     private void OnDisable()
     {
-        IPlayer.OnFlip -= newFlipText;
-        LiveRunManager.OnGameOver -= cancelText;
+        _player.OnFlip -= newFlipText;
+        LevelManager.OnGameOver -= cancelText;
     }
     public void NewFlipText(IPlayer player, double flipCount = 1)
     {
-        Vector3 location = GenerateLocation(player, wordSpread);
-        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, player.Rigidbody.position + (Vector2) location);
+        Vector3 location = GenerateLocation(_player, wordSpread);
+        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, _player.Rigidbody.position + (Vector2) location);
         Vector3 finalPosition = viewportPosition + location;
         flipText.transform.position = finalPosition; 
         float randomZ = UnityEngine.Random.Range(-45, 45);

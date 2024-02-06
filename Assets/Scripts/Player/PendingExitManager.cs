@@ -9,13 +9,14 @@ public class PendingExitManager
     private Dictionary<CollisionType, OrderedDictionary<string, TimedCollisionExit>> _pendingExits = new();
     private Dictionary<CollisionType, float> _exitTimers = new();
     public Action<TimedCollisionExit> RemoveCollision;
+    private const float _groundUncollideTime = 0.15f, _bodyBoardUncollideTime = 0.5f;
     
 
     public PendingExitManager()
     {
         ResetAllExits();
-        _exitTimers[CollisionType.Ground] = 0.15f;
-        _exitTimers[CollisionType.OtherBody] = 0.5f;
+        _exitTimers[CollisionType.Ground] = _groundUncollideTime;
+        _exitTimers[CollisionType.OtherBody] = _bodyBoardUncollideTime;
     }
 
     public void ResetAllExits()

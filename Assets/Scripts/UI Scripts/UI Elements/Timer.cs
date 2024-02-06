@@ -12,13 +12,13 @@ public class Timer : MonoBehaviour
 
     private void OnEnable()
     {
-        LiveRunManager.OnAttempt += StartTimer;
-        LiveRunManager.OnGameOver += _ => StopTimer();
+        LevelManager.OnAttempt += StartTimer;
+        LevelManager.OnGameOver += _ => StopTimer();
     }
     private void OnDisable()
     {
-        LiveRunManager.OnAttempt -= StartTimer;
-        LiveRunManager.OnGameOver += _ => StopTimer();
+        LevelManager.OnAttempt -= StartTimer;
+        LevelManager.OnGameOver += _ => StopTimer();
     }
 
     void Update()

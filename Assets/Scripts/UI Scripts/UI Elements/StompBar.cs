@@ -15,9 +15,14 @@ public class StompBar : MonoBehaviour
 
     private void OnEnable()
     {
-        IPlayer.OnStartWithStomp += (player) => Fill((float)player.StompCharge / (float)player.StompThreshold);
-        IPlayer.OnFlip += (player, _) => Fill((float)player.StompCharge / (float)player.StompThreshold);
-        IPlayer.OnStomp += () => Fill(0);
+        IPlayer player = LevelManager.GetPlayer;
+        if(player == null)
+        {
+            return;
+        }
+        player.OnStartWithStomp += (player) => Fill((float)player.StompCharge / (float)player.StompThreshold);
+        player.OnFlip += (player, _) => Fill((float)player.StompCharge / (float)player.StompThreshold);
+        player.OnStomp += () => Fill(0);
     }
     private void OnDisable()
     {

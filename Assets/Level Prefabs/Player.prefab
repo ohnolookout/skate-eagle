@@ -68,7 +68,7 @@ MonoBehaviour:
   _body: {fileID: 468519406916343395}
   _ragdollBody: {fileID: 5305833837874218047}
   _ragdollBoard: {fileID: 7318712294945239054}
-  _stompCharge: 0
+  _initialStompCharge: 0
   trail: {fileID: 1958146756901301871}
   _collisionManager: {fileID: 8238468194511545187}
 --- !u!50 &468519406916343395
@@ -1544,9 +1544,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 3322286059587850302}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &883958278793997627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,9 +1842,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 7033132914963510207}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &1397116781557660886
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,9 +1965,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 760694388586738562}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &1446034932434211161
 GameObject:
   m_ObjectHideFlags: 0
@@ -2265,9 +2265,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 7123786120274531392}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &2083132823814555419
 GameObject:
   m_ObjectHideFlags: 0
@@ -2575,9 +2575,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 4083338131997632033}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &2683013771803650845
 GameObject:
   m_ObjectHideFlags: 0
@@ -2640,9 +2640,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 2
-  _trackingBody: 0
+  _trackingType: 2
   _rigidbody: {fileID: 7318712294945239054}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &2729095550817308143
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3503,7 @@ MonoBehaviour:
   - {x: -2.3293817, y: -3.3481212, z: 0}
   m_ShapePathHash: 1989031010
   m_Mesh: {fileID: 0}
-  m_InstanceId: 83922
+  m_InstanceId: 92142
 --- !u!1 &5631769265776119019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4024,9 +4024,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 1
-  _trackingBody: 0
+  _trackingType: 2
   _rigidbody: {fileID: 7318712294945239054}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!61 &967763766132357604
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4510,9 +4510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 0
-  _trackingBody: 0
+  _trackingType: 2
   _rigidbody: {fileID: 7318712294945239054}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!61 &4802055453717770638
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4786,9 +4786,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 3208968923900115116}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &7701837328294297235
 GameObject:
   m_ObjectHideFlags: 0
@@ -4948,9 +4948,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 755633447602320217}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &8104748684997202229
 GameObject:
   m_ObjectHideFlags: 0
@@ -5098,9 +5098,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 2747848583111877146}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &8529584889162316225
 GameObject:
   m_ObjectHideFlags: 0
@@ -5454,9 +5454,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _category: 3
-  _trackingBody: 0
+  _trackingType: 1
   _rigidbody: {fileID: 6351659773465518618}
-  _player: {fileID: 925223643062526961}
+  _ragdollController: {fileID: 7916146461461128039}
 --- !u!1 &9158591849121446241
 GameObject:
   m_ObjectHideFlags: 0
@@ -5604,6 +5604,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1274331640360202130}
     m_Modifications:
+    - target: {fileID: 5876770832551207240, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+      propertyPath: flipText
+      value: 
+      objectReference: {fileID: 6680822176295124846}
     - target: {fileID: 5876770832551207241, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
       propertyPath: m_Name
       value: Pop-Up Canvas
@@ -5699,6 +5703,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5876770832551207252, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
   m_PrefabInstance: {fileID: 5911308497015123320}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6680822176295124846 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1062325720460218902, guid: 174d3c76ffad44b4bb4ebf5c04f8d533, type: 3}
+  m_PrefabInstance: {fileID: 5911308497015123320}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c8c6f5a3479f44491a4f1ec6739f40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7770370636661634623
 PrefabInstance:
   m_ObjectHideFlags: 0

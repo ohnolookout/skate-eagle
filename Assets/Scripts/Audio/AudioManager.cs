@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
         _camera = Camera.main.GetComponent<ICameraOperator>();
     }
 
@@ -67,7 +67,7 @@ public class AudioManager : MonoBehaviour
 
     public void LoadComponents(ILevelManager levelManager)
     {
-        _player = levelManager.GetPlayer;
+        _player = LevelManager.GetPlayer;
         _camera = levelManager.CameraOperator;
     }
 
@@ -119,7 +119,6 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLoops()
     {
-        Debug.Log("Clearing loops");
         if (audioSources == null) return;
         for (int i = 2; i < audioSources.Length; i++)
         {

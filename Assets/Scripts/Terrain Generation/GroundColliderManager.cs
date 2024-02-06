@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public class GroundColliderManager
 {
@@ -11,6 +12,7 @@ public class GroundColliderManager
     private GameObject backstop;
     private int containmentBuffer = 20;
     private List<Rigidbody2D> _normalBodies, _ragdollBodies;
+    public Action OnActivateLastSegment;
 
     public List<EdgeCollider2D> ColliderList { get => _colliderList; }
 
@@ -162,7 +164,7 @@ public class GroundColliderManager
                 _colliderList[index].gameObject.SetActive(true);
                 if(index == _colliderList.Count - 1)
                 {
-                    backstop.SetActive(true);
+                    OnActivateLastSegment?.Invoke();
                 }
             }
         }

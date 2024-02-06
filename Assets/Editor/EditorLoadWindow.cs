@@ -12,7 +12,7 @@ public class EditorLoadWindow : EditorWindow
     private int _nameIndex;
     public static void ShowWindow()
     {
-        GetWindow<LevelLoader>();
+        GetWindow<EditorLoadWindow>();
     }
 
     private void OnEnable()

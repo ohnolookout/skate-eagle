@@ -13,20 +13,20 @@ public class FinishScreenLoader : MonoBehaviour
     [SerializeField] private TMP_Text previousTime, playerTime;
     [SerializeField] private Sprite[] medalSprites;
     [SerializeField] private GameObject[] statusTexts;
-    private Action<LiveRunManager> deactivateDisplay;
+    private Action<ILevelManager> deactivateDisplay;
 
     private void OnEnable()
     {
-        LiveRunManager.OnFinish += GenerateFinishScreen;
-        LiveRunManager.OnResultsScreen += ActivateDisplay;
+        LevelManager.OnFinish += GenerateFinishScreen;
+        LevelManager.OnResultsScreen += ActivateDisplay;
         deactivateDisplay += _ => DeactivateDisplay();
-        LiveRunManager.OnLanding += deactivateDisplay;
+        LevelManager.OnLanding += deactivateDisplay;
     }
     private void OnDisable()
     {
-        LiveRunManager.OnFinish -= GenerateFinishScreen;
-        LiveRunManager.OnResultsScreen -= ActivateDisplay;
-        LiveRunManager.OnLanding -= deactivateDisplay;
+        LevelManager.OnFinish -= GenerateFinishScreen;
+        LevelManager.OnResultsScreen -= ActivateDisplay;
+        LevelManager.OnLanding -= deactivateDisplay;
     }
     public void GenerateFinishScreen(FinishScreenData finishData)
     {

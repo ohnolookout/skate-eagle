@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RagdollController : MonoBehaviour
 {
-    
     [SerializeField] private Animator animator;
     [SerializeField] private RagdollCollision[] ragdollScripts;
     [SerializeField] private Joint2D[] ragDollJoints;
@@ -15,25 +14,20 @@ public class RagdollController : MonoBehaviour
     [SerializeField] private Collider2D[] normalColliders;
     [SerializeField] private GameObject rigParent;
     [SerializeField] public Rigidbody2D spine;
+    private IPlayer _player;
     public bool turnOnRagdoll = false, ragdoll = false;
 
     void Start()
     {
-        if (ragdollColliders.Length == 0)
-        {
-            GetCollidersAndBodies();
-        }
-    }
-    private void OnEnable()
-    {
-        LevelManager.OnGameOver += TurnOnRagdoll;
+        _player = LevelManager.GetPlayer;
+        _player.OnDie += TurnOnRagdoll;
     }
     private void OnDisable()
     {
-        LevelManager.OnGameOver -= TurnOnRagdoll;
+        _player.OnDie -= TurnOnRagdoll;
     }
 
-    public void TurnOnRagdoll(ILevelManager runManager)
+    public void TurnOnRagdoll()
     {
         if (ragdoll)
         {
@@ -45,7 +39,7 @@ public class RagdollController : MonoBehaviour
         SwitchColliders(normalColliders, false);
         SwitchColliders(ragdollColliders, true);
         SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
-        SwitchRigidbodies(ragdollRigidbodies, true, runManager.GetPlayer.VectorChange(TrackingType.PlayerNormal));
+        SwitchRigidbodies(ragdollRigidbodies, true, LevelManager.GetPlayer.VectorChange(TrackingType.PlayerNormal));
         normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
         ragdoll = true;
@@ -70,6 +64,18 @@ public class RagdollController : MonoBehaviour
 
     }
 
+    public void SendCollision(Collision2D collision, ColliderCategory category, TrackingType tracking, bool isEnter)
+    {
+        if (isEnter)
+        {
+            _player.CollisionManager.AddCollision(collision, _player.MomentumTracker, category, tracking);
+        }
+        else
+        {
+            _player.CollisionManager.RemoveCollision(collision, category);
+        }
+    }
+
     void GetCollidersAndBodies()
     {
         ragdollColliders = rigParent.GetComponentsInChildren<Collider2D>();
@@ -80,7 +86,7 @@ public class RagdollController : MonoBehaviour
     }
 
 
-    void SwitchColliders(Collider2D[] colliders, bool isOn)
+    static void SwitchColliders(Collider2D[] colliders, bool isOn)
     {
         foreach(var collider in colliders)
         {
@@ -101,7 +107,7 @@ public class RagdollController : MonoBehaviour
         spine.angularVelocity = normalRigidbodies[0].angularVelocity * 20;
     }
 
-    void SwitchHinges(Joint2D[] joints, bool isOn)
+    static void SwitchHinges(Joint2D[] joints, bool isOn)
     {
         foreach(var joint in joints)
         {
@@ -109,7 +115,7 @@ public class RagdollController : MonoBehaviour
         }
     }
 
-    void SwitchScripts(RagdollCollision[] scripts, bool isOn)
+    static void SwitchScripts(RagdollCollision[] scripts, bool isOn)
     {
         foreach(var script in scripts)
         {

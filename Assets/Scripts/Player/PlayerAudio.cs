@@ -14,7 +14,7 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private SerializedDictionary<OneShotFX, Sound> _oneShotDict = new();
     [SerializeField] private SerializedDictionary<LoopFX, Sound> _loopDict = new();
     private bool _wheelsOnGround = false;
-    [SerializeField] private Player _player;
+    private IPlayer _player;
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
     private AudioManager _audioManager;
@@ -22,6 +22,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void Awake()
     {
+        _player = transform.parent.GetComponent<IPlayer>();
         List<Sound> sounds = _oneShotDict.Values.ToList();
         sounds.AddRange(_loopDict.Values.ToList());
         _audioManager = AudioManager.Instance;
@@ -36,16 +37,19 @@ public class PlayerAudio : MonoBehaviour
 
     private void Start()
     {
-        _player.CollisionManager.OnCollide += Collide;
-        _player.CollisionManager.OnUncollide += Uncollide;
+        if (_player != null)
+        {
+            _player.CollisionManager.OnCollide += Collide;
+            _player.CollisionManager.OnUncollide += Uncollide;
+        }
     }
 
     private void OnEnable()
     {
 
-        Player.OnJump += JumpSound;
-        Player.OnDismount += Dismount;
-        Player.OnSlowToStop += SlowToStop;
+        _player.OnJump += JumpSound;
+        _player.OnDismount += Dismount;
+        _player.OnSlowToStop += SlowToStop;
         _cameraOperator = Camera.main.GetComponent<CameraOperator>();
         if(_cameraOperator != null)
         {
@@ -61,9 +65,9 @@ public class PlayerAudio : MonoBehaviour
         }
         _player.CollisionManager.OnCollide -= Collide;
         _player.CollisionManager.OnUncollide -= Uncollide;
-        Player.OnJump -= JumpSound;
-        Player.OnDismount -= Dismount;
-        Player.OnSlowToStop -= SlowToStop;
+        _player.OnJump -= JumpSound;
+        _player.OnDismount -= Dismount;
+        _player.OnSlowToStop -= SlowToStop;
         if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut -= StartWind;
@@ -177,14 +181,18 @@ public class PlayerAudio : MonoBehaviour
 
     private void WheelCollision()
     {
-        if (!_wheelsOnGround && _wheelTimer < 0)
+        if(_wheelsOnGround || _wheelTimer >= 0)
+        {
+            return;
+        }
+        if (_player.DoLanding)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Wheel]);
-            _wheelsOnGround = true;
-            _audioManager.StopLoop(_loopDict[LoopFX.Freewheel]);
-            _audioManager.StartLoop(_loopDict[LoopFX.Roll]);
-            _wheelTimer = 0;
         }
+        _wheelsOnGround = true;
+        _audioManager.StopLoop(_loopDict[LoopFX.Freewheel]);
+        _audioManager.StartLoop(_loopDict[LoopFX.Roll]);
+        _wheelTimer = 0;
     }
 
     private void BodyAndBoardCollision(float magnitudeDelta)

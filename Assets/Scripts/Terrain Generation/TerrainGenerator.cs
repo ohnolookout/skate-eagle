@@ -6,7 +6,7 @@ using System;
 public static class TerrainGenerator
 {
 
-    public static void GenerateLevel(Level level, Terrain terrain, Vector3 playerStartPosition, ILevelManager levelManager = null)
+    public static Vector2 GenerateLevel(Level level, Terrain terrain, Vector3 playerStartPosition)
     {
         terrain.transform.position = new(0, 0);
         if (level.LevelSections.Count < 1)
@@ -26,11 +26,8 @@ public static class TerrainGenerator
         }
         //Add finishline at end of final segment
         GenerateCompleteSegment(terrain, CurveFactory.FinishLine(endOfLastSegment), terrain.ColliderList[^1].points[^1]);
-        Vector3 finishPoint = AddFinishObjects(terrain, terrain.SegmentList[^1].Curve.GetPoint(1).ControlPoint, terrain.SegmentList[^1].EndPoint);
-        if(levelManager != null)
-        {
-            levelManager.FinishPoint = finishPoint;
-        }
+        Vector2 finishPoint = AddFinishObjects(terrain, terrain.SegmentList[^1].Curve.GetPoint(1).ControlPoint, terrain.SegmentList[^1].EndPoint);
+        return finishPoint;
     }
 
     private static void GenerateSegmentsFromSequence(Terrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
@@ -59,7 +56,7 @@ public static class TerrainGenerator
     private static GroundSegment CreateSegment(Terrain terrain, Curve curve)
     {
         //Instantiate segment object and add its script to segmentList
-        GroundSegment newSegment = terrain.InstantiateSegment();
+        GroundSegment newSegment = terrain.InstantiateSegment().GetComponent<GroundSegment>();
         //Set the new segment's curve and deactivate the segment.
         newSegment.ApplyCurve(curve);
         newSegment.gameObject.SetActive(false);
@@ -82,7 +79,7 @@ public static class TerrainGenerator
         colliderObject.SetActive(false);
         return newCollider;
     }
-    private static Vector3 AddFinishObjects(Terrain terrain, Vector3 finishLineBound, Vector3 backstopBound)
+    private static Vector2 AddFinishObjects(Terrain terrain, Vector3 finishLineBound, Vector3 backstopBound)
     {
         Vector3 finishPoint = finishLineBound + new Vector3(50, 1);
         //Assign locations finishPoint, backstop, and finishflag

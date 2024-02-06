@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class CollisionManager: MonoBehaviour, ICollisionManager
 {
     private PendingExitManager _exitManager;
     private Dictionary<ColliderCategory, List<string>> _collidedCategories = new();
-    private MomentumTracker _momentumTracker;
     private bool _checkForExits = false;
     [SerializeField] private IPlayer _player;
-    private float _uncollideTime = 0.15f, _bodyBoardUncollideTime = 0.5f;
     public Action<ColliderCategory, float> OnCollide { get; set; }
     public Action<ColliderCategory, float> OnUncollide { get; set; }
     public Action OnAirborne { get; set; }
@@ -34,18 +30,15 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
 
     void Update()
     {
-        _exitManager.CheckAllExits();
-        //If there are no more active collisions, invoke the OnAirborne event.
-        if (_collidedCategories.Count == 0)
+        if (_checkForExits)
         {
-            OnAirborne?.Invoke();
+            _exitManager.CheckAllExits();
         }
     }
 
-    public void AddPlayerEvents(IPlayer player)
+    public void AddPlayer(IPlayer player)
     {
         _player = player;
-        _momentumTracker = _player.MomentumTracker;
         _player.AddCollision += AddCollision;
         _player.RemoveCollision += RemoveCollision;
     }
@@ -57,15 +50,15 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
         _exitManager.RemoveCollision -= CollisionExitCompleted;
     }
    
-    public void AddCollision(Collision2D collision, ColliderCategory? inputCategory = null, TrackingType? trackingType = null)
+    public void AddCollision(Collision2D collision, MomentumTracker momentumTracker, ColliderCategory category, TrackingType trackingType)
     {
+        bool isNewCollision = false;
         string colliderName = collision.otherCollider.name;
-        ColliderCategory category = FindCategory(collision, inputCategory);
+        category = FindCategory(collision, category);
         if (!_collidedCategories.ContainsKey(category))
         {
-            float magDelta = _momentumTracker.ReboundMagnitudeFromBody(collision.otherRigidbody, ParseTrackingType(trackingType));
             _collidedCategories[category] = new();
-            OnCollide?.Invoke(category, magDelta);
+            isNewCollision = true;
         }
         else if (_collidedCategories[category].Contains(colliderName))
         {
@@ -74,9 +67,14 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
         }
         //Send collision to player audio and add collision to list of colliders that are collided.
         _collidedCategories[category].Add(colliderName);
+        if (isNewCollision)
+        {          
+            float magDelta = momentumTracker.ReboundMagnitudeFromBody(collision.otherRigidbody, trackingType);
+            OnCollide?.Invoke(category, magDelta);
+        }
     }
 
-    private ColliderCategory FindCategory(Collision2D collision, ColliderCategory? inputCategory)
+    private ColliderCategory FindCategory(Collision2D collision, ColliderCategory inputCategory)
     {
         if (collision.collider.name != "Collider")
         {
@@ -84,7 +82,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
         }
         else
         {
-            return inputCategory ?? ParseCollider(collision);
+            return inputCategory;
         }
     }
 
@@ -93,7 +91,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
         _exitManager.SetUncollideTimer(type, _exitManager.GetUncollideTimer(type) * multiplier);
     }
 
-    public void RemoveCollision(Collision2D collision, ColliderCategory? inputCategory = null)
+    public void RemoveCollision(Collision2D collision, ColliderCategory inputCategory)
     {
         string colliderName = collision.otherCollider.name;
         ColliderCategory category = FindCategory(collision, inputCategory);
@@ -131,32 +129,16 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
             _collidedCategories.Remove(category);
             OnUncollide?.Invoke(category, magnitudeAtCollisionExit);
         }
+        if (_collidedCategories.Count == 0)
+        {
+            OnAirborne?.Invoke();
+        }
     }
 
     private void RemoveNonragdollColliders()
     {
         _collidedCategories = new();
         _exitManager.ResetAllExits();
-    }
-    
-    private static ColliderCategory ParseCollider(Collision2D collision)
-    {
-        switch (collision.otherCollider.name)
-        {
-            case "Player":
-                return ColliderCategory.Body;
-            case "LWheelCollider":
-            case "LWheelRagdoll":
-                return ColliderCategory.LWheel;
-            case "RWheelCollider":
-            case "RWheelRagdoll":
-                return ColliderCategory.RWheel;
-            case "BoardCollider":
-            case "BoardRagdoll":
-                return ColliderCategory.Board;
-            default:
-                return ColliderCategory.Body;
-        }
     }
 
     private static TrackingType ParseTrackingType(TrackingType? inputType)

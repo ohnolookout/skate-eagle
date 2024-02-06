@@ -2,25 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerStateType { Standby, Grounded, Airborne, Jumping, Stomping, Braking, Finished, Ragdoll}
+
 public class PlayerStateMachine
 {
     public PlayerState CurrentState { get; set; }
-    public Dictionary<PlayerStateType, PlayerState> _stateDict;
-    public IPlayer player { get; set; }
-    public void Initialize(IPlayer player, PlayerState startingState)
+    private PlayerStateFactory _stateFactory; 
+    public IPlayer Player { get; set; }
+
+    public PlayerStateMachine(IPlayer player, PlayerStateType startingState = PlayerStateType.Standby)
     {
-        CurrentState = startingState;
-        this.player = player;
-        CurrentState.EnterState();
+        Player = player;
+        _stateFactory = new(this);
     }
-    public void ChangeState(PlayerState newState)
+
+    public void InitializeState(PlayerStateType startingState = PlayerStateType.Standby)
     {
-        CurrentState.ExitState();
-        CurrentState = newState;
+        CurrentState = _stateFactory.GetState(startingState);
         CurrentState.EnterState();
     }
 
+    public void ExitStates()
+    {
+        CurrentState.ExitStates();
+    }
+
+    public void UpdateCurrentStates()
+    {
+        CurrentState.UpdateStates();
+    }
+
+    public void FixedUpdateCurrentStates()
+    {
+        CurrentState.FixedUpdateStates();
+    }
     public void UpdateCurrentState()
     {
         CurrentState.UpdateState();
@@ -29,5 +43,15 @@ public class PlayerStateMachine
     public void FixedUpdateCurrentState()
     {
         CurrentState.FixedUpdateState();
+    }
+
+    public void OnCollisionEnter(Collision2D collision)
+    {
+        CurrentState.OnCollisionEnter(collision);
+    }
+
+    public void OnCollisionExit(Collision2D collision)
+    {
+        CurrentState.OnCollisionExit(collision);
     }
 }

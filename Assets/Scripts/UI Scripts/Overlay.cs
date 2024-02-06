@@ -8,9 +8,8 @@ public class Overlay : MonoBehaviour
     public GameObject gameOver, finish, standby, mobileControls, hud, landing;
     public LandingScreenLoader landingLoader;
     public FinishScreenLoader finishLoader;
-    [SerializeField] private LiveRunManager _runManager;
-    private Action<LiveRunManager> onLanding, onGameOver;
-    private Action<LevelManager> newOnLanding, newOnGameOver;
+    [SerializeField] private ILevelManager _levelManager;
+    private Action<ILevelManager> onLanding, onGameOver;
     private Action<FinishScreenData> onFinish;
     public StompBar stompBar;
     public Timer timer;
@@ -19,11 +18,12 @@ public class Overlay : MonoBehaviour
     private void Awake()
     {
         OnOverlayLoaded?.Invoke();
-        _runManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<LiveRunManager>();
+        _levelManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<ILevelManager>();
     }
 
     private void OnEnable()
     {
+        /*
         onLanding += _ => ActivateStartScreen();
         LiveRunManager.OnLanding += onLanding;
         onGameOver += _ => ActivateGameOverScreen();
@@ -32,10 +32,12 @@ public class Overlay : MonoBehaviour
         LiveRunManager.OnStandby += ActivateStandbyScreen;
         onFinish += _ => ActivateControls(false);
         LiveRunManager.OnFinish += onFinish;
-        LiveRunManager.OnResultsScreen += ActivateFinishScreen; onLanding += _ => ActivateStartScreen();
-        LevelManager.OnLanding += newOnLanding;
+        LiveRunManager.OnResultsScreen += ActivateFinishScreen; 
+        */
+        onLanding += _ => ActivateStartScreen();
+        LevelManager.OnLanding += onLanding;
         onGameOver += _ => ActivateGameOverScreen();
-        LevelManager.OnGameOver += newOnGameOver;
+        LevelManager.OnGameOver += onGameOver;
         LevelManager.OnAttempt += StartAttempt;
         LevelManager.OnStandby += ActivateStandbyScreen;
         onFinish += _ => ActivateControls(false);
@@ -86,7 +88,7 @@ public class Overlay : MonoBehaviour
     public void StandbyScreen()
     {
         OnStandbyButton?.Invoke();
-        _runManager.GoToStandby();
+        _levelManager.GoToStandby();
     }
 
 
@@ -139,7 +141,7 @@ public class Overlay : MonoBehaviour
     public void RestartLevel()
     {
         OnRestartButton?.Invoke();
-        _runManager.RestartGame();
+        _levelManager.RestartGame();
     }
 
     public void NextLevel()

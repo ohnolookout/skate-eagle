@@ -15,7 +15,7 @@ public class TerrainManager : MonoBehaviour
     private int _leadingTerrainIndex, _trailingTerrainIndex;
     private LowpointCache _lowpoints = new();
     private bool _trackCollision = false;
-    private Action<FinishScreenData> onFinish;
+    private Action<FinishScreenData> onFinish { get; set; }
     private Action onAttempt;
 
 
@@ -42,11 +42,13 @@ public class TerrainManager : MonoBehaviour
 
     private void Start()
     {
-        if(_terrain == null)
+        if (_terrain == null)
         {
             Debug.LogWarning("No terrain found by terrain manager. Destroying terrain manager.");
             DestroyImmediate(gameObject);
+            return;
         }
+        _colliderManager.OnActivateLastSegment += _terrain.ActivateFinishObjects;
     }
 
     void Update()
@@ -58,16 +60,17 @@ public class TerrainManager : MonoBehaviour
             _colliderManager.UpdateColliders();
         }
     }
-    public void GenerateTerrain(Level level, Vector3 startPosition, ILevelManager levelManager = null)
+    public Vector2 GenerateTerrain(Level level, Vector3 startPosition)
     {
         if (transform.childCount > 0)
         {
             DeleteChildren();
         }
         _terrain = Instantiate(_terrainPrefab, transform).GetComponent<Terrain>();
-        TerrainGenerator.GenerateLevel(level, _terrain, startPosition, levelManager);
+        Vector2 finishPoint = TerrainGenerator.GenerateLevel(level, _terrain, startPosition);
         _colliderManager = new(_normalBodies, _ragdollBodies, _terrain);
         ActivateInitialSegments(3);
+        return finishPoint;
     }
 
     private void UpdateCameraBounds()
@@ -176,4 +179,6 @@ public class TerrainManager : MonoBehaviour
     public List<Rigidbody2D> NormalBodies { get => _normalBodies; set => _normalBodies = value; }
     public List<Rigidbody2D> RagdollBodies { get => _ragdollBodies; set => _ragdollBodies = value; }
     public Vector2 LowestPoint { get => _lowpoints.LowestPoint; }
+
+    public GroundColliderManager ColliderManager { get => _colliderManager; }
 }
