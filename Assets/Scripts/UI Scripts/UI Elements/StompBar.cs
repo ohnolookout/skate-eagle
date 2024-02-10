@@ -20,8 +20,8 @@ public class StompBar : MonoBehaviour
         {
             return;
         }
-        player.OnStartWithStomp += (player) => Fill((float)player.StompCharge / (float)player.StompThreshold);
-        player.OnFlip += (player, _) => Fill((float)player.StompCharge / (float)player.StompThreshold);
+        player.OnStartWithStomp += (player) => Fill((float)player.Params.StompCharge / (float)player.Params.StompThreshold);
+        player.OnFlip += (player, _) => Fill((float)player.Params.StompCharge / (float)player.Params.StompThreshold);
         player.OnStomp += () => Fill(0);
     }
     private void OnDisable()

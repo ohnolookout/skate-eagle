@@ -13,13 +13,13 @@ public class ActiveState : PlayerState
     private Transform _playerTransform;
     private Rigidbody2D _playerBody;
     private bool _checkFinish = false;
-    private const int _dampenThreshold = 180;
 
     public ActiveState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
-        _playerTransform = _player.Transform;
-        _playerBody = _player.Rigidbody;
+        _playerTransform = _player.NormalBody.transform;
+        _playerBody = _player.NormalBody;
         LevelManager.OnActivateFinish += DoActivateFinish;
+        LevelManager.OnFall += () => ChangeState(_stateFactory.GetState(PlayerStateType.Fallen));
         _isRootState = true;
     }
 
@@ -31,6 +31,7 @@ public class ActiveState : PlayerState
         _player.InputEvents.OnDownRelease += StopCrouch;
         _player.InputEvents.OnRotate += StartRotate;
         _player.InputEvents.OnRotateRelease += StopRotate;
+        _player.InputEvents.OnRagdoll += Die;
         _collisionManager.OnCollide += CheckForBodyCollision;
         InitializeSubstate(_stateFactory.GetState(PlayerStateType.Pushing));
     }
@@ -61,26 +62,16 @@ public class ActiveState : PlayerState
         _player.MomentumTracker.Update();
         if (crouched && !_player.Stomping)
         {
-            _playerBody.AddForce(new Vector2(0, -_player.DownForce * 20));
+            _playerBody.AddForce(new Vector2(0, -_player.Params.DownForce * 20));
         }
         if (doRotate)
         {
-            _playerBody.AddTorque(-_player.RotationAccel * _rotationInput.x);
+            _playerBody.AddTorque(-_player.Params.RotationAccel * _rotationInput.x);
         }
         if (_substate != null)
         {
             _substate.FixedUpdateStates();
         }
-    }
-
-    public override void OnCollisionEnter(Collision2D collision)
-    {
-        base.OnCollisionEnter(collision);
-    }
-
-    public override void OnCollisionExit(Collision2D collision)
-    {
-        base.OnCollisionExit(collision);
     }
 
     private void StartRotate(Vector2 rotation)
@@ -113,7 +104,6 @@ public class ActiveState : PlayerState
         _player.FacingForward = _playerBody.velocity.x >= 0;
         if (_player.FacingForward != lastDirection)
         {
-            //What is this animator bool used for?
             _player.Animator.SetBool("FacingForward", _player.FacingForward);
             _playerTransform.localScale = new Vector3(-_playerTransform.localScale.x, _playerTransform.localScale.y, _playerTransform.localScale.z);
         }
@@ -129,38 +119,18 @@ public class ActiveState : PlayerState
             ChangeState(_stateFactory.GetState(PlayerStateType.Braking), false);
         }
     }
-    public async void DampenLanding()
-    {
 
-        _player.Rigidbody.angularVelocity = Mathf.Clamp(_player.Rigidbody.angularVelocity, -300, 300);
-        float timer = 0;
-        int underThresholdCount = 0;
-        //Add && playerdampen to conditional
-        while (timer < 0.2f && underThresholdCount < 2)
-        {
-            if (Mathf.Abs(_player.Rigidbody.angularVelocity) > 60)
-            {
-                _player.Rigidbody.angularVelocity *= 0.3f;
-            }
-            if (_player.Rigidbody.angularVelocity < _dampenThreshold)
-            {
-                underThresholdCount++;
-            }
-            else
-            {
-                underThresholdCount = 0;
-            }
-            timer += Time.deltaTime;
-            await Task.Yield();
-        }
-    }
     private void CheckForBodyCollision(ColliderCategory colliderCategory, float _)
     {
         if (colliderCategory == ColliderCategory.Body)
         {
-
-            ChangeState(_stateFactory.GetState(PlayerStateType.Ragdoll), false);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        ChangeState(_stateFactory.GetState(PlayerStateType.Ragdoll), false);
     }
 
     public void DoActivateFinish(Vector2 finishPoint)

@@ -5,7 +5,7 @@ using System;
 
 public class StandbyState : PlayerState
 {
-    public Action DoChangeState;
+    public Action DoChangeState, DoEnterStandby;
     public StandbyState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
         _isRootState = true;
@@ -13,19 +13,25 @@ public class StandbyState : PlayerState
 
     public override void EnterState()
     {
-        DoChangeState += () => ChangeState(new ActiveState(_playerMachine, _stateFactory));
-        _playerMachine.Player.InputEvents.OnDownPress += DoChangeState;
+        DoEnterStandby += () => _playerMachine.Player.InputEvents.OnDownPress += DoChangeState;
+        if(_player.Params.StompCharge > 0)
+        {
+            DoEnterStandby += () => _player.OnStartWithStomp?.Invoke(_player);
+        }
+        LevelManager.OnStandby += DoEnterStandby;
+        DoChangeState += () => ChangeState(_stateFactory.GetState(PlayerStateType.Active), false);
         _player.DoLanding = false;
     }
 
     public override void ExitState()
     {
         _playerMachine.Player.InputEvents.OnDownPress -= DoChangeState;
+        LevelManager.OnStandby -= DoEnterStandby;
         _player.Animator.SetBool("OnBoard", true);
-        _player.Rigidbody.bodyType = RigidbodyType2D.Dynamic;
-        _player.Rigidbody.velocity += new Vector2(15, 0);
+        _player.NormalBody.bodyType = RigidbodyType2D.Dynamic;
+        _player.NormalBody.velocity += new Vector2(15, 0);
         _player.InputEvents.OnDownPress -= ExitState;
-        _player.DoStart();
+        _player.OnStartAttempt?.Invoke();
     }
 
     public override void FixedUpdateState()

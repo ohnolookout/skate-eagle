@@ -6,6 +6,7 @@
 
     public override void EnterState()
     {
+        _player.IsRagdoll = true;
         _player.Die();
     }
 

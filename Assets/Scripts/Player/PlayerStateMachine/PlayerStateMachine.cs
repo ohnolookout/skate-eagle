@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Threading.Tasks;
 
 
 public class PlayerStateMachine
 {
     public PlayerState CurrentState { get; set; }
-    private PlayerStateFactory _stateFactory; 
+    private PlayerStateFactory _stateFactory;
+    public bool doJump;
     public IPlayer Player { get; set; }
 
-    public PlayerStateMachine(IPlayer player, PlayerStateType startingState = PlayerStateType.Standby)
+    public PlayerStateMachine(IPlayer player)
     {
         Player = player;
         _stateFactory = new(this);
@@ -45,13 +46,5 @@ public class PlayerStateMachine
         CurrentState.FixedUpdateState();
     }
 
-    public void OnCollisionEnter(Collision2D collision)
-    {
-        CurrentState.OnCollisionEnter(collision);
-    }
-
-    public void OnCollisionExit(Collision2D collision)
-    {
-        CurrentState.OnCollisionExit(collision);
-    }
+    
 }

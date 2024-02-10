@@ -5,14 +5,13 @@ public class BrakingState : PlayerState
     private bool _onBoard = true;
     public BrakingState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
-        _playerBody = _player.Rigidbody;
+        _playerBody = _player.NormalBody;
         _isRootState = true;
     }
 
     //Figure out why sound isn't working.
     public override void EnterState()
     {
-        Debug.Log("Entering BrakingState");
         _player.Animator.SetTrigger("Brake");
         _player.InputEvents.DisableInputs();
         _player.SlowToStop();
@@ -38,7 +37,7 @@ public class BrakingState : PlayerState
         if (_playerBody.velocity.x < 10f && _onBoard)
         {
             _onBoard = false;
-            _player.Dismount();
+            _player.Animator.SetBool("OnBoard", false);
         }
     }
 

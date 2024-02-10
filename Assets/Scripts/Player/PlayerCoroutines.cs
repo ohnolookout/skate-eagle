@@ -6,14 +6,14 @@ public static class PlayerCoroutines
     public enum EagleCoroutines { Stomp, Dampen, JumpCountDelay, BoostTrail, EndFlip, DelayedFreeze, AddBoost }
     public static bool Stomping = false, CountingDownJump = false, CheckingForSecondJump = false, DelayedSecondJump = false;
 
-    public static IEnumerator Stomp(IPlayer player)
+    public static IEnumerator Stomp(Player player)
     {
         player.Stomping = true;
-        player.JumpCount = 2;
-        Rigidbody2D rigidBody = player.Rigidbody;
+        player.Params.JumpCount = 2;
+        Rigidbody2D rigidBody = player.NormalBody;
         rigidBody.angularVelocity = 0;
-        float originalRotationAccel = player.RotationAccel;
-        player.RotationAccel *= 1.5f;
+        float originalRotationAccel = player.Params.RotationAccel;
+        player.Params.RotationAccel *= 1.5f;
         float stompTimer = 0f;
         while (stompTimer < 0.075f)
         {
@@ -22,17 +22,17 @@ public static class PlayerCoroutines
             yield return new WaitForFixedUpdate();
         }
         rigidBody.centerOfMass = new Vector2(0, -2f);
-        while (rigidBody.velocity.y > player.StompSpeedLimit && !player.Collided)
+        while (rigidBody.velocity.y > player.Params.StompSpeedLimit && !player.Collided)
         {
             rigidBody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(rigidBody.velocity.y));
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Clamp(rigidBody.velocity.y, player.StompSpeedLimit, -64));
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, Mathf.Clamp(rigidBody.velocity.y, player.Params.StompSpeedLimit, -64));
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitUntil(() => player.Collided);
         player.Stomping = false;
         yield return new WaitForSeconds(0.2f);
-        player.TriggerBoost(player.FlipBoost, 1.8f);
-        player.RotationAccel = originalRotationAccel;
+        player.TriggerBoost(player.Params.FlipBoost, 1.8f);
+        player.Params.RotationAccel = originalRotationAccel;
     }
 
 
@@ -92,15 +92,15 @@ public static class PlayerCoroutines
         trail.transform.localPosition = originalPosition;
     }
 
-    public static IEnumerator CheckForSecondJump(IPlayer player)
+    public static IEnumerator CheckForSecondJump(Player player)
     {
         CheckingForSecondJump = true;
         float timer = 0;
         while (timer < 0.2f)
         {
-            if (player.JumpCount == 2)
+            if (player.Params.JumpCount == 2)
             {
-                player.Rigidbody.AddForce(new Vector2(0, player.JumpForce * 300 * player.JumpMultiplier));
+                player.NormalBody.AddForce(new Vector2(0, player.Params.JumpForce * 300 * player.Params.JumpMultiplier));
                 break;
             }
             //if second jump, don't dampen first or second jump
@@ -110,15 +110,15 @@ public static class PlayerCoroutines
         CheckingForSecondJump = false;
     }
 
-    public static IEnumerator DelayedJump(IPlayer player, float delayTimeInSeconds)
+    public static IEnumerator DelayedJump(Player player, float delayTimeInSeconds)
     {
         yield return new WaitForSeconds(delayTimeInSeconds);
         player.Jump();
     }
 
-    public static IEnumerator SlowToStop(IPlayer player)
+    public static IEnumerator SlowToStop(Player player)
     {
-        Rigidbody2D rigidbody = player.Rigidbody;
+        Rigidbody2D rigidbody = player.NormalBody;
         int frameCount = 0;
         while (rigidbody.velocity.x > 0.1f)
         {
@@ -133,36 +133,36 @@ public static class PlayerCoroutines
             }
             if (rigidbody.velocity.x < 10f && player.Animator.GetBool("OnBoard"))
             {
-                player.Dismount();
+                player.Animator.SetBool("OnBoard", false);
             }
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitForSeconds(0.5f);
-        player.TriggerFinishStop();
+        player.FinishStop?.Invoke();
     }
 
 
-    public static IEnumerator DelayedJumpDampen(IPlayer player, float delayTimerInSeconds)
+    public static IEnumerator DelayedJumpDampen(Player player, float delayTimerInSeconds)
     {
         yield return new WaitForSeconds(delayTimerInSeconds);
-        player.Rigidbody.AddForce(new Vector2(0, -player.JumpForce * 250 * player.JumpMultiplier));
+        player.NormalBody.AddForce(new Vector2(0, -player.Params.JumpForce * 250 * player.Params.JumpMultiplier));
 
     }
 
-    public static IEnumerator EndFlip(IPlayer player, double spins)
+    public static IEnumerator EndFlip(Player player, double spins)
     {
-        yield return new WaitForSeconds(player.FlipDelay * 0.1f);
+        yield return new WaitForSeconds(player.Params.FlipDelay * 0.1f);
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
-        player.TriggerBoost(player.FlipBoost, boostMultiplier);
+        player.TriggerBoost(player.Params.FlipBoost, boostMultiplier);
     }
 
 
-    public static IEnumerator DelayedFreeze(IPlayer player, float timer)
+    public static IEnumerator DelayedFreeze(Player player, float timer)
     {
         yield return new WaitForSeconds(timer);
-        player.Rigidbody.bodyType = RigidbodyType2D.Kinematic;
-        player.Rigidbody.velocity = new Vector2(0, 0);
-        player.Rigidbody.freezeRotation = true;
+        player.NormalBody.bodyType = RigidbodyType2D.Kinematic;
+        player.NormalBody.velocity = new Vector2(0, 0);
+        player.NormalBody.freezeRotation = true;
         player.Die();
     }
 

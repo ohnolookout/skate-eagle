@@ -5,35 +5,32 @@ using System;
 
 public class GroundedState : PlayerState
 {
-    private Action OnJump, OnAirborne;
+    private Action OnAirborne;
     private bool _doDampen;
     private const int _dampenThreshold = 180;
     public GroundedState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
-        OnJump += () => ChangeState(_stateFactory.GetState(PlayerStateType.Jumping));
         OnAirborne += () => ChangeState(_stateFactory.GetState(PlayerStateType.Airborne));
-        OnAirborne += () => _player.JumpCount = 1;
     }
 
     public override void EnterState()
     {
         _doDampen = true;
         DampenLanding();
-        _player.Rigidbody.centerOfMass = new Vector2(0, -2f);
-        Debug.Log("Entering grounded");
+        _player.NormalBody.centerOfMass = new Vector2(0, -2f);
         _animator.SetBool("Airborne", false);
         _animator.SetFloat("forceDelta", _player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal));     
         _animator.SetTrigger("Land");
-        _player.InputEvents.OnJumpPress += OnJump;
+        _player.InputEvents.OnJumpPress += FirstJump;
         _player.CollisionManager.OnAirborne += OnAirborne;
-        _player.JumpCount = 0;
+        _player.Params.JumpCount = 0;
         FlipCheck();
     }
 
     public override void ExitState()
     {
         _doDampen = false;
-        _player.InputEvents.OnJumpPress -= OnJump;
+        _player.InputEvents.OnJumpPress -= FirstJump;
         _player.CollisionManager.OnAirborne -= OnAirborne;
     }
 
@@ -48,11 +45,7 @@ public class GroundedState : PlayerState
         _player.Params.RotationStart = _body.rotation;
         if (spins >= 1)
         {
-            if (_player.StompCharge < _player.StompThreshold)
-            {
-                _player.StompCharge = Mathf.Min((int)spins + _player.StompCharge, _player.StompThreshold);
-            }
-            _player.OnFlip?.Invoke(_player, spins);
+            DoFlip(spins);
         }
     }
 
@@ -60,16 +53,16 @@ public class GroundedState : PlayerState
 
     private async void DampenLanding()
     {
-        _player.Rigidbody.angularVelocity = Mathf.Clamp(_player.Rigidbody.angularVelocity, -300, 300);
+        _player.NormalBody.angularVelocity = Mathf.Clamp(_player.NormalBody.angularVelocity, -300, 300);
         float dampenTimer = 0;
         int dampenThresholdCount = 0;
         while (dampenTimer < 0.2f && dampenThresholdCount < 2 && _doDampen)
         {
-            if (Mathf.Abs(_player.Rigidbody.angularVelocity) > 60)
+            if (Mathf.Abs(_player.NormalBody.angularVelocity) > 60)
             {
-                _player.Rigidbody.angularVelocity *= 0.3f;
+                _player.NormalBody.angularVelocity *= 0.3f;
             }
-            if (_player.Rigidbody.angularVelocity < _dampenThreshold)
+            if (_player.NormalBody.angularVelocity < _dampenThreshold)
             {
                 dampenThresholdCount++;
             }
@@ -82,4 +75,23 @@ public class GroundedState : PlayerState
         }
         _doDampen = false;
     }
+
+    private void FirstJump()
+    {
+        _player.JumpManager.Jump();
+        ChangeState(_stateFactory.GetState(PlayerStateType.Airborne));
+    }
+
+    private async void DoFlip(double spins)
+    {
+        if (_player.Params.StompCharge < _player.Params.StompThreshold)
+        {
+            _player.Params.StompCharge = Mathf.Min((int)spins + _player.Params.StompCharge, _player.Params.StompThreshold);
+        }
+        _player.OnFlip?.Invoke(_player, spins);
+        await Task.Delay((int)(_player.Params.FlipDelay * 100));
+        float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
+        _player.TriggerBoost(_player.Params.FlipBoost, boostMultiplier);
+    }
+
 }

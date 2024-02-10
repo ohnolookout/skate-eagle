@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private Timer timer;
     public static Action<ILevelManager> OnLanding, OnGameOver;
     public static Action<FinishScreenData> OnFinish;
-    public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart;
+    public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart, OnFall, OnLevelExit;
     public static Action<Vector2> OnActivateFinish { get; set; }
     private Action finishStop;
     private bool _overlayLoaded = false;
@@ -28,8 +28,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
         Vector3 startPosition;
         if (HasPlayer)
         {
-            startPosition = _player.Rigidbody.position;
-            _terrainManager.NormalBodies = new() { _player.Rigidbody };
+            startPosition = _player.NormalBody.position;
+            _terrainManager.NormalBodies = new() { _player.NormalBody };
             _terrainManager.RagdollBodies = new() { _player.RagdollBody, _player.RagdollBoard };
         }
         else
@@ -44,7 +44,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void OnEnable()
     {
         _inputEvents = new(InputType.UI);
-        _inputEvents.OnRestart += RestartGame;
         _inputEvents.OnSubmit += Submit;
         Overlay.OnOverlayLoaded += () => _overlayLoaded = true;
         Overlay.OnStandbyButton += GoToStandby;
@@ -52,14 +51,15 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     private void OnDisable()
     {
+        OnLevelExit?.Invoke();
         ResetStaticEvents();
         if (_player != null)
         {
             _player.FinishStop -= finishStop;
         }
         _inputEvents.OnRestart -= RestartGame;
+        _inputEvents.OnRestart -= GoToStandby;
         _inputEvents.OnSubmit -= Submit;
-        //_inputEvent.OnRestartButton -= RestartGame;
     }
 
     private void Start()
@@ -69,6 +69,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             Debug.LogWarning("No overlay found by level manager. Going to standby.");
             GoToStandby();
+        }
+        else
+        {
+            _inputEvents.OnRestart += GoToStandby;
         }
     }
 
@@ -105,12 +109,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         if (HasAudioManager)
         {
             _audioManager.AssignLevelEvents();
-            /*
-            OnRestart += _audioManager.ClearLoops;
-            OnLanding += _audioManager.LoadComponents;
-            OnAttempt += () => _audioManager.StartUpdatingModifiers(true);
-            OnResultsScreen += () => _audioManager.StartUpdatingModifiers(false);
-            */
         }
         if (HasPlayer)
         {
@@ -140,10 +138,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void RestartGame()
     {
-        if((int)_runState < 2)
-        {
-            return;
-        }
         OnRestart?.Invoke();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -164,12 +158,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void StartAttempt()
     {
+        _inputEvents.OnRestart += RestartGame;
         OnAttempt?.Invoke();
         _runState = RunState.Active;
     }
 
     public void GoToStandby()
     {
+        _inputEvents.OnRestart -= GoToStandby;
         OnStandby?.Invoke();
         _runState = RunState.Standby;
     }
@@ -199,8 +195,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     public void Fall()
     {
-        _player.Fall();
-        _runState = RunState.GameOver;
+        OnFall?.Invoke();
     }
 
     public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }

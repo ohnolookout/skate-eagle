@@ -18,7 +18,7 @@ public class Overlay : MonoBehaviour
     private void Awake()
     {
         OnOverlayLoaded?.Invoke();
-        _levelManager = GameObject.FindGameObjectWithTag("Logic").GetComponent<ILevelManager>();
+        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
     }
 
     private void OnEnable()

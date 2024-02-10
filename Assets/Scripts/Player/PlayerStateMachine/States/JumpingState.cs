@@ -29,6 +29,5 @@ public class JumpingState : PlayerState
     {
         _player.Params.JumpCount++;
         _player.Params.JumpStartTime = Time.time;
-        _player.CheckForJumpRelease = true;
     }
 }

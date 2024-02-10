@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -44,16 +43,16 @@ public class SoundModifierManager
         //If body is null, track intensity of playerBody, pulled from runManager so it updates to lowSpine if ragdoll
         if (body == null || !player.IsRagdoll)
         {
-            float intensity = Intensity(player.Rigidbody, intensityDenominator);
+            float intensity = Intensity(player.NormalBody, intensityDenominator);
             _modifiers[body].SetNewTargetIntensity(intensity);
             //Distance and pan are not relevant for playerbody, so continue to next body.
         }
         else
         {
             float intensity = Intensity(body, intensityDenominator);
-            float soundDistance = Mathf.Max(Mathf.Abs(body.position.x - player.Rigidbody.position.x) - _distanceBuffer, 0);
+            float soundDistance = Mathf.Max(Mathf.Abs(body.position.x - player.RagdollBody.position.x) - _distanceBuffer, 0);
             float distance = (maxSoundDistance - soundDistance) / maxSoundDistance;
-            float pan = Pan(player.Rigidbody, body, camera);
+            float pan = Pan(player.RagdollBody, body, camera);
             _modifiers[body].SetNewTargets(intensity, distance, pan);
         }
     }

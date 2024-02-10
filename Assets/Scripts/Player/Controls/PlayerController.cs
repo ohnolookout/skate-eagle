@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public KeyState jumpState = KeyState.Off, downState = KeyState.Off, stompState = KeyState.Off;
     public bool down = false, stomp = false;
     public Vector2 rotation = new(0,0);
-    private IPlayer _player;
+    private Player _player;
     private int downCount;
     private ILevelManager _levelManager;
 

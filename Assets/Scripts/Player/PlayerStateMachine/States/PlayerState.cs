@@ -20,7 +20,7 @@ public abstract class PlayerState
         _playerMachine = playerMachine;
         _stateFactory = stateFactory;
         _player = playerMachine.Player;
-        _body = _player.Rigidbody;
+        _body = _player.NormalBody;
         _animator = _player.Animator;
         _collisionManager = _player.CollisionManager;
         _inputEvents = _player.InputEvents;
@@ -62,15 +62,6 @@ public abstract class PlayerState
         }
     }
 
-    public virtual void OnCollisionEnter(Collision2D collision) 
-    {
-
-    }
-    public virtual void OnCollisionExit(Collision2D collision)
-    {
-
-    }
-
     public void ExitStates()
     {
         ExitState();
@@ -79,7 +70,6 @@ public abstract class PlayerState
             _substate.ExitStates();
         }
     }
-
 
     public void ChangeState(PlayerState newState, bool maintainSubstates = true)
     {

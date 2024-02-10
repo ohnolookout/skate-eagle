@@ -9,13 +9,12 @@ public class FinishedState : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Entering FinishedState");
         DelayedFinishStop(500);
     }
 
     private async void DelayedFinishStop(int delay)
     {
         await Task.Delay(delay);
-        _player.TriggerFinishStop();
+        _player.FinishStop?.Invoke();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Threading.Tasks;
 using System;
 public class StompingState : PlayerState
 {
@@ -10,18 +9,18 @@ public class StompingState : PlayerState
     public StompingState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
         _originalRotationAccel = _player.Params.RotationAccel;
-        _boost = () => _player.TriggerBoost(_player.FlipBoost, 1.8f);
+        _boost = () => _player.TriggerBoost(_player.Params.FlipBoost, 1.8f);
     }
 
     public override void EnterState()
     {
-        Debug.Log("Entering stomp");
         _player.CollisionManager.OnCollide += OnLand; 
         _player.Stomping = true;
-        _player.JumpCount = 2;
-        _player.StompCharge = 0;
-        _player.Rigidbody.angularVelocity = 0;
+        _player.Params.JumpCount = 2;
+        _player.Params.StompCharge = 0;
+        _player.NormalBody.angularVelocity = 0;
         _player.Params.RotationAccel *= 1.5f;
+        _player.OnStomp?.Invoke();
         _timer = 0;
         _stalling = true;
         _diving = false;
@@ -29,9 +28,8 @@ public class StompingState : PlayerState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting stomp");
         _player.CollisionManager.OnCollide -= OnLand;
-        _player.RotationAccel = _originalRotationAccel;
+        _player.Params.RotationAccel = _originalRotationAccel;
         _player.Stomping = false;
     }
 
@@ -52,7 +50,7 @@ public class StompingState : PlayerState
     {
         _diving = false;
         _stalling = false;
-        _player.DelayedFunc(_boost, 0.2f);
+        PlayerAsyncUtility.DelayedFunc(_boost, 0.2f);
         ChangeState(_stateFactory.GetState(PlayerStateType.Grounded));
     }
 
@@ -60,12 +58,12 @@ public class StompingState : PlayerState
     {
         if (_timer < 0.075f)
         {
-            _player.Rigidbody.velocity -= new Vector2(_player.Rigidbody.velocity.x * 0.1f, _player.Rigidbody.velocity.y * 0.4f);
+            _player.NormalBody.velocity -= new Vector2(_player.NormalBody.velocity.x * 0.1f, _player.NormalBody.velocity.y * 0.4f);
             _timer += Time.deltaTime;
         }
         else
         {
-            _player.Rigidbody.centerOfMass = new Vector2(0, -2f);
+            _player.NormalBody.centerOfMass = new Vector2(0, -2f);
             _stalling = false;
             _diving = true;
         }
@@ -73,10 +71,10 @@ public class StompingState : PlayerState
 
     private void DivePhase()
     {
-        if (_player.Rigidbody.velocity.y > _player.StompSpeedLimit)
+        if (_player.NormalBody.velocity.y > _player.Params.StompSpeedLimit)
         {
-            _player.Rigidbody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(_player.Rigidbody.velocity.y));
-            _player.Rigidbody.velocity = new Vector2(_player.Rigidbody.velocity.x, Mathf.Clamp(_player.Rigidbody.velocity.y, _player.StompSpeedLimit, -64));
+            _player.NormalBody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(_player.NormalBody.velocity.y));
+            _player.NormalBody.velocity = new Vector2(_player.NormalBody.velocity.x, Mathf.Clamp(_player.NormalBody.velocity.y, _player.Params.StompSpeedLimit, -64));
         }
         else
         {

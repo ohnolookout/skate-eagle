@@ -12,7 +12,6 @@ public class AudioManager : MonoBehaviour
     private Soundtrack soundtrack;
     public Dictionary<AudioSource, Sound> playingSounds = new();
     public Dictionary<AudioSource, IEnumerator> fadingSources = new();
-    //private ILevelManager _levelManager;
     public float intensityDenominator = 300, maxSoundDistance = 160, zoomLimit = 110;
     private bool _updateZoomModifier = false, _updateLocalModifiers = false;
     private Action<ICameraOperator> updateZoom;
@@ -63,6 +62,7 @@ public class AudioManager : MonoBehaviour
         LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
         LevelManager.OnFinish += _ => SetModifierFramerate(1);
         LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
+        LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
     }
 
     public void LoadComponents(ILevelManager levelManager)
@@ -149,7 +149,8 @@ public class AudioManager : MonoBehaviour
         float modifier = _modifierManager.GetTotalModifier(sound, _player.IsRagdoll);
         if (sound.trackIntensity)
         {
-            float intensity = -1 + Mathf.Clamp(_player.MagnitudeDelta() / 100, 0, 2);
+            TrackingType trackingType = GetTrackingType(sound);
+            float intensity = -1 + Mathf.Clamp(_player.MomentumTracker.ReboundMagnitude(trackingType) / 100, 0, 2);
             audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, _player.IsRagdoll);
         }
         else
@@ -226,6 +227,22 @@ public class AudioManager : MonoBehaviour
     public void InitializeModifiers(Rigidbody2D[] trackedBodies)
     {
         _modifierManager = new(trackedBodies);
+    }
+
+    private TrackingType GetTrackingType(Sound sound)
+    {
+        if (!_player.IsRagdoll)
+        {
+            return TrackingType.PlayerNormal;
+        }
+        else if (sound.localizedSource == null)
+        {
+            return TrackingType.PlayerRagdoll;
+        }
+        else
+        {
+            return TrackingType.Board;
+        }
     }
 
     

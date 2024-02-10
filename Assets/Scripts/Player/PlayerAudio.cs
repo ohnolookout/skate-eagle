@@ -94,14 +94,14 @@ public class PlayerAudio : MonoBehaviour
 
     private void JumpSound(IPlayer player)        
     {
-        if (player.JumpCount == 0)
+        if (player.Params.JumpCount == 0)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Jump]);
             _wheelTimer = 0;
             if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Freewheel]))
             {
                 _audioManager.StopLoop(_loopDict[LoopFX.Roll]);
-                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.Velocity.magnitude));
+                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.NormalBody.velocity.magnitude));
             }
         }
         else
@@ -113,7 +113,7 @@ public class PlayerAudio : MonoBehaviour
     private void SlowToStop(IPlayer player)
     {
         _wheelsOnGround = true;
-        float stopDuration = AudioManagerUtility.StopDuration(player.Velocity.x);
+        float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.velocity.x);
         StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
         _audioManager.StartLoop(_loopDict[LoopFX.Board]);
 

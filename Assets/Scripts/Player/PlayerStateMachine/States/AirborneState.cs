@@ -7,21 +7,18 @@ public class AirborneState : PlayerState
     private bool _undoJumpDampen = false;
     private int _downPressCount = 0;
     private Action _decreaseDownPressCount;
-    private JumpAdjuster _jumpAdjuster;
     public AirborneState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
         _decreaseDownPressCount = () => Mathf.Clamp(_downPressCount - 1, 0, 3);
-        _jumpAdjuster = new(_player);
 
     }
 
     public override void EnterState()
     {
-        Debug.Log("Entering airborne");
         _downPressCount = 0;
-        _player.Rigidbody.centerOfMass = new Vector2(0, 0f);
+        _player.NormalBody.centerOfMass = new Vector2(0, 0f);
         _player.CollisionManager.OnCollide += OnLand;
-        _params.RotationStart = _player.Rigidbody.rotation;
+        _params.RotationStart = _player.NormalBody.rotation;
         _animator.SetBool("Airborne", true);
         
         if (_player.Params.StompCharge >= _player.Params.StompThreshold)
@@ -29,13 +26,13 @@ public class AirborneState : PlayerState
             _player.InputEvents.OnDownPress += DownPress;
         }
 
-        if (_player.CheckForJumpRelease)
+        if (_player.Params.JumpCount == 1)
         {
-            _jumpAdjuster.AddReleaseCheck();
             _player.InputEvents.OnJumpRelease += JumpRelease;
         } else
         {
-            CheckEnableJump(false);
+            _player.Params.JumpCount = 1;
+            _player.InputEvents.OnJumpPress += SecondJump;
         }
     }
 
@@ -45,6 +42,7 @@ public class AirborneState : PlayerState
         _player.InputEvents.OnJumpRelease -= JumpRelease;
         _player.InputEvents.OnJumpPress -= SecondJump;
         _player.InputEvents.OnDownPress -= DownPress;
+        _player.JumpManager.CancelReleaseCheck();
     }
 
     public override void FixedUpdateState()
@@ -56,32 +54,23 @@ public class AirborneState : PlayerState
     private void SecondJump()
     {
         _player.InputEvents.OnJumpPress -= SecondJump;
-        _jumpAdjuster.ScheduleSecondJump( () => ChangeState(_stateFactory.GetState(PlayerStateType.Jumping)) );
+        _player.JumpManager.ScheduleSecondJump();
+        _player.InputEvents.OnJumpRelease += JumpRelease;
     }
 
     private void JumpRelease()
     {
         _player.InputEvents.OnJumpRelease -= JumpRelease;
-        _jumpAdjuster.ScheduleJumpRelease();
-        _player.CheckForJumpRelease = false;
-        CheckEnableJump(true);
+        _player.JumpManager.JumpRelease();
+        if(_player.Params.JumpCount < _player.Params.JumpLimit)
+        {
+            _player.InputEvents.OnJumpPress += SecondJump;
+        }
     }
 
     private void OnLand(ColliderCategory _, float __)
     {
         ChangeState(_stateFactory.GetState(PlayerStateType.Grounded));
-    }
-    private void CheckEnableJump(bool firstJumpOccured)
-    {
-        if (_player.Params.JumpCount >= _player.Params.JumpLimit)
-        {
-            return;
-        }
-        _player.InputEvents.OnJumpPress += SecondJump;
-        if (firstJumpOccured)
-        {
-            _jumpAdjuster.AddSecondJumpCheck();
-        }
     }
 
     private void DownPress()
@@ -93,7 +82,7 @@ public class AirborneState : PlayerState
         }
         else
         {
-            _player.DelayedFunc(_decreaseDownPressCount, 0.25f);
+            PlayerAsyncUtility.DelayedFunc(_decreaseDownPressCount, 0.25f);
         }
     }
 }

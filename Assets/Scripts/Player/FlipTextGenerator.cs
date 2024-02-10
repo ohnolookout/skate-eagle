@@ -35,7 +35,7 @@ public class FlipTextGenerator : MonoBehaviour
     public void NewFlipText(IPlayer player, double flipCount = 1)
     {
         Vector3 location = GenerateLocation(_player, wordSpread);
-        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, _player.Rigidbody.position + (Vector2) location);
+        Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, _player.NormalBody.position + (Vector2) location);
         Vector3 finalPosition = viewportPosition + location;
         flipText.transform.position = finalPosition; 
         float randomZ = UnityEngine.Random.Range(-45, 45);
@@ -57,7 +57,7 @@ public class FlipTextGenerator : MonoBehaviour
     private Vector3 GenerateLocation(IPlayer player, float scale)
     {
         float xCoord;
-        if(player.Rigidbody.velocity.x >= 0)
+        if(player.NormalBody.velocity.x >= 0)
         {
             xCoord = UnityEngine.Random.Range(-scale, -scale/2);
         } else

@@ -39,7 +39,7 @@ public class RagdollController : MonoBehaviour
         SwitchColliders(normalColliders, false);
         SwitchColliders(ragdollColliders, true);
         SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
-        SwitchRigidbodies(ragdollRigidbodies, true, LevelManager.GetPlayer.VectorChange(TrackingType.PlayerNormal));
+        SwitchRigidbodies(ragdollRigidbodies, true, _player.MomentumTracker.VectorChange(TrackingType.PlayerNormal));
         normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
         ragdoll = true;

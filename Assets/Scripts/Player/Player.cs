@@ -52,7 +52,7 @@ public class Player : MonoBehaviour, IPlayer
         OnFinish += _ => SlowToStop();
         OnFinish += _ => OnSlowToStop?.Invoke(this);
         LevelManager.OnFinish += OnFinish;
-        FlipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(eagleScript, spins));
+        FlipRoutine += (eagleScript, spins) => StartCoroutine(PlayerCoroutines.EndFlip(this, spins));
         OnFlip += FlipRoutine;
         _collisionManager.OnAirborne += GoAirborne;
         _collisionManager.AddPlayer(this);
@@ -447,10 +447,6 @@ public class Player : MonoBehaviour, IPlayer
         return MomentumTracker.VectorChange(body);
     }
 
-    void IPlayer.DelayedFunc(Action callback, float delayInSeconds)
-    {
-        throw new NotImplementedException();
-    }
 
     public Transform Transform
     {
@@ -485,7 +481,7 @@ public class Player : MonoBehaviour, IPlayer
     public bool FacingForward { get => facingForward; set => facingForward = value; }
     public bool Collided { get => _collisionManager.Collided; }
     public bool Stomping { get => PlayerCoroutines.Stomping; set => PlayerCoroutines.Stomping = value; }
-    public bool IsRagdoll { get => ragdoll; }
+    public bool IsRagdoll { get => ragdoll; set => ragdoll = value; }
     public int JumpCount { get => _params.JumpCount; set => _params.JumpCount = Mathf.Min(2, value); }
     public int StompCharge { get => _params.StompCharge; set => _params.StompCharge = value; }
     public int StompThreshold { get => _params.StompThreshold; }
@@ -497,12 +493,13 @@ public class Player : MonoBehaviour, IPlayer
     public float JumpMultiplier { get => _params.JumpMultiplier; set => _params.JumpMultiplier = value; }
     public InputEventController InputEvents { get => _inputEvents; set => _inputEvents = value; }
     public float DownForce { get => _params.DownForce; }
-    Action IPlayer.OnDie { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Action OnDie { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    PlayerParameters IPlayer.Params => throw new NotImplementedException();
+    public PlayerParameters Params => throw new NotImplementedException();
 
-    bool IPlayer.CheckForJumpRelease { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    bool IPlayer.DoLanding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool DoLanding { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    int IPlayer.FlipBoost => throw new NotImplementedException();
+    public Rigidbody2D NormalBody => throw new NotImplementedException();
+
+    public JumpManager JumpManager => throw new NotImplementedException();
 }

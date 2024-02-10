@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum PlayerStateType
 {
-    Standby, Active, Pushing, Grounded, Airborne, Jumping, Stomping, Braking, Finished, Ragdoll, Crouched, Standing,
+    Standby, Active, Pushing, Grounded, Airborne, Jumping, Stomping, Braking, Finished, Ragdoll, Crouched, Standing, Fallen
     
 }
 public class PlayerStateFactory
@@ -28,6 +28,7 @@ public class PlayerStateFactory
         _stateDict[PlayerStateType.Stomping] = new StompingState(_playerMachine, this);
         _stateDict[PlayerStateType.Crouched] = new CrouchedState(_playerMachine, this);
         _stateDict[PlayerStateType.Standing] = new StandingState(_playerMachine, this);
+        _stateDict[PlayerStateType.Fallen] = new FallenState(_playerMachine, this);
     }
 
     public PlayerState GetState(PlayerStateType type)
