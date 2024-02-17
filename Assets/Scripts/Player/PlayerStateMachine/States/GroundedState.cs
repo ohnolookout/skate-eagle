@@ -18,9 +18,7 @@ public class GroundedState : PlayerState
         _doDampen = true;
         DampenLanding();
         _player.NormalBody.centerOfMass = new Vector2(0, -2f);
-        _animator.SetBool("Airborne", false);
-        _animator.SetFloat("forceDelta", _player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal));     
-        _animator.SetTrigger("Land");
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Land);
         _player.InputEvents.OnJumpPress += FirstJump;
         _player.CollisionManager.OnAirborne += OnAirborne;
         _player.Params.JumpCount = 0;
@@ -36,7 +34,7 @@ public class GroundedState : PlayerState
 
     public override void FixedUpdateState()
     {
-        _animator.SetFloat("Speed", _body.velocity.magnitude);
+        _player.AnimationManager.UpdateSpeed();
     }
 
     private void FlipCheck()
@@ -88,7 +86,7 @@ public class GroundedState : PlayerState
         {
             _player.Params.StompCharge = Mathf.Min((int)spins + _player.Params.StompCharge, _player.Params.StompThreshold);
         }
-        _player.OnFlip?.Invoke(_player, spins);
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Flip);
         await Task.Delay((int)(_player.Params.FlipDelay * 100));
         float boostMultiplier = 1 + ((-1 / (float)spins) + 1);
         _player.TriggerBoost(_player.Params.FlipBoost, boostMultiplier);

@@ -6,7 +6,6 @@ public abstract class PlayerState
 {
     protected IPlayer _player;
     protected Rigidbody2D _body;
-    protected Animator _animator;
     protected InputEventController _inputEvents;
     protected ICollisionManager _collisionManager;
     protected PlayerParameters _params;
@@ -21,7 +20,6 @@ public abstract class PlayerState
         _stateFactory = stateFactory;
         _player = playerMachine.Player;
         _body = _player.NormalBody;
-        _animator = _player.Animator;
         _collisionManager = _player.CollisionManager;
         _inputEvents = _player.InputEvents;
         _params = _player.Params;

@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
 
 public class ActiveState : PlayerState
 {
@@ -89,13 +85,11 @@ public class ActiveState : PlayerState
     private void StartCrouch()
     {
         crouched = true;
-        _player.Animator.SetBool("Crouched", true);
-        _player.Animator.SetTrigger("Crouch");
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Crouch);
     }
     private void StopCrouch()
     {
-        _player.Animator.SetBool("Crouched", false);
-        _player.Animator.SetTrigger("Stand Up");
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Stand);
         crouched = false;
     }
     private void DirectionCheck()
@@ -104,8 +98,7 @@ public class ActiveState : PlayerState
         _player.FacingForward = _playerBody.velocity.x >= 0;
         if (_player.FacingForward != lastDirection)
         {
-            _player.Animator.SetBool("FacingForward", _player.FacingForward);
-            _playerTransform.localScale = new Vector3(-_playerTransform.localScale.x, _playerTransform.localScale.y, _playerTransform.localScale.z);
+            _player.SwitchDirection();
         }
     }
     private void FinishCheck()

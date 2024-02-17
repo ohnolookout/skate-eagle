@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -16,7 +14,7 @@ public class StandbyState : PlayerState
         DoEnterStandby += () => _playerMachine.Player.InputEvents.OnDownPress += DoChangeState;
         if(_player.Params.StompCharge > 0)
         {
-            DoEnterStandby += () => _player.OnStartWithStomp?.Invoke(_player);
+            DoEnterStandby += () => _player.EventAnnouncer.InvokeAction(PlayerEvent.StartWithStomp);
         }
         LevelManager.OnStandby += DoEnterStandby;
         DoChangeState += () => ChangeState(_stateFactory.GetState(PlayerStateType.Active), false);
@@ -27,18 +25,11 @@ public class StandbyState : PlayerState
     {
         _playerMachine.Player.InputEvents.OnDownPress -= DoChangeState;
         LevelManager.OnStandby -= DoEnterStandby;
-        _player.Animator.SetBool("OnBoard", true);
+        _player.AnimationManager.SetOnBoard(true);
         _player.NormalBody.bodyType = RigidbodyType2D.Dynamic;
         _player.NormalBody.velocity += new Vector2(15, 0);
         _player.InputEvents.OnDownPress -= ExitState;
-        _player.OnStartAttempt?.Invoke();
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.StartAttempt);
     }
 
-    public override void FixedUpdateState()
-    {
-    }
-
-    public override void UpdateState()
-    {
-    }
 }

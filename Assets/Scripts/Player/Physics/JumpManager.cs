@@ -32,9 +32,8 @@ public class JumpManager
 
     public void Jump()
     {
-        _player.Animator.SetTrigger("Jump");
         _player.Params.JumpMultiplier = 1 - (_player.Params.JumpCount * 0.25f);
-        _player.OnJump?.Invoke(_player); ;
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Jump);
         if (_player.NormalBody.velocity.y < 0)
         {
             _player.NormalBody.velocity = new Vector2(_player.NormalBody.velocity.x, 0);

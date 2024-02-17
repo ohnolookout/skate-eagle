@@ -7,17 +7,16 @@ public interface ILevelManager
     Vector3 FinishPoint { get; set; }
     static IPlayer GetPlayer { get; }
     TerrainManager TerrainManager { get; set; }
-    RunState RunState { get; set; }
     bool HasCameraOperator { get; }
     bool HasPlayer { get; }
     bool HasTerrainManager { get ; }
 
     void BackToMenu();
     void Fall();
-    void Finish();
-    void GameOver();
+    void Finish(IPlayer player);
+    void GameOver(IPlayer player);
     void GoToStandby();
     void RestartGame();
     void SetLevel(Level level);
-    void StartAttempt();
+    void StartAttempt(IPlayer player);
 }

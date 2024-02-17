@@ -12,9 +12,9 @@ public class BrakingState : PlayerState
     //Figure out why sound isn't working.
     public override void EnterState()
     {
-        _player.Animator.SetTrigger("Brake");
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Brake);
         _player.InputEvents.DisableInputs();
-        _player.SlowToStop();
+        _player.Trail.emitting = false;
 
     }
 
@@ -37,7 +37,7 @@ public class BrakingState : PlayerState
         if (_playerBody.velocity.x < 10f && _onBoard)
         {
             _onBoard = false;
-            _player.Animator.SetBool("OnBoard", false);
+            _player.AnimationManager.SetOnBoard(false);
         }
     }
 

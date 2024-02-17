@@ -7,11 +7,10 @@
     public override void EnterState()
     {
         _player.IsRagdoll = true;
-        _player.Die();
-    }
-
-    public override void ExitState()
-    {
+        _player.InputEvents.DisableInputs();
+        _player.CancelAsyncTokens();
+        _player.Trail.emitting = false;
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Die);
     }
 
     public override void FixedUpdateState()
@@ -19,7 +18,4 @@
         _player.MomentumTracker.Update();
     }
 
-    public override void UpdateState()
-    {
-    }
 }

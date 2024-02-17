@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 
-
 public class PlayerStateMachine
 {
     public PlayerState CurrentState { get; set; }
@@ -46,5 +45,6 @@ public class PlayerStateMachine
         CurrentState.FixedUpdateState();
     }
 
-    
+
+
 }

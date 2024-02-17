@@ -46,7 +46,7 @@ public class InputEventController
         _inputActions.Player.Ragdoll.started += DoRagdoll;
     }
 
-    private void DoRagdoll(InputAction.CallbackContext obj)
+    public void DoRagdoll(InputAction.CallbackContext obj)
     {
         OnRagdoll?.Invoke();
     }
@@ -76,33 +76,33 @@ public class InputEventController
         }
     }
 
-    private void DoRotateCanceled(InputAction.CallbackContext obj)
+    public void DoRotateCanceled(InputAction.CallbackContext obj)
     {
         _rotateValue = new(0, 0);
         OnRotateRelease?.Invoke();
     }
 
-    private void DoRotate(InputAction.CallbackContext obj)
+    public void DoRotate(InputAction.CallbackContext obj)
     {
         OnRotate?.Invoke(obj.ReadValue<Vector2>());
     }
 
-    private void DoDownCanceled(InputAction.CallbackContext obj)
+    public void DoDownCanceled(InputAction.CallbackContext obj)
     {
         OnDownRelease?.Invoke();
     }
 
-    private void DoDown(InputAction.CallbackContext obj)
+    public void DoDown(InputAction.CallbackContext obj)
     {
         OnDownPress?.Invoke();
     }
 
-    private void DoJumpCanceled(InputAction.CallbackContext obj)
+    public void DoJumpCanceled(InputAction.CallbackContext obj)
     {
         OnJumpRelease?.Invoke();
     }
 
-    private void DoJump(InputAction.CallbackContext obj)
+    public void DoJump(InputAction.CallbackContext obj)
     {
         OnJumpPress?.Invoke();
     }
@@ -126,7 +126,7 @@ public class InputEventController
         OnNavigate.Invoke(obj.ReadValue<Vector2>());
     }
 
-    private void DoRestart(InputAction.CallbackContext obj)
+    public void DoRestart(InputAction.CallbackContext obj)
     {
         OnRestart?.Invoke();
     }

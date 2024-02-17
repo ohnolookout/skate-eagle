@@ -13,9 +13,9 @@ public class PushingState : PlayerState
 
     public override void EnterState()
     {
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Push);
         _player.NormalBody.centerOfMass = new Vector2(0, -2f);
         _player.DoLanding = false;
-        _animator.SetBool("Airborne", false);
         _player.InputEvents.OnJumpPress += OnJump;
         _player.CollisionManager.OnAirborne += OnAirborne;
         _player.Params.JumpCount = 0;
@@ -30,6 +30,6 @@ public class PushingState : PlayerState
 
     public override void FixedUpdateState()
     {
-        _animator.SetFloat("Speed", _body.velocity.magnitude);
+        _player.AnimationManager.UpdateSpeed();
     }
 }

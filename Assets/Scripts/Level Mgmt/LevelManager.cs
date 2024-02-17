@@ -5,7 +5,6 @@ using System;
 
 public class LevelManager : MonoBehaviour, ILevelManager
 {
-    [HideInInspector] private RunState _runState = RunState.Landing;
     private Vector3 _finishPoint;
     [SerializeField] private Level _currentLevel;
     private GameManager _gameManager;
@@ -16,9 +15,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private Timer timer;
     public static Action<ILevelManager> OnLanding, OnGameOver;
     public static Action<FinishScreenData> OnFinish;
-    public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart, OnFall, OnLevelExit;
+    public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart, OnLevelExit;
+    public static Action OnFall { get; set; }
     public static Action<Vector2> OnActivateFinish { get; set; }
-    private Action finishStop;
     private bool _overlayLoaded = false;
     [SerializeField] private CameraOperator _cameraOperator;
 
@@ -53,17 +52,11 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         OnLevelExit?.Invoke();
         ResetStaticEvents();
-        if (_player != null)
-        {
-            _player.FinishStop -= finishStop;
-        }
-        _inputEvents.OnRestart -= RestartGame;
-        _inputEvents.OnRestart -= GoToStandby;
-        _inputEvents.OnSubmit -= Submit;
     }
 
     private void Start()
     {
+        SubscribeToPlayerEvents();
         OnLanding?.Invoke(this);
         if (!_overlayLoaded)
         {
@@ -110,14 +103,19 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             _audioManager.AssignLevelEvents();
         }
-        if (HasPlayer)
-        {
-            finishStop += () => OnResultsScreen?.Invoke();
-            _player.FinishStop += finishStop;
-            _player.OnStartAttempt += StartAttempt;
-            _player.OnDie += GameOver;
+        
+    }
 
+    private void SubscribeToPlayerEvents()
+    {
+        if (!HasPlayer)
+        {
+            return;
         }
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Finish);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
     }
 
     private void ResetStaticEvents()
@@ -138,36 +136,37 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void RestartGame()
     {
+        Debug.Log("Restarting...");
+        _inputEvents.OnRestart -= RestartGame;
         OnRestart?.Invoke();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Submit()
     {
-        if(_runState == RunState.Landing)
-        {
-            GoToStandby();
-        }
+
     }
 
-    public void GameOver()
+    public void GameOver(IPlayer _ = null)
     {
         OnGameOver?.Invoke(this);
-        _runState = RunState.GameOver;
     }
 
-    public void StartAttempt()
+    public void StartAttempt(IPlayer _ = null)
     {
         _inputEvents.OnRestart += RestartGame;
         OnAttempt?.Invoke();
-        _runState = RunState.Active;
+    }
+
+    public void ActivateResultsScreen(IPlayer _ = null)
+    {
+        OnResultsScreen?.Invoke();
     }
 
     public void GoToStandby()
     {
         _inputEvents.OnRestart -= GoToStandby;
         OnStandby?.Invoke();
-        _runState = RunState.Standby;
     }
     public void SetLevel(Level level)
     {
@@ -178,9 +177,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         OnActivateFinish?.Invoke(finishPoint);
     }
-    public void Finish()
+    public void Finish(IPlayer _ = null)
     {
-        _runState = RunState.Finished;
         FinishScreenData finishData;
         if (timer != null)
         {
@@ -203,7 +201,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public ICameraOperator CameraOperator { get => _cameraOperator; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
-    public RunState RunState { get => _runState; set => _runState = value; }
 
     public bool HasCameraOperator { get => _cameraOperator != null; }
     public bool HasPlayer { get => _player != null; }

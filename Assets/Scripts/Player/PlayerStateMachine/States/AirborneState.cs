@@ -16,10 +16,10 @@ public class AirborneState : PlayerState
     public override void EnterState()
     {
         _downPressCount = 0;
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Airborne);
         _player.NormalBody.centerOfMass = new Vector2(0, 0f);
         _player.CollisionManager.OnCollide += OnLand;
         _params.RotationStart = _player.NormalBody.rotation;
-        _animator.SetBool("Airborne", true);
         
         if (_player.Params.StompCharge >= _player.Params.StompThreshold)
         {
@@ -47,8 +47,7 @@ public class AirborneState : PlayerState
 
     public override void FixedUpdateState()
     {
-        _animator.SetBool("AirborneUp", _body.velocity.y >= 0);
-        _animator.SetFloat("YSpeed", _body.velocity.y);
+        _player.AnimationManager.UpdateAirborneSpeed();
     }
 
     private void SecondJump()

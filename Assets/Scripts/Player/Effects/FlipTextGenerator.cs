@@ -10,29 +10,22 @@ public class FlipTextGenerator : MonoBehaviour
     public float wordSpread = 10;
     [SerializeField] private FlipText flipText;
     private IPlayer _player;
-    private Action<ILevelManager> cancelText;
-    private Action<IPlayer, double> newFlipText;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
+
 
     private void Start()
     {
         _player = LevelManager.GetPlayer;
-        _player.OnFlip += NewFlipText;
+        SubscribeToEvents();
     }
 
-    private void OnEnable()
+    private void SubscribeToEvents()
     {
-        
-        cancelText += _ => CancelText();
-        LevelManager.OnGameOver += cancelText;
-        
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Flip, NewFlipText);
+        LevelManager.OnGameOver += CancelText;
     }
-    private void OnDisable()
-    {
-        _player.OnFlip -= newFlipText;
-        LevelManager.OnGameOver -= cancelText;
-    }
-    public void NewFlipText(IPlayer player, double flipCount = 1)
+
+    public void NewFlipText(IPlayer _ = null)
     {
         Vector3 location = GenerateLocation(_player, wordSpread);
         Vector3 viewportPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, _player.NormalBody.position + (Vector2) location);
@@ -42,11 +35,10 @@ public class FlipTextGenerator : MonoBehaviour
         flipText.transform.eulerAngles = new Vector3(0, 0, randomZ);
         flipText.SetText(GenerateText());
         flipText.StartLifecycle();
-
     }
 
 
-    public void CancelText()
+    public void CancelText(ILevelManager _ = null)
     {
         if(!flipText.Canceled)
         {
@@ -67,8 +59,6 @@ public class FlipTextGenerator : MonoBehaviour
         float yCoord = UnityEngine.Random.Range(scale * 0.5f, scale);
         return new Vector3(xCoord, yCoord);
     }
-
-    
 
     private string GenerateText()
     {

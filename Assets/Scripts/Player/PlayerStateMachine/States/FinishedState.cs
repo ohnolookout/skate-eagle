@@ -9,12 +9,7 @@ public class FinishedState : PlayerState
 
     public override void EnterState()
     {
-        DelayedFinishStop(500);
+        PlayerAsyncUtility.DelayedFunc(() => _player.EventAnnouncer.InvokeAction(PlayerEvent.Finish), 0.5f);
     }
 
-    private async void DelayedFinishStop(int delay)
-    {
-        await Task.Delay(delay);
-        _player.FinishStop?.Invoke();
-    }
 }

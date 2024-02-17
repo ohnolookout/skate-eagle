@@ -4,57 +4,46 @@ using UnityEngine;
 
 public class MobileControlManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private GameObject eagle;
-    private PlayerController controller;
+    private InputEventController controller;
     void Start()
     {
-        eagle = GameObject.FindGameObjectWithTag("Player");
-        controller = eagle.GetComponent<PlayerController>();
-        
+        controller = LevelManager.GetPlayer.InputEvents;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void OnUpPress()
     {
-        controller.OnJump(true);
+        controller.OnJumpPress?.Invoke();
     }
     public void OnUpRelease()
     {
-        controller.OnJump(false);
+        controller.OnJumpRelease?.Invoke();
     }
     public void OnDownPress()
     {
-        controller.OnDown(true);
+        controller.OnDownPress?.Invoke();
 
     }
     public void OnDownRelease()
     {
-        controller.OnDown(false);
-
+        controller.OnDownRelease?.Invoke();
     }
 
     public void OnLeftPress()
     {
-        controller.OnRotate(new Vector2(-1, 0));
+        controller.OnRotate?.Invoke(new Vector2(-1, 0));
+    }
+    public void OnRightPress()
+    {
+        controller.OnRotate?.Invoke(new Vector2(1, 0));
     }
 
     public void OnRotationRelease()
     {
-        controller.OnRotate(new Vector2(0, 0));
-    }
-
-    public void OnRightPress()
-    {
-        controller.OnRotate(new Vector2(1, 0));
+        controller.OnRotateRelease?.Invoke();
     }
 
     public void OnRestart()
     {
-        controller.OnRestartLevel();
+        controller.OnRestart?.Invoke();
     }
 }

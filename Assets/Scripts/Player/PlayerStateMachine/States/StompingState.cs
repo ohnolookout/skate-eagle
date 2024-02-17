@@ -20,7 +20,7 @@ public class StompingState : PlayerState
         _player.Params.StompCharge = 0;
         _player.NormalBody.angularVelocity = 0;
         _player.Params.RotationAccel *= 1.5f;
-        _player.OnStomp?.Invoke();
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Stomp);
         _timer = 0;
         _stalling = true;
         _diving = false;

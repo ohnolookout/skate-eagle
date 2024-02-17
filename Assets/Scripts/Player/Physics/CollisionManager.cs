@@ -21,6 +21,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
         LevelManager.OnResultsScreen += () => _checkForExits = false;
     }
 
+
     void Awake()
     {
         _exitManager = new();
@@ -39,15 +40,15 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
     public void AddPlayer(IPlayer player)
     {
         _player = player;
-        _player.AddCollision += AddCollision;
-        _player.RemoveCollision += RemoveCollision;
+        _player.EventAnnouncer.SubscribeToAddCollision(AddCollision);
+        _player.EventAnnouncer.SubscribeToRemoveCollision(RemoveCollision);
     }
 
     void OnDisable()
     {
-        _player.AddCollision -= AddCollision;
-        _player.RemoveCollision -= RemoveCollision;
         _exitManager.RemoveCollision -= CollisionExitCompleted;
+        OnCollide = null;
+        OnUncollide = null;
     }
    
     public void AddCollision(Collision2D collision, MomentumTracker momentumTracker, ColliderCategory category, TrackingType trackingType)

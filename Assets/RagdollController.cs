@@ -17,17 +17,18 @@ public class RagdollController : MonoBehaviour
     private IPlayer _player;
     public bool turnOnRagdoll = false, ragdoll = false;
 
-    void Start()
+    private void Awake()
     {
         _player = LevelManager.GetPlayer;
-        _player.OnDie += TurnOnRagdoll;
-    }
-    private void OnDisable()
-    {
-        _player.OnDie -= TurnOnRagdoll;
+
     }
 
-    public void TurnOnRagdoll()
+    void Start()
+    {
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, TurnOnRagdoll);
+    }
+
+    public void TurnOnRagdoll(IPlayer _ = null)
     {
         if (ragdoll)
         {
@@ -40,24 +41,6 @@ public class RagdollController : MonoBehaviour
         SwitchColliders(ragdollColliders, true);
         SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
         SwitchRigidbodies(ragdollRigidbodies, true, _player.MomentumTracker.VectorChange(TrackingType.PlayerNormal));
-        normalRigidbodies[0].velocity = new();
-        SwitchHinges(ragDollJoints, true);
-        ragdoll = true;
-
-    }
-    public void TurnOnRagdoll(Vector2 vectorChange)
-    {
-        if (ragdoll)
-        {
-            return;
-        }
-        animator.enabled = false;
-
-        IKParent.SetActive(false);
-        SwitchColliders(normalColliders, false);
-        SwitchColliders(ragdollColliders, true);
-        SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
-        SwitchRigidbodies(ragdollRigidbodies, true, vectorChange);
         normalRigidbodies[0].velocity = new();
         SwitchHinges(ragDollJoints, true);
         ragdoll = true;

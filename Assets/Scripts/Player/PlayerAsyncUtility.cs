@@ -69,7 +69,10 @@ public static class PlayerAsyncUtility
         player.NormalBody.bodyType = RigidbodyType2D.Kinematic;
         player.NormalBody.velocity = new Vector2(0, 0);
         player.NormalBody.freezeRotation = true;
-        player.Die();
+        player.InputEvents.DisableInputs();
+        player.CancelAsyncTokens();
+        player.Trail.emitting = false;
+        player.EventAnnouncer.InvokeAction(PlayerEvent.Die);
     }
 
 }
