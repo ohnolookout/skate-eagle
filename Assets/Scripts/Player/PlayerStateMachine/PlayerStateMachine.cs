@@ -23,6 +23,7 @@ public class PlayerStateMachine
 
     public void ExitStates()
     {
+        //Throwing object not found error
         CurrentState.ExitStates();
     }
 

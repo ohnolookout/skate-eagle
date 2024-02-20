@@ -41,7 +41,7 @@ public class Player : MonoBehaviour, IPlayer
     }
     private void OnDisable()
     {
-        _stateMachine.ExitStates();
+        //_stateMachine.ExitStates();
         _eventAnnouncer.ClearActions();
     }
 

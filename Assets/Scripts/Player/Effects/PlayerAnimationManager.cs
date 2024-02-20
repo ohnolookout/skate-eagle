@@ -7,6 +7,7 @@ public class PlayerAnimationManager
 {
     private IPlayer _player;
     private Animator _animator;
+    private const int _speedMax = 100, _speedMin = 20, _ySpeedMax = 15, _forceDeltaMin = 100, _forceDeltaMax = 200;
 
     public PlayerAnimationManager(IPlayer player, Animator animator)
     {
@@ -42,6 +43,7 @@ public class PlayerAnimationManager
 
     private void Jump(IPlayer obj)
     {
+        _animator.SetInteger("JumpCount", _player.Params.JumpCount);
         _animator.SetTrigger("Jump");
     }
 
@@ -63,19 +65,20 @@ public class PlayerAnimationManager
     public void Land(IPlayer player)
     {
         _animator.SetBool("Airborne", false);
-        _animator.SetFloat("forceDelta", _player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal));
+        _animator.SetFloat("forceDelta", MinMaxTo01(_player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal), _forceDeltaMin, _forceDeltaMax));
         _animator.SetTrigger("Land");
     }
 
     public void UpdateSpeed()
     {
-        _animator.SetFloat("Speed", _player.NormalBody.velocity.magnitude);
+        _animator.SetFloat("Speed", MinMaxTo01(_player.NormalBody.velocity.magnitude, _speedMin, _speedMax));
     }
 
     public void UpdateAirborneSpeed()
     {
+        UpdateSpeed();
         _animator.SetBool("AirborneUp", _player.NormalBody.velocity.y >= 0);
-        _animator.SetFloat("YSpeed", _player.NormalBody.velocity.y);
+        _animator.SetFloat("YSpeed", MinMaxTo01(_player.NormalBody.velocity.y, -_ySpeedMax, _ySpeedMax));
     }
 
     public void SetOnBoard(bool onBoard)
@@ -86,6 +89,11 @@ public class PlayerAnimationManager
     public void Stomp(IPlayer player)
     {
 
+    }
+
+    private float MinMaxTo01(float val, int min, int max)
+    {
+        return Mathf.Clamp01((val - min) / (max - min));
     }
 
 }
