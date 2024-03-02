@@ -110,11 +110,21 @@ public class InputEventController
     public void DisablePlayerInputs()
     {
         _inputActions.Player.Disable();
+        _inputActions.Player.Jump.started -= DoJump;
+        _inputActions.Player.Jump.canceled -= DoJumpCanceled;
+        _inputActions.Player.Down.started -= DoDown;
+        _inputActions.Player.Down.canceled -= DoDownCanceled;
+        _inputActions.Player.Rotate.started -= DoRotate;
+        _inputActions.Player.Rotate.canceled -= DoRotateCanceled;
+        _inputActions.Player.Ragdoll.started -= DoRagdoll;
     }
 
     public void DisableUIInputs()
     {
         _inputActions.UI.Disable();
+        _inputActions.UI.Restart.started -= DoRestart;
+        _inputActions.UI.Navigate.started -= DoNavigate;
+        _inputActions.UI.Submit.started -= DoSubmit;
     }
     private void DoSubmit(InputAction.CallbackContext obj)
     {

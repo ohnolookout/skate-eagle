@@ -41,7 +41,7 @@ public class Player : MonoBehaviour, IPlayer
     }
     private void OnDisable()
     {
-        //_stateMachine.ExitStates();
+        _inputEvents.DisableInputs();
         _eventAnnouncer.ClearActions();
     }
 
@@ -83,9 +83,9 @@ public class Player : MonoBehaviour, IPlayer
         PlayerAsyncUtility.BoostTrail(_boostToken, _trail, _facingForward);
     }
 
-    public void DismountSound()
+    public void InvokeEvent(PlayerEvent eventType)
     {
-        _eventAnnouncer.InvokeAction(PlayerEvent.Dismount);
+        _eventAnnouncer.InvokeAction(eventType);
     }
 
     public void CancelAsyncTokens()

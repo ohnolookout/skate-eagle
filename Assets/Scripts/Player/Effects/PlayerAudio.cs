@@ -13,7 +13,7 @@ public class PlayerAudio : MonoBehaviour
 {
     [SerializeField] private SerializedDictionary<OneShotFX, Sound> _oneShotDict = new();
     [SerializeField] private SerializedDictionary<LoopFX, Sound> _loopDict = new();
-    private bool _wheelsOnGround = false;
+    private bool _wheelsOnGround = false, _playLanding = true;
     private IPlayer _player;
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
@@ -26,7 +26,7 @@ public class PlayerAudio : MonoBehaviour
         List<Sound> sounds = _oneShotDict.Values.ToList();
         sounds.AddRange(_loopDict.Values.ToList());
         _audioManager = AudioManager.Instance;
-        if(_audioManager == null)
+        if (_audioManager == null)
         {
             Debug.LogWarning("No audio manager found by player audio. Deleting player audio.");
             DestroyImmediate(this);
@@ -37,13 +37,18 @@ public class PlayerAudio : MonoBehaviour
 
     private void SubscribeToPlayerEvents()
     {
-        if(_player == null)
+        if (_player == null)
         {
             return;
         }
+        LevelManager.OnStandby += () => _playLanding = false;
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, ActivateLandingTracking);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Airborne, ActivateLandingTracking);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, JumpSound);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Dismount, Dismount);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Brake);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.LandSound, LandOneShot);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.BodySound, BodyOneShot);
         _player.CollisionManager.OnCollide += Collide;
         _player.CollisionManager.OnUncollide += Uncollide;
 
@@ -56,9 +61,9 @@ public class PlayerAudio : MonoBehaviour
 
     private void OnEnable()
     {
-        
+
         _cameraOperator = Camera.main.GetComponent<CameraOperator>();
-        if(_cameraOperator != null)
+        if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut += StartWind;
             _cameraOperator.OnFinishZoomIn += StopWind;
@@ -66,10 +71,10 @@ public class PlayerAudio : MonoBehaviour
     }
     private void OnDisable()
     {
-        if(_audioManager == null)
+        if (_audioManager == null)
         {
             return;
-        } 
+        }
         if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut -= StartWind;
@@ -84,7 +89,7 @@ public class PlayerAudio : MonoBehaviour
     private Rigidbody2D[] TrackedBodies(List<Sound> sounds)
     {
         List<Rigidbody2D> bodies = new();
-        foreach(var sound in sounds)
+        foreach (var sound in sounds)
         {
             if (!bodies.Contains(sound.localizedSource))
             {
@@ -94,7 +99,7 @@ public class PlayerAudio : MonoBehaviour
         return bodies.ToArray();
     }
 
-    private void JumpSound(IPlayer player)        
+    private void JumpSound(IPlayer player)
     {
         if (player.Params.JumpCount == 0)
         {
@@ -183,7 +188,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void WheelCollision()
     {
-        if(_wheelsOnGround || _wheelTimer >= 0)
+        if (_wheelsOnGround || _wheelTimer >= 0)
         {
             return;
         }
@@ -199,14 +204,14 @@ public class PlayerAudio : MonoBehaviour
 
     private void BodyAndBoardCollision(float magnitudeDelta)
     {
-        if(magnitudeDelta > 200)
+        if (magnitudeDelta > 200)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.HardBody]);
-        } else if(magnitudeDelta > 80)
+        } else if (magnitudeDelta > 80)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Body]);
         }
-        else if(magnitudeDelta > 15)
+        else if (magnitudeDelta > 15)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Board]);
         }
@@ -262,7 +267,7 @@ public class PlayerAudio : MonoBehaviour
         float decelDuration = duration * 0.5f;
         float timeElapsed = 0;
         float startDenom = _audioManager.intensityDenominator;
-        float floor = _audioManager.intensityDenominator /denomMultiplier;
+        float floor = _audioManager.intensityDenominator / denomMultiplier;
         float shelf = startDenom;
         while (timeElapsed < accelDuration)
         {
@@ -282,7 +287,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void UpdateWheelTimer()
     {
-        if(_wheelTimer < 0)
+        if (_wheelTimer < 0)
         {
             return;
         }
@@ -291,6 +296,23 @@ public class PlayerAudio : MonoBehaviour
         {
             _wheelTimer = -1;
         }
+    }
+
+    private void LandOneShot(IPlayer _)
+    {
+        _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Wheel], 0.4f);
+    }
+
+    private void BodyOneShot(IPlayer _)
+    {
+        _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Body], 0.1f);
+    }
+
+    private void ActivateLandingTracking(IPlayer _)
+    {
+        _playLanding = true;
+        _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Jump, ActivateLandingTracking);
+        _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Airborne, ActivateLandingTracking);
     }
 
     private float WheelFadeTime(float magnitudeAtCollisionExit)

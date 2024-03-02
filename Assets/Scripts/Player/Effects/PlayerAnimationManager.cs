@@ -1,13 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAnimationManager
 {
     private IPlayer _player;
     private Animator _animator;
-    private const int _speedMax = 100, _speedMin = 20, _ySpeedMax = 15, _forceDeltaMin = 100, _forceDeltaMax = 200;
+    private bool _stomping = false;
+    private const int _speedMax = 100, _speedMin = 20, _ySpeedMax = 15, _forceDeltaMin = 80, _forceDeltaMax = 200;
 
     public PlayerAnimationManager(IPlayer player, Animator animator)
     {
@@ -16,7 +14,6 @@ public class PlayerAnimationManager
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Land, Land);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Stomp, Stomp);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Brake);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Dismount, Dismount);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Stand, Stand);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Crouch, Crouch);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Airborne, Airborne);
@@ -26,19 +23,18 @@ public class PlayerAnimationManager
 
     private void Push(IPlayer obj)
     {
-
+        SetOnBoard(true);
+        Crouch(obj);
     }
 
     private void Stand(IPlayer obj)
     {
         _animator.SetBool("Crouched", false);
-        _animator.SetTrigger("Stand Up");
     }
 
     private void Crouch(IPlayer obj)
     {
         _animator.SetBool("Crouched", true);
-        _animator.SetTrigger("Crouch");
     }
 
     private void Jump(IPlayer obj)
@@ -52,11 +48,6 @@ public class PlayerAnimationManager
         _animator.SetBool("Airborne", true);
     }
 
-    private void Dismount(IPlayer obj)
-    {
-        //throw new NotImplementedException();
-    }
-
     private void Brake(IPlayer obj)
     {
         _animator.SetTrigger("Brake");
@@ -66,7 +57,15 @@ public class PlayerAnimationManager
     {
         _animator.SetBool("Airborne", false);
         _animator.SetFloat("forceDelta", MinMaxTo01(_player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal), _forceDeltaMin, _forceDeltaMax));
-        _animator.SetTrigger("Land");
+        if (_stomping)
+        {
+            _animator.SetTrigger("StompLand");
+            _stomping = false;
+        }
+        else
+        {
+            _animator.SetTrigger("Land");
+        }
     }
 
     public void UpdateSpeed()
@@ -88,7 +87,9 @@ public class PlayerAnimationManager
 
     public void Stomp(IPlayer player)
     {
-
+        _stomping = true;
+        _animator.SetBool("IsStomping", true);
+        _animator.SetTrigger("Stomp");
     }
 
     private float MinMaxTo01(float val, int min, int max)

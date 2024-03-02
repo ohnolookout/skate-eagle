@@ -21,7 +21,7 @@ public interface IPlayer
     TrailRenderer Trail { get; }
 
     void SwitchDirection();
-    void DismountSound();
+    void InvokeEvent(PlayerEvent eventType);
     void TriggerBoost(float boostValue, float boostMultiplier);
     void CancelAsyncTokens();
     

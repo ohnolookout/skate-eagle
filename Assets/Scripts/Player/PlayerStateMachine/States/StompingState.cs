@@ -3,7 +3,7 @@ using System;
 public class StompingState : PlayerState
 {
     private float _originalRotationAccel;
-    private float _timer = 0;
+    private float _timer = 0, _stallTime = 0.3f; //_stallTime was 0.075f
     private bool _stalling = true, _diving = false;
     private Action _boost;
     public StompingState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
@@ -56,7 +56,7 @@ public class StompingState : PlayerState
 
     private void StallPhase()
     {
-        if (_timer < 0.075f)
+        if (_timer < _stallTime)
         {
             _player.NormalBody.velocity -= new Vector2(_player.NormalBody.velocity.x * 0.1f, _player.NormalBody.velocity.y * 0.4f);
             _timer += Time.deltaTime;

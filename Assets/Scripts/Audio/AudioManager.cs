@@ -144,7 +144,7 @@ public class AudioManager : MonoBehaviour
     }
 
     //Plays one shots on audioSources[1]
-    public void PlayOneShot(Sound sound)
+    public void PlayOneShot(Sound sound, float inputModifier = 1)
     {
         float modifier = _modifierManager.GetTotalModifier(sound, _player.IsRagdoll);
         if (sound.trackIntensity)
@@ -157,6 +157,7 @@ public class AudioManager : MonoBehaviour
         {
             audioSources[1].volume = sound.volume * modifier;
         }
+        audioSources[1].volume *= inputModifier;
         //One shots don't have pitch variance.
         audioSources[1].panStereo = _modifierManager.GetPan(sound);
         audioSources[1].pitch = sound.pitch;

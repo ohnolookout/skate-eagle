@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class Timer : MonoBehaviour
 {
@@ -9,15 +10,11 @@ public class Timer : MonoBehaviour
     private char[] timerChars = new char[8];
     private float timeElapsed = 0;
     private bool running = false;
+    public static Action<float> OnStopTimer;
 
     private void OnEnable()
     {
         LevelManager.OnAttempt += StartTimer;
-        LevelManager.OnGameOver += _ => StopTimer();
-    }
-    private void OnDisable()
-    {
-        LevelManager.OnAttempt -= StartTimer;
         LevelManager.OnGameOver += _ => StopTimer();
     }
 
