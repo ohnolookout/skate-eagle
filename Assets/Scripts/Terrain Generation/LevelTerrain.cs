@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 
 
-public class Terrain : MonoBehaviour
+public class LevelTerrain : MonoBehaviour
 {
     private List<GroundSegment> _segmentList;
     private List<EdgeCollider2D> _colliderList;

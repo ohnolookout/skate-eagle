@@ -6,7 +6,7 @@ using System;
 public static class TerrainGenerator
 {
 
-    public static Vector2 GenerateLevel(Level level, Terrain terrain, Vector3 playerStartPosition)
+    public static Vector2 GenerateLevel(Level level, LevelTerrain terrain, Vector3 playerStartPosition)
     {
         terrain.transform.position = new(0, 0);
         if (level.LevelSections.Count < 1)
@@ -30,7 +30,7 @@ public static class TerrainGenerator
         return finishPoint;
     }
 
-    private static void GenerateSegmentsFromSequence(Terrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
+    private static void GenerateSegmentsFromSequence(LevelTerrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
     {
         //Instantiate segments for each curve from sequence using sequence's grade.
         foreach (CurveDefinition curveDef in sequence.Curves)
@@ -43,7 +43,7 @@ public static class TerrainGenerator
         endPoint = startPoint;
     }
 
-    private static GroundSegment GenerateCompleteSegment(Terrain terrain, Curve curve, Vector3? colliderStartPoint = null)
+    private static GroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
     {
         GroundSegment newSegment = CreateSegment(terrain, curve);
         terrain.SegmentList.Add(newSegment);
@@ -53,7 +53,7 @@ public static class TerrainGenerator
         return newSegment;
 
     }
-    private static GroundSegment CreateSegment(Terrain terrain, Curve curve)
+    private static GroundSegment CreateSegment(LevelTerrain terrain, Curve curve)
     {
         //Instantiate segment object and add its script to segmentList
         GroundSegment newSegment = terrain.InstantiateSegment().GetComponent<GroundSegment>();
@@ -71,7 +71,7 @@ public static class TerrainGenerator
         return newSegment;
     }
 
-    private static EdgeCollider2D CreateCollider(Terrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, out List<Vector2> shadowPoints, Vector3? firstPoint = null, float resolutionMult = 10)
+    private static EdgeCollider2D CreateCollider(LevelTerrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, out List<Vector2> shadowPoints, Vector3? firstPoint = null, float resolutionMult = 10)
     {
         GameObject colliderObject = new("Collider");
         colliderObject.transform.parent = terrain.transform;
@@ -79,7 +79,7 @@ public static class TerrainGenerator
         colliderObject.SetActive(false);
         return newCollider;
     }
-    private static Vector2 AddFinishObjects(Terrain terrain, Vector3 finishLineBound, Vector3 backstopBound)
+    private static Vector2 AddFinishObjects(LevelTerrain terrain, Vector3 finishLineBound, Vector3 backstopBound)
     {
         Vector3 finishPoint = finishLineBound + new Vector3(50, 1);
         //Assign locations finishPoint, backstop, and finishflag

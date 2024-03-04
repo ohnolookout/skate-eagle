@@ -6,7 +6,7 @@ using System;
 public class TerrainManager : MonoBehaviour
 {
     private CameraOperator _camera;
-    private Terrain _terrain;
+    private LevelTerrain _terrain;
     [SerializeField] private GameObject _terrainPrefab;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private GroundColliderManager _colliderManager;
@@ -66,7 +66,7 @@ public class TerrainManager : MonoBehaviour
         {
             DeleteChildren();
         }
-        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<Terrain>();
+        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<LevelTerrain>();
         Vector2 finishPoint = TerrainGenerator.GenerateLevel(level, _terrain, startPosition);
         _colliderManager = new(_normalBodies, _ragdollBodies, _terrain);
         ActivateInitialSegments(3);

@@ -23,7 +23,7 @@ public class GroundColliderManager
         this.backstop = backstop;
     }
 
-    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, Terrain terrain, int startingIndex = 0)
+    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, LevelTerrain terrain, int startingIndex = 0)
     {
         LevelManager.OnGameOver += _ => SwitchToRagdoll();
         _normalBodies = normalBodies;

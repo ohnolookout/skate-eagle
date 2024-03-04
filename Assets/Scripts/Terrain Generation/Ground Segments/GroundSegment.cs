@@ -30,7 +30,7 @@ public class GroundSegment : MonoBehaviour
         this.curve = curve;
         GenerateSpline(spline, this.curve, floorHeight);
         CurveCollider.CreateCollider(colliderList, this, transform.parent, material, out _unoffsetPoints, overlapPoint);
-        ShadowCasterCreator.GenerateShadow(this, _unoffsetPoints);
+        //ShadowCasterCreator.GenerateShadow(this, _unoffsetPoints);
     }
 
     public void ApplyCurve(Curve curve)

@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class RagdollController : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
-    [SerializeField] private RagdollCollision[] ragdollScripts;
-    [SerializeField] private Joint2D[] ragDollJoints;
-    [SerializeField] private Rigidbody2D[] ragdollRigidbodies;
-    [SerializeField] private Collider2D[] ragdollColliders;
-    [SerializeField] private GameObject IKParent;
-    [SerializeField] private Rigidbody2D[] normalRigidbodies;
-    [SerializeField] private Collider2D[] normalColliders;
-    [SerializeField] private GameObject rigParent;
-    [SerializeField] public Rigidbody2D spine;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private RagdollCollision[] _ragdollScripts;
+    [SerializeField] private Joint2D[] _ragDollJoints;
+    [SerializeField] private Rigidbody2D[] _ragdollRigidbodies;
+    [SerializeField] private Collider2D[] _ragdollColliders;
+    [SerializeField] private GameObject _IKParent;
+    [SerializeField] private Rigidbody2D[] _normalRigidbodies;
+    [SerializeField] private Collider2D[] _normalColliders;
+    [SerializeField] private ShadowCaster2D[] _shadows;
+    [SerializeField] private GameObject _rigParent;
+    public Rigidbody2D spine;
     private IPlayer _player;
     public bool turnOnRagdoll = false, ragdoll = false;
 
@@ -34,15 +36,17 @@ public class RagdollController : MonoBehaviour
         {
             return;
         }
-        animator.enabled = false;
+        _animator.enabled = false;
 
-        IKParent.SetActive(false);
-        SwitchColliders(normalColliders, false);
-        SwitchColliders(ragdollColliders, true);
-        SwitchRigidbodies(normalRigidbodies, false, new(0, 0));
-        SwitchRigidbodies(ragdollRigidbodies, true, _player.MomentumTracker.VectorChange(TrackingType.PlayerNormal));
-        normalRigidbodies[0].velocity = new();
-        SwitchHinges(ragDollJoints, true);
+        _IKParent.SetActive(false);
+        SwitchScripts(_ragdollScripts, true);
+        SwitchColliders(_normalColliders, false);
+        SwitchColliders(_ragdollColliders, true);
+        SwitchRigidbodies(_normalRigidbodies, false, new(0, 0));
+        SwitchRigidbodies(_ragdollRigidbodies, true, _player.MomentumTracker.VectorChange(TrackingType.PlayerNormal));
+        //SwitchShadows(_shadows, true);
+        _normalRigidbodies[0].velocity = new();
+        SwitchHinges(_ragDollJoints, true);
         ragdoll = true;
 
     }
@@ -61,10 +65,10 @@ public class RagdollController : MonoBehaviour
 
     void GetCollidersAndBodies()
     {
-        ragdollColliders = rigParent.GetComponentsInChildren<Collider2D>();
-        ragdollRigidbodies = rigParent.GetComponentsInChildren<Rigidbody2D>();
-        ragDollJoints = rigParent.GetComponentsInChildren<Joint2D>();
-        ragdollScripts = rigParent.GetComponentsInChildren<RagdollCollision>();
+        _ragdollColliders = _rigParent.GetComponentsInChildren<Collider2D>();
+        _ragdollRigidbodies = _rigParent.GetComponentsInChildren<Rigidbody2D>();
+        _ragDollJoints = _rigParent.GetComponentsInChildren<Joint2D>();
+        _ragdollScripts = _rigParent.GetComponentsInChildren<RagdollCollision>();
 
     }
 
@@ -84,10 +88,10 @@ public class RagdollController : MonoBehaviour
             body.isKinematic = !isOn;
             if (isOn)
             {
-                body.velocity = normalRigidbodies[0].velocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));
+                body.velocity = _normalRigidbodies[0].velocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));
             }
         }
-        spine.angularVelocity = normalRigidbodies[0].angularVelocity * 20;
+        spine.angularVelocity = _normalRigidbodies[0].angularVelocity * 20;
     }
 
     static void SwitchHinges(Joint2D[] joints, bool isOn)
@@ -95,6 +99,20 @@ public class RagdollController : MonoBehaviour
         foreach(var joint in joints)
         {
             joint.enabled = isOn;
+        }
+    }
+
+    static void SwitchShadows(ShadowCaster2D[] shadows, bool isSelfShadow)
+    {
+        foreach (var shadow in shadows)
+        {
+            if (isSelfShadow) {
+                shadow.castingOption = ShadowCaster2D.ShadowCastingOptions.CastAndSelfShadow;
+
+            } else
+            {
+                shadow.castingOption = ShadowCaster2D.ShadowCastingOptions.CastShadow;
+            }
         }
     }
 
