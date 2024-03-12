@@ -5,39 +5,36 @@ using UnityEngine.Rendering.Universal;
 using System.Reflection;
 
 [ExecuteAlways]
-public class GroundSegment : MonoBehaviour, IGroundSegment
+public class GroundSegment_2 : MonoBehaviour, IGroundSegment
 {
-    private Curve curve;
-    private ShadowCaster2D _shadowCaster;
-    public SpriteShape spriteShape;
-    public SpriteShapeController shapeController;
-    private Spline spline;
-    private List<Vector2> _unoffsetPoints;
-    private int floorHeight = 100;
-    private int containmentBuffer = 20;
+    private Curve _curve;
+    [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
+    private Spline _masterSpline;
+    private int _floorHeight = 100;
+    private int _containmentBuffer = 20;
 
 
     void Awake()
     {
-        spline = shapeController.spline;
-        _shadowCaster = GetComponent<ShadowCaster2D>();
-        FormatSpline(spline);
+        _masterSpline = _fillShapeController.spline;
+        FormatSpline(_masterSpline);
     }
 
     public void ApplyCurve(Curve curve)
     {
-        this.curve = curve;
-        GenerateSpline(spline, curve, floorHeight);
+        _curve = curve;
+        GenerateSpline(_masterSpline, curve, _floorHeight);
+        InsertCurveToOpenSpline(_edgeShapeController.spline, curve);
     }
 
     public bool StartsAfterX(float startX)
     {
-        return curve.StartPoint.ControlPoint.x >= startX;
+        return _curve.StartPoint.ControlPoint.x >= startX;
     }
 
     public bool EndsBeforeX(float endX)
     {
-        return curve.EndPoint.ControlPoint.x <= endX;
+        return _curve.EndPoint.ControlPoint.x <= endX;
     }
 
     private static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
@@ -75,6 +72,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         spline.SetLeftTangent(1, new Vector2(0, -1));
     }
 
+
+    private static void InsertCurveToOpenSpline(Spline spline, Curve curve)
+    {
+        CopyCurvePointToSpline(spline, curve.GetPoint(0), 0);
+        CopyCurvePointToSpline(spline, curve.GetPoint(1), 1);
+        for (int i = 2; i < curve.Count; i++)
+        {
+            InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
+        }
+    }
+
     private static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
     {
         for (int i = 0; i < curve.Count; i++)
@@ -86,7 +94,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         spline.SetRightTangent(index, new Vector3(0, -1));
 
     }
-
     private static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
         spline.InsertPointAt(index, curvePoint.ControlPoint);
@@ -95,62 +102,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         spline.SetRightTangent(index, curvePoint.RightTangent);
     }
 
-
-    public Curve Curve
+    private static void CopyCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
-        get
-        {
-            return curve;
-        }
+        spline.SetPosition(index, curvePoint.ControlPoint);
+        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
+        spline.SetLeftTangent(index, curvePoint.LeftTangent);
+        spline.SetRightTangent(index, curvePoint.RightTangent);
     }
-
-    public Spline Spline
-    {
-        get
-        {
-            return spline;
-        }
-    }
-
     public bool ContainsX(float targetX)
     {
-        return (targetX > curve.StartPoint.ControlPoint.x - containmentBuffer && targetX < curve.EndPoint.ControlPoint.x + containmentBuffer);
+        return (targetX > _curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < _curve.EndPoint.ControlPoint.x + _containmentBuffer);
     }
-
-    public Vector2 StartPoint
-    {
-        get
-        {
-            return curve.StartPoint.ControlPoint;
-        }
-    }
-
-    public Vector2 EndPoint
-    {
-        get
-        {
-            return curve.EndPoint.ControlPoint;
-        }
-    }
-
-    public List<Vector2> UnoffsetPoints
-    {
-        get
-        {
-            return _unoffsetPoints;
-        }
-    }
-
-    public CurveType Type
-    {
-        get
-        {
-            return curve.Type;
-        }
-    }
-
-    public ShadowCaster2D ShadowCaster { get => _shadowCaster; set => _shadowCaster = value; }
-
     public static void FormatSpline(Spline spline)
     {
         spline.isOpenEnded = false;
@@ -159,7 +121,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
             spline.RemovePointAt(2);
         }
     }
-
+    public Curve Curve { get => _curve; }
+    public Spline Spline { get => _masterSpline; }
+    public Vector2 StartPoint { get => _curve.StartPoint.ControlPoint; }
+    public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
+    public CurveType Type { get => _curve.Type; }
     public new GameObject gameObject { get => transform.gameObject; }
 
 

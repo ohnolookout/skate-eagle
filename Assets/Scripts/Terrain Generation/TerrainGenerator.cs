@@ -16,7 +16,7 @@ public static class TerrainGenerator
         terrain.SegmentList = new();
         terrain.ColliderList = new();
         //Create startline at location of player
-        GroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(playerStartPosition)));
+        IGroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(playerStartPosition)));
         CurvePoint endOfLastSegment = newSegment.Curve.EndPoint;
         //Create dictionary of sequences with corresponding grades
         Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
@@ -37,26 +37,26 @@ public static class TerrainGenerator
         {
             //First create curve values, then add segment with corresponding gameobject
             Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, startPoint, grade.MinClimb, grade.MaxClimb);
-            GroundSegment newSegment = GenerateCompleteSegment(terrain, nextCurve, terrain.LastColliderPoint());
+            IGroundSegment newSegment = GenerateCompleteSegment(terrain, nextCurve, terrain.LastColliderPoint());
             startPoint = newSegment.Curve.EndPoint;
         }
         endPoint = startPoint;
     }
 
-    private static GroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
+    private static IGroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
     {
-        GroundSegment newSegment = CreateSegment(terrain, curve);
+        IGroundSegment newSegment = CreateSegment(terrain, curve);
         terrain.SegmentList.Add(newSegment);
-        EdgeCollider2D newCollider = CreateCollider(terrain, curve, terrain.ColliderMaterial, out List<Vector2> shadowPoints, colliderStartPoint);
+        EdgeCollider2D newCollider = CreateCollider(terrain, curve, terrain.ColliderMaterial, colliderStartPoint);
         terrain.ColliderList.Add(newCollider);
-        ShadowCasterCreator.GenerateShadow(newSegment, shadowPoints);
+        //ShadowCasterCreator.GenerateShadow(newSegment, shadowPoints);
         return newSegment;
 
     }
-    private static GroundSegment CreateSegment(LevelTerrain terrain, Curve curve)
+    private static IGroundSegment CreateSegment(LevelTerrain terrain, Curve curve)
     {
         //Instantiate segment object and add its script to segmentList
-        GroundSegment newSegment = terrain.InstantiateSegment().GetComponent<GroundSegment>();
+        IGroundSegment newSegment = terrain.InstantiateSegment().GetComponent<IGroundSegment>();
         //Set the new segment's curve and deactivate the segment.
         newSegment.ApplyCurve(curve);
         newSegment.gameObject.SetActive(false);
@@ -71,11 +71,11 @@ public static class TerrainGenerator
         return newSegment;
     }
 
-    private static EdgeCollider2D CreateCollider(LevelTerrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, out List<Vector2> shadowPoints, Vector3? firstPoint = null, float resolutionMult = 10)
+    private static EdgeCollider2D CreateCollider(LevelTerrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, Vector3? firstPoint = null, float resolutionMult = 10)
     {
         GameObject colliderObject = new("Collider");
         colliderObject.transform.parent = terrain.transform;
-        EdgeCollider2D newCollider = CurveCollider.GenerateCollider(curve, colliderObject, colliderMaterial, out shadowPoints, firstPoint, resolutionMult);        
+        EdgeCollider2D newCollider = CurveCollider.GenerateCollider(curve, colliderObject, colliderMaterial, firstPoint, resolutionMult);        
         colliderObject.SetActive(false);
         return newCollider;
     }

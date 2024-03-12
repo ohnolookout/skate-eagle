@@ -65,8 +65,6 @@ public static class PlayerAsyncUtility
 
     public static async void DelayedFreeze(IPlayer player, float timer)
     {
-        //Return bc not working right now
-        return;
         await Task.Delay((int)(timer * 1000));
         player.NormalBody.bodyType = RigidbodyType2D.Kinematic;
         player.NormalBody.velocity = new Vector2(0, 0);

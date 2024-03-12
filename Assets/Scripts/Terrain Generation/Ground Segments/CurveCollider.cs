@@ -10,9 +10,8 @@ public static class CurveCollider
     //private static EdgeCollider2D collider;
 
     //Includes firstPoint to ensure exact transitions
-    public static EdgeCollider2D CreateCollider(List<EdgeCollider2D> colliderList, GroundSegment segment, Transform parent, PhysicsMaterial2D material, out List<Vector2> unoffsetPoints, Vector3? firstPoint = null, float resolutionMult = 10)
+    public static EdgeCollider2D CreateCollider(List<EdgeCollider2D> colliderList, IGroundSegment segment, Transform parent, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
     {
-        unoffsetPoints = new();
         GameObject colliderObject = new("Collider");
         colliderObject.transform.parent = parent;
         EdgeCollider2D collider = colliderObject.AddComponent<EdgeCollider2D>();
@@ -30,21 +29,18 @@ public static class CurveCollider
             if (i == 0)
             {
                 collider.points = newPoints;
-                unoffsetPoints = newUnoffsetPoints;
                 firstPoint = null;
             } else
             {
                 collider.points = CombineArrays(collider.points, newPoints);
-                unoffsetPoints.AddRange(newUnoffsetPoints);
             }
         }
         colliderList.Add(collider);
         colliderObject.SetActive(false);
         return collider;
     }
-    public static EdgeCollider2D GenerateCollider(Curve curve, GameObject host, PhysicsMaterial2D material, out List<Vector2> unoffsetPoints, Vector3? firstPoint = null, float resolutionMult = 10)
+    public static EdgeCollider2D GenerateCollider(Curve curve, GameObject host, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
     {
-        unoffsetPoints = new();
         var collider = host.AddComponent<EdgeCollider2D>();
         collider.sharedMaterial = material;
         if (curve.Type == CurveType.StartLine)
@@ -60,13 +56,11 @@ public static class CurveCollider
             if (i == 0)
             {
                 collider.points = newPoints;
-                unoffsetPoints = newUnoffsetPoints;
                 firstPoint = null;
             }
             else
             {
                 collider.points = CombineArrays(collider.points, newPoints);
-                unoffsetPoints.AddRange(newUnoffsetPoints);
             }
         }
         return collider;

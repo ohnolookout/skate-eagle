@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class CameraOperator : MonoBehaviour, ICameraOperator
 {
-    [SerializeField] private Vector3 offset;
+    [SerializeField] private Vector3 offset = new(27, 23);
     private Vector3 leadingCorner, trailingCorner;
     private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
     private bool _cameraZoomOut = false, _cameraZoomIn = false;
@@ -108,6 +108,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     }
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
+        Debug.Log("Processing transition for camera y");
         float startBirdX = _playerBody.position.x;
         float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (_playerBody.position.x + 20)), 15, 100);
         float startY = camY;

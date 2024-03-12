@@ -5,14 +5,14 @@ using System;
 
 public class LevelTerrain : MonoBehaviour
 {
-    private List<GroundSegment> _segmentList;
+    private List<IGroundSegment> _segmentList;
     private List<EdgeCollider2D> _colliderList;
     private GameObject _finishFlag, _backstop;
     [SerializeField] GameObject _segmentPrefab;
     [SerializeField] private GameObject _finishFlagPrefab, _backstopPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
 
-    public GroundSegment ActivateSegmentAtIndex(int index, bool activationStatus)
+    public IGroundSegment ActivateSegmentAtIndex(int index, bool activationStatus)
     {
         _segmentList[index].gameObject.SetActive(activationStatus);
         return _segmentList[index];
@@ -42,7 +42,7 @@ public class LevelTerrain : MonoBehaviour
         return _colliderList[^1].points[^1];
     }
 
-    public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
+    public List<IGroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public List<EdgeCollider2D> ColliderList { get => _colliderList; set => _colliderList = value; }
     public GameObject FinishFlag { get => _finishFlag; set => _finishFlag = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }

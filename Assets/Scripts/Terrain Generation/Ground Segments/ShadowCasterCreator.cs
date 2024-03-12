@@ -13,7 +13,7 @@ public static class ShadowCasterCreator
     private static Vector3[] shadowPointArray;
     public static void GenerateShadow(GroundSegment groundSegment, List<Vector2> colliderPoints)
     {
-        ShadowCaster2D shadow = groundSegment.ShadowCaster;
+        //ShadowCaster2D shadow = groundSegment.ShadowCaster;
         /*
         shadowPointArray = ShadowPoints(groundSegment, colliderPoints);
         shapePathField.SetValue(shadow, shadowPointArray);

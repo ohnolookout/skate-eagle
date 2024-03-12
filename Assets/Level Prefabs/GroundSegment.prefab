@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8534229130528223518}
   - component: {fileID: 8534229130528223513}
   - component: {fileID: 8534229130528223512}
-  - component: {fileID: 8534229130528223515}
+  - component: {fileID: 1608150602337171564}
   m_Layer: 0
   m_Name: GroundSegment
   m_TagString: Untagged
@@ -81,14 +81,13 @@ SpriteShapeRenderer:
   m_SortingOrder: 200
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_MaskInteraction: 0
-  m_ShapeTexture: {fileID: 2800000, guid: 8aecb211eb8674a44b175787b758b820, type: 3}
+  m_ShapeTexture: {fileID: 0}
   m_Sprites:
-  - {fileID: 21300000, guid: 9b5f74e463c6de249bbd076a08921be7, type: 3}
-  - {fileID: 21300000, guid: 8aecb211eb8674a44b175787b758b820, type: 3}
-  - {fileID: 21300000, guid: 9b5f74e463c6de249bbd076a08921be7, type: 3}
-  - {fileID: 21300000, guid: 9b5f74e463c6de249bbd076a08921be7, type: 3}
-  - {fileID: 21300000, guid: 8aecb211eb8674a44b175787b758b820, type: 3}
-  - {fileID: 21300000, guid: 8aecb211eb8674a44b175787b758b820, type: 3}
+  - {fileID: 21300000, guid: 1987ebc4b61fe794e9428e21635e26bb, type: 3}
+  - {fileID: 21300000, guid: 1987ebc4b61fe794e9428e21635e26bb, type: 3}
+  - {fileID: 21300000, guid: 1987ebc4b61fe794e9428e21635e26bb, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
@@ -142,7 +141,7 @@ MonoBehaviour:
   m_EnableTangents: 0
   m_GeometryCached: 0
   m_UTess2D: 0
-  m_UpdateShadow: 1
+  m_UpdateShadow: 0
   m_ShadowDetail: 8
   m_ShadowOffset: 0.5
   m_BoundsScale: 2
@@ -190,7 +189,7 @@ MonoBehaviour:
       m_Center: {x: -1, y: -0.012740731, z: 0}
       m_Extent: {x: 0, y: 0.98725927, z: 0}
     m_EdgeProcessing: 1
-    m_TrimEdge: 0.6
+    m_TrimEdge: 0
     m_FlipX: 0
     m_FlipY: 0
     m_InitialTrim: 0
@@ -205,7 +204,7 @@ MonoBehaviour:
     - rid: 8088381431158931791
       type: {class: ShadowShape2DProvider_SpriteShape, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
       data: 
---- !u!114 &8534229130528223515
+--- !u!114 &1608150602337171564
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
