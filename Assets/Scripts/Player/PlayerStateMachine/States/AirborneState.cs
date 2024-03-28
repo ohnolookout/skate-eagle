@@ -3,8 +3,6 @@ using System;
 using System.Threading.Tasks;
 public class AirborneState : PlayerState
 {
-    private const float _jumpReleaseLimit = 0.2f;
-    private bool _undoJumpDampen = false;
     private int _downPressCount = 0;
     private Action _decreaseDownPressCount;
     public AirborneState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)

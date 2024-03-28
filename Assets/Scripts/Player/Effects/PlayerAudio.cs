@@ -13,7 +13,7 @@ public class PlayerAudio : MonoBehaviour
 {
     [SerializeField] private SerializedDictionary<OneShotFX, Sound> _oneShotDict = new();
     [SerializeField] private SerializedDictionary<LoopFX, Sound> _loopDict = new();
-    private bool _wheelsOnGround = false, _playLanding = true;
+    private bool _wheelsOnGround = false;//, _playLanding = true;
     private IPlayer _player;
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
@@ -41,7 +41,7 @@ public class PlayerAudio : MonoBehaviour
         {
             return;
         }
-        LevelManager.OnStandby += () => _playLanding = false;
+        //LevelManager.OnStandby += () => _playLanding = false;
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, ActivateLandingTracking);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Airborne, ActivateLandingTracking);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, JumpSound);
@@ -310,7 +310,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void ActivateLandingTracking(IPlayer _)
     {
-        _playLanding = true;
+        //_playLanding = true;
         _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Jump, ActivateLandingTracking);
         _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Airborne, ActivateLandingTracking);
     }

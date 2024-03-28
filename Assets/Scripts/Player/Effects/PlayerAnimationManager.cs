@@ -76,7 +76,6 @@ public class PlayerAnimationManager
     public void UpdateAirborneSpeed()
     {
         UpdateSpeed();
-        _animator.SetBool("AirborneUp", _player.NormalBody.velocity.y >= 0);
         _animator.SetFloat("YSpeed", MinMaxTo01(_player.NormalBody.velocity.y, -_ySpeedMax, _ySpeedMax));
     }
 
@@ -88,7 +87,6 @@ public class PlayerAnimationManager
     public void Stomp(IPlayer player)
     {
         _stomping = true;
-        _animator.SetBool("IsStomping", true);
         _animator.SetTrigger("Stomp");
     }
 
