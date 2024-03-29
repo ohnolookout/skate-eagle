@@ -36,6 +36,11 @@ public static class BezierMath
         return point;
     }
 
+    public static Vector3 GetMidpoint(CurvePoint startPoint, CurvePoint endPoint)
+    {
+        return BezierMath.GetPointAtT(startPoint, endPoint, 0.5f);
+    }
+
     public static Vector3 GetPointAtT(CurvePoint startPoint, CurvePoint endPoint, float t)
     {
         Vector3 p0 = startPoint.ControlPoint;

@@ -17,6 +17,7 @@ public class FinishLineCurve : Curve
         Vector3 lastRightTangent = -startPoint.LeftTangent;
         startPoint.RightTangent = lastRightTangent;
         curvePoints.Add(startPoint);
+        _highpoint = startPoint.ControlPoint;
         //Set right tangent for last point.
         float finishY = Mathf.Max(Mathf.Abs(lastRightTangent.y), 12);
         for (int i = 0; i < 2; i++)
@@ -34,6 +35,7 @@ public class FinishLineCurve : Curve
             newPoint.LeftTangent = new Vector3(-6, 0);
             newPoint.RightTangent = new Vector3(6, 0);
             curvePoints.Add(newPoint);
+            _lowpoint = newPoint.ControlPoint;
 
         }
         return curvePoints;

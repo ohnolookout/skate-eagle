@@ -5,9 +5,16 @@ using System;
 [Serializable]
 public class CurveDefinition
 {
+    #region Declarations
     [HideInInspector] public string _name;
     public HalfCurveDefinition[] _definitions;
     public int _quantity, _maxConsecutive;
+    public HalfCurveDefinition[] Definitions => _definitions;
+    public HalfCurveDefinition Peak => Definitions[1];
+    public string Name { get => _name; set => _name = value; }
+    public int Quantity { get => _quantity; set => _quantity = value; }
+    public int MaxConsecutive { get => _maxConsecutive; set => _maxConsecutive = value; }
+    #endregion
 
 
     public CurveDefinition(string name, HalfCurveDefinition[] definitions, int quantity = 1, int maxConsecutive = 2)
@@ -30,85 +37,5 @@ public class CurveDefinition
     public void SetName(string newName)
     {
         _name = newName;
-    }
-
-    public HalfCurveDefinition[] Array
-    {
-        get
-        {
-            return _definitions;
-        }
-    }
-
-    public HalfCurveDefinition[] Definitions
-    {
-        get
-        {
-            return _definitions;
-        }
-    }
-
-    public HalfCurveDefinition Valley
-    {
-        get
-        {
-            return Definitions[0];
-        }
-    }
-
-    public HalfCurveDefinition Peak
-    {
-        get
-        {
-            return Definitions[1];
-        }
-    }
-
-    public string Name
-    {
-        get
-        {
-            return _name;
-        }
-        set
-        {
-            _name = value;
-        }
-    }
-
-    public int Weight
-    {
-        get
-        {
-            return _quantity;
-        }
-        set
-        {
-            _quantity = value;
-        }
-    }
-
-    public int Quantity
-    {
-        get
-        {
-            return _quantity;
-        }
-        set
-        {
-            _quantity = value;
-        }
-    }
-
-    public int MaxConsecutive
-    {
-        get
-        {
-            return _maxConsecutive;
-        }
-        set
-        {
-            _maxConsecutive = value;
-        }
     }
 }

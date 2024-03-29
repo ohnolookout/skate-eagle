@@ -178,14 +178,14 @@ public class TerrainManager : MonoBehaviour
     {
         _leadingTerrainIndex++;
         IGroundSegment addedSegment = _terrain.ActivateSegmentAtIndex(_leadingTerrainIndex, true);
-        _lowPointCache.AddLeading(addedSegment.Curve.LowPoint);
+        _lowPointCache.AddLeading(addedSegment.Curve.Lowpoint);
     }
 
     private void ActivateTrailingSegment()
     {
         _trailingTerrainIndex--;
         IGroundSegment addedSegment = _terrain.ActivateSegmentAtIndex(_trailingTerrainIndex, true);
-        _lowPointCache.AddTrailing(addedSegment.Curve.LowPoint);
+        _lowPointCache.AddTrailing(addedSegment.Curve.Lowpoint);
     }
     #endregion    
 }

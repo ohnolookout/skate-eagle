@@ -1,44 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using System;
 [ExecuteAlways]
 public static class CurveCollider
 {
     private static float resolution, edgeOffset = 1.2f; //1.2f
-    //private static Curve curve;
-    //private static EdgeCollider2D collider;
 
     //Includes firstPoint to ensure exact transitions
-    public static EdgeCollider2D CreateCollider(List<EdgeCollider2D> colliderList, IGroundSegment segment, Transform parent, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
-    {
-        GameObject colliderObject = new("Collider");
-        colliderObject.transform.parent = parent;
-        EdgeCollider2D collider = colliderObject.AddComponent<EdgeCollider2D>();
-        collider.sharedMaterial = material;
-        if(segment.Curve.Type == CurveType.StartLine)
-        {
-            firstPoint = segment.Curve.GetPoint(0).ControlPoint;
-        }
-        //Iterate through points that make up GroundSegment's curve.
-        for (int i = 0; i < segment.Curve.Count - 1; i++)
-        {
-            resolution = Mathf.Max(resolutionMult * segment.Curve.SegmentLengths[i]/20, 15);
-            List<Vector2> newUnoffsetPoints;
-            Vector2[] newPoints = Calculate2DPoints(segment.Curve.GetPoint(i), segment.Curve.GetPoint(i + 1), out newUnoffsetPoints, firstPoint);
-            if (i == 0)
-            {
-                collider.points = newPoints;
-                firstPoint = null;
-            } else
-            {
-                collider.points = CombineArrays(collider.points, newPoints);
-            }
-        }
-        colliderList.Add(collider);
-        colliderObject.SetActive(false);
-        return collider;
-    }
     public static EdgeCollider2D GenerateCollider(Curve curve, GameObject host, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
     {
         var collider = host.AddComponent<EdgeCollider2D>();
@@ -51,8 +20,8 @@ public static class CurveCollider
         for (int i = 0; i < curve.Count - 1; i++)
         {
             resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i] / 20, 15);
-            List<Vector2> newUnoffsetPoints;
-            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), out newUnoffsetPoints, firstPoint);
+            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
+            Vector2 midpoint = newPoints[newPoints.Length / 2];
             if (i == 0)
             {
                 collider.points = newPoints;
@@ -66,27 +35,25 @@ public static class CurveCollider
         return collider;
     }
 
-    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, out List<Vector2> unoffset, Vector3? firstVectorPoint = null)
+    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint = null)
     {
         List<Vector2> points = new();
-        unoffset = new();
         if (!(firstVectorPoint is null))
         {
             points.Add((Vector3)firstVectorPoint);
-            unoffset.Add(firstPoint.ControlPoint);
         } 
         for (int i = 1; i < resolution; i++)
         {
-            Vector2 newPoint = CalculateBezierPoint((1 / resolution) * i, firstPoint.ControlPoint, firstPoint.RightTangent + firstPoint.ControlPoint, secondPoint.LeftTangent + secondPoint.ControlPoint, secondPoint.ControlPoint);
+            Vector3 newPoint = CalculateBezierPoint((1 / resolution) * i, firstPoint.ControlPoint, firstPoint.RightTangent + firstPoint.ControlPoint, secondPoint.LeftTangent + secondPoint.ControlPoint, secondPoint.ControlPoint);
             points.Add(newPoint);
         }
         points.Add(secondPoint.ControlPoint);
         Vector2[] returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint is null));
         points.RemoveAt(0);
-        unoffset.AddRange(points);
         return returnArray;
     }
 
+    #region Offset Points
     private static Vector2[] OffsetPoints(Vector2[] array, CurvePoint lastPoint, bool isFirstSegment)
     {
         Vector2[] offsetArray = new Vector2[array.Length];
@@ -123,7 +90,9 @@ public static class CurveCollider
 
         return newPoint;
     }
+    #endregion
 
+    #region Utilities
     private static Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 handlerP0, Vector3 handlerP1, Vector3 p1)
     {
         float u = 1.0f - t;
@@ -147,6 +116,6 @@ public static class CurveCollider
         array2.CopyTo(combinedArray, array1.Length);
         return combinedArray;
     }
-
+    #endregion
 
 }

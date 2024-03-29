@@ -7,37 +7,38 @@ using System.Reflection;
 [ExecuteAlways]
 public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
 {
-    private Curve curve;
+    private Curve _curve;
     private ShadowCaster2D _shadowCaster;
     public SpriteShape spriteShape;
     public SpriteShapeController shapeController;
-    private Spline spline;
+    private Spline _spline;
     private List<Vector2> _unoffsetPoints;
-    private int floorHeight = 100;
-    private int containmentBuffer = 20;
+    private int _floorHeight = 100;
+    private int _containmentBuffer = 20;
+    private Vector3 _lowpoint, _highpoint;
 
 
     void Awake()
     {
-        spline = shapeController.spline;
+        _spline = shapeController.spline;
         _shadowCaster = GetComponent<ShadowCaster2D>();
-        FormatSpline(spline);
+        FormatSpline(_spline);
     }
 
     public void ApplyCurve(Curve curve)
     {
-        this.curve = curve;
-        GenerateSpline(spline, curve, floorHeight);
+        this._curve = curve;
+        GenerateSpline(_spline, curve, _floorHeight);
     }
 
     public bool StartsAfterX(float startX)
     {
-        return curve.StartPoint.ControlPoint.x >= startX;
+        return _curve.StartPoint.ControlPoint.x >= startX;
     }
 
     public bool EndsBeforeX(float endX)
     {
-        return curve.EndPoint.ControlPoint.x <= endX;
+        return _curve.EndPoint.ControlPoint.x <= endX;
     }
 
     private static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
@@ -97,7 +98,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
 
     public bool ContainsX(float targetX)
     {
-        return (targetX > curve.StartPoint.ControlPoint.x - containmentBuffer && targetX < curve.EndPoint.ControlPoint.x + containmentBuffer);
+        return (targetX > _curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < _curve.EndPoint.ControlPoint.x + _containmentBuffer);
     }
 
     public static void FormatSpline(Spline spline)
@@ -109,15 +110,15 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
         }
     }
 
-    public Curve Curve { get => curve; }
-    public Spline Spline { get => spline; }
-    public Vector2 StartPoint { get => curve.StartPoint.ControlPoint; }
-    public Vector2 EndPoint { get => curve.EndPoint.ControlPoint; }
-    public Vector3 StartPosition { get => curve.StartPoint.ControlPoint; }
-    public Vector3 EndPosition { get => curve.EndPoint.ControlPoint; }
+    public Curve Curve { get => _curve; }
+    public Spline Spline { get => _spline; }
+    public Vector2 StartPoint { get => _curve.StartPoint.ControlPoint; }
+    public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
+    public Vector3 StartPosition { get => _curve.StartPoint.ControlPoint; }
+    public Vector3 EndPosition { get => _curve.EndPoint.ControlPoint; }
     public Vector3 Position { get => transform.position; }
     public List<Vector2> UnoffsetPoints { get => _unoffsetPoints; }
-    public CurveType Type { get => curve.Type; }
+    public CurveType Type { get => _curve.Type; }
     public ShadowCaster2D ShadowCaster { get => _shadowCaster; set => _shadowCaster = value; }
     public new GameObject gameObject { get => transform.gameObject; }
 
