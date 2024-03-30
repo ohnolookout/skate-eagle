@@ -28,7 +28,7 @@ public class StartLineCurve : Curve
         thirdPoint.RightTangent = new(xVelocity, xVelocity * slope);
         curvePoints.Add(thirdPoint);
         _highpoint = secondPoint.ControlPoint;
-        _lowpoint = BezierMath.GetMidpoint(secondPoint, thirdPoint);
+        _lowpoint = thirdPoint.ControlPoint;
 
         return curvePoints;
     }

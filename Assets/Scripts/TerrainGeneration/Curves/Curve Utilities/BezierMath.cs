@@ -38,16 +38,17 @@ public static class BezierMath
 
     public static Vector3 GetMidpoint(CurvePoint startPoint, CurvePoint endPoint)
     {
-        return BezierMath.GetPointAtT(startPoint, endPoint, 0.5f);
+        return GetPointAtT(startPoint, endPoint, 0.5f);
     }
 
     public static Vector3 GetPointAtT(CurvePoint startPoint, CurvePoint endPoint, float t)
     {
+
         Vector3 p0 = startPoint.ControlPoint;
         Vector3 rt = p0 + startPoint.RightTangent;
         Vector3 p1 = endPoint.ControlPoint;
         Vector3 lt = p1 + endPoint.LeftTangent;
-        return BezierUtility.BezierPoint(p0, rt, lt, p1, t);
+        return CalculateBezierPoint(p0, rt, lt, p1, t);
     }
 
     public static float CalculateAngle(Vector3 vertex, Vector3 firstRay, Vector3 secondRay)

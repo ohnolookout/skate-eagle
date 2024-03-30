@@ -21,7 +21,6 @@ public static class CurveCollider
         {
             resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i] / 20, 15);
             Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
-            Vector2 midpoint = newPoints[newPoints.Length / 2];
             if (i == 0)
             {
                 collider.points = newPoints;
@@ -44,7 +43,7 @@ public static class CurveCollider
         } 
         for (int i = 1; i < resolution; i++)
         {
-            Vector3 newPoint = CalculateBezierPoint((1 / resolution) * i, firstPoint.ControlPoint, firstPoint.RightTangent + firstPoint.ControlPoint, secondPoint.LeftTangent + secondPoint.ControlPoint, secondPoint.ControlPoint);
+            Vector3 newPoint = BezierMath.CalculateBezierPoint(firstPoint.ControlPoint, firstPoint.RightTangent + firstPoint.ControlPoint, secondPoint.LeftTangent + secondPoint.ControlPoint, secondPoint.ControlPoint, (1 / resolution) * i);
             points.Add(newPoint);
         }
         points.Add(secondPoint.ControlPoint);
@@ -93,22 +92,6 @@ public static class CurveCollider
     #endregion
 
     #region Utilities
-    private static Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 handlerP0, Vector3 handlerP1, Vector3 p1)
-    {
-        float u = 1.0f - t;
-        float tt = t * t;
-        float uu = u * u;
-        float uuu = uu * u;
-        float ttt = tt * t;
-
-        Vector3 p = uuu * p0; //first term
-        p += 3f * uu * t * handlerP0; //second term
-        p += 3f * u * tt * handlerP1; //third term
-        p += ttt * p1; //fourth term
-
-        return p;
-    }
-
     private static Vector2[] CombineArrays(Vector2[] array1, Vector2[] array2)
     {
         Vector2[] combinedArray = new Vector2[array1.Length + array2.Length];

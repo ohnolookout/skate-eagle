@@ -15,7 +15,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
     private List<Vector2> _unoffsetPoints;
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
-    private Vector3 _lowpoint, _highpoint;
 
 
     void Awake()
@@ -23,6 +22,19 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
         _spline = shapeController.spline;
         _shadowCaster = GetComponent<ShadowCaster2D>();
         FormatSpline(_spline);
+    }
+
+    void Start()
+    {
+
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(_curve.Lowpoint, 1000);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(_curve.Highpoint, 1);
     }
 
     public void ApplyCurve(Curve curve)

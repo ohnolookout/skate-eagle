@@ -26,6 +26,7 @@ public class FinishLineCurve : Curve
             if (i == 0)
             {
                 newPoint.ControlPoint = new Vector3(startPoint.ControlPoint.x + finishY * 3, startPoint.ControlPoint.y - finishY);
+                _lowpoint = newPoint.ControlPoint;
                 startPoint = newPoint;
             }
             else
@@ -35,7 +36,6 @@ public class FinishLineCurve : Curve
             newPoint.LeftTangent = new Vector3(-6, 0);
             newPoint.RightTangent = new Vector3(6, 0);
             curvePoints.Add(newPoint);
-            _lowpoint = newPoint.ControlPoint;
 
         }
         return curvePoints;

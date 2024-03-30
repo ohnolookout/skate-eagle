@@ -1,8 +1,5 @@
 using UnityEngine;
 using UnityEngine.U2D;
-using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
-using System.Reflection;
 
 [ExecuteAlways]
 public class GroundSegment_2 : MonoBehaviour, IGroundSegment
@@ -19,6 +16,7 @@ public class GroundSegment_2 : MonoBehaviour, IGroundSegment
         _masterSpline = _fillShapeController.spline;
         FormatSpline(_masterSpline);
     }
+
 
     public void ApplyCurve(Curve curve)
     {
