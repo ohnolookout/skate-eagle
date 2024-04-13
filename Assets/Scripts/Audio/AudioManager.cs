@@ -7,29 +7,48 @@ using System;
 
 public class AudioManager : MonoBehaviour
 {
-    private static AudioManager instance;
-    [SerializeField] private AudioSource[] audioSources; //Minimum 3 audiosources, works best with 6.
-    private Soundtrack soundtrack;
+    #region Declarations
+    private static AudioManager _instance;
+    [SerializeField] private AudioSource[] _audioSources; //Minimum 3 audiosources, works best with 6.
+    private Soundtrack _soundtrack;
     public Dictionary<AudioSource, Sound> playingSounds = new();
     public Dictionary<AudioSource, IEnumerator> fadingSources = new();
     public float intensityDenominator = 300, maxSoundDistance = 160, zoomLimit = 110;
     private bool _updateZoomModifier = false, _updateLocalModifiers = false;
-    private Action<ICameraOperator> updateZoom;
-    private Action stopUpdateZoom;
+    private Action<ICameraOperator> _updateZoom;
+    private Action _stopUpdateZoom;
     private SoundModifierManager _modifierManager;
     private int _soundModFrameRate = 6, _zoomModFrameRate = 10;
     private IPlayer _player;
     private ICameraOperator _camera;
 
+    public float ZoomModifier { get => _modifierManager.ZoomModifier; }
+
+    public static AudioManager Instance
+    {
+        get
+        {
+            if (_instance != null)
+            {
+                return _instance;
+            }
+            Debug.Log("No AudioManager instance found.");
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region Monobehaviors
     void Awake()
     {
         //Check to see if other instance exists that has already 
-        if (instance != null)
+        if (_instance != null)
         {
             Destroy(gameObject);
             return;
         }
-        instance = this;
+        _instance = this;
         DontDestroyOnLoad(gameObject);
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
         _camera = Camera.main.GetComponent<ICameraOperator>();
@@ -37,24 +56,50 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        if (soundtrack != null)
+        if (_soundtrack != null)
         {
-            PlaySoundtrack(soundtrack);
+            PlaySoundtrack(_soundtrack);
         }
         if (_camera != null)
         {
-            updateZoom += _ => _updateZoomModifier = true;
-            stopUpdateZoom += () =>
+            _updateZoom += _ => _updateZoomModifier = true;
+            _stopUpdateZoom += () =>
             {
                 _modifierManager.ResetZoomModifier();
                 _updateZoomModifier = false;
             };
-            _camera.OnZoomOut += updateZoom;
-            _camera.OnFinishZoomIn += stopUpdateZoom;
+            _camera.OnZoomOut += _updateZoom;
+            _camera.OnFinishZoomIn += _stopUpdateZoom;
         }
     }
+    private void Update()
+    {
+        if (!_updateLocalModifiers || _player == null || _camera == null)
+        {
+            return;
+        }
+        if (_updateZoomModifier)
+        {
+            _modifierManager.UpdateZoomModifier(_camera, zoomLimit, _zoomModFrameRate);
+        }
+        _modifierManager.UpdateLocalizedModifiers(_player.IsRagdoll, _camera, maxSoundDistance, intensityDenominator, _soundModFrameRate);
+        ApplyModifiersToLoops();
+    }
 
-    public void AssignLevelEvents()
+    private void OnDisable()
+    {
+        if (_camera == null)
+        {
+            return;
+        }
+        _camera.OnZoomOut -= _updateZoom;
+        _camera.OnFinishZoomIn -= _stopUpdateZoom;
+    }
+
+    #endregion
+
+    #region Initialization
+    public void SubscribeToLevelManagerEvents()
     {
         LevelManager.OnRestart += ClearLoops;
         LevelManager.OnGameOver += _ => ClearLoops();
@@ -71,34 +116,31 @@ public class AudioManager : MonoBehaviour
         _camera = levelManager.CameraOperator;
     }
 
+    #endregion
+
+    #region Modifier Management
+
+    public void InitializeModifiers(List<Sound> sounds)
+    {
+        _modifierManager = new(_player, GetBodiesFromSounds(sounds));
+    }
+
+    private Rigidbody2D[] GetBodiesFromSounds(List<Sound> sounds)
+    {
+        List<Rigidbody2D> bodies = new();
+        foreach (var sound in sounds)
+        {
+            if (!bodies.Contains(sound.localizedSource))
+            {
+                bodies.Add(sound.localizedSource);
+            }
+        }
+        return bodies.ToArray();
+    }
+
     public void StartUpdatingModifiers(bool doUpdate)
     {
         _updateLocalModifiers = doUpdate;
-    }
-
-    private void OnDisable()
-    {
-        if(_camera == null)
-        {
-            return;
-        }
-        _camera.OnZoomOut -= updateZoom;
-        _camera.OnFinishZoomIn -= stopUpdateZoom;
-    }
-
-    private void Update()
-    {
-        if (!_updateLocalModifiers || _player == null || _camera == null)
-        {
-            return;
-        }        
-        if (_updateZoomModifier)
-        {
-            _modifierManager.UpdateZoomModifier(_camera, zoomLimit, _zoomModFrameRate);
-        }
-        _modifierManager.UpdateLocalizedModifiers(_player, _camera, maxSoundDistance, intensityDenominator, _soundModFrameRate);
-        ApplyModifiersToLoops();
-        
     }
 
     private void ApplyModifiersToLoops()
@@ -111,63 +153,34 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
-
     private void SetModifierFramerate(int newFrameRate)
     {
         _soundModFrameRate = newFrameRate;
     }
-
-    public void ClearLoops()
+    private TrackingType GetTrackingType(Sound sound)
     {
-        if (audioSources == null) return;
-        for (int i = 2; i < audioSources.Length; i++)
+        if (!_player.IsRagdoll)
         {
-            audioSources[i].Stop();
+            return TrackingType.PlayerNormal;
         }
-        foreach(var coroutine in fadingSources.Values)
+        else if (sound.localizedSource == null)
         {
-            StopCoroutine(coroutine);
-        }
-        intensityDenominator = 300;
-        playingSounds = new();
-        fadingSources = new();
-        _soundModFrameRate = 6;
-    }
-    //Plays soundtrack on audioSources[0]
-    private void PlaySoundtrack(Soundtrack soundtrack)
-    {
-        Sound track = soundtrack.tracks;
-        audioSources[0].clip = track.Clip();
-        audioSources[0].volume = track.volume;
-        track.source = audioSources[0];
-        audioSources[0].Play();
-    }
-
-    //Plays one shots on audioSources[1]
-    public void PlayOneShot(Sound sound, float inputModifier = 1)
-    {
-        float modifier = _modifierManager.GetTotalModifier(sound, _player.IsRagdoll);
-        if (sound.trackIntensity)
-        {
-            TrackingType trackingType = GetTrackingType(sound);
-            float intensity = -1 + Mathf.Clamp(_player.MomentumTracker.ReboundMagnitude(trackingType) / 100, 0, 2);
-            audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, _player.IsRagdoll);
+            return TrackingType.PlayerRagdoll;
         }
         else
         {
-            audioSources[1].volume = sound.volume * modifier;
+            return TrackingType.Board;
         }
-        audioSources[1].volume *= inputModifier;
-        //One shots don't have pitch variance.
-        audioSources[1].panStereo = _modifierManager.GetPan(sound);
-        audioSources[1].pitch = sound.pitch;
-        audioSources[1].PlayOneShot(sound.Clip());
     }
+
+    #endregion
+
+    #region Loop Management
 
     //Plays loop on first unused source beginning at audioSources[2]
     public void StartLoop(Sound sound, float fadeTime = 0)
     {
-        AudioSource source = AudioManagerUtility.FirstAvailableSource(audioSources);
+        AudioSource source = AudioManagerUtility.FirstAvailableSource(_audioSources);
         AudioManagerUtility.LoadSoundWithModifiers(sound, source, _modifierManager, _player.IsRagdoll);
         source.time = UnityEngine.Random.Range(0, source.clip.length);
         source.Play();
@@ -179,13 +192,40 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void TimedFadeInZoomFadeOut(Sound sound, ICameraOperator camera, float initialDelay, float fadeInTime, float cameraSizeThreshold)
+    public void StopLoop(AudioSource source)
     {
-        AudioSource source = AudioManagerUtility.FirstAvailableSource(audioSources);
-        AudioManagerUtility.LoadSoundWithModifiers(sound, source, _modifierManager, _player.IsRagdoll);
-        IEnumerator thisFade = AudioManagerUtility.TimedInZoomOut(this, source, camera, sound.volume, initialDelay, fadeInTime, cameraSizeThreshold);
-        AddPlayingSound(source, sound, thisFade);
-        StartCoroutine(thisFade);
+        if (fadingSources.ContainsKey(source))
+        {
+            StopCoroutine(fadingSources[source]);
+            fadingSources.Remove(source);
+        }
+        RemovePlayingSound(source, false);
+        source.Stop();
+    }
+
+    public void StopLoop(Sound sound)
+    {
+        if (playingSounds.ContainsKey(sound.source) && playingSounds[sound.source] == sound)
+        {
+            StopLoop(sound.source);
+        }
+    }
+
+    public void ClearLoops()
+    {
+        if (_audioSources == null) return;
+        for (int i = 2; i < _audioSources.Length; i++)
+        {
+            _audioSources[i].Stop();
+        }
+        foreach(var coroutine in fadingSources.Values)
+        {
+            StopCoroutine(coroutine);
+        }
+        intensityDenominator = 300;
+        playingSounds = new();
+        fadingSources = new();
+        _soundModFrameRate = 6;
     }
 
     public void AddPlayingSound(AudioSource source, Sound sound, IEnumerator fadeRoutine = null)
@@ -206,59 +246,48 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopLoop(AudioSource source)
+    public void TimedFadeInZoomFadeOut(Sound sound, ICameraOperator camera, float initialDelay, float fadeInTime, float cameraSizeThreshold)
     {
-        if (fadingSources.ContainsKey(source))
-        {
-            StopCoroutine(fadingSources[source]);
-            fadingSources.Remove(source);
-        }
-        RemovePlayingSound(source, false);
-        source.Stop();
+        AudioSource source = AudioManagerUtility.FirstAvailableSource(_audioSources);
+        AudioManagerUtility.LoadSoundWithModifiers(sound, source, _modifierManager, _player.IsRagdoll);
+        IEnumerator thisFade = AudioManagerUtility.TimedInZoomOut(this, source, camera, sound.volume, initialDelay, fadeInTime, cameraSizeThreshold);
+        AddPlayingSound(source, sound, thisFade);
+        StartCoroutine(thisFade);
     }
 
-    public void StopLoop(Sound sound)
+    //Plays soundtrack on audioSources[0]
+    private void PlaySoundtrack(Soundtrack soundtrack)
     {
-        if (playingSounds.ContainsKey(sound.source) && playingSounds[sound.source] == sound) 
-        {
-            StopLoop(sound.source);
-        }
+        Sound track = soundtrack.tracks;
+        _audioSources[0].clip = track.Clip();
+        _audioSources[0].volume = track.volume;
+        track.source = _audioSources[0];
+        _audioSources[0].Play();
     }
 
-    public void InitializeModifiers(Rigidbody2D[] trackedBodies)
-    {
-        _modifierManager = new(trackedBodies);
-    }
+    #endregion
 
-    private TrackingType GetTrackingType(Sound sound)
+    #region One Shot Management
+
+    //Plays one shots on audioSources[1]
+    public void PlayOneShot(Sound sound, float inputModifier = 1)
     {
-        if (!_player.IsRagdoll)
+        float modifier = _modifierManager.GetTotalModifier(sound, _player.IsRagdoll);
+        if (sound.trackIntensity)
         {
-            return TrackingType.PlayerNormal;
-        }
-        else if (sound.localizedSource == null)
-        {
-            return TrackingType.PlayerRagdoll;
+            TrackingType trackingType = GetTrackingType(sound);
+            float intensity = -1 + Mathf.Clamp(_player.MomentumTracker.ReboundMagnitude(trackingType) / 100, 0, 2);
+            _audioSources[1].volume = 0.1f + sound.AdjustedVolume(intensity, modifier, _player.IsRagdoll);
         }
         else
         {
-            return TrackingType.Board;
+            _audioSources[1].volume = sound.volume * modifier;
         }
+        _audioSources[1].volume *= inputModifier;
+        //One shots don't have pitch variance.
+        _audioSources[1].panStereo = _modifierManager.GetPan(sound);
+        _audioSources[1].pitch = sound.pitch;
+        _audioSources[1].PlayOneShot(sound.Clip());
     }
-
-    
-    public static AudioManager Instance
-    {
-        get
-        {
-            if (instance != null)
-            {
-                return instance;
-            }
-            Debug.Log("No AudioManager instance found.");
-            return null;
-        }
-    }
-
-    public float ZoomModifier { get => _modifierManager.ZoomModifier; }
+    #endregion
 }

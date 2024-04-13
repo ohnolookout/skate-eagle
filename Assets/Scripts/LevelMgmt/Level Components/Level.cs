@@ -87,7 +87,7 @@ public class Level : ScriptableObject
         }
     }
 
-    public Dictionary<Grade, Sequence> GenerateSequence()
+    public Dictionary<Grade, Sequence> GenerateSequences()
     {
         Dictionary<Grade, Sequence> sequences = new();
         foreach (LevelSection section in _levelSections)

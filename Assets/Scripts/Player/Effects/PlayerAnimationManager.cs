@@ -24,7 +24,7 @@ public class PlayerAnimationManager
     private void Push(IPlayer obj)
     {
         SetOnBoard(true);
-        Crouch(obj);
+        //Crouch(obj);
     }
 
     private void Stand(IPlayer obj)

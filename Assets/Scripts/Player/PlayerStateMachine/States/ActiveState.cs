@@ -123,6 +123,7 @@ public class ActiveState : PlayerState
 
     private void Die()
     {
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.PreDie);
         ChangeState(_stateFactory.GetState(PlayerStateType.Ragdoll), false);
     }
 

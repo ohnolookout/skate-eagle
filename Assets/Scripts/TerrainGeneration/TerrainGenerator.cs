@@ -5,29 +5,32 @@ using System;
 
 public static class TerrainGenerator
 {
-
-    public static Vector2 GenerateLevel(Level level, LevelTerrain terrain, Vector3 playerStartPosition)
+    #region Level Generation
+    public static void GenerateLevel(Level level, LevelTerrain terrain, Vector3 playerStartPosition, out Vector2 finishPoint)
     {
-        terrain.transform.position = new(0, 0);
         if (level.LevelSections.Count < 1)
         {
             throw new Exception("Level must contain at least one section");
         }
-        terrain.SegmentList = new();
-        terrain.ColliderList = new();
-        //Create startline at location of player
-        IGroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(playerStartPosition)));
-        CurvePoint endOfLastSegment = newSegment.Curve.EndPoint;
-        //Create dictionary of sequences with corresponding grades
-        Dictionary<Grade, Sequence> curveSequences = level.GenerateSequence();
+
+        ResetTerrain(terrain);
+
+        CurvePoint endOfLastSegment = GenerateStartSegment(terrain, playerStartPosition);
+
+        endOfLastSegment = GenerateAllSequences(terrain, level.GenerateSequences(), endOfLastSegment);
+
+        terrain.PopulateMinMaxLists();
+
+        finishPoint = GenerateFinishSegment(terrain, endOfLastSegment);
+    }
+
+    private static CurvePoint GenerateAllSequences(LevelTerrain terrain, Dictionary<Grade, Sequence> curveSequences, CurvePoint endOfMostRecentSegment)
+    {
         foreach (var sequence in curveSequences)
         {
-            GenerateSegmentsFromSequence(terrain, sequence.Key, sequence.Value, endOfLastSegment, out endOfLastSegment);
+            GenerateSegmentsFromSequence(terrain, sequence.Key, sequence.Value, endOfMostRecentSegment, out endOfMostRecentSegment);
         }
-        //Add finishline at end of final segment
-        GenerateCompleteSegment(terrain, CurveFactory.FinishLine(endOfLastSegment), terrain.ColliderList[^1].points[^1]);
-        Vector2 finishPoint = AddFinishObjects(terrain, terrain.SegmentList[^1].Curve.GetPoint(1).ControlPoint, terrain.SegmentList[^1].EndPoint);
-        return finishPoint;
+        return endOfMostRecentSegment;
     }
 
     private static void GenerateSegmentsFromSequence(LevelTerrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
@@ -38,19 +41,28 @@ public static class TerrainGenerator
             //First create curve values, then add segment with corresponding gameobject
             Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, startPoint, grade.MinClimb, grade.MaxClimb);
             IGroundSegment newSegment = GenerateCompleteSegment(terrain, nextCurve, terrain.LastColliderPoint());
-            PositionObject<IGroundSegment> segmentPositionObject = new(newSegment, newSegment.StartPoint);
             startPoint = newSegment.Curve.EndPoint;
         }
         endPoint = startPoint;
     }
 
+    private static void ResetTerrain(LevelTerrain terrain)
+    {
+        terrain.transform.position = new(0, 0);
+        terrain.SegmentList = new();
+        terrain.ColliderList = new();
+        terrain.PositionalColliderList = new();
+    }
+    #endregion
+
+    #region Segment Generation
     private static IGroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
     {
         IGroundSegment newSegment = CreateSegment(terrain, curve);
         terrain.SegmentList.Add(newSegment);
         EdgeCollider2D newCollider = CreateCollider(terrain, curve, terrain.ColliderMaterial, colliderStartPoint);
-        terrain.ColliderList.Add(newCollider);
-        //ShadowCasterCreator.GenerateShadow(newSegment, shadowPoints);
+        terrain.ColliderList.Add(newCollider); //Delete when colliders fixed
+        terrain.PositionalColliderList.Add(new(newCollider));
         return newSegment;
 
     }
@@ -80,12 +92,29 @@ public static class TerrainGenerator
         colliderObject.SetActive(false);
         return newCollider;
     }
-    private static Vector2 AddFinishObjects(LevelTerrain terrain, Vector3 finishLineBound, Vector3 backstopBound)
+
+    private static CurvePoint GenerateStartSegment(LevelTerrain terrain, Vector3 startPosition)
     {
-        Vector3 finishPoint = finishLineBound + new Vector3(50, 1);
-        //Assign locations finishPoint, backstop, and finishflag
-        terrain.InstantiateFinish(finishPoint, backstopBound);
+        //Create startline at location of player
+        IGroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(startPosition)));
+        return newSegment.Curve.EndPoint;
+    }
+
+    private static Vector2 GenerateFinishSegment(LevelTerrain terrain, CurvePoint endOfLastSegment)
+    {
+        IGroundSegment finishSegment = GenerateCompleteSegment(terrain, CurveFactory.FinishLine(endOfLastSegment), terrain.ColliderList[^1].points[^1]);
+        Vector2 finishPoint = AddFinishObjectsToSegment(terrain, finishSegment, terrain.SegmentList[^1].Curve.GetPoint(1).ControlPoint, terrain.SegmentList[^1].EndPoint);
         return finishPoint;
     }
+
+    private static Vector2 AddFinishObjectsToSegment(LevelTerrain terrain, IGroundSegment segment, Vector3 finishPoint, Vector3 backstopPoint)
+    {
+        finishPoint += new Vector3(50, 1);
+        GameObject.Instantiate(terrain.FinishFlagPrefab, finishPoint, segment.gameObject.transform.rotation, segment.gameObject.transform);        
+        GameObject.Instantiate(terrain.BackstopPrefab, backstopPoint - new Vector3(75, 0), segment.gameObject.transform.rotation, segment.gameObject.transform);
+        segment.IsFinish = true;
+        return finishPoint;
+    }
+    #endregion
 
 }

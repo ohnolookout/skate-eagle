@@ -1376,6 +1376,8 @@ GameObject:
   - component: {fileID: 5911308498071505147}
   - component: {fileID: 5911308498071505144}
   - component: {fileID: 5911308498071505123}
+  - component: {fileID: 5597366873098747279}
+  - component: {fileID: 1714464854719714366}
   m_Layer: 3
   m_Name: Back Wing Upper
   m_TagString: Untagged
@@ -1460,7 +1462,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.73, y: -0.03538686}
+  m_Offset: {x: 0.8551097, y: -0.18569589}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1470,7 +1472,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.22, y: 0.3309695}
+  m_Size: {x: 1.4702194, y: 0.63158774}
   m_EdgeRadius: 0
 --- !u!255 &5911308498071505144
 FixedJoint2D:
@@ -1507,6 +1509,53 @@ MonoBehaviour:
   _trackingType: 1
   _rigidbody: {fileID: 3322286059587850302}
   _ragdollController: {fileID: 7916146461461128039}
+--- !u!233 &5597366873098747279
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684170537386488511}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 4083338131997632033}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: -37.52316, y: 11.734305}
+  m_UseConnectedAnchor: 1
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
+--- !u!231 &1714464854719714366
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684170537386488511}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 760694388586738562}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 0
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: -0.33, y: 0}
+  m_ConnectedAnchor: {x: 2.26, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 3.816752
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1 &883958278793997627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1870,7 +1919,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.67, y: 0}
+  m_Offset: {x: 0.69728434, y: -0.08722602}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1880,7 +1929,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.88, y: 0.33112907}
+  m_Size: {x: 1.9345686, y: 0.50558114}
   m_EdgeRadius: 0
 --- !u!255 &5911308496243565734
 FixedJoint2D:
@@ -2040,7 +2089,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.0571764, y: -0.03538686}
+  m_Offset: {x: 0.90828675, y: -0.24344707}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2050,7 +2099,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.2808938, y: 0.3309695}
+  m_Size: {x: 1.9831146, y: 0.74709}
   m_EdgeRadius: 0
 --- !u!114 &5911308497170086033
 MonoBehaviour:
@@ -2322,7 +2371,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.34328097, y: -0.013214022}
+  m_Offset: {x: 0.3833598, y: -0.06453718}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2332,7 +2381,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.75, y: 0.20836666}
+  m_Size: {x: 1.0669811, y: 0.46396753}
   m_EdgeRadius: 0
 --- !u!61 &5911308496174445608
 BoxCollider2D:
@@ -2368,7 +2417,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.87, y: 0.16}
+  m_Offset: {x: 0.9342857, y: 0.07834937}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2378,7 +2427,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.35, y: 0.41700447}
+  m_Size: {x: 0.4785713, y: 0.7017515}
   m_EdgeRadius: 0
 --- !u!231 &5911308496174445789
 SpringJoint2D:
@@ -2673,6 +2722,7 @@ GameObject:
   - component: {fileID: 5911308497830821398}
   - component: {fileID: 5911308497830821399}
   - component: {fileID: 5911308497830821393}
+  - component: {fileID: 8602745245423301600}
   m_Layer: 3
   m_Name: Front Wing Upper
   m_TagString: Untagged
@@ -2757,7 +2807,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.8982034, y: -0.03538686}
+  m_Offset: {x: 1.0222836, y: -0.22282693}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2767,7 +2817,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.4074066, y: 0.3309695}
+  m_Size: {x: 1.6555672, y: 0.7058496}
   m_EdgeRadius: 0
 --- !u!255 &5911308497830821398
 FixedJoint2D:
@@ -2825,6 +2875,27 @@ MonoBehaviour:
   _trackingType: 1
   _rigidbody: {fileID: 4083338131997632033}
   _ragdollController: {fileID: 7916146461461128039}
+--- !u!231 &8602745245423301600
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2424821695362415851}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 3208968923900115116}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 0
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: -0.32, y: 0}
+  m_ConnectedAnchor: {x: 1.83, y: 1.34}
+  m_AutoConfigureDistance: 1
+  m_Distance: 4.6452394
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1 &2683013771803650845
 GameObject:
   m_ObjectHideFlags: 0
@@ -5835,7 +5906,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.3565367, y: -0.03538686}
+  m_Offset: {x: 1.1083041, y: -0.2620884}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5845,7 +5916,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.8796146, y: 0.3309695}
+  m_Size: {x: 2.3831494, y: 0.7843725}
   m_EdgeRadius: 0
 --- !u!231 &5911308498226447320
 SpringJoint2D:
@@ -6056,8 +6127,8 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: 0.07405507, y: 0.57174164}
-      - {x: -0.91552144, y: 0.47350165}
-      - {x: -0.69872725, y: -0.8185511}
+      - {x: -0.83850795, y: 0.520651}
+      - {x: -0.61582077, y: -0.7810271}
       - {x: 1.4602444, y: 0.012394398}
   m_UseDelaunayMesh: 0
 --- !u!114 &5911308496440498214
@@ -6200,7 +6271,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.36547992, y: -0.013214022}
+  m_Offset: {x: 0.4093876, y: 0.040969744}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6210,7 +6281,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.8, y: 0.20836666}
+  m_Size: {x: 1.2019582, y: 0.49103418}
   m_EdgeRadius: 0
 --- !u!61 &5911308497617970265
 BoxCollider2D:
@@ -6246,7 +6317,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.01, y: 0.16}
+  m_Offset: {x: 1.0160402, y: 0.11457816}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6256,7 +6327,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.4112224, y: 0.41700447}
+  m_Size: {x: 0.6045167, y: 0.6091414}
   m_EdgeRadius: 0
 --- !u!114 &5911308497617970244
 MonoBehaviour:
@@ -6517,11 +6588,11 @@ MonoBehaviour:
   - {fileID: 1270265137485726604}
   - {fileID: 3983434672166875679}
   - {fileID: 5911308497830821398}
-  - {fileID: 5911308497830821399}
   - {fileID: 5924456787402072191}
-  - {fileID: 5911308498226447320}
-  - {fileID: 5911308498071505144}
   - {fileID: 1426427204689517377}
+  - {fileID: 5597366873098747279}
+  - {fileID: 8602745245423301600}
+  - {fileID: 1714464854719714366}
   _ragdollRigidbodies:
   - {fileID: 5305833837874218047}
   - {fileID: 7033132914963510207}
@@ -6551,6 +6622,7 @@ MonoBehaviour:
   - {fileID: 967763766132357604}
   - {fileID: 3836037879973590578}
   _IKParent: {fileID: 3764741302350066453}
+  _backWing: {fileID: 684170537386488511}
   _normalRigidbodies:
   - {fileID: 468519406916343395}
   _normalColliders:
@@ -6574,6 +6646,9 @@ MonoBehaviour:
   - {fileID: 7282205611791114047}
   - {fileID: 2642961697374785444}
   _rigParent: {fileID: 1333294334949718141}
+  _backwingFixedJoint: {fileID: 5911308498071505144}
+  _backwingSpringJoint: {fileID: 5911308497830821399}
+  _lowerwingSpringJoint: {fileID: 5911308498226447320}
   spine: {fileID: 5305833837874218047}
   turnOnRagdoll: 0
   ragdoll: 0
@@ -6675,7 +6750,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.69, y: 0.025808513}
+  m_Offset: {x: 0.68999994, y: 0.17650309}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6685,7 +6760,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.8, y: 0.33112907}
+  m_Size: {x: 1.8, y: 0.63251823}
   m_EdgeRadius: 0
 --- !u!231 &5911308496799506302
 SpringJoint2D:

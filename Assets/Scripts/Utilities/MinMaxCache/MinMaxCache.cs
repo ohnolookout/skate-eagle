@@ -94,7 +94,6 @@ public class MinMaxCache
     {
         if (_points.Count < 2)
         {
-            Debug.LogWarning("Only one point in cache!");
             return;
         }
 
@@ -141,7 +140,6 @@ public class MinMaxCache
     {
         if (_currentIndex == removedIndex)
         {
-            Debug.Log("Current index removed. Finding new index...");
             _currentIndex = FindCurrentIndex();
             OnNewMinMax?.Invoke(_points[_currentIndex]);
         }

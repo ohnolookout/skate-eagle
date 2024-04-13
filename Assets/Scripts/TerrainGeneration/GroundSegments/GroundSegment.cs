@@ -1,46 +1,58 @@
 using UnityEngine;
 using UnityEngine.U2D;
-using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
-using System.Reflection;
+using System;
 
 [ExecuteAlways]
-public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
+public class GroundSegment : MonoBehaviour, IGroundSegment
 {
+    #region Declarations
     private Curve _curve;
-    private ShadowCaster2D _shadowCaster;
-    public SpriteShape spriteShape;
-    public SpriteShapeController shapeController;
-    private Spline _spline;
-    private List<Vector2> _unoffsetPoints;
+    [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
+    private Spline _masterSpline;
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
+    private bool _isFinish = false;
+    public Action<IGroundSegment> OnActivate { get; set; }
+    public Curve Curve { get => _curve; }
+    public Spline Spline { get => _masterSpline; }
+    public Vector2 StartPoint { get => _curve.StartPoint.ControlPoint; }
+    public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
+    public Vector3 StartPosition => _curve.StartPoint.ControlPoint;
+    public Vector3 EndPosition => _curve.EndPoint.ControlPoint;
+    public Vector3 Position => _curve.StartPoint.ControlPoint;
+    public CurveType Type { get => _curve.Type; }
+    public new GameObject gameObject { get => transform.gameObject; }
+    public bool IsFinish { get => _isFinish; set => _isFinish = value; }
+    #endregion
 
 
     void Awake()
     {
-        _spline = shapeController.spline;
-        _shadowCaster = GetComponent<ShadowCaster2D>();
-        FormatSpline(_spline);
+        _masterSpline = _fillShapeController.spline;
+        FormatSpline(_masterSpline);
     }
 
-    void Start()
+    void OnEnable()
     {
-
+        if (_isFinish)
+        {
+            OnActivate?.Invoke(this);
+        }
     }
 
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(_curve.Lowpoint, 1000);
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(_curve.Highpoint, 1);
+        Gizmos.DrawSphere(_curve.Lowpoint, 1);
     }
+#endif
 
     public void ApplyCurve(Curve curve)
     {
-        this._curve = curve;
-        GenerateSpline(_spline, curve, _floorHeight);
+        _curve = curve;
+        GenerateSpline(_masterSpline, curve, _floorHeight);
+        InsertCurveToOpenSpline(_edgeShapeController.spline, curve);
     }
 
     public bool StartsAfterX(float startX)
@@ -88,6 +100,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
         spline.SetLeftTangent(1, new Vector2(0, -1));
     }
 
+
+    private static void InsertCurveToOpenSpline(Spline spline, Curve curve)
+    {
+        CopyCurvePointToSpline(spline, curve.GetPoint(0), 0);
+        CopyCurvePointToSpline(spline, curve.GetPoint(1), 1);
+        for (int i = 2; i < curve.Count; i++)
+        {
+            InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
+        }
+    }
+
     private static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
     {
         for (int i = 0; i < curve.Count; i++)
@@ -99,7 +122,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
         spline.SetRightTangent(index, new Vector3(0, -1));
 
     }
-
     private static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
         spline.InsertPointAt(index, curvePoint.ControlPoint);
@@ -108,11 +130,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
         spline.SetRightTangent(index, curvePoint.RightTangent);
     }
 
+    private static void CopyCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
+    {
+        spline.SetPosition(index, curvePoint.ControlPoint);
+        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
+        spline.SetLeftTangent(index, curvePoint.LeftTangent);
+        spline.SetRightTangent(index, curvePoint.RightTangent);
+    }
     public bool ContainsX(float targetX)
     {
         return (targetX > _curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < _curve.EndPoint.ControlPoint.x + _containmentBuffer);
     }
-
     public static void FormatSpline(Spline spline)
     {
         spline.isOpenEnded = false;
@@ -121,18 +149,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, IDoublePosition
             spline.RemovePointAt(2);
         }
     }
-
-    public Curve Curve { get => _curve; }
-    public Spline Spline { get => _spline; }
-    public Vector2 StartPoint { get => _curve.StartPoint.ControlPoint; }
-    public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
-    public Vector3 StartPosition { get => _curve.StartPoint.ControlPoint; }
-    public Vector3 EndPosition { get => _curve.EndPoint.ControlPoint; }
-    public Vector3 Position { get => transform.position; }
-    public List<Vector2> UnoffsetPoints { get => _unoffsetPoints; }
-    public CurveType Type { get => _curve.Type; }
-    public ShadowCaster2D ShadowCaster { get => _shadowCaster; set => _shadowCaster = value; }
-    public new GameObject gameObject { get => transform.gameObject; }
 
 
 

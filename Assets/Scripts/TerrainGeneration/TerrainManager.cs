@@ -5,47 +5,23 @@ using System;
 
 public class TerrainManager : MonoBehaviour
 {
-    #region Variables
-    private CameraOperator _camera;
+    #region Declarations
     private LevelTerrain _terrain;
     [SerializeField] private GameObject _terrainPrefab;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private GroundColliderManager _colliderManager;
+    private Vector2 _finishPoint;
     const float _cameraBuffer = 25;
-    private float _leadingTerrainX, _trailingTerrainX;
-    private int _leadingTerrainIndex, _trailingTerrainIndex;
-    private MinMaxCache _lowPointCache = new(ComparisonType.Least), _highPointCache = new(ComparisonType.Greatest);
     private bool _trackCollision = false;
-    private Action<FinishScreenData> onFinish { get; set; }
-    private Action onAttempt;
-    public MinMaxCache LowPointCache { get => _lowPointCache; }
-    public MinMaxCache HighPointCache { get => _highPointCache; }
-    public List<Rigidbody2D> NormalBodies { get => _normalBodies; set => _normalBodies = value; }
-    public List<Rigidbody2D> RagdollBodies { get => _ragdollBodies; set => _ragdollBodies = value; }
-    public GroundColliderManager ColliderManager { get => _colliderManager; }
+    public Action<Vector2> OnActivateFinish;
+    private DoublePositionalList<IGroundSegment> _positionalSegmentList;
+    private PositionalMinMax<PositionObject<Vector3>> _lowPointCache, _highPointCache;
+    public MinMaxCache LowPointCache { get => _lowPointCache.MinMax; }
+    public MinMaxCache HighPointCache { get => _highPointCache.MinMax; }
+    public LevelTerrain Terrain { get => _terrain; }
     #endregion
 
     #region Monobehaviors
-    private void Awake()
-    {
-        _camera = Camera.main.GetComponent<CameraOperator>();
-    }
-    private void OnEnable()
-    {
-        onAttempt += () => { 
-            _trackCollision = true;
-        };
-        onFinish += _ => { _trackCollision = false; };
-        LevelManager.OnAttempt += onAttempt;
-        LevelManager.OnFinish += onFinish;
-    }
-
-    private void OnDisable()
-    {
-        LevelManager.OnAttempt -= onAttempt;
-        LevelManager.OnFinish -= onFinish;
-        DeleteChildren();
-    }
 
     private void Start()
     {
@@ -60,13 +36,25 @@ public class TerrainManager : MonoBehaviour
 
     void Update()
     {
-        UpdateCameraBounds();
-        CheckTerrainBounds();
+        _positionalSegmentList.Update();
+        _lowPointCache.Update();
+        _highPointCache.Update();
         if (_trackCollision)
         {
-            _colliderManager.UpdateColliders();
+            _colliderManager.Update();
         }
     }
+    private void OnEnable()
+    {
+        LevelManager.OnAttempt += () => _trackCollision = true;
+        LevelManager.OnFinish += _ => _trackCollision = false;
+    }
+
+    private void OnDisable()
+    {
+        DeleteChildren();
+    }
+
     #endregion
 
     #region Initialization
@@ -76,23 +64,44 @@ public class TerrainManager : MonoBehaviour
         {
             DeleteChildren();
         }
-        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<LevelTerrain>();
-        Vector2 finishPoint = TerrainGenerator.GenerateLevel(level, _terrain, startPosition);
+
+        InitializeTerrain(level, startPosition);
+
         _colliderManager = new(_normalBodies, _ragdollBodies, _terrain);
-        ActivateInitialSegments(3);
-        return finishPoint;
+
+        InitializePositionalList(_terrain, _cameraBuffer, _cameraBuffer);
+
+        CreateMinMaxCaches(_terrain);
+        
+        return _finishPoint;
     }
-    private void ActivateInitialSegments(int activationCount)
+
+    private void InitializePositionalList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
     {
-        _leadingTerrainIndex = -1;
-        for (int i = 0; i < activationCount; i++)
-        {
-            ActivateLeadingSegment();
-            if (i < 2)
-            {
-                _colliderManager.ColliderList[i].gameObject.SetActive(true);
-            }
-        }
+        _positionalSegmentList = GetPositionalSegmentList(terrain, trailingBuffer, leadingBuffer);
+        ActivateInitialSegments(_positionalSegmentList);
+        AssignPositionalEvents(_positionalSegmentList);
+    }
+
+    private void InitializeTerrain(Level level, Vector3 startPosition)
+    {
+        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<LevelTerrain>();
+
+        TerrainGenerator.GenerateLevel(level, _terrain, startPosition, out _finishPoint);
+
+        _terrain.SegmentList[^1].OnActivate += OnFinishActivation;
+    }
+
+    private void OnFinishActivation(IGroundSegment segment)
+    {
+        segment.OnActivate -= OnFinishActivation;
+        OnActivateFinish?.Invoke(_finishPoint);
+    }
+
+    private void CreateMinMaxCaches(LevelTerrain terrain)
+    {
+        _lowPointCache = new(terrain.LowPointList, ComparisonType.Least);
+        _highPointCache = new(terrain.HighPointList, ComparisonType.Greatest);
     }
     public void DeleteChildren()
     {
@@ -103,89 +112,26 @@ public class TerrainManager : MonoBehaviour
     }
     #endregion
 
-    #region Update Utilities
-    private void UpdateCameraBounds()
+    #region PositionalList
+    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
     {
-        if (_camera != null)
+        return DoublePositionalListFactory<IGroundSegment>.CameraOperatorTracker(terrain.SegmentList, Camera.main.GetComponent<ICameraOperator>(), trailingBuffer, leadingBuffer);
+    }
+
+    private static void ActivateInitialSegments(DoublePositionalList<IGroundSegment> segmentList)
+    {
+        foreach (var segment in segmentList.CurrentObjects)
         {
-            _leadingTerrainX = _camera.LeadingCorner.x + _cameraBuffer;
-            _trailingTerrainX = _camera.TrailingCorner.x - _cameraBuffer;
-        }
-        else
-        {
-            _leadingTerrainX = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).x + _cameraBuffer;
-            _trailingTerrainX = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0)).x - _cameraBuffer;
+            segment.gameObject.SetActive(true);
         }
     }
 
-    private void CheckTerrainBounds()
+    private static void AssignPositionalEvents(DoublePositionalList<IGroundSegment> positionalList)
     {
-        if (_terrain.SegmentList[_leadingTerrainIndex].StartsAfterX(_leadingTerrainX))
-        {
-            DeactivateLeadingSegment();
-        }
-        else if (_leadingTerrainIndex < _terrain.SegmentList.Count - 1)
-        {
-            //If the segment after the current leading segment starts before the leading edge of the camera + buffer,
-            //Activate it and increase leadingSegmentIndex
-            if (!_terrain.SegmentList[_leadingTerrainIndex + 1].StartsAfterX(_leadingTerrainX))
-            {
-                ActivateLeadingSegment();
-            }
-        }
-        //Exit if trailingSegment index is outside the bounds of the segment array
-        //Because player is on finishline segment.
-        if (_trailingTerrainIndex >= _terrain.SegmentList.Count)
-        {
-            return;
-        }
-        //If the trailingSegment ends before the trailing edge of the camera + buffer,
-        //Deactivate it and increment the trailing index.
-        if (_terrain.SegmentList[_trailingTerrainIndex].EndsBeforeX(_trailingTerrainX))
-        {
-            DeactivateTrailingSegment();
-            return;
-        }
-        if (_trailingTerrainIndex <= 0)
-        {
-            return;
-        }
-        //If the segment before the trailing segment index ends after the trailing edge of the camera + buffer,
-        //Activate it and decrement the trailing index.
-        if (!_terrain.SegmentList[_trailingTerrainIndex - 1].EndsBeforeX(_trailingTerrainX))
-        {
-            ActivateTrailingSegment();
-        }
+        positionalList.OnObjectAdded += (obj, _) => obj.gameObject.SetActive(true);
+        positionalList.OnObjectRemoved += (obj, _) => obj.gameObject.SetActive(false);
     }
+
+
     #endregion
-
-    #region Activate/Deactivate
-    private void DeactivateLeadingSegment()
-    {
-        _terrain.ActivateSegmentAtIndex(_leadingTerrainIndex, false);
-        _leadingTerrainIndex--;
-        _lowPointCache.RemoveLeading();
-    }
-
-    private void DeactivateTrailingSegment()
-    {
-        _terrain.ActivateSegmentAtIndex(_trailingTerrainIndex, false);
-        _trailingTerrainIndex++;
-        _lowPointCache.RemoveTrailing();
-    }
-
-    private void ActivateLeadingSegment()
-    {
-        _leadingTerrainIndex++;
-        IGroundSegment addedSegment = _terrain.ActivateSegmentAtIndex(_leadingTerrainIndex, true);
-        _lowPointCache.AddLeading(addedSegment.Curve.Lowpoint);
-    }
-
-    private void ActivateTrailingSegment()
-    {
-        _trailingTerrainIndex--;
-        IGroundSegment addedSegment = _terrain.ActivateSegmentAtIndex(_trailingTerrainIndex, true);
-        _lowPointCache.AddTrailing(addedSegment.Curve.Lowpoint);
-    }
-    #endregion    
 }

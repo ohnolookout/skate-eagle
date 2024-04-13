@@ -223,7 +223,9 @@ public class PositionalListEditTest
     }
     private SinglePositionalList<PositionObject<string>> DefaultPositionalList()
     {
-        return PositionalListFactory<PositionObject<string>>.TransformTracker(_positionStrings, _trackingObj.transform, _defaultDistance, _defaultDistance);
+        Func<float> updateTrailing = () => _trackingObj.transform.position.x - _defaultDistance;
+        Func<float> updateLeading = () => _trackingObj.transform.position.x + _defaultDistance;
+        return new(_positionStrings, updateTrailing, updateLeading);
     }
 
 
@@ -232,4 +234,5 @@ public class PositionalListEditTest
         return PositionalListEmulator.ExpectedStringsFromPosition(_positionStrings, _trackingObj, _defaultDistance, _defaultDistance, doPrint);
     }
     #endregion    
+
 }

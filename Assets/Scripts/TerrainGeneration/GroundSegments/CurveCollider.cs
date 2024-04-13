@@ -7,6 +7,7 @@ public static class CurveCollider
 {
     private static float resolution, edgeOffset = 1.2f; //1.2f
 
+    #region Generation
     //Includes firstPoint to ensure exact transitions
     public static EdgeCollider2D GenerateCollider(Curve curve, GameObject host, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
     {
@@ -51,6 +52,7 @@ public static class CurveCollider
         points.RemoveAt(0);
         return returnArray;
     }
+    #endregion
 
     #region Offset Points
     private static Vector2[] OffsetPoints(Vector2[] array, CurvePoint lastPoint, bool isFirstSegment)
@@ -78,11 +80,11 @@ public static class CurveCollider
 
         // Calculate the direction vector of the line between p0 and p1
         Vector3 dir = p1 - p0;
-        dir.Normalize(); // Make sure it has unit length
+        dir.Normalize();
 
         // Calculate the perpendicular vector to the line
-        Vector3 perp = new Vector3(dir.y, -dir.x); // Assumes 2D space
-        perp.Normalize(); // Make sure it has unit length
+        Vector3 perp = new Vector3(dir.y, -dir.x);
+        perp.Normalize();
 
         // Calculate the new point at distance "length" from p1 along the perpendicular slope
         Vector3 newPoint = p0 + perp * length;

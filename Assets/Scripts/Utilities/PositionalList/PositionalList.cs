@@ -47,7 +47,7 @@ public abstract class PositionalList<T> where T : IPosition
 
         FindInitialValues();
     }
-    protected void FindInitialValues()
+    public void FindInitialValues()
     {
         FindInitialTrailing();
         FindInitialLeading();
@@ -157,20 +157,6 @@ public abstract class PositionalList<T> where T : IPosition
     #endregion
 
     #region Validation
-    private static bool ValidateListOrder(List<T> toValidate)
-    {
-        float lastX = toValidate[0].Position.x;
-        foreach (var boundedObj in toValidate)
-        {
-            if (boundedObj.Position.x < lastX)
-            {
-                return false;
-            }
-            lastX = boundedObj.Position.x;
-        }
-        return true;
-    }
-
     public void ValidateConstruction()
     {
         if (_allObjects.Count < 1)
@@ -182,6 +168,20 @@ public abstract class PositionalList<T> where T : IPosition
         {
             throw new Exception("Unordered list sent to BoundedObjectList");
         }
+    }
+    private static bool ValidateListOrder(List<T> toValidate)
+    {
+        Vector3 lastPosition = toValidate[0].Position;
+        foreach (var boundedObj in toValidate)
+        {
+            if (boundedObj.Position.x < lastPosition.x)
+            {
+                Debug.Log($"Invalid list order. {boundedObj.Position} comes before {lastPosition}");
+                return false;
+            }
+            lastPosition = boundedObj.Position;
+        }
+        return true;
     }
     #endregion
 

@@ -19,6 +19,7 @@ public interface IPlayer
     bool Stomping { get; set; }
     InputEventController InputEvents { get; set; }
     TrailRenderer Trail { get; }
+    Transform Transform { get; }
 
     void SwitchDirection();
     void InvokeEvent(PlayerEvent eventType);

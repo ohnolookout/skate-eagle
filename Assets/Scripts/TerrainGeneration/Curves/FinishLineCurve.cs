@@ -14,30 +14,32 @@ public class FinishLineCurve : Curve
     private List<CurvePoint> GenerateFinishPoints(CurvePoint startPoint)
     {
         List<CurvePoint> curvePoints = new();
-        Vector3 lastRightTangent = -startPoint.LeftTangent;
-        startPoint.RightTangent = lastRightTangent;
-        curvePoints.Add(startPoint);
-        _highpoint = startPoint.ControlPoint;
-        //Set right tangent for last point.
-        float finishY = Mathf.Max(Mathf.Abs(lastRightTangent.y), 12);
-        for (int i = 0; i < 2; i++)
-        {
-            CurvePoint newPoint = new CurvePoint();
-            if (i == 0)
-            {
-                newPoint.ControlPoint = new Vector3(startPoint.ControlPoint.x + finishY * 3, startPoint.ControlPoint.y - finishY);
-                _lowpoint = newPoint.ControlPoint;
-                startPoint = newPoint;
-            }
-            else
-            {
-                newPoint.ControlPoint = new Vector3(startPoint.ControlPoint.x + 500, startPoint.ControlPoint.y);
-            }
-            newPoint.LeftTangent = new Vector3(-6, 0);
-            newPoint.RightTangent = new Vector3(6, 0);
-            curvePoints.Add(newPoint);
-
-        }
+        curvePoints.Add(FirstPoint(startPoint));
+        curvePoints.Add(SecondPoint(curvePoints[0]));
+        curvePoints.Add(ThirdPoint(curvePoints[1]));
+        _highpoint = curvePoints[0].ControlPoint;
+        _lowpoint = curvePoints[1].ControlPoint;
         return curvePoints;
+    }
+
+    private CurvePoint FirstPoint(CurvePoint startPoint)
+    {
+        startPoint.RightTangent = -startPoint.LeftTangent;
+        return startPoint;
+    }
+
+    private CurvePoint SecondPoint(CurvePoint startPoint)
+    {
+        float finishY = Mathf.Max(Mathf.Abs(startPoint.RightTangent.y), 12);
+        Vector3 location = new Vector3(startPoint.ControlPoint.x + finishY * 3, startPoint.ControlPoint.y - finishY);
+        CurvePoint point = new(location, new Vector3(-6, 0), new Vector3(6, 0));
+        return point;
+    }
+
+    private CurvePoint ThirdPoint(CurvePoint startPoint)
+    {
+        Vector3 location = new Vector3(startPoint.ControlPoint.x + 500, startPoint.ControlPoint.y);
+        CurvePoint point = new(location, new Vector3(-6, 0), new Vector3(6, 0));
+        return point;
     }
 }

@@ -3,22 +3,35 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
-
+[RequireComponent(typeof(Camera))]
 public class CameraOperator : MonoBehaviour, ICameraOperator
 {
-    [SerializeField] private Vector3 offset = new(27, 23);
-    private Vector3 leadingCorner, trailingCorner;
-    private float defaultSize, zoomYDelta = 0, camY, targetY = 0;
+    [SerializeField] private Vector3 _offset = new(27, 23);
+    private Vector3 _leadingCorner, _trailingCorner;
+    private float _defaultSize, _zoomYDelta = 0, _camY, _targetY = 0;
     private bool _cameraZoomOut = false, _cameraZoomIn = false;
     private ILevelManager _levelManager;
     private MinMaxCache _lowPoints;
     private IPlayer _player;
     private Rigidbody2D _playerBody;
-    private IEnumerator transitionYCoroutine, zoomOutRoutine, zoomInRoutine;
-    private Camera cam;
+    private IEnumerator _transitionYCoroutine, _zoomOutRoutine, _zoomInRoutine;
+    private Camera _cam;
     private bool _isFinished = false;
     public Action OnFinishZoomIn { get; set; }
     public Action<ICameraOperator> OnZoomOut { get; set; }
+    public Vector3 LeadingCorner { get => _leadingCorner; }
+    public Vector3 TrailingCorner { get => _trailingCorner; }
+    public Vector3 Center { get => _cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)); }
+    public float ZoomYDelta { get => _zoomYDelta; }
+    public Camera Camera { get => _cam; }
+    public float DefaultSize { get => _defaultSize; }
+    public bool IsZoomOut { get => _cameraZoomOut; set => _cameraZoomOut = value; }
+    public bool CameraZoomIn { get => _cameraZoomIn; set => _cameraZoomIn = value; }
+    new public GameObject gameObject => transform.gameObject;
+
+    float ICameraOperator.LowPointBuffer => throw new NotImplementedException();
+
+    float ICameraOperator.HighPointBuffer => throw new NotImplementedException();
 
     void Awake()
     {
@@ -35,13 +48,20 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
             Destroy(this);
             return;
         }
-        camY = _lowPoints.CurrentPoint.y;
+
+        if (_levelManager.HasTerrainManager)
+        {
+            _lowPoints = _levelManager.TerrainManager.LowPointCache;
+            _transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
+        }
+
+        _camY = _lowPoints.CurrentPoint.y;
         UpdatePosition();
     }
 
     void Update()
     {
-        if (cam.WorldToScreenPoint(_playerBody.position).y < 0)
+        if (_cam.WorldToScreenPoint(_playerBody.position).y < 0)
         {
             _levelManager.Fall();
         }
@@ -54,23 +74,18 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
 
     private void AssignComponents()
     {
-        defaultSize = Camera.main.orthographicSize;
+        _defaultSize = Camera.main.orthographicSize;
         _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
         if (_levelManager == null)
         {
             Debug.LogWarning("No level manager found by camera operator. Camera will be static.");
             return;
         }
-        if (_levelManager.HasTerrainManager)
-        {
-            _lowPoints = _levelManager.TerrainManager.LowPointCache;
-            transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
-        }
         if (_levelManager.HasPlayer)
         {
             _player = LevelManager.GetPlayer;
         }
-        cam = GetComponent<Camera>();
+        _cam = GetComponent<Camera>();
     }
 
     private void UpdateZoom()
@@ -82,41 +97,41 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
 
         if (_cameraZoomIn && _playerBody.velocity.y > 0)
         {
-            StopCoroutine(zoomInRoutine);
+            StopCoroutine(_zoomInRoutine);
             _cameraZoomIn = false;
         }
         else if (!_cameraZoomIn)
         {
-            zoomOutRoutine = ZoomOut();
-            StartCoroutine(zoomOutRoutine);
+            _zoomOutRoutine = ZoomOut();
+            StartCoroutine(_zoomOutRoutine);
         }
     }
 
     private void UpdatePosition()
     {
-        if (_lowPoints.CurrentPoint.y != targetY)
+        if (_lowPoints.CurrentPoint.y != _targetY)
         {
-            StopCoroutine(transitionYCoroutine);
-            transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
-            StartCoroutine(transitionYCoroutine);
+            StopCoroutine(_transitionYCoroutine);
+            _transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
+            StartCoroutine(_transitionYCoroutine);
         }
-        float cameraX = _playerBody.position.x + offset.x + (zoomYDelta * (1 / Camera.main.aspect));
-        float cameraY = camY + offset.y + zoomYDelta;
+        float cameraX = _playerBody.position.x + _offset.x + (_zoomYDelta * (1 / Camera.main.aspect));
+        float cameraY = _camY + _offset.y + _zoomYDelta;
         transform.position = new Vector3(cameraX, cameraY, transform.position.z);
-        leadingCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
-        trailingCorner = cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
+        _leadingCorner = _cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        _trailingCorner = _cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
     }
     private IEnumerator TransitionLowY(Vector3 endPoint)
     {
         float startBirdX = _playerBody.position.x;
         float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (_playerBody.position.x + 20)), 15, 100);
-        float startY = camY;
-        targetY = endPoint.y;
+        float startY = _camY;
+        _targetY = endPoint.y;
         float t = 0;
-        while (Mathf.Abs(camY - endPoint.y) > 0.2)
+        while (Mathf.Abs(_camY - endPoint.y) > 0.2)
         {
             t = Mathf.Clamp01(Mathf.Abs(_playerBody.position.x - startBirdX) / distance);
-            camY = Mathf.SmoothStep(startY, targetY, t);
+            _camY = Mathf.SmoothStep(startY, _targetY, t);
             yield return null;
         }
     }
@@ -126,39 +141,31 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         OnZoomOut?.Invoke(this);
 
         _cameraZoomOut = true;
-        while (_playerBody.position.y > LeadingCorner.y - cam.orthographicSize * 0.2f
+        while (_playerBody.position.y > LeadingCorner.y - _cam.orthographicSize * 0.2f
             || _playerBody.velocity.y > 0)
         {
             float change = Mathf.Clamp(_playerBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
-            cam.orthographicSize += change;
-            zoomYDelta += change;
+            _cam.orthographicSize += change;
+            _zoomYDelta += change;
             yield return new WaitForFixedUpdate();
         }
         _cameraZoomOut = false;
-        if (_cameraZoomIn) StopCoroutine(zoomInRoutine);
-        zoomInRoutine = ZoomIn();
-        StartCoroutine(zoomInRoutine);
+        if (_cameraZoomIn) StopCoroutine(_zoomInRoutine);
+        _zoomInRoutine = ZoomIn();
+        StartCoroutine(_zoomInRoutine);
     }
 
     private IEnumerator ZoomIn()
     {
         _cameraZoomIn = true;
-        while (cam.orthographicSize > defaultSize)
+        while (_cam.orthographicSize > _defaultSize)
         {
             float change = Mathf.Clamp(_playerBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
-            cam.orthographicSize += change;
-            zoomYDelta += change;
+            _cam.orthographicSize += change;
+            _zoomYDelta += change;
             yield return new WaitForFixedUpdate();
         }
         _cameraZoomIn = false;
         OnFinishZoomIn?.Invoke();
     }
-    public Vector3 LeadingCorner { get => leadingCorner; }
-    public Vector3 TrailingCorner { get => trailingCorner; }
-    public Vector3 Center { get => cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)); }
-    public float ZoomYDelta { get => zoomYDelta; }
-    public Camera Camera { get => cam; }
-    public float DefaultSize { get => defaultSize; }
-    public bool CameraZoomOut { get => _cameraZoomOut; set => _cameraZoomOut = value; }
-    public bool CameraZoomIn { get => _cameraZoomIn; set => _cameraZoomIn = value; }
 }

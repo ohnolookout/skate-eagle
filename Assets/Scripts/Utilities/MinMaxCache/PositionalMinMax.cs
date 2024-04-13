@@ -6,6 +6,9 @@ public class PositionalMinMax<T> where T : IPosition
 {
     private PositionalList<T> _positionalList;
     private MinMaxCache _minMaxCache;
+    public MinMaxCache MinMax { get => _minMaxCache; }
+    public PositionalList<T> PositionList { get => _positionalList; }
+    public Vector3 CurrentPoint => _minMaxCache.CurrentPoint;
     public PositionalMinMax(PositionalList<T> positionalList, ComparisonType comparisonType)
     {
         _positionalList = positionalList;
@@ -50,7 +53,4 @@ public class PositionalMinMax<T> where T : IPosition
             _minMaxCache.AddLeading(addedObject.Position);
         }
     }
-
-    public MinMaxCache MinMax { get => _minMaxCache; }
-    public PositionalList<T> PositionList { get => _positionalList; }
 }

@@ -12,5 +12,8 @@ public interface ICameraOperator
     Action<ICameraOperator> OnZoomOut { get; set; }
     Action OnFinishZoomIn { get; set; }
 
-    bool CameraZoomOut { get; }
+    bool IsZoomOut { get; }
+    GameObject gameObject { get; }
+    float LowPointBuffer { get; }
+    float HighPointBuffer { get; }
 }

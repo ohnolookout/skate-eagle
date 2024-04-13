@@ -8,7 +8,7 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
     public static DoublePositionalList<T> TransformTracker(List<T> allObjects, Transform transform, float trailingBuffer, float leadingBuffer)
     {
         Func<float> updateTrailing = () => transform.position.x - trailingBuffer;
-        Func<float> updateLeading = () => transform.position.x - leadingBuffer;
+        Func<float> updateLeading = () => transform.position.x + leadingBuffer;
         DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
     }
@@ -23,7 +23,15 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
     public static DoublePositionalList<T> BodyTracker(List<T> allObjects, Rigidbody2D body, float trailingBuffer, float leadingBuffer)
     {
         Func<float> updateTrailing = () => body.position.x - trailingBuffer;
-        Func<float> updateLeading = () => body.position.x - leadingBuffer;
+        Func<float> updateLeading = () => body.position.x + leadingBuffer;
+        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
+        return positionalList;
+    }
+
+    public static DoublePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer)
+    {
+        Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
+        Func<float> updateLeading = () => cameraOperator.LeadingCorner.x + leadingBuffer;
         DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
     }

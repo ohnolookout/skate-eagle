@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
+using System;
 
 public class PositionalMinMaxTest
 {
@@ -23,7 +24,9 @@ public class PositionalMinMaxTest
     private PositionalMinMax<PositionObject<string>> _positionalMinMax;
     private SinglePositionalList<PositionObject<string>> DefaultPositionalList()
     {
-        return PositionalListFactory<PositionObject<string>>.TransformTracker(_positionStrings, _trackingObj.transform, _defaultDistance, _defaultDistance);
+        Func<float> updateTrailing = () => _trackingObj.transform.position.x - _defaultDistance;
+        Func<float> updateLeading = () => _trackingObj.transform.position.x + _defaultDistance;
+        return new(_positionStrings, updateTrailing, updateLeading);
     }
 
     #endregion

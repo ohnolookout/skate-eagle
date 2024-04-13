@@ -75,7 +75,7 @@ public static class AudioManagerUtility
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        if (!camera.CameraZoomOut)
+        if (!camera.IsZoomOut)
         {
             audioManager.RemovePlayingSound(source, true);
             audioManager.StopLoop(source);

@@ -11,20 +11,25 @@ public enum LoopFX { Roll, Freewheel, Board, Body, Wind };
 
 public class PlayerAudio : MonoBehaviour
 {
+    #region Declarations
     [SerializeField] private SerializedDictionary<OneShotFX, Sound> _oneShotDict = new();
     [SerializeField] private SerializedDictionary<LoopFX, Sound> _loopDict = new();
-    private bool _wheelsOnGround = false;//, _playLanding = true;
+    private List<Sound> _sounds;
+    private bool _wheelsOnGround = false;
     private IPlayer _player;
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
     private AudioManager _audioManager;
     private CameraOperator _cameraOperator;
+    #endregion
+
+    #region Monobehaviours
 
     private void Awake()
     {
         _player = LevelManager.GetPlayer;
-        List<Sound> sounds = _oneShotDict.Values.ToList();
-        sounds.AddRange(_loopDict.Values.ToList());
+        _sounds = _oneShotDict.Values.ToList();
+        _sounds.AddRange(_loopDict.Values.ToList());
         _audioManager = AudioManager.Instance;
         if (_audioManager == null)
         {
@@ -32,31 +37,17 @@ public class PlayerAudio : MonoBehaviour
             DestroyImmediate(this);
             return;
         }
-        _audioManager.InitializeModifiers(TrackedBodies(sounds));
     }
 
-    private void SubscribeToPlayerEvents()
-    {
-        if (_player == null)
-        {
-            return;
-        }
-        //LevelManager.OnStandby += () => _playLanding = false;
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, ActivateLandingTracking);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Airborne, ActivateLandingTracking);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, JumpSound);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Dismount, Dismount);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Brake);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.LandSound, LandOneShot);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.BodySound, BodyOneShot);
-        _player.CollisionManager.OnCollide += Collide;
-        _player.CollisionManager.OnUncollide += Uncollide;
-
-    }
 
     private void Start()
     {
+        _audioManager.InitializeModifiers(_sounds);
         SubscribeToPlayerEvents();
+    }
+    void FixedUpdate()
+    {
+        UpdateWheelTimer();
     }
 
     private void OnEnable()
@@ -81,70 +72,29 @@ public class PlayerAudio : MonoBehaviour
             _cameraOperator.OnFinishZoomIn -= StopWind;
         }
     }
-    void FixedUpdate()
-    {
-        UpdateWheelTimer();
-    }
+    #endregion
 
-    private Rigidbody2D[] TrackedBodies(List<Sound> sounds)
+    #region Event Handling
+    private void SubscribeToPlayerEvents()
     {
-        List<Rigidbody2D> bodies = new();
-        foreach (var sound in sounds)
+        if (_player == null)
         {
-            if (!bodies.Contains(sound.localizedSource))
-            {
-                bodies.Add(sound.localizedSource);
-            }
+            return;
         }
-        return bodies.ToArray();
-    }
-
-    private void JumpSound(IPlayer player)
-    {
-        if (player.Params.JumpCount == 0)
-        {
-            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Jump]);
-            _wheelTimer = 0;
-            if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Freewheel]))
-            {
-                _audioManager.StopLoop(_loopDict[LoopFX.Roll]);
-                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.NormalBody.velocity.magnitude));
-            }
-        }
-        else
-        {
-            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.SecondJump]);
-        }
-        _wheelsOnGround = false;
-    }
-    private void Brake(IPlayer player)
-    {
-        _wheelsOnGround = true;
-        float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.velocity.x);
-        StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
-        _audioManager.StartLoop(_loopDict[LoopFX.Board]);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, ActivateLandingTracking);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Airborne, ActivateLandingTracking);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Jump, JumpSound);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Dismount, Dismount);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Brake);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.LandSound, LandOneShot);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.BodySound, BodyOneShot);
+        _player.CollisionManager.OnCollide += Collide;
+        _player.CollisionManager.OnUncollide += Uncollide;
 
     }
+    #endregion
 
-    private void StartWind(ICameraOperator camera)
-    {
-        if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Wind]))
-        {
-            _audioManager.TimedFadeInZoomFadeOut(_loopDict[LoopFX.Wind], camera, 0.5f, 3f, _cameraOperator.DefaultSize * 2f);
-        }
-    }
-
-    private void StopWind()
-    {
-        _audioManager.StopLoop(_loopDict[LoopFX.Wind]);
-    }
-
-    private void Dismount(IPlayer _ = null)
-    {
-        _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Jump]);
-        _audioManager.ClearLoops();
-    }
-
+    #region Collision Management
     private void Collide(ColliderCategory category, float magnitudeDelta)
     {
         switch (category)
@@ -259,7 +209,9 @@ public class PlayerAudio : MonoBehaviour
     {
         _audioManager.StopLoop(_loopDict[LoopFX.Body]);
     }
+    #endregion
 
+    #region Manual Triggers
     private IEnumerator SpikeIntensityDenom(float duration, float denomMultiplier)
     {
         float accelDuration = duration * 0.05f;
@@ -285,19 +237,6 @@ public class PlayerAudio : MonoBehaviour
         }
     }
 
-    private void UpdateWheelTimer()
-    {
-        if (_wheelTimer < 0)
-        {
-            return;
-        }
-        _wheelTimer += Time.deltaTime;
-        if (_wheelTimer >= _wheelTimeLimit)
-        {
-            _wheelTimer = -1;
-        }
-    }
-
     private void LandOneShot(IPlayer _)
     {
         _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Wheel], 0.4f);
@@ -315,9 +254,70 @@ public class PlayerAudio : MonoBehaviour
         _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Airborne, ActivateLandingTracking);
     }
 
+    private void Dismount(IPlayer _ = null)
+    {
+        _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Jump]);
+        _audioManager.ClearLoops();
+    }
+
+    private void JumpSound(IPlayer player)
+    {
+        if (player.Params.JumpCount == 0)
+        {
+            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Jump]);
+            _wheelTimer = 0;
+            if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Freewheel]))
+            {
+                _audioManager.StopLoop(_loopDict[LoopFX.Roll]);
+                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.NormalBody.velocity.magnitude));
+            }
+        }
+        else
+        {
+            _audioManager.PlayOneShot(_oneShotDict[OneShotFX.SecondJump]);
+        }
+        _wheelsOnGround = false;
+    }
+    private void Brake(IPlayer player)
+    {
+        _wheelsOnGround = true;
+        float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.velocity.x);
+        StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
+        _audioManager.StartLoop(_loopDict[LoopFX.Board]);
+
+    }
+
+    private void StartWind(ICameraOperator camera)
+    {
+        if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Wind]))
+        {
+            _audioManager.TimedFadeInZoomFadeOut(_loopDict[LoopFX.Wind], camera, 0.5f, 3f, _cameraOperator.DefaultSize * 2f);
+        }
+    }
+
+    private void StopWind()
+    {
+        _audioManager.StopLoop(_loopDict[LoopFX.Wind]);
+    }
+    #endregion
+
+    #region Wheel Fade Utilities
+
+    private void UpdateWheelTimer()
+    {
+        if (_wheelTimer < 0)
+        {
+            return;
+        }
+        _wheelTimer += Time.deltaTime;
+        if (_wheelTimer >= _wheelTimeLimit)
+        {
+            _wheelTimer = -1;
+        }
+    }
     private float WheelFadeTime(float magnitudeAtCollisionExit)
     {
         return _wheelFadeCoefficient * magnitudeAtCollisionExit;
     }
-
+    #endregion
 }

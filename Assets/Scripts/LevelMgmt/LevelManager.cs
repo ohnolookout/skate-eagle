@@ -5,6 +5,8 @@ using System;
 
 public class LevelManager : MonoBehaviour, ILevelManager
 {
+    #region Declarations
+    public Vector3 startPosition = new();
     private Vector3 _finishPoint;
     [SerializeField] private Level _currentLevel;
     private GameManager _gameManager;
@@ -21,23 +23,40 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private bool _overlayLoaded = false;
     [SerializeField] private CameraOperator _cameraOperator;
 
+
+    public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
+    public static IPlayer GetPlayer { get => _player; }
+    public ICameraOperator CameraOperator { get => _cameraOperator; }
+    public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
+    public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
+    public bool HasCameraOperator { get => _cameraOperator != null; }
+    public bool HasPlayer { get => _player != null; }
+    public bool HasTerrainManager { get => _terrainManager != null; }
+    public bool HasAudioManager { get => _audioManager != null; }
+    #endregion
+
+    #region Monobehaviours
     void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
-        Vector3 startPosition;
-        if (HasPlayer)
+        AddSingletonManagers();
+    }
+
+    private void Start()
+    {
+        ActivateTerrainManager(startPosition);
+        SetPlayerPosition(startPosition);
+        SubscribeToPlayerEvents();
+        OnLanding?.Invoke(this);
+        if (!_overlayLoaded)
         {
-            startPosition = _player.NormalBody.position;
-            _terrainManager.NormalBodies = new() { _player.NormalBody };
-            _terrainManager.RagdollBodies = new() { _player.RagdollBody, _player.RagdollBoard };
+            Debug.LogWarning("No overlay found by level manager. Going to standby.");
+            GoToStandby();
         }
         else
         {
-            Debug.LogWarning("No player found. Spawning level at default location.");
-            startPosition = new(0, 0);
+            _inputEvents.OnRestart += GoToStandby;
         }
-        AddSingletonManagers();
-        ActivateTerrainManager(startPosition);
     }
 
     private void OnEnable()
@@ -54,23 +73,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ResetStaticEvents();
     }
 
-    private void Start()
-    {
-        SubscribeToPlayerEvents();
-        OnLanding?.Invoke(this);
-        if (!_overlayLoaded)
-        {
-            Debug.LogWarning("No overlay found by level manager. Going to standby.");
-            GoToStandby();
-        }
-        else
-        {
-            _inputEvents.OnRestart += GoToStandby;
-        }
-    }
 
+    #endregion
+
+    #region Start/End Functions
     private void ActivateTerrainManager(Vector3 startPosition)
     {
+
+#if UNITY_EDITOR
         if (_gameManager.CurrentLevel == null)
         {
             Debug.LogWarning("No level found. Skipping terrain creation.");
@@ -81,8 +91,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Debug.LogWarning("No terrain manager found. Skipping terrain creation.");
             return;
         }
+#endif
+
         _finishPoint = _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition);
-        _terrainManager.ColliderManager.OnActivateLastSegment += () => OnActivateFinish?.Invoke(_finishPoint);
+        _terrainManager.OnActivateFinish += ActivateFinish;
     }
 
     private void AddSingletonManagers()
@@ -101,7 +113,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnFinish += _gameManager.UpdateRecord;
         if (HasAudioManager)
         {
-            _audioManager.AssignLevelEvents();
+            _audioManager.SubscribeToLevelManagerEvents();
         }
         
     }
@@ -118,6 +130,19 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
     }
 
+    private void SetPlayerPosition(Vector3 position)
+    {
+        if (HasPlayer)
+        {
+            float halfPlayerHeight = 4.25f;
+            _player.Transform.position = new(position.x, position.y + halfPlayerHeight + 1.1f);
+        }
+    }
+    public void SetLevel(Level level)
+    {
+        CurrentLevel = level;
+    }
+
     private void ResetStaticEvents()
     {
         OnLanding = null;
@@ -129,10 +154,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnRestart = null;
         OnActivateFinish = null;
     }
+
     public void BackToMenu()
     {
         SceneManager.LoadScene("Start_Menu");
     }
+    #endregion
+
+    #region Event Invokers
 
     public void RestartGame()
     {
@@ -168,10 +197,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _inputEvents.OnRestart -= GoToStandby;
         OnStandby?.Invoke();
     }
-    public void SetLevel(Level level)
-    {
-        CurrentLevel = level;
-    }
 
     public void ActivateFinish(Vector2 finishPoint)
     {
@@ -195,16 +220,5 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         OnFall?.Invoke();
     }
-
-    public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
-    public static IPlayer GetPlayer { get => _player; }
-    public ICameraOperator CameraOperator { get => _cameraOperator; }
-    public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
-    public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
-
-    public bool HasCameraOperator { get => _cameraOperator != null; }
-    public bool HasPlayer { get => _player != null; }
-    public bool HasTerrainManager { get => _terrainManager != null; }
-
-    public bool HasAudioManager { get => _audioManager != null; }
+    #endregion
 }
