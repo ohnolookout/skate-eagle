@@ -9,6 +9,7 @@ public class MinMaxCache
 {
     #region Variables
     private List<Vector3> _points = new();
+    private bool _removeLastPointOnDelay = false;
     private int _currentIndex = 0;
     private Func<float, float, bool> _comparison, 
         _least = ( a, b ) => a <= b, 
@@ -31,10 +32,6 @@ public class MinMaxCache
     #endregion
 
     #region Constructors and Initialization
-    public MinMaxCache(ComparisonType type)
-    {
-        SetComparison(type);
-    }
     public MinMaxCache(ComparisonType type, List<Vector3> points)
     {
         SetComparison(type);
@@ -79,6 +76,11 @@ public class MinMaxCache
     #region Add/Remove
     public void AddTrailing(Vector3 point)
     {
+        if(_removeLastPointOnDelay && _points.Count == 1)
+        {
+            _removeLastPointOnDelay = false;
+            _points.RemoveAt(0);
+        }
         _points.Insert(0, point);
         _currentIndex++;
         UpdateIndexAfterAddition(0);
@@ -86,6 +88,11 @@ public class MinMaxCache
 
     public void AddLeading(Vector3 point)
     {
+        if (_removeLastPointOnDelay && _points.Count == 1)
+        {
+            _removeLastPointOnDelay = false;
+            _points.RemoveAt(0);
+        }
         _points.Add(point);
         UpdateIndexAfterAddition(_points.Count - 1);
     }
@@ -94,6 +101,7 @@ public class MinMaxCache
     {
         if (_points.Count < 2)
         {
+            _removeLastPointOnDelay = true;
             return;
         }
 
@@ -109,13 +117,12 @@ public class MinMaxCache
     }
     public void RemoveLeading()
     {
-        if(_points.Count < 1)
+        Debug.Log("Removing leading object from minmax. Current count: " + _points.Count);
+        if (_points.Count < 2)
         {
+            Debug.Log("Setting last point to remove on delay...");
+            _removeLastPointOnDelay = true;
             return;
-        } else if (_points.Count < 2)
-        {
-            Debug.LogWarning("Only one point in cache!");
-            _defaultVector = _points[_currentIndex];
         }
 
         int removedIndex = _points.Count - 1;

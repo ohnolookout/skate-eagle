@@ -31,8 +31,11 @@ public class StompBar : MonoBehaviour
         {
             StopCoroutine(fillRoutine);
         }
-        fillRoutine = FillRoutine(fillAmount);
-        StartCoroutine(fillRoutine);
+        if (gameObject.activeInHierarchy)
+        {
+            fillRoutine = FillRoutine(fillAmount);
+            StartCoroutine(fillRoutine);
+        }
     }
     private IEnumerator FillRoutine(float fillAmount)
     {

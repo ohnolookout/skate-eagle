@@ -4,13 +4,14 @@ using System.Linq;
 
 public class SoundModifierManager
 {
-
+    #region Declarations
     private Dictionary<Rigidbody2D, SoundModifiers> _modifiers = new();
     private float _zoomModifier = 1, _lastZoomModifier = 1, _targetZoomModifier = 1;
     private float _distanceBuffer = 15;
     private Rigidbody2D _playerBody;
     public Dictionary<Rigidbody2D, SoundModifiers> Modifiers { get => _modifiers; }
     public float ZoomModifier { get => _zoomModifier; }
+    #endregion
 
     #region Initialization
     public SoundModifierManager(IPlayer player, Rigidbody2D[] trackedBodies)
@@ -142,7 +143,7 @@ public class SoundModifierManager
     }
     private static float Pan(Rigidbody2D playerBody, Rigidbody2D panBody, ICameraOperator camera)
     {
-        float halfCamWidth = camera.LeadingCorner.x - camera.Center.x;
+        float halfCamWidth = camera.LeadingCorner.x - camera.Camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)).x;
         float distanceFromCenter = panBody.position.x - playerBody.position.x;
         return distanceFromCenter / (halfCamWidth * 1.5f);
     }

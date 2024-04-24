@@ -13,8 +13,8 @@ public class Player : MonoBehaviour, IPlayer
     private bool _facingForward = true, _isRagdoll = false, _doLanding = true, _stomping = false;
     private PlayerParameters _params;
     private PlayerStateMachine _stateMachine;
-    private CancellationTokenSource _tokenSource;
-    private CancellationToken _boostToken;
+    private CancellationTokenSource _boostTokenSource, _freezeTokenSource;
+    private CancellationToken _boostToken, _freezeToken;
     private InputEventController _inputEvents;
     private PlayerEventAnnouncer _eventAnnouncer;
     private PlayerAnimationManager _animationManager;
@@ -36,6 +36,9 @@ public class Player : MonoBehaviour, IPlayer
     public TrailRenderer Trail { get => _trail; }
     public PlayerAnimationManager AnimationManager { get => _animationManager; set => _animationManager = value; }
     public Transform Transform { get => transform; }
+    public CancellationToken FreezeToken { get => _freezeToken; }
+    public CancellationTokenSource BoostTokenSource { get => _boostTokenSource; }
+    public CancellationTokenSource FreezeTokenSource { get => _freezeTokenSource; }
     #endregion
 
     #region Monobehaviours
@@ -48,11 +51,13 @@ public class Player : MonoBehaviour, IPlayer
         _eventAnnouncer = new(this);
         _animationManager = new(this, _animator);
         MomentumTracker = new(_body, _ragdollBoard, _ragdollBody, 12);
-        _tokenSource = new();
-        _boostToken = _tokenSource.Token;
+        _boostTokenSource = new();
+        _boostToken = _boostTokenSource.Token;
+        _freezeTokenSource = new();
+        _freezeToken = _freezeTokenSource.Token;
         _body.bodyType = RigidbodyType2D.Kinematic;
         _body.centerOfMass = new Vector2(0, -2f);
-        LevelManager.OnRestart += () => _tokenSource.Cancel();
+        LevelManager.OnRestart += () => _boostTokenSource.Cancel();
     }
 
     private void Start()
@@ -89,6 +94,7 @@ public class Player : MonoBehaviour, IPlayer
     {
         _inputEvents.DisableInputs();
         _eventAnnouncer.ClearActions();
+        CancelAsyncTokens();
     }
     #endregion
 
@@ -104,13 +110,15 @@ public class Player : MonoBehaviour, IPlayer
 
     public void CancelAsyncTokens()
     {
-        _tokenSource.Cancel();
+        _boostTokenSource.Cancel();
+        _freezeTokenSource.Cancel();
     }
 
     public void SwitchDirection()
     {
         _animator.SetBool("FacingForward", _facingForward);
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
     }
     
 }

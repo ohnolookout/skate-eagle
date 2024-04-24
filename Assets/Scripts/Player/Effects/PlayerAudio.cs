@@ -20,7 +20,7 @@ public class PlayerAudio : MonoBehaviour
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
     private AudioManager _audioManager;
-    private CameraOperator _cameraOperator;
+    private ICameraOperator _cameraOperator;
     #endregion
 
     #region Monobehaviours
@@ -53,7 +53,7 @@ public class PlayerAudio : MonoBehaviour
     private void OnEnable()
     {
 
-        _cameraOperator = Camera.main.GetComponent<CameraOperator>();
+        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
         if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut += StartWind;

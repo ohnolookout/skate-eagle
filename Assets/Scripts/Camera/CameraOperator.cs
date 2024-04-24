@@ -4,7 +4,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 [RequireComponent(typeof(Camera))]
-public class CameraOperator : MonoBehaviour, ICameraOperator
+public class CameraOperator : MonoBehaviour
 {
     [SerializeField] private Vector3 _offset = new(27, 23);
     private Vector3 _leadingCorner, _trailingCorner;
@@ -18,7 +18,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     private Camera _cam;
     private bool _isFinished = false;
     public Action OnFinishZoomIn { get; set; }
-    public Action<ICameraOperator> OnZoomOut { get; set; }
+    public Action<CameraOperator> OnZoomOut { get; set; }
     public Vector3 LeadingCorner { get => _leadingCorner; }
     public Vector3 TrailingCorner { get => _trailingCorner; }
     public Vector3 Center { get => _cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)); }
@@ -28,10 +28,6 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     public bool IsZoomOut { get => _cameraZoomOut; set => _cameraZoomOut = value; }
     public bool CameraZoomIn { get => _cameraZoomIn; set => _cameraZoomIn = value; }
     new public GameObject gameObject => transform.gameObject;
-
-    float ICameraOperator.LowPointBuffer => throw new NotImplementedException();
-
-    float ICameraOperator.HighPointBuffer => throw new NotImplementedException();
 
     void Awake()
     {
@@ -51,7 +47,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
 
         if (_levelManager.HasTerrainManager)
         {
-            _lowPoints = _levelManager.TerrainManager.LowPointCache;
+            //_lowPoints = _levelManager.TerrainManager.LowPointCache;
             _transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
         }
 

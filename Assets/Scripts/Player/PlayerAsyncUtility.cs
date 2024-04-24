@@ -8,6 +8,10 @@ public static class PlayerAsyncUtility
     private static float _maxTrailDuration = 0.08f;
     public static async void BoostTrail(CancellationToken token, TrailRenderer trail, bool facingForward)
     {
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
         Vector3 originalPosition = trail.transform.localPosition;
         if (!facingForward)
         {
@@ -66,6 +70,12 @@ public static class PlayerAsyncUtility
     public static async void DelayedFreeze(IPlayer player, float timer)
     {
         await Task.Delay((int)(timer * 1000));
+
+        if (player.FreezeToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         player.NormalBody.bodyType = RigidbodyType2D.Kinematic;
         player.NormalBody.velocity = new Vector2(0, 0);
         player.NormalBody.freezeRotation = true;

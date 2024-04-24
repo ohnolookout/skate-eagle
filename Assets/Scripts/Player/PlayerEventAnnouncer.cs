@@ -4,13 +4,14 @@ using UnityEngine;
 using System;
 
 public enum PlayerEvent { Stomp, Dismount, Jump, Die, PreDie, StartAttempt, Land, Flip, Brake, 
-    Finish, Ragdoll, StartWithStomp, Crouch, Stand, Airborne, Push, LandSound, BodySound}
+    Finish, Ragdoll, StartWithStomp, Crouch, Stand, Airborne, Push, LandSound, BodySound, SwitchDirection
+}
 public class PlayerEventAnnouncer
 {
     private IPlayer _player;
     public Action<PlayerEvent, IPlayer> OnGenericEvent;
     private Action<IPlayer> OnStomp, OnDismount, OnJump, OnDie, OnStartAttempt, OnLand, OnFlip, 
-        OnBrake, OnFinish, OnRagdoll, OnStartWithStomp, OnCrouch, OnStand, OnAirborne, OnPush, OnLandSound, OnBodySound, OnPreDie;
+        OnBrake, OnFinish, OnRagdoll, OnStartWithStomp, OnCrouch, OnStand, OnAirborne, OnPush, OnLandSound, OnBodySound, OnPreDie, OnSwitchDirection;
     private Action<Collision2D, MomentumTracker, ColliderCategory, TrackingType> AddCollision;
     private Action<Collision2D, ColliderCategory> RemoveCollision;
     private Dictionary<PlayerEvent, Action<IPlayer>> _actionDict;
@@ -37,7 +38,8 @@ public class PlayerEventAnnouncer
             { PlayerEvent.Push, OnPush },
             { PlayerEvent.Stand, OnStand },
             { PlayerEvent.LandSound, OnLandSound },
-            { PlayerEvent.BodySound, OnBodySound }
+            { PlayerEvent.BodySound, OnBodySound },
+            { PlayerEvent.SwitchDirection, OnSwitchDirection }
         };
     }
 

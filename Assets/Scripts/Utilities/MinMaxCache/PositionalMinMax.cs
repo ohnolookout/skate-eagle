@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PositionalMinMax<T> where T : IPosition
+public class PositionalMinMax<T> where T : IPosition, ISortable
 {
     private PositionalList<T> _positionalList;
-    private MinMaxCache _minMaxCache;
-    public MinMaxCache MinMax { get => _minMaxCache; }
+    private MinMax<T> _minMax;
+    public MinMax<T> MinMax => _minMax;
     public PositionalList<T> PositionList { get => _positionalList; }
-    public Vector3 CurrentPoint => _minMaxCache.CurrentPoint;
+    public T CurrentMinMax => _minMax.CurrentValue;
     public PositionalMinMax(PositionalList<T> positionalList, ComparisonType comparisonType)
     {
         _positionalList = positionalList;
-        List<Vector3> currentPoints = new();
-        foreach(var positionObject in _positionalList.CurrentObjects)
+        List<T> inboundObjects = new();
+        foreach(var inboundObject in _positionalList.CurrentObjects)
         {
-            currentPoints.Add(positionObject.Position);
+            inboundObjects.Add(inboundObject);
         }
 
-        _minMaxCache = new(comparisonType, currentPoints);
+        _minMax = new(comparisonType, inboundObjects);
         _positionalList.OnObjectAdded += ParseAddedObject;
         _positionalList.OnObjectRemoved += ParseRemovedObject;
 
@@ -31,13 +31,13 @@ public class PositionalMinMax<T> where T : IPosition
 
     private void ParseRemovedObject(T removedObject, ListSection section)
     {
-        if(section == ListSection.Trailing)
+        if (section == ListSection.Trailing)
         {
-            _minMaxCache.RemoveTrailing();
+            _minMax.RemoveTrailing();
         }
         else
         {
-            _minMaxCache.RemoveLeading();
+            _minMax.RemoveLeading();
         }
             
     }
@@ -46,11 +46,11 @@ public class PositionalMinMax<T> where T : IPosition
     {
         if (section == ListSection.Trailing)
         {
-            _minMaxCache.AddTrailing(addedObject.Position);
+            _minMax.AddTrailing(addedObject);
         }
         else
         {
-            _minMaxCache.AddLeading(addedObject.Position);
+            _minMax.AddLeading(addedObject);
         }
     }
 }

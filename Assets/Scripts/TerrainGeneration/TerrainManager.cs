@@ -15,9 +15,10 @@ public class TerrainManager : MonoBehaviour
     private bool _trackCollision = false;
     public Action<Vector2> OnActivateFinish;
     private DoublePositionalList<IGroundSegment> _positionalSegmentList;
+    /*
     private PositionalMinMax<PositionObject<Vector3>> _lowPointCache, _highPointCache;
     public MinMaxCache LowPointCache { get => _lowPointCache.MinMax; }
-    public MinMaxCache HighPointCache { get => _highPointCache.MinMax; }
+    public MinMaxCache HighPointCache { get => _highPointCache.MinMax; }*/
     public LevelTerrain Terrain { get => _terrain; }
     #endregion
 
@@ -37,8 +38,8 @@ public class TerrainManager : MonoBehaviour
     void Update()
     {
         _positionalSegmentList.Update();
-        _lowPointCache.Update();
-        _highPointCache.Update();
+        //_lowPointCache.Update();
+        //_highPointCache.Update();
         if (_trackCollision)
         {
             _colliderManager.Update();
@@ -100,8 +101,8 @@ public class TerrainManager : MonoBehaviour
 
     private void CreateMinMaxCaches(LevelTerrain terrain)
     {
-        _lowPointCache = new(terrain.LowPointList, ComparisonType.Least);
-        _highPointCache = new(terrain.HighPointList, ComparisonType.Greatest);
+        //_lowPointCache = new(terrain.LowPointList, ComparisonType.Least);
+        //_highPointCache = new(terrain.HighPointList, ComparisonType.Greatest);
     }
     public void DeleteChildren()
     {

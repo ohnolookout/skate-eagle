@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Threading;
 
 public interface IPlayer
 {
@@ -20,6 +21,9 @@ public interface IPlayer
     InputEventController InputEvents { get; set; }
     TrailRenderer Trail { get; }
     Transform Transform { get; }
+    CancellationToken FreezeToken { get; }
+    CancellationTokenSource BoostTokenSource { get; }
+    CancellationTokenSource FreezeTokenSource { get; }
 
     void SwitchDirection();
     void InvokeEvent(PlayerEvent eventType);

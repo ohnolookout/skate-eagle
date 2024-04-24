@@ -5,7 +5,7 @@ using System.Linq;
 
 public static class AudioManagerUtility
 {
-
+    #region Source Management
     public static AudioSource FirstAvailableSource(AudioSource[] audioSources)
     {
         for (int i = 2; i < audioSources.Length; i++)
@@ -38,6 +38,9 @@ public static class AudioManagerUtility
         loopSource.panStereo = modifierManager.GetPan(sound);
         loopSource.pitch = sound.AdjustedPitch(intensity, isRagdoll);
     }
+    #endregion
+
+    #region Fades
     public static IEnumerator FadeAudioSource(AudioManager audioManager, AudioSource source, float finishVolume, float fadeDuration, bool trackZoom)
     {
         float startVolume = source.volume;
@@ -64,25 +67,21 @@ public static class AudioManagerUtility
     {
         source.volume = 0;
         source.Play();
-        while (camera.Camera.orthographicSize < cameraSizeThreshold)
-        {
-            yield return null;
-        }
-        float timeElapsed = 0;
 
-        while (timeElapsed < initialDelay)
-        {
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-        if (!camera.IsZoomOut)
+        yield return new WaitWhile(() => camera.Camera.orthographicSize < cameraSizeThreshold);
+
+        yield return new WaitForSeconds(initialDelay);
+
+        if (!camera.Zoom.DoPlayerZoom)
         {
             audioManager.RemovePlayingSound(source, true);
             audioManager.StopLoop(source);
             yield break;
         }
-        float maxCamSize = camera.Camera.orthographicSize;
-        timeElapsed = 0;
+        
+        float maxCamSize = camera.Camera.orthographicSize;        
+        float timeElapsed = 0;
+
         while (timeElapsed < fadeInTime && camera.Camera.orthographicSize >= maxCamSize * 0.7f)
         {
             source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / fadeInTime);
@@ -90,22 +89,26 @@ public static class AudioManagerUtility
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        while (camera.Camera.orthographicSize >= maxCamSize)
-        {
-            yield return null;
-        }
+
+        yield return new WaitWhile(() => camera.Camera.orthographicSize >= maxCamSize);
+
         float fadeOutTime = Mathf.Max(timeElapsed, 1.5f);
         timeElapsed = 0;
         float peakVolume = source.volume;
+
         while (timeElapsed < fadeOutTime)
         {
             source.volume = Mathf.Lerp(peakVolume, 0, timeElapsed / fadeOutTime);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+
         audioManager.StopLoop(source);
     }
 
+    #endregion
+
+    #region Math Utilities
     public static float EaseIn(float t)
     {
         return t * t;
@@ -145,4 +148,5 @@ public static class AudioManagerUtility
 
         return result;
     }
+    #endregion
 }

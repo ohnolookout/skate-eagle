@@ -101,24 +101,46 @@ public abstract class PositionalList<T> where T : IPosition
         _leadingX = _updateLeadingX();
     }
 
-    protected void UpdateCurrentObjects()
-    { 
+    protected bool UpdateCurrentObjects()
+    {
+        bool objectsChanged = false;
+
         if (CurrentTrailingIndex < _allObjects.Count && CurrentTrailingPosition().x < _trailingX)
         {
             RemoveTrailingObject();
+            objectsChanged = true;
         }
         else if (NextTrailingIndex >= 0 && NextTrailingIndex < _allObjects.Count && NextTrailingPosition().x >= _trailingX)
         {
             AddTrailingObject();
+            objectsChanged = true;
         }
 
         if (CurrentLeadingIndex >= 0 && CurrentLeadingIndex < _allObjects.Count && CurrentLeadingPosition().x > _leadingX)
         {
             RemoveLeadingObject();
+            objectsChanged = true;
         }
         else if (NextLeadingIndex < _allObjects.Count && NextLeadingPosition().x <= _leadingX)
         {
             AddLeadingObject();
+            objectsChanged = true;
+        }
+
+        return objectsChanged;
+    }
+
+    public void ChangeUpdateFuncs(Func<float> newTrailing, Func<float> newLeading)
+    {
+        _updateTrailingX = newTrailing;
+        _updateLeadingX = newLeading;
+
+        UpdateTargetXValues();
+
+        bool objectsChanged = true;
+        while (objectsChanged)
+        {
+            objectsChanged = UpdateCurrentObjects();
         }
     }
     #endregion

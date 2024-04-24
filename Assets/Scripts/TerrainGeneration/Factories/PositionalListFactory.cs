@@ -5,45 +5,13 @@ using System;
 
 public static class PositionalListFactory<T> where T : IPosition
 {
+    #region Generic Positional Lists
     public static SinglePositionalList<T> TransformTracker(List<T> allObjects, Transform transform, float trailingBuffer, float leadingBuffer)
     {
         Func<float> updateTrailing = () => transform.position.x - trailingBuffer;
         Func<float> updateLeading = () => transform.position.x + leadingBuffer;
         SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
-    }
-
-    public static void CameraHighLowTrackers(ICameraOperator cameraOperator, LevelTerrain terrain, out PositionalMinMax<PositionObject<Vector3>> lowPointCache, out PositionalMinMax<PositionObject<Vector3>> highPointCache)
-    {
-        List<PositionObject<Vector3>> lowPoints = new(), highPoints = new();
-        Debug.Log("Last lowPoint in segmentList: " + terrain.SegmentList[^1].Curve.Lowpoint);
-        foreach (var segment in terrain.SegmentList)
-        {
-            lowPoints.Add(new PositionObject<Vector3>(segment.Curve.Lowpoint, segment.Curve.Lowpoint));
-            highPoints.Add(new PositionObject<Vector3>(segment.Curve.Highpoint, segment.Curve.Highpoint));
-        }
-        var lowPointList = PositionalListFactory<PositionObject<Vector3>>.CameraTransformHighLowTracker(lowPoints, cameraOperator, false);
-        var highPointList = PositionalListFactory<PositionObject<Vector3>>.CameraTransformHighLowTracker(highPoints, cameraOperator, true);
-
-        lowPointCache = new(lowPointList, ComparisonType.Least);
-        highPointCache = new(highPointList, ComparisonType.Greatest);
-    }
-
-    public static SinglePositionalList<T> CameraTransformHighLowTracker(List<T> allObjects, ICameraOperator cameraOperator, bool isHigh)
-    {
-        Func<float> updateTrailing, updateLeading;
-        if (isHigh)
-        {
-            updateTrailing = () => cameraOperator.gameObject.transform.position.x - cameraOperator.HighPointBuffer;
-            updateLeading = () => cameraOperator.gameObject.transform.position.x + cameraOperator.HighPointBuffer;
-        }
-        else
-        {
-            updateTrailing = () => cameraOperator.gameObject.transform.position.x - cameraOperator.LowPointBuffer;
-            updateLeading = () => cameraOperator.gameObject.transform.position.x + cameraOperator.LowPointBuffer;
-        }
-        return new(allObjects, updateTrailing, updateLeading);
-
     }
 
     public static SinglePositionalList<T> CameraTracker(List<T> allObjects, Camera camera, float trailingBuffer, float leadingBuffer)
@@ -69,4 +37,68 @@ public static class PositionalListFactory<T> where T : IPosition
         SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
     }
+    #endregion
+
+    #region HighLowManager Positional List
+    public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, LevelTerrain terrain,
+        out PositionalMinMax<SortablePositionObject<Vector3>> lowPointCache, out PositionalMinMax<SortablePositionObject<HighPoint>> highPointCache)
+    {
+        BuildSortableLists(terrain, out var sortableLowPoints, out var sortableHighPoints);
+        var lowPointList = PositionalListFactory<SortablePositionObject<Vector3>>.CameraTransformHighLowTracker(sortableLowPoints, highLowManager, cameraOperator, false);
+        var highPointList = PositionalListFactory<SortablePositionObject<HighPoint>>.CameraTransformHighLowTracker(sortableHighPoints, highLowManager, cameraOperator, true);
+
+        lowPointCache = new(lowPointList, ComparisonType.Least);
+        highPointCache = new(highPointList, ComparisonType.Greatest);
+    }
+
+    private static void BuildSortableLists(LevelTerrain terrain, out List<SortablePositionObject<Vector3>> sortableLowPoints, out List<SortablePositionObject<HighPoint>> sortableHighPoints)
+    {
+        sortableLowPoints = new();
+        sortableHighPoints = new();
+        var segments = terrain.SegmentList;
+
+        for (int i = 0; i < segments.Count; i++)
+        {
+            AddSegmentToSortableLists(segments, i, sortableLowPoints, sortableHighPoints);
+        }
+    }
+
+    private static void AddSegmentToSortableLists(List<IGroundSegment> segments, int i, List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
+    {
+        Curve currentCurve = segments[i].Curve;
+
+        sortableLowPoints.Add(new SortablePositionObject<Vector3>(currentCurve.Lowpoint, currentCurve.Lowpoint, currentCurve.Lowpoint.y));
+
+        Vector3 leadingLowPoint;
+        if (i < segments.Count - 1)
+        {
+            leadingLowPoint = segments[i + 1].Curve.Lowpoint;
+        }
+        else
+        {
+            leadingLowPoint = currentCurve.Lowpoint;
+        }
+
+        HighPoint newHighPoint = new(currentCurve.Highpoint, currentCurve.Lowpoint, leadingLowPoint);
+        sortableHighPoints.Add(new SortablePositionObject<HighPoint>(newHighPoint, newHighPoint.High, newHighPoint.Distance));
+    }
+
+    public static SinglePositionalList<T> CameraTransformHighLowTracker(List<T> allObjects, CameraHighLowManager highLowManager, ICameraOperator cameraOperator, bool isHigh)
+    {
+        Func<float> updateTrailing, updateLeading;
+
+        if (isHigh)
+        {
+            updateTrailing = highLowManager.TrailingCamHigh;
+            updateLeading = highLowManager.LeadingCamHigh;
+        }
+        else
+        {
+            updateTrailing = highLowManager.TrailingCamLow;
+            updateLeading = highLowManager.LeadingCamLow;
+        }
+
+        return new(allObjects, updateTrailing, updateLeading);
+    }
+    #endregion
 }
