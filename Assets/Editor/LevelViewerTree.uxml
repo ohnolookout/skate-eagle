@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <ui:Label text="Level Viewer" display-tooltip-when-elided="true" style="height: 16px; -unity-font: none; -unity-font-style: normal; align-items: stretch;" />
     <ui:TextField picking-mode="Ignore" label="UID" value="filler text" binding-path="_UID" />
-    <ui:TextField picking-mode="Ignore" label="Name" value="filler text" text="New Level" binding-path="_name" />
+    <ui:TextField picking-mode="Ignore" label="Name" value="New Level" binding-path="_name" />
+    <ui:TextField picking-mode="Ignore" label="Leaderboard Key" value="None" binding-path="leaderboardKey" name="TextField" />
     <uie:PropertyField name="MedalTimes" label="Medal Times" binding-path="_medalTimes" />
     <uie:PropertyField label="Sections" name="Sections" binding-path="_levelSections" />
     <uie:PropertyField name="CachedSequenceCount" label="Cached Sequences" binding-path="cachedSequencesCount" />

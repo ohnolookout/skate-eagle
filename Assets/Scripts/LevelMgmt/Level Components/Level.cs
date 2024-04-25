@@ -13,6 +13,7 @@ public class Level : ScriptableObject
     public string _name;
     public MedalTimes _medalTimes;
     public List<LevelSection> _levelSections;
+    public string leaderboardKey = "None";
 
     public Level()
     {
