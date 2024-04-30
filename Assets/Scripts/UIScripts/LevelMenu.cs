@@ -7,18 +7,15 @@ using UnityEngine.UI;
 
 public class LevelMenu : MonoBehaviour
 {
-    private GameManager gameManager;
+    private GameManager _gameManager;
     public LevelPanelGenerator levelPanel;
     public MedalCounts medalCounts;
     public EventSystem eventSystem;
     private NodeContainer[] nodeContainers;
     private int selectIndex = 0;
-    void Awake()
-    {
-        gameManager = GameManager.Instance;
-    }
     public void Start()
     {
+        _gameManager = GameManager.Instance;
         eventSystem = EventSystem.current;
         PopulateMedalCounts();
         ActivateNodes();
@@ -37,7 +34,7 @@ public class LevelMenu : MonoBehaviour
     public void ActivateNodes()
     {
         nodeContainers = GetComponentsInChildren<NodeContainer>();
-        List<LevelNode> nodes = new(gameManager.Session.NodeDict.Values);
+        List<LevelNode> nodes = new(_gameManager.Session.NodeDict.Values);
         selectIndex = nodeContainers.Length - 1;
         for (int i = 0; i < nodeContainers.Length; i++)
         {
@@ -45,13 +42,13 @@ public class LevelMenu : MonoBehaviour
             {
                 break;
             }
-            PlayerRecord record = gameManager.Session.Record(nodes[i].UID);
+            PlayerRecord record = _gameManager.Session.Record(nodes[i].UID);
             nodeContainers[i].Node = nodes[i];
             nodeContainers[i].containerIndex = i;
             nodeContainers[i].Setup(record.status);
             if (record.status == CompletionStatus.Incomplete ||
                 (record.status == CompletionStatus.Locked 
-                && gameManager.Session.PreviousLevelRecord(record.UID).status == CompletionStatus.Complete))
+                && _gameManager.Session.PreviousLevelRecord(record.UID).status == CompletionStatus.Complete))
             {
                 selectIndex = i;
             }
@@ -61,8 +58,8 @@ public class LevelMenu : MonoBehaviour
 
     public void SetLevelPanel(LevelNode node, int containerIndex)
     {
-        PlayerRecord record = gameManager.Session.Record(node.UID);
-        levelPanel.Generate(node, record, gameManager.Session.PreviousLevelRecord(node.UID));
+        PlayerRecord record = _gameManager.Session.Record(node.UID);
+        levelPanel.Generate(node, record, _gameManager.Session.PreviousLevelRecord(node.UID));
         selectIndex = containerIndex;
     }
 
@@ -77,7 +74,7 @@ public class LevelMenu : MonoBehaviour
         Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
         for(int i = 0; i < medals.Length - 1; i++)
         {
-            int count = gameManager.Session.MedalCount[medals[i]];
+            int count = _gameManager.Session.MedalCount[medals[i]];
             medalCounts.SetMedalCount(medals[i], count);
         }
         

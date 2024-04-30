@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
 
 public class MainMenu : MonoBehaviour
 {
@@ -12,13 +9,9 @@ public class MainMenu : MonoBehaviour
     public GameObject levelScreen, titleScreen;
     public LevelMenu levelMenu;
 
-    void Awake()
-    {
-        gameManager = GameManager.Instance;
-    }
-
     private void Start()
     {
+        gameManager = GameManager.Instance;
         if (gameManager.goToLevelMenu)
         {
             LevelScreen();

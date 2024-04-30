@@ -1,25 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Services.Core;
+using LootLocker.Requests;
 using UnityEngine.SceneManagement;
-using System.Linq;
 
-[ExecuteAlways]
+public enum LoginStatus { LoggedIn, Guest, Offline };
 public class GameManager : MonoBehaviour
 {
-    private SessionData sessionData;
+    #region Declarations
+    private SessionData _sessionData;
     public Level currentLevel;
-    private static GameManager instance;
-    private SaveData saveData;
+    private static GameManager _instance;
+    private SaveData _saveData;
     public bool goToLevelMenu = false;
-    private bool levelIsLoaded = false;
-    
+    public bool clearPlayerPrefs = false;
+    private bool _levelIsLoaded = false;
+    private LoginStatus _loginStatus = LoginStatus.Offline;
+    public LevelNode CurrentLevelNode => _sessionData.Node(currentLevel.UID);
+    public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }
+    public bool LevelIsLoaded { get => _levelIsLoaded; set => _levelIsLoaded = value; }
+    #endregion
+
+    #region Monobehaviours
     private void Awake()
     {
+
         //Check to see if other instance exists that has already 
-        if (instance != null && instance != this)
+        if (_instance != null && _instance != this)
         {
+            Debug.Log("Multiple game managers found. Self-harming...");
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
@@ -30,7 +39,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        instance = this;
+        _instance = this;
         if (SceneManager.GetActiveScene().name == "Level_Editor")
         {
             currentLevel = Resources.Load<Level>("EditorLevel");
@@ -40,55 +49,51 @@ public class GameManager : MonoBehaviour
         {            
             return;
         }
+        if (clearPlayerPrefs)
+        {
+            PlayerPrefs.DeleteAll();
+        }
 #endif
         DontDestroyOnLoad(gameObject);
-        saveData = SaveSerial.LoadGame();
-        Debug.Log($"Loaded data file with {saveData.PlayerRecords().Count} entries, first created on {saveData.startDate}");
-        int loadedRecordCount = saveData.recordDict.Count;
-        sessionData = new(saveData);
+        _saveData = SaveSerial.LoadGame(_loginStatus);
+        Debug.Log($"Loaded data file with {_saveData.PlayerRecords().Count} entries, first created on {_saveData.startDate}");
+        int loadedRecordCount = _saveData.recordDict.Count;
+        _sessionData = new(_saveData);
         //If new records were created during session setup, save game.
         if (loadedRecordCount < Session.RecordDict.Count)
         {
-            SaveSerial.SaveGame(saveData);
+            SaveSerial.SaveGame(_saveData, _loginStatus);
         }
     }
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
-
-    }
-
-    public void CheckForOtherManagers()
-    {
-        if (instance != null && instance != this)
+        if (!Application.isPlaying)
         {
-            Destroy(this);
             return;
         }
-        instance = this;
-    }
 
-    public void ResetSaveData()
-    {
-        saveData = SaveSerial.NewGame();
-        sessionData = new(saveData);
-    }
+        DoLogin();
 
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;        
+
+    }
+    #endregion
+
+    #region Level Loading
     public void LoadLevel(Level level)
     {
         currentLevel = level;
-        levelIsLoaded = true;
+        _levelIsLoaded = true;
         SceneManager.LoadScene("City");
         AudioManager.Instance.ClearLoops();
     }
 
-
     public void BackToLevelMenu()
     {
         goToLevelMenu = true;
-        levelIsLoaded = false;
+        _levelIsLoaded = false;
         SceneManager.LoadScene("Start_Menu");
         AudioManager.Instance.ClearLoops();
     }
@@ -104,52 +109,49 @@ public class GameManager : MonoBehaviour
 
     public bool NextLevelUnlocked()
     {
-        return sessionData.NextLevelUnlocked(currentLevel);
+        return _sessionData.NextLevelUnlocked(currentLevel);
 
     }
+    #endregion
 
+    #region Record Management
+    public void ResetSaveData()
+    {
+        _saveData = SaveSerial.NewGame(_loginStatus);
+        _sessionData = new(_saveData);
+    }
     public void UpdateRecord(FinishScreenData finishData)
     {
         Session.UpdateRecord(finishData, CurrentLevel);
-        SaveSerial.SaveGame(saveData);
+        SaveSerial.SaveGame(_saveData, _loginStatus);
     }
-
-
     public PlayerRecord CurrentPlayerRecord
     {
         get
         {
             //If sessionData hasn't been created, it means that GM is being run in editor mode, so Awake may need to be called manually.
-            if(sessionData == null)
+            if(_sessionData == null)
             {
                 Awake();
             }
-            return sessionData.Record(currentLevel);
+            return _sessionData.Record(currentLevel);
         }
     }
+    #endregion
 
-    public LevelNode CurrentLevelNode
-    {
-        get
-        {
-
-            return sessionData.Node(currentLevel.UID);
-        }
-    }
-
-
+    #region Singleton Management
     public static GameManager Instance
     {
         get
         {
-            if (instance != null)
+            if (_instance != null)
             {
-                return instance;
+                return _instance;
             }
             Debug.Log("No game manager found. Creating instance.");
             GameObject managerObject = new GameObject("GameManager");
-            instance = managerObject.AddComponent<GameManager>();
-            return instance;
+            _instance = managerObject.AddComponent<GameManager>();
+            return _instance;
         }
     }
 
@@ -157,14 +159,21 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if(sessionData == null)
+            if(_sessionData == null)
             {
                 Awake();
             }
-            return sessionData;
+            return _sessionData;
         }
     }
+    #endregion
 
-    public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }
-    public bool LevelIsLoaded { get => levelIsLoaded; set => levelIsLoaded = value; }
+    #region Login
+    private async void DoLogin()
+    {
+        Debug.Log("Initializing login...");
+        _loginStatus = await LoginUtility.GuestLogin();
+    }
+
+    #endregion
 }

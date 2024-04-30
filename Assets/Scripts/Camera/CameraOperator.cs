@@ -1,167 +1,159 @@
-﻿using UnityEngine.U2D;
-using UnityEngine;
-using System.Collections;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
 [RequireComponent(typeof(Camera))]
-public class CameraOperator : MonoBehaviour
+public class CameraOperator : MonoBehaviour, ICameraOperator
 {
+    #region Declarations
     [SerializeField] private Vector3 _offset = new(27, 23);
+    [SerializeField] private float _lowPointXOffset = 10;
+    private bool _isZooming = false;
+    private CameraZoom _zoom;
+    private CameraHighLowManager _highLowManager;
     private Vector3 _leadingCorner, _trailingCorner;
-    private float _defaultSize, _zoomYDelta = 0, _camY, _targetY = 0;
-    private bool _cameraZoomOut = false, _cameraZoomIn = false;
+    private float _defaultSize;
     private ILevelManager _levelManager;
-    private MinMaxCache _lowPoints;
     private IPlayer _player;
     private Rigidbody2D _playerBody;
-    private IEnumerator _transitionYCoroutine, _zoomOutRoutine, _zoomInRoutine;
     private Camera _cam;
     private bool _isFinished = false;
     public Action OnFinishZoomIn { get; set; }
-    public Action<CameraOperator> OnZoomOut { get; set; }
+    public Action<ICameraOperator> OnZoomOut { get; set; }
     public Vector3 LeadingCorner { get => _leadingCorner; }
     public Vector3 TrailingCorner { get => _trailingCorner; }
-    public Vector3 Center { get => _cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)); }
-    public float ZoomYDelta { get => _zoomYDelta; }
+    public float CurrentHighLowX => transform.position.x + _lowPointXOffset;
+    public float ReverseHighLowX => _playerBody.transform.position.x - _lowPointXOffset - _offset.x;
     public Camera Camera { get => _cam; }
     public float DefaultSize { get => _defaultSize; }
-    public bool IsZoomOut { get => _cameraZoomOut; set => _cameraZoomOut = value; }
-    public bool CameraZoomIn { get => _cameraZoomIn; set => _cameraZoomIn = value; }
-    new public GameObject gameObject => transform.gameObject;
+    public CameraZoom Zoom => _zoom;
 
+    new public GameObject gameObject => transform.gameObject;
+    public Rigidbody2D PlayerBody => _playerBody;
+    #endregion
+
+    #region Monobehaviours
     void Awake()
     {
-        AssignComponents();
-        LevelManager.OnFinish += _ => _isFinished = true;
-        LevelManager.OnGameOver += _ => _playerBody = _player.RagdollBody;
+        //Assign levelmanager and destroy cameraOperator if levelmanager isn't valid
+        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
+
+#if UNITY_EDITOR
+        CheckLevelManager();
+#endif
+        //Assign default camera components
+        _cam = GetComponent<Camera>();
+        _defaultSize = _cam.orthographicSize;
+        _zoom = new(this);
+        _zoom.OnZoomOut += OnZoomOut;
+        _zoom.OnFinishZoomIn += OnFinishZoomIn;
+
+        //Get player, assign body, and set body to switch on game over
+        _player = LevelManager.GetPlayer;
         _playerBody = _player.NormalBody;
+        LevelManager.OnGameOver += _ => _playerBody = _player.RagdollBody;
+
+        //Set isFinished to turn on on finish
+        LevelManager.OnFinish += _ => _isFinished = true;
     }
+
     void Start()
     {
+        //Create minmax caches for high and low points
+        _highLowManager = new(this, _levelManager.TerrainManager.Terrain);
+        _highLowManager.HighPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
+        _highLowManager.LowPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
+        _zoom.SubscribeToPlayerLanding(_player);
+        UpdatePosition();
+    }
+
+    void Update()
+    {
+        //If player falls below bottom of screen, trigger fall
+        if (transform.position.y - _cam.orthographicSize - 10 > _playerBody.position.y)
+        {
+            _levelManager.Fall();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        _highLowManager.UpdateCurrentHighLow(_isZooming);
+        UpdatePosition();
+        _isZooming = _zoom.UpdateZoom();
+    }
+    void OnDrawGizmos()
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(_highLowManager.CurrentLowPoint, 1);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(_highLowManager.TargetLowPoint, 1);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(_highLowManager.LastLowPoint, 1);
+        Gizmos.color = Color.yellow;
+        Vector3 topRight = _cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        Vector3 bottomLeft = _cam.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        float topY = topRight.y;
+        float bottomY =bottomLeft.y;
+        float leadingX = _highLowManager.LowPoints.PositionList.LeadingX;
+        float trailingX = _highLowManager.LowPoints.PositionList.TrailingX;
+        Gizmos.DrawLine(new(leadingX, bottomY), new(leadingX, topY));
+        Gizmos.DrawLine(new(trailingX, bottomY), new(trailingX, topY));
+        Gizmos.color = Color.magenta;
+        float targetTopY = bottomY + _zoom.TargetSize * 2;
+        Gizmos.DrawLine(new(bottomLeft.x, targetTopY), new(topRight.x, targetTopY));
+
+        float bufferY = _cam.transform.position.y + _cam.orthographicSize * 0.8f;
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(new(bottomLeft.x, bufferY), new(topRight.x, bufferY));
+
+        
+        bufferY = _cam.transform.position.y + _cam.orthographicSize * 0.9f;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(new(bottomLeft.x, bufferY), new(topRight.x, bufferY));
+        
+    }
+    #endregion
+
+    #region Position
+    private void UpdatePosition()
+    {
+        //Add offset and zoom changes to low point y
+        float cameraY = _highLowManager.CurrentLowPoint.y + _offset.y + _zoom.ZoomYDelta;
+
+        float cameraX;
+
+        //Freeze X on finish
+        if (_isFinished)
+        {
+            cameraX = transform.position.x;
+        }
+        else
+        {
+            //Get x from player's position, offset, and the zoom Y delta adjusted by the aspect ratio to represent the x delta
+            cameraX = _playerBody.position.x + _offset.x + (_zoom.ZoomYDelta * (1 / Camera.main.aspect));
+        }
+        //Assign updated x and y to camera's transform
+        transform.position = new Vector3(cameraX, cameraY, transform.position.z);
+
+        //Update leading and trailing corner values
+        _leadingCorner = _cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        _trailingCorner = _cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
+    }
+    #endregion
+    private void CheckLevelManager()
+    {
+
         if (_levelManager == null || !_levelManager.HasPlayer || !_levelManager.HasTerrainManager)
         {
             Debug.LogWarning("Level manager, terrain manager, or player not found by camera operator. Camera will be static.");
             Destroy(this);
             return;
         }
-
-        if (_levelManager.HasTerrainManager)
-        {
-            //_lowPoints = _levelManager.TerrainManager.LowPointCache;
-            _transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
-        }
-
-        _camY = _lowPoints.CurrentPoint.y;
-        UpdatePosition();
-    }
-
-    void Update()
-    {
-        if (_cam.WorldToScreenPoint(_playerBody.position).y < 0)
-        {
-            _levelManager.Fall();
-        }
-        UpdateZoom();
-        if (!_isFinished)
-        {
-            UpdatePosition();
-        }
-    }
-
-    private void AssignComponents()
-    {
-        _defaultSize = Camera.main.orthographicSize;
-        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
-        if (_levelManager == null)
-        {
-            Debug.LogWarning("No level manager found by camera operator. Camera will be static.");
-            return;
-        }
-        if (_levelManager.HasPlayer)
-        {
-            _player = LevelManager.GetPlayer;
-        }
-        _cam = GetComponent<Camera>();
-    }
-
-    private void UpdateZoom()
-    {
-        if (_cameraZoomOut || _playerBody.position.y < LeadingCorner.y - Camera.main.orthographicSize * 0.2f)
-        {
-            return;
-        }
-
-        if (_cameraZoomIn && _playerBody.velocity.y > 0)
-        {
-            StopCoroutine(_zoomInRoutine);
-            _cameraZoomIn = false;
-        }
-        else if (!_cameraZoomIn)
-        {
-            _zoomOutRoutine = ZoomOut();
-            StartCoroutine(_zoomOutRoutine);
-        }
-    }
-
-    private void UpdatePosition()
-    {
-        if (_lowPoints.CurrentPoint.y != _targetY)
-        {
-            StopCoroutine(_transitionYCoroutine);
-            _transitionYCoroutine = TransitionLowY(_lowPoints.CurrentPoint);
-            StartCoroutine(_transitionYCoroutine);
-        }
-        float cameraX = _playerBody.position.x + _offset.x + (_zoomYDelta * (1 / Camera.main.aspect));
-        float cameraY = _camY + _offset.y + _zoomYDelta;
-        transform.position = new Vector3(cameraX, cameraY, transform.position.z);
-        _leadingCorner = _cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
-        _trailingCorner = _cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
-    }
-    private IEnumerator TransitionLowY(Vector3 endPoint)
-    {
-        float startBirdX = _playerBody.position.x;
-        float distance = Mathf.Clamp(Mathf.Abs(endPoint.x - (_playerBody.position.x + 20)), 15, 100);
-        float startY = _camY;
-        _targetY = endPoint.y;
-        float t = 0;
-        while (Mathf.Abs(_camY - endPoint.y) > 0.2)
-        {
-            t = Mathf.Clamp01(Mathf.Abs(_playerBody.position.x - startBirdX) / distance);
-            _camY = Mathf.SmoothStep(startY, _targetY, t);
-            yield return null;
-        }
-    }
-
-    private IEnumerator ZoomOut()
-    {
-        OnZoomOut?.Invoke(this);
-
-        _cameraZoomOut = true;
-        while (_playerBody.position.y > LeadingCorner.y - _cam.orthographicSize * 0.2f
-            || _playerBody.velocity.y > 0)
-        {
-            float change = Mathf.Clamp(_playerBody.velocity.y, 0.5f, 99999) * 0.65f * Time.fixedDeltaTime;
-            _cam.orthographicSize += change;
-            _zoomYDelta += change;
-            yield return new WaitForFixedUpdate();
-        }
-        _cameraZoomOut = false;
-        if (_cameraZoomIn) StopCoroutine(_zoomInRoutine);
-        _zoomInRoutine = ZoomIn();
-        StartCoroutine(_zoomInRoutine);
-    }
-
-    private IEnumerator ZoomIn()
-    {
-        _cameraZoomIn = true;
-        while (_cam.orthographicSize > _defaultSize)
-        {
-            float change = Mathf.Clamp(_playerBody.velocity.y, -666, -1) * 0.5f * Time.fixedDeltaTime;
-            _cam.orthographicSize += change;
-            _zoomYDelta += change;
-            yield return new WaitForFixedUpdate();
-        }
-        _cameraZoomIn = false;
-        OnFinishZoomIn?.Invoke();
     }
 }

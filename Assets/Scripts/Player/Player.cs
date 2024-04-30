@@ -98,6 +98,7 @@ public class Player : MonoBehaviour, IPlayer
     }
     #endregion
 
+    #region Manual Triggers
     public void TriggerBoost(float boostValue, float boostMultiplier)
     {
         PlayerAsyncUtility.AddBoost(_boostToken, _body, boostValue, boostMultiplier);
@@ -120,5 +121,5 @@ public class Player : MonoBehaviour, IPlayer
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
     }
-    
+    #endregion
 }

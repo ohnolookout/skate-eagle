@@ -50,11 +50,9 @@ public class AudioManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
-        _camera = Camera.main.GetComponent<ICameraOperator>();
     }
 
-    private void Start()
+    private void ManualStart()
     {
         if (_soundtrack != null)
         {
@@ -114,6 +112,7 @@ public class AudioManager : MonoBehaviour
     {
         _player = LevelManager.GetPlayer;
         _camera = levelManager.CameraOperator;
+        ManualStart();
     }
 
     #endregion

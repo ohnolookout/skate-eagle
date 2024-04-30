@@ -31,9 +31,7 @@ public class LevelDesigner : EditorWindow
         isLevelEditor = SceneManager.GetActiveScene().name == "Level_Designer";
         if (isLevelEditor)
         {
-            //gameManager = GameManager.Instance;
             AddTerrainGeneration();
-            //gameManager.CurrentLevel = _currentLevel;
         }
         _target = this;
         _so = new(_target);

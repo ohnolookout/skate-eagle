@@ -21,7 +21,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnFall { get; set; }
     public static Action<Vector2> OnActivateFinish { get; set; }
     private bool _overlayLoaded = false;
-    [SerializeField] private CameraOperator_2 _cameraOperator;
+    [SerializeField] private CameraOperator _cameraOperator;
 
 
     public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }

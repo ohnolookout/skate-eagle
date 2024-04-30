@@ -13,10 +13,10 @@ public class SaveInspector : Editor
 			//SaveSerial.SaveGame();
 		if (GUILayout.Button(
 					"Load Game"))
-			SaveSerial.LoadGame();
+			SaveSerial.LoadGame(LoginStatus.Offline);
 		if (GUILayout.Button(
 					"New Game"))
-			SaveSerial.NewGame();
+			SaveSerial.NewGame(LoginStatus.Offline);
 	}
 
 }
