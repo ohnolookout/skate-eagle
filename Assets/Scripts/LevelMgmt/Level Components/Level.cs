@@ -14,6 +14,10 @@ public class Level : ScriptableObject
     public MedalTimes _medalTimes;
     public List<LevelSection> _levelSections;
     public string leaderboardKey = "None";
+    public string Name => _name;
+    public string levelUID => _UID;
+    public MedalTimes MedalTimes => _medalTimes;
+    public List<LevelSection> LevelSections => _levelSections;
 
     public Level()
     {
@@ -56,37 +60,6 @@ public class Level : ScriptableObject
         _levelSections = DeepCopy.CopyLevelSections(level.LevelSections);
     }
 
-    public string Name
-    {
-        get
-        {
-            return _name;
-        }
-    }
-
-    public string UID
-    {
-        get
-        {
-            return _UID;
-        }
-    }
-
-    public MedalTimes MedalTimes
-    {
-        get
-        {
-            return _medalTimes;
-        }
-    }
-
-    public List<LevelSection> LevelSections
-    {
-        get
-        {
-            return _levelSections;
-        }
-    }
 
     public Dictionary<Grade, Sequence> GenerateSequences()
     {
@@ -141,10 +114,5 @@ public class Level : ScriptableObject
         {
             section.Log();
         }
-    }
-
-    public Medal MedalFromTime(float timeInSeconds)
-    {
-        return _medalTimes.MedalFromTime(timeInSeconds);
     }
 }

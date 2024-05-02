@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
@@ -7,8 +6,10 @@ using AYellowpaper.SerializedCollections;
 //Combines player records from SaveData with level list from ScriptableObject into single dictionary
 public class SessionData
 {
-    private SerializedDictionary<string, PlayerRecord> recordDict = new();
-    private Dictionary<Medal, int> medalCount = new()
+
+    private SerializedDictionary<string, PlayerRecord> _recordDict = new();
+    private List<PlayerRecord> _dirtyRecords = new();
+    private Dictionary<Medal, int> _medalCount = new()
     {
         { Medal.Red, 0 },
         { Medal.Blue, 0 },
@@ -18,12 +19,18 @@ public class SessionData
         { Medal.Participant, 0}
     };
     private Dictionary<string, LevelNode> nodeDict = new();
+    public int GoldPlusCount => _medalCount[Medal.Gold] + _medalCount[Medal.Blue] + _medalCount[Medal.Red];
+    public Dictionary<Medal, int> MedalCount => _medalCount;
+    public SerializedDictionary<string, PlayerRecord> RecordDict => _recordDict;
+    public List<PlayerRecord> DirtyRecords => _dirtyRecords;
+    public Dictionary<string, LevelNode> NodeDict => nodeDict;
 
     public SessionData(SaveData loadedGame)
     {
         LevelList levelList = Resources.Load<LevelList>("Level List");
         levelList.Build();
         nodeDict = levelList.levelNodeDict;
+        _dirtyRecords = new();
         BuildRecordsAndMedals(loadedGame, levelList.levelNodes[0]);
     }
 
@@ -33,12 +40,13 @@ public class SessionData
     public void BuildRecordsAndMedals(SaveData loadedGame, LevelNode firstNode)
     {
         LevelNode currentNode = firstNode;
-        recordDict = loadedGame.PlayerRecords();
+        _recordDict = loadedGame.recordDict;
+        _dirtyRecords = loadedGame.dirtyRecords;
         //Set first node to incomplete if it's currently locked (only happens at new game).
-        if(!recordDict.ContainsKey(firstNode.UID))
+        if(!_recordDict.ContainsKey(firstNode.levelUID))
         {
             AddLevelToRecords(currentNode.level);
-            Record(currentNode.UID).status = CompletionStatus.Incomplete;
+            Record(currentNode.levelUID).status = CompletionStatus.Incomplete;
             currentNode = currentNode.next;
         }
         CompletionStatus lastRecordStatus = CompletionStatus.Complete;
@@ -47,9 +55,9 @@ public class SessionData
         {
             PlayerRecord record;
             //Access record if it exists, create new record if not.
-            if (recordDict.ContainsKey(currentNode.UID))
+            if (_recordDict.ContainsKey(currentNode.levelUID))
             {
-                record = Record(currentNode.UID);
+                record = Record(currentNode.levelUID);
             }
             else
             {
@@ -63,7 +71,7 @@ public class SessionData
             //Add medal from record if complete.
             if (record.status == CompletionStatus.Complete)
             {
-                medalCount[record.medal]++;
+                _medalCount[record.medal]++;
             }
             lastRecordStatus = record.status;
             currentNode = currentNode.next;
@@ -72,19 +80,19 @@ public class SessionData
 
     public PlayerRecord AddLevelToRecords(Level level)
     {
-        recordDict[level.UID] = new PlayerRecord(level);
-        return recordDict[level.UID];
+        _recordDict[level.levelUID] = new PlayerRecord(level);
+        return _recordDict[level.levelUID];
     }
 
-    public void UpdateRecord(FinishScreenData finishData, Level level)
+    public bool UpdateRecord(FinishScreenData finishData, Level level)
     {
-        Record(level.UID).Update(finishData, this);
+        return Record(level.levelUID).Update(finishData, this);
     }
 
     public void AdjustMedalCount(Medal medalToAdd, Medal medalToSubtract)
     {
-        medalCount[medalToAdd]++;
-        medalCount[medalToSubtract]--;
+        _medalCount[medalToAdd]++;
+        _medalCount[medalToSubtract]--;
     }
 
     public void PrintMedalCount()
@@ -92,18 +100,9 @@ public class SessionData
         Medal[] medals = (Medal[])Enum.GetValues(typeof(Medal));
         foreach (Medal medal in medals)
         {
-            Debug.Log($"{medal} medals: {medalCount[medal]}");
+            Debug.Log($"{medal} medals: {_medalCount[medal]}");
         }
     }
-
-    public int GoldPlusCount
-    {
-        get
-        {
-            return medalCount[Medal.Gold] + medalCount[Medal.Blue] + medalCount[Medal.Red];
-        }
-    }
-
 
     public CompletionStatus RefreshRecordStatus(PlayerRecord record)
     {
@@ -112,13 +111,13 @@ public class SessionData
             record.status = CompletionStatus.Complete;
             return record.status;
         }
-        if (PreviousLevelNode(record.UID) == null)
+        if (PreviousLevelNode(record.levelUID) == null)
         {
             record.status = CompletionStatus.Incomplete;
             return record.status;
         }
-        if (PreviousLevelRecord(record.UID).status == CompletionStatus.Complete
-            && Node(record.UID).goldRequired <= GoldPlusCount)
+        if (PreviousLevelRecord(record.levelUID).status == CompletionStatus.Complete
+            && Node(record.levelUID).goldRequired <= GoldPlusCount)
         {
             record.status = CompletionStatus.Incomplete;
         } else
@@ -131,11 +130,11 @@ public class SessionData
 
     public bool NextLevelUnlocked(Level level)
     {
-        if (Record(level.UID).status != CompletionStatus.Complete || NextLevelNode(level.UID) == null)
+        if (Record(level.levelUID).status != CompletionStatus.Complete || NextLevelNode(level.levelUID) == null)
         {
             return false;
         }
-        PlayerRecord nextLevelRecord = NextLevelRecord(level.UID);
+        PlayerRecord nextLevelRecord = NextLevelRecord(level.levelUID);
         if (nextLevelRecord.status != CompletionStatus.Locked)
         {
             return true;
@@ -146,9 +145,9 @@ public class SessionData
 
     public PlayerRecord Record(string UID)
     {
-        if (recordDict.ContainsKey(UID))
+        if (_recordDict.ContainsKey(UID))
         {
-            return recordDict[UID];
+            return _recordDict[UID];
         }
         Debug.LogError("No record found. Call record using level to create new record.");
         return null;
@@ -156,9 +155,9 @@ public class SessionData
 
     public PlayerRecord Record(Level level)
     {
-        if (recordDict.ContainsKey(level.UID))
+        if (_recordDict.ContainsKey(level.levelUID))
         {
-            return recordDict[level.UID];
+            return _recordDict[level.levelUID];
         }
         return AddLevelToRecords(level);
     }
@@ -175,71 +174,31 @@ public class SessionData
     public PlayerRecord PreviousLevelRecord(string UID)
     {
         LevelNode previousNode = PreviousLevelNode(UID);
-        if (previousNode == null)
-        {
-            return null;
-        }
-        return Record(previousNode.UID);
+        return previousNode != null ? Record(previousNode.levelUID) : null;
     }
 
     public PlayerRecord NextLevelRecord(string UID)
     {
         LevelNode nextNode = NextLevelNode(UID);
-        if (nextNode == null)
-        {
-            return null;
-        }
-        return Record(nextNode.UID);
+        return nextNode != null ? Record(nextNode.levelUID) : null;
     }
 
     public LevelNode PreviousLevelNode(string UID)
     {
         LevelNode node = Node(UID);
-        if(node == null)
-        {
-            return null;
-        }
-        return node.previous;
+        return node != null ? node.previous : null;
     }
 
     public LevelNode NextLevelNode(string UID)
     {
         LevelNode node = Node(UID);
-        if (node == null)
-        {
-            return null;
-        }
-        return node.next;
-    }
-
-    public Dictionary<Medal, int> MedalCount
-    {
-        get
-        {
-            return medalCount;
-        }
-    }
-
-    public SerializedDictionary<string, PlayerRecord> RecordDict
-    {
-        get
-        {
-            return recordDict;
-        }
-    }
-
-    public Dictionary<string, LevelNode> NodeDict
-    {
-        get
-        {
-            return nodeDict;
-        }
+        return node != null ? node.next : null;
     }
 
     public void PrintDictionaries()
     {
         Debug.Log("recordDict:");
-        foreach(var record in recordDict)
+        foreach(var record in _recordDict)
         {
             Debug.Log($"Key: {record.Key} Value: {record.Value}");
         }

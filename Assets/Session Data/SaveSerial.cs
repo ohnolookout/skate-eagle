@@ -5,8 +5,10 @@ using UnityEngine;
 using AYellowpaper.SerializedCollections;
 using LootLocker.Requests;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 public static class SaveSerial
 {
+	private const int TimeoutInSeconds = 5;
 	//Need to add handling for out of sync local/cloud saves
 	public static async void SaveGame(SaveData toSave, LoginStatus loginStatus)
 	{
@@ -63,7 +65,7 @@ public static class SaveSerial
 		if ( fileID != 0)
         {
 			var response = await UpdatePlayerFileTask(fileID, path);
-			if (response.success == true)
+			if (response != null && response.success == true)
 			{
 				Debug.Log("File was updated!");
 				return true;
@@ -71,7 +73,7 @@ public static class SaveSerial
         }
 
 		var secondResponse = await NewPlayerFileTask(path);
-		if (secondResponse.success)
+		if (secondResponse != null && secondResponse.success)
 		{
 			Debug.Log("New file was uploaded!");
 			return true;
@@ -82,19 +84,27 @@ public static class SaveSerial
 
 	private static async Task<LootLockerPlayerFile> UpdatePlayerFileTask(int fileID, string path)
     {
+		float timeElapsed = 0;
 		LootLockerPlayerFile returnResponse = null;
 		LootLockerSDKManager.UpdatePlayerFile(fileID, path, (response) =>
 		{
 			returnResponse = response;
 		});
 		while(returnResponse == null)
-        {
-			await Task.Delay(25);
+		{
+			timeElapsed += Time.deltaTime;
+			if (timeElapsed > TimeoutInSeconds)
+			{
+				Debug.Log("Update player file timed out.");
+				break;
+			}
+			await Task.Delay(10);
         }
 		return returnResponse;
 	}
 	private static async Task<LootLockerPlayerFile> NewPlayerFileTask(string path)
 	{
+		float timeElapsed = 0;
 		LootLockerPlayerFile returnResponse = null;
 		string filePurpose = "saveFile";
 		LootLockerSDKManager.UploadPlayerFile(path, filePurpose, (response) =>
@@ -104,7 +114,13 @@ public static class SaveSerial
 		});
 		while (returnResponse == null)
 		{
-			await Task.Delay(25);
+			timeElapsed += Time.deltaTime;
+			if(timeElapsed > TimeoutInSeconds)
+            {
+				Debug.Log("New player file timed out.");
+				break;
+            }
+			await Task.Delay(10);
 		}
 		return returnResponse;
 	}
@@ -118,28 +134,15 @@ public class SaveData
 	public DateTime startDate;
 	public DateTime lastSaved;
 	public SerializedDictionary<string, PlayerRecord> recordDict;
+	public List<PlayerRecord> dirtyRecords;
 
 	public SaveData()
 	{
 		startDate = DateTime.Now;
 		lastSaved = DateTime.Now;
 		recordDict = new();
+		dirtyRecords = new();
 	}
-
-	public SerializedDictionary<string, PlayerRecord> PlayerRecords()
-    {
-		return recordDict;
-    }
-
-	public void UpdateRecord(string UID, PlayerRecord record)
-    {
-		recordDict[UID] = record;
-    }
-
-	public void ReplaceAllRecords(SerializedDictionary<string, PlayerRecord> newRecords)
-    {
-		recordDict = newRecords;
-    }
 
 }
 

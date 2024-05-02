@@ -42,13 +42,13 @@ public class LevelMenu : MonoBehaviour
             {
                 break;
             }
-            PlayerRecord record = _gameManager.Session.Record(nodes[i].UID);
+            PlayerRecord record = _gameManager.Session.Record(nodes[i].levelUID);
             nodeContainers[i].Node = nodes[i];
             nodeContainers[i].containerIndex = i;
             nodeContainers[i].Setup(record.status);
             if (record.status == CompletionStatus.Incomplete ||
                 (record.status == CompletionStatus.Locked 
-                && _gameManager.Session.PreviousLevelRecord(record.UID).status == CompletionStatus.Complete))
+                && _gameManager.Session.PreviousLevelRecord(record.levelUID).status == CompletionStatus.Complete))
             {
                 selectIndex = i;
             }
@@ -58,8 +58,8 @@ public class LevelMenu : MonoBehaviour
 
     public void SetLevelPanel(LevelNode node, int containerIndex)
     {
-        PlayerRecord record = _gameManager.Session.Record(node.UID);
-        levelPanel.Generate(node, record, _gameManager.Session.PreviousLevelRecord(node.UID));
+        PlayerRecord record = _gameManager.Session.Record(node.levelUID);
+        levelPanel.Generate(node, record, _gameManager.Session.PreviousLevelRecord(node.levelUID));
         selectIndex = containerIndex;
     }
 

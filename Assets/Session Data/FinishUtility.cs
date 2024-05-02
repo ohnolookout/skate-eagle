@@ -13,7 +13,7 @@ public static class FinishUtility
 
     public static FinishScreenType FindFinishType(Level level, PlayerRecord playerRecord, float attemptTime, out Medal displayMedal)
     {
-        Medal attemptMedal = level.MedalFromTime(attemptTime);
+        Medal attemptMedal = level.MedalTimes.MedalFromTime(attemptTime);
         if (playerRecord.bestTime <= attemptTime)
         {
             displayMedal = Medal.Participant;

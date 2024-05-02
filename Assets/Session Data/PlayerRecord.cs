@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
 
 [Serializable]
@@ -10,7 +7,8 @@ public enum CompletionStatus { Complete, Incomplete, Locked}
 public class PlayerRecord
 {
 	public string levelName;
-	public string _UID;
+	public string levelUID;
+	public string leaderboardKey;
 	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
@@ -19,16 +17,8 @@ public class PlayerRecord
 	public PlayerRecord(Level level)
 	{
 		levelName = level.Name;
-		_UID = level.UID;
-		status = CompletionStatus.Locked;
-		medal = Medal.Participant;
-		date = DateTime.Now;
-	}
-
-	public PlayerRecord(string UID)
-    {
-		levelName = UID;
-		_UID = UID;
+		levelUID = level.levelUID;
+		leaderboardKey = level.leaderboardKey;
 		status = CompletionStatus.Locked;
 		medal = Medal.Participant;
 		date = DateTime.Now;
@@ -55,13 +45,5 @@ public class PlayerRecord
 		bestTime = finishData.attemptTime;
 		return true;
 	}
-
-	public string UID
-    {
-        get
-        {
-			return _UID;
-        }
-    }
 
 }

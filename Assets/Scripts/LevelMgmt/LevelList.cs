@@ -21,7 +21,7 @@ public class LevelList : ScriptableObject
             {
                 levelNodes[i].previous = levelNodes[i - 1];
             }
-            levelNodeDict[levelNodes[i].UID] = levelNodes[i];
+            levelNodeDict[levelNodes[i].levelUID] = levelNodes[i];
         }
     }
 

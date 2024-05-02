@@ -8,10 +8,11 @@ using Newtonsoft.Json;
 
 public static class LoginUtility
 {
+    private const int TimeoutInSeconds = 50;
     public static async Task<LoginStatus> GuestLogin()
     {
         var response = await StartGuestSessionTask();
-        if (response.success)
+        if (response != null && response.success)
         {
             Debug.Log("Player logged in with ID " + response.player_id);
             PlayerPrefs.SetString("PlayerID", response.player_id.ToString());
@@ -26,6 +27,7 @@ public static class LoginUtility
 
     private static async Task<LootLockerGuestSessionResponse> StartGuestSessionTask()
     {
+        float timeElapsed = 0;
         LootLockerGuestSessionResponse returnResponse = null;
         LootLockerSDKManager.StartGuestSession((response) =>
         {
@@ -34,7 +36,15 @@ public static class LoginUtility
 
         while (returnResponse == null)
         {
-            await Task.Delay(25);
+            
+            timeElapsed += Time.deltaTime;
+            if (timeElapsed > TimeoutInSeconds)
+            {
+                Debug.Log("Login timed out.");
+                return null;
+            }
+            Debug.Log("Checking login... Time elapsed: " + timeElapsed);
+            await Task.Delay(10);
         }
         return returnResponse;
     }

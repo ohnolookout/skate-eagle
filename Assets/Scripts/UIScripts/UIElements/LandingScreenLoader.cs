@@ -26,7 +26,7 @@ public class LandingScreenLoader : MonoBehaviour
         levelName.text = playerRecord.levelName;
         GenerateLevelTimes(level.MedalTimes);
         GeneratePlayerBadge(playerRecord);
-        nextLevelButton.SetActive(GameManager.Instance.NextLevelUnlocked());
+        nextLevelButton.SetActive(GameManager.Instance.Session.NextLevelUnlocked(GameManager.Instance.CurrentLevel));
     }
 
     public void GenerateLeaderboards(PlayerRecord[] globalTimes, PlayerRecord[] friendTimes)

@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using LootLocker.Requests;
+using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
 public enum LoginStatus { LoggedIn, Guest, Offline };
@@ -9,16 +7,18 @@ public class GameManager : MonoBehaviour
 {
     #region Declarations
     private SessionData _sessionData;
-    public Level currentLevel;
+    private Level _currentLevel;
     private static GameManager _instance;
     private SaveData _saveData;
+    private LeaderboardManager _leaderboardManager;
     public bool goToLevelMenu = false;
     public bool clearPlayerPrefs = false;
     private bool _levelIsLoaded = false;
     private LoginStatus _loginStatus = LoginStatus.Offline;
-    public LevelNode CurrentLevelNode => _sessionData.Node(currentLevel.UID);
-    public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }
-    public bool LevelIsLoaded { get => _levelIsLoaded; set => _levelIsLoaded = value; }
+    public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.levelUID);
+    public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
+    public bool LevelIsLoaded => _levelIsLoaded;
+    public LeaderboardManager Leaderboard => _leaderboardManager;
     #endregion
 
     #region Monobehaviours
@@ -29,62 +29,41 @@ public class GameManager : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Debug.Log("Multiple game managers found. Self-harming...");
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-            {
-                DestroyImmediate(gameObject);
-                return;
-            }
-#endif
             Destroy(gameObject);
             return;
         }
+
         _instance = this;
+        DontDestroyOnLoad(gameObject);
+
+#if UNITY_EDITOR
         if (SceneManager.GetActiveScene().name == "Level_Editor")
         {
-            currentLevel = Resources.Load<Level>("EditorLevel");
+            _currentLevel = Resources.Load<Level>("EditorLevel");
         }
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {            
-            return;
-        }
+
         if (clearPlayerPrefs)
         {
             PlayerPrefs.DeleteAll();
         }
 #endif
-        DontDestroyOnLoad(gameObject);
-        _saveData = SaveSerial.LoadGame(_loginStatus);
-        Debug.Log($"Loaded data file with {_saveData.PlayerRecords().Count} entries, first created on {_saveData.startDate}");
-        int loadedRecordCount = _saveData.recordDict.Count;
-        _sessionData = new(_saveData);
-        //If new records were created during session setup, save game.
-        if (loadedRecordCount < Session.RecordDict.Count)
-        {
-            SaveSerial.SaveGame(_saveData, _loginStatus);
-        }
+
+        LoadGame();        
+        _leaderboardManager = new();
     }
 
     private void Start()
     {
-        if (!Application.isPlaying)
-        {
-            return;
-        }
-
-        DoLogin();
-
         Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;        
-
+        QualitySettings.vSyncCount = 0;
+        DoLogin();
     }
     #endregion
 
     #region Level Loading
     public void LoadLevel(Level level)
     {
-        currentLevel = level;
+        _currentLevel = level;
         _levelIsLoaded = true;
         SceneManager.LoadScene("City");
         AudioManager.Instance.ClearLoops();
@@ -107,24 +86,47 @@ public class GameManager : MonoBehaviour
         LoadLevel(CurrentLevelNode.next.level);
     }
 
-    public bool NextLevelUnlocked()
-    {
-        return _sessionData.NextLevelUnlocked(currentLevel);
-
-    }
     #endregion
 
     #region Record Management
-    public void ResetSaveData()
+    public async void ResetSaveData()
     {
+        await RefreshLogin();
         _saveData = SaveSerial.NewGame(_loginStatus);
         _sessionData = new(_saveData);
     }
-    public void UpdateRecord(FinishScreenData finishData)
+    public async void UpdateRecord(FinishScreenData finishData)
     {
-        Session.UpdateRecord(finishData, CurrentLevel);
+        bool isNewBest = _sessionData.UpdateRecord(finishData, _currentLevel);
+        bool uploadSuccessful = false;
+        await RefreshLogin();
         SaveSerial.SaveGame(_saveData, _loginStatus);
+        //Will need to change to not be guest later;
+        if (isNewBest && _loginStatus != LoginStatus.Offline)
+        {
+            Debug.Log("Uploading new best time to leaderboard...");
+            uploadSuccessful = await _leaderboardManager.UpdateRecord(_sessionData.Record(_currentLevel.levelUID));
+        }
+        if(isNewBest && !uploadSuccessful)
+        {
+            Debug.Log("Setting record to dirty because player is not logged in.");
+            //***TO DO*** Switch dirty records to serialized dict to avoid duplicate records for single level
+            _sessionData.DirtyRecords.Add(_sessionData.Record(_currentLevel.levelUID));
+        }
     }
+    
+    public async void SubmitDirtyRecords()
+    {
+        foreach(PlayerRecord record in _sessionData.DirtyRecords)
+        {
+            bool uploadSuccessful = await _leaderboardManager.UpdateRecord(record);
+            if (uploadSuccessful)
+            {
+                _sessionData.DirtyRecords.Remove(record);
+            }
+        }
+    }
+
     public PlayerRecord CurrentPlayerRecord
     {
         get
@@ -134,7 +136,7 @@ public class GameManager : MonoBehaviour
             {
                 Awake();
             }
-            return _sessionData.Record(currentLevel);
+            return _sessionData.Record(_currentLevel);
         }
     }
     #endregion
@@ -169,10 +171,33 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Login
-    private async void DoLogin()
+    private async Task DoLogin()
     {
         Debug.Log("Initializing login...");
         _loginStatus = await LoginUtility.GuestLogin();
+        //Will need to change to not be guest later;
+        if (_loginStatus != LoginStatus.Offline)
+        {
+            SubmitDirtyRecords();
+        }
+        //Save serial to update removed dirty records
+        SaveSerial.SaveGame(_saveData, _loginStatus);
+    }
+
+    private async Task RefreshLogin()
+    {
+        if(_loginStatus == LoginStatus.Offline)
+        {
+            await DoLogin();
+        }
+    }
+
+    private void LoadGame()
+    {
+        _saveData = SaveSerial.LoadGame(_loginStatus);
+        Debug.Log($"Loaded data file with {_saveData.recordDict.Count} entries, first created on {_saveData.startDate}");
+        int loadedRecordCount = _saveData.recordDict.Count;
+        _sessionData = new(_saveData);
     }
 
     #endregion

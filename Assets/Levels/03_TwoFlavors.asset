@@ -27,49 +27,44 @@ MonoBehaviour:
       _maxClimb: -2
     _curves:
     - _name: Short Flat Roller Center
-      _valleyDefinition:
-        _shape: 0
-        _length: 0
-        _slope: 0
+      _definitions:
+      - _shape: 0
+        _length: 1
+        _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
-        _length: 0
-        _slope: 0
+      - _shape: 0
+        _length: 1
+        _slope: 2
         _skew: 2
       _quantity: 1
       _maxConsecutive: 2
-    _cachedSequences: []
   - _name: Two tone
     _grade:
       _minClimb: 0
       _maxClimb: -2
     _curves:
     - _name: Short Flat Roller Center
-      _valleyDefinition:
-        _shape: 0
-        _length: 0
-        _slope: 0
+      _definitions:
+      - _shape: 0
+        _length: 1
+        _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
-        _length: 0
-        _slope: 0
+      - _shape: 0
+        _length: 1
+        _slope: 2
         _skew: 2
       _quantity: 4
       _maxConsecutive: 2
     - _name: Medium Gentle Roller Center
-      _valleyDefinition:
-        _shape: 0
+      _definitions:
+      - _shape: 0
         _length: 1
-        _slope: 1
+        _slope: 2
         _skew: 2
-      _peakDefinition:
-        _shape: 0
+      - _shape: 0
         _length: 1
-        _slope: 1
+        _slope: 2
         _skew: 2
       _quantity: 5
       _maxConsecutive: 2
-    _cachedSequences: []
-  cachedSequencesCount: 0
+  leaderboardKey: Two_Flavors_Global

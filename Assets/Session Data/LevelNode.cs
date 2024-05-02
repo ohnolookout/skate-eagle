@@ -34,19 +34,13 @@ public class LevelNode
         }
     }
 
-    public string UID
+    public string levelUID
     {
         get
         {
-            return level.UID;
+            return level.levelUID;
         }
     }
 
-    public Level Level
-    {
-        get
-        {
-            return level;
-        }
-    }
+    public Level Level => level;
 }

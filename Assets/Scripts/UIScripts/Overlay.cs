@@ -23,17 +23,6 @@ public class Overlay : MonoBehaviour
 
     private void OnEnable()
     {
-        /*
-        onLanding += _ => ActivateStartScreen();
-        LiveRunManager.OnLanding += onLanding;
-        onGameOver += _ => ActivateGameOverScreen();
-        LiveRunManager.OnGameOver += onGameOver;
-        LiveRunManager.OnAttempt += StartAttempt;
-        LiveRunManager.OnStandby += ActivateStandbyScreen;
-        onFinish += _ => ActivateControls(false);
-        LiveRunManager.OnFinish += onFinish;
-        LiveRunManager.OnResultsScreen += ActivateFinishScreen; 
-        */
         onLanding += _ => ActivateStartScreen();
         LevelManager.OnLanding += onLanding;
         onGameOver += _ => ActivateGameOverScreen();
@@ -50,14 +39,6 @@ public class Overlay : MonoBehaviour
         OnOverlayLoaded = null;
         OnStandbyButton = null;
         OnRestartButton = null;
-        /*
-        LiveRunManager.OnLanding -= onLanding;
-        LiveRunManager.OnGameOver -= onGameOver;
-        LiveRunManager.OnAttempt -= StartAttempt;
-        LiveRunManager.OnStandby -= ActivateStandbyScreen;
-        LiveRunManager.OnFinish -= onFinish;
-        LiveRunManager.OnResultsScreen -= ActivateFinishScreen;
-        */
     }
     public void ActivateStartScreen()
     {
@@ -143,12 +124,12 @@ public class Overlay : MonoBehaviour
         OnRestartButton?.Invoke();
         _levelManager.RestartGame();
     }
-
+    
     public void NextLevel()
     {
         GameManager.Instance.NextLevel();
     }
-
+    
 }
 
 
