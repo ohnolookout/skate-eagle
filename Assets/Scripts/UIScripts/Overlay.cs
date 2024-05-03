@@ -107,7 +107,7 @@ public class Overlay : MonoBehaviour
 
     public void BackToLevelMenu()
     {
-        GameManager.Instance.BackToLevelMenu();
+        GameManager.Instance.LevelLoader.BackToLevelMenu();
     }
 
     public void ActivateControls(bool activate)
@@ -125,9 +125,9 @@ public class Overlay : MonoBehaviour
         _levelManager.RestartGame();
     }
     
-    public void NextLevel()
+    public void LoadNextLevel()
     {
-        GameManager.Instance.NextLevel();
+        GameManager.Instance.LevelLoader.LoadNextLevel();
     }
     
 }

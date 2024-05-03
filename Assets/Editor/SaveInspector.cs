@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-[CustomEditor(typeof(SaveSerial))]
+[CustomEditor(typeof(SaveLoadUtility))]
 
 public class SaveInspector : Editor
 {
@@ -13,10 +13,10 @@ public class SaveInspector : Editor
 			//SaveSerial.SaveGame();
 		if (GUILayout.Button(
 					"Load Game"))
-			SaveSerial.LoadGame(LoginStatus.Offline);
+			SaveLoadUtility.LoadGame(LoginStatus.Offline);
 		if (GUILayout.Button(
 					"New Game"))
-			SaveSerial.NewGame(LoginStatus.Offline);
+			SaveLoadUtility.NewGame(LoginStatus.Offline);
 	}
 
 }

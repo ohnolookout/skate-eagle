@@ -6,9 +6,9 @@ using AYellowpaper.SerializedCollections;
 //Combines player records from SaveData with level list from ScriptableObject into single dictionary
 public class SessionData
 {
-
-    private SerializedDictionary<string, PlayerRecord> _recordDict = new();
-    private List<PlayerRecord> _dirtyRecords = new();
+    private SaveData _saveData;
+    //private SerializedDictionary<string, PlayerRecord> _recordDict = new();
+    //private SerializedDictionary<string, PlayerRecord> _dirtyRecords = new();
     private Dictionary<Medal, int> _medalCount = new()
     {
         { Medal.Red, 0 },
@@ -21,16 +21,17 @@ public class SessionData
     private Dictionary<string, LevelNode> nodeDict = new();
     public int GoldPlusCount => _medalCount[Medal.Gold] + _medalCount[Medal.Blue] + _medalCount[Medal.Red];
     public Dictionary<Medal, int> MedalCount => _medalCount;
-    public SerializedDictionary<string, PlayerRecord> RecordDict => _recordDict;
-    public List<PlayerRecord> DirtyRecords => _dirtyRecords;
+    //public SerializedDictionary<string, PlayerRecord> RecordDict => _recordDict;
+    //public SerializedDictionary<string, PlayerRecord> DirtyRecords => _dirtyRecords;
     public Dictionary<string, LevelNode> NodeDict => nodeDict;
+    public SaveData SaveData => _saveData;
 
     public SessionData(SaveData loadedGame)
     {
+        _saveData = loadedGame;
         LevelList levelList = Resources.Load<LevelList>("Level List");
         levelList.Build();
         nodeDict = levelList.levelNodeDict;
-        _dirtyRecords = new();
         BuildRecordsAndMedals(loadedGame, levelList.levelNodes[0]);
     }
 
@@ -40,10 +41,10 @@ public class SessionData
     public void BuildRecordsAndMedals(SaveData loadedGame, LevelNode firstNode)
     {
         LevelNode currentNode = firstNode;
-        _recordDict = loadedGame.recordDict;
-        _dirtyRecords = loadedGame.dirtyRecords;
+        //_recordDict = loadedGame.recordDict;
+        //_dirtyRecords = loadedGame.dirtyRecords;
         //Set first node to incomplete if it's currently locked (only happens at new game).
-        if(!_recordDict.ContainsKey(firstNode.levelUID))
+        if(!_saveData.recordDict.ContainsKey(firstNode.levelUID))
         {
             AddLevelToRecords(currentNode.level);
             Record(currentNode.levelUID).status = CompletionStatus.Incomplete;
@@ -55,7 +56,7 @@ public class SessionData
         {
             PlayerRecord record;
             //Access record if it exists, create new record if not.
-            if (_recordDict.ContainsKey(currentNode.levelUID))
+            if (_saveData.recordDict.ContainsKey(currentNode.levelUID))
             {
                 record = Record(currentNode.levelUID);
             }
@@ -80,8 +81,8 @@ public class SessionData
 
     public PlayerRecord AddLevelToRecords(Level level)
     {
-        _recordDict[level.levelUID] = new PlayerRecord(level);
-        return _recordDict[level.levelUID];
+        _saveData.recordDict[level.levelUID] = new PlayerRecord(level);
+        return _saveData.recordDict[level.levelUID];
     }
 
     public bool UpdateRecord(FinishScreenData finishData, Level level)
@@ -145,9 +146,9 @@ public class SessionData
 
     public PlayerRecord Record(string UID)
     {
-        if (_recordDict.ContainsKey(UID))
+        if (_saveData.recordDict.ContainsKey(UID))
         {
-            return _recordDict[UID];
+            return _saveData.recordDict[UID];
         }
         Debug.LogError("No record found. Call record using level to create new record.");
         return null;
@@ -155,9 +156,9 @@ public class SessionData
 
     public PlayerRecord Record(Level level)
     {
-        if (_recordDict.ContainsKey(level.levelUID))
+        if (_saveData.recordDict.ContainsKey(level.levelUID))
         {
-            return _recordDict[level.levelUID];
+            return _saveData.recordDict[level.levelUID];
         }
         return AddLevelToRecords(level);
     }
@@ -198,7 +199,7 @@ public class SessionData
     public void PrintDictionaries()
     {
         Debug.Log("recordDict:");
-        foreach(var record in _recordDict)
+        foreach(var record in _saveData.recordDict)
         {
             Debug.Log($"Key: {record.Key} Value: {record.Value}");
         }

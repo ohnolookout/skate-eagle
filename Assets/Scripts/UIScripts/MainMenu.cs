@@ -5,28 +5,28 @@ public class MainMenu : MonoBehaviour
 {
     public LevelPanelGenerator levelPanel;
     public Level defaultLevel;
-    private GameManager gameManager;
+    private GameManager _gameManager;
     public GameObject levelScreen, titleScreen;
     public LevelMenu levelMenu;
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
-        if (gameManager.goToLevelMenu)
+        _gameManager = GameManager.Instance;
+        if (_gameManager.LevelLoader.GoToLevelMenu)
         {
             LevelScreen();
-            gameManager.goToLevelMenu = false;
+            _gameManager.LevelLoader.GoToLevelMenu = false;
         }
     }
     public void ResetSaveData()
     {
-        gameManager.ResetSaveData();
+        _gameManager.ResetSaveData();
         levelMenu.Start();
     }
 
     public void LoadLevel(Level level)
     {
-        gameManager.LoadLevel(level);
+        _gameManager.LevelLoader.LoadLevel(level);
     }
     public void LoadScene(string sceneName)
     {

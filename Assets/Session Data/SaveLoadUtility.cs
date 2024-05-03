@@ -6,39 +6,44 @@ using AYellowpaper.SerializedCollections;
 using LootLocker.Requests;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-public static class SaveSerial
+public static class SaveLoadUtility
 {
+	public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
 	private const int TimeoutInSeconds = 5;
 	//Need to add handling for out of sync local/cloud saves
-	public static async void SaveGame(SaveData toSave, LoginStatus loginStatus)
+	public static async void SaveGame(SessionData session, LoginStatus loginStatus)
 	{
-		toSave.lastSaved = DateTime.Now;
-		string data = JsonConvert.SerializeObject(toSave);
+		session.SaveData.lastSaved = DateTime.Now;
+		string data = JsonConvert.SerializeObject(session.SaveData);
 		WriteToSavePath(data);
 		Debug.Log("Game data saved locally.");
 
 		var backupSaved = await SaveBackup(SavePath, loginStatus);
 		Debug.Log($"Game data backed up: {backupSaved}");
 	}
-	public static SaveData NewGame(LoginStatus loginStatus)
+	public static SessionData NewGame(LoginStatus loginStatus)
 	{
 		SaveData toSave = new SaveData();
+		SessionData newSession = new(toSave);
 		Debug.Log("New game created!");
-		SaveGame(toSave, loginStatus);
-		return toSave;
+		SaveGame(newSession, loginStatus);
+		return new SessionData(toSave);
 	}
 
-	public static SaveData LoadGame(LoginStatus loginStatus)
+	public static SessionData LoadGame(LoginStatus loginStatus)
 	{
-		if (File.Exists(SavePath))
+		if (!File.Exists(SavePath))
 		{
-			Debug.Log("Retrieving saved file at " + SavePath);
-			string data = File.ReadAllText(SavePath);
-			SaveData loadedGame = JsonConvert.DeserializeObject<SaveData>(data);
-			return loadedGame;
+			Debug.Log("No save data found. Creating new game...");
+			return NewGame(loginStatus);
 		}
-		Debug.Log("No save data found. Creating new game...");
-		return NewGame(loginStatus);
+
+		Debug.Log("Retrieving saved file at " + SavePath);
+		string data = File.ReadAllText(SavePath);
+		SaveData loadedGame = JsonConvert.DeserializeObject<SaveData>(data);
+		Debug.Log($"Loaded data file with {loadedGame.recordDict.Count} entries, first created on {loadedGame.startDate}");
+		Debug.Log($"Dirty records: {loadedGame.dirtyRecords.Count}");
+		return new SessionData(loadedGame);
 	}
 	private static async Task<bool> SaveBackup(string path, LoginStatus loginStatus)
     {
@@ -81,7 +86,6 @@ public static class SaveSerial
 
 		return false;
 	}
-
 	private static async Task<LootLockerPlayerFile> UpdatePlayerFileTask(int fileID, string path)
     {
 		float timeElapsed = 0;
@@ -124,8 +128,6 @@ public static class SaveSerial
 		}
 		return returnResponse;
 	}
-
-	public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
 }
 
 [Serializable]
@@ -134,7 +136,7 @@ public class SaveData
 	public DateTime startDate;
 	public DateTime lastSaved;
 	public SerializedDictionary<string, PlayerRecord> recordDict;
-	public List<PlayerRecord> dirtyRecords;
+	public SerializedDictionary<string, PlayerRecord> dirtyRecords;
 
 	public SaveData()
 	{

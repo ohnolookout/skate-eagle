@@ -101,7 +101,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _gameManager = GameManager.Instance;
         _audioManager = AudioManager.Instance;
-        if (_gameManager.LevelIsLoaded)
+        if (_gameManager.LevelLoader.LevelIsLoaded)
         {
             CurrentLevel = _gameManager.CurrentLevel;
         }
