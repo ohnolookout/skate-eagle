@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         //Check to see if other instance exists that has already 
         if (_instance != null && _instance != this)
         {
-            Debug.Log("Multiple game managers found. Self-harming...");
+            Debug.Log("Multiple game managers found. Deleting this instance...");
             Destroy(gameObject);
             return;
         }
@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region Record Management
     public async Task DoLogin()
     {
         _loginStatus = await LoginUtility.RefreshLogin(this);
@@ -89,40 +90,10 @@ public class GameManager : MonoBehaviour
         _sessionData = SaveLoadUtility.NewGame(_loginStatus);
     }
 
-    #region Record Management
     public async void UpdateRecord(FinishScreenData finishData)
     {
-        bool isNewBest = _sessionData.UpdateRecord(finishData, _currentLevel);
-        bool uploadSuccessful = false;
         await DoLogin();
-        //Will need to change to not be guest later;
-        if (isNewBest && _loginStatus != LoginStatus.Offline)
-        {
-            Debug.Log("Uploading new best time to leaderboard...");
-            uploadSuccessful = await _leaderboardManager.UpdateRecord(_sessionData.Record(_currentLevel.levelUID));
-        }
-        if(isNewBest && !uploadSuccessful)
-        {
-            Debug.Log("Setting record to dirty because player is not logged in.");
-            _sessionData.SaveData.dirtyRecords[_currentLevel.levelUID] = _sessionData.Record(_currentLevel.levelUID);
-        }
-        SaveLoadUtility.SaveGame(_sessionData, _loginStatus);
+        SaveLoadUtility.UpdateRecord(this, finishData);
     }
-    
-    public async Task SubmitDirtyRecords()
-    {
-        var dirtyUIDs = _sessionData.SaveData.dirtyRecords.Keys.ToList();
-        foreach(string levelUID in dirtyUIDs)
-        {
-            Debug.Log("Uploading dirty record for level " + _sessionData.NodeDict[levelUID].Level.Name);
-            bool uploadSuccessful = await _leaderboardManager.UpdateRecord(_sessionData.SaveData.dirtyRecords[levelUID]);
-            if (uploadSuccessful)
-            {
-                Debug.Log("Dirty record upload successful!");
-                _sessionData.SaveData.dirtyRecords.Remove(levelUID);
-            }
-        }
-    }
-
     #endregion
 }

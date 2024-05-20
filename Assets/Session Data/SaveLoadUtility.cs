@@ -2,32 +2,33 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using UnityEngine;
-using AYellowpaper.SerializedCollections;
 using LootLocker.Requests;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 public static class SaveLoadUtility
 {
-	public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
+    #region Declarations
+    public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
 	private const int TimeoutInSeconds = 5;
-	//Need to add handling for out of sync local/cloud saves
-	public static async void SaveGame(SessionData session, LoginStatus loginStatus)
+    #endregion
+
+    #region Basic Save/Load
+    public static async void SaveGame(SessionData session, LoginStatus loginStatus)
 	{
 		session.SaveData.lastSaved = DateTime.Now;
 		string data = JsonConvert.SerializeObject(session.SaveData);
 		WriteToSavePath(data);
 		Debug.Log("Game data saved locally.");
 
-		var backupSaved = await SaveBackup(SavePath, loginStatus);
+		var backupSaved = await SaveToCloud(SavePath, loginStatus);
 		Debug.Log($"Game data backed up: {backupSaved}");
 	}
-	public static SessionData NewGame(LoginStatus loginStatus)
+	private static void WriteToSavePath(string data)
 	{
-		SaveData toSave = new SaveData();
-		SessionData newSession = new(toSave);
-		Debug.Log("New game created!");
-		SaveGame(newSession, loginStatus);
-		return new SessionData(toSave);
+		if (!File.Exists(SavePath))
+		{
+			File.Create(SavePath);
+		}
+		File.WriteAllText(SavePath, data);
 	}
 
 	public static SessionData LoadGame(LoginStatus loginStatus)
@@ -45,7 +46,37 @@ public static class SaveLoadUtility
 		Debug.Log($"Dirty records: {loadedGame.dirtyRecords.Count}");
 		return new SessionData(loadedGame);
 	}
-	private static async Task<bool> SaveBackup(string path, LoginStatus loginStatus)
+	public static SessionData NewGame(LoginStatus loginStatus)
+	{
+		SaveData toSave = new SaveData();
+		SessionData newSession = new(toSave);
+		Debug.Log("New game created!");
+		SaveGame(newSession, loginStatus);
+		return new SessionData(toSave);
+	}
+	public static async Task UpdateRecord(GameManager gameManager, FinishScreenData finishData)
+	{
+		Level currentLevel = gameManager.CurrentLevel;
+		SessionData session = gameManager.Session;
+		bool isNewBest = session.UpdateRecord(finishData, currentLevel);
+		bool uploadSuccessful = false;
+		//Will need to change to not be guest later;
+		if (isNewBest && gameManager.LoginStatus != LoginStatus.Offline)
+		{
+			Debug.Log("Uploading new best time to leaderboard...");
+			uploadSuccessful = await gameManager.Leaderboard.UpdateLeaderboardRecord(session.Record(currentLevel.levelUID));
+		}
+		if (isNewBest && !uploadSuccessful)
+		{
+			Debug.Log("Setting record to dirty because player is not logged in.");
+			session.SaveData.dirtyRecords[currentLevel.levelUID] = session.Record(currentLevel.levelUID);
+		}
+		SaveGame(session, gameManager.LoginStatus);
+	}
+	#endregion
+
+	#region Cloud Saves
+	private static async Task<bool> SaveToCloud(string path, LoginStatus loginStatus)
     {
 		var uploadSuccessful = false;
 		if (loginStatus == LoginStatus.Guest || loginStatus == LoginStatus.LoggedIn)
@@ -55,14 +86,6 @@ public static class SaveLoadUtility
 		return uploadSuccessful;
 	}
 
-	private static void WriteToSavePath(string data)
-    {
-		if (!File.Exists(SavePath))
-		{
-			File.Create(SavePath);
-		}
-		File.WriteAllText(SavePath, data);
-	}
 	private static async Task<bool> UploadFileFromPath(string path)
 	{
 		Debug.Log("Beginning upload from path...");
@@ -128,23 +151,8 @@ public static class SaveLoadUtility
 		}
 		return returnResponse;
 	}
-}
+    #endregion
 
-[Serializable]
-public class SaveData
-{
-	public DateTime startDate;
-	public DateTime lastSaved;
-	public SerializedDictionary<string, PlayerRecord> recordDict;
-	public SerializedDictionary<string, PlayerRecord> dirtyRecords;
-
-	public SaveData()
-	{
-		startDate = DateTime.Now;
-		lastSaved = DateTime.Now;
-		recordDict = new();
-		dirtyRecords = new();
-	}
 
 }
 

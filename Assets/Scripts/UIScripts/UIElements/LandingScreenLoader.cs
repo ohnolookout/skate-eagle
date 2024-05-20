@@ -29,11 +29,6 @@ public class LandingScreenLoader : MonoBehaviour
         nextLevelButton.SetActive(GameManager.Instance.Session.NextLevelUnlocked(GameManager.Instance.CurrentLevel));
     }
 
-    public void GenerateLeaderboards(PlayerRecord[] globalTimes, PlayerRecord[] friendTimes)
-    {
-
-    }
-
     private void GenerateLevelTimes(MedalTimes times)
     {
         blueTime.text = OverlayUtility.TimeToString(times.Blue);

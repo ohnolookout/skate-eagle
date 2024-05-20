@@ -33,7 +33,6 @@ public static class LoginUtility
         {
             returnResponse = response;
         });
-
         while (returnResponse == null)
         {
             
@@ -75,7 +74,7 @@ public static class LoginUtility
         foreach (string levelUID in dirtyUIDs)
         {
             Debug.Log("Uploading dirty record for level " + sessionData.NodeDict[levelUID].Level.Name);
-            bool uploadSuccessful = await leaderboardManager.UpdateRecord(sessionData.SaveData.dirtyRecords[levelUID]);
+            bool uploadSuccessful = await leaderboardManager.UpdateLeaderboardRecord(sessionData.SaveData.dirtyRecords[levelUID]);
             if (uploadSuccessful)
             {
                 Debug.Log("Dirty record upload successful!");

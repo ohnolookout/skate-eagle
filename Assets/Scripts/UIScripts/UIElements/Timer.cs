@@ -7,7 +7,6 @@ using System;
 public class Timer : MonoBehaviour
 {
     public TMP_Text timeText;
-    private char[] timerChars = new char[8];
     private float timeElapsed = 0;
     private bool running = false;
     public static Action<float> OnStopTimer;
@@ -43,11 +42,12 @@ public class Timer : MonoBehaviour
     }
     private void UpdateTimeDisplay(float time)
     {
+        char[] timerChars = new char[8];
         SecondsToCharArray(time, timerChars);
         timeText.SetCharArray(timerChars);
     }
 
-    private static void SecondsToCharArray(float timeInSeconds, char[] array)
+    public static void SecondsToCharArray(float timeInSeconds, char[] array)
     {
         int minutes = (int)(timeInSeconds / 60f);
         array[0] = (char)(48 + (minutes % 10));
