@@ -5,14 +5,18 @@ using TMPro;
 using LootLocker.Requests;
 using System.Threading.Tasks;
 
+public enum LeaderboardActivation { MedalLocked, LoginLocked, NoLeaderboard, Active}
 public class Leaderboard: MonoBehaviour
 {
     [SerializeField] private LeaderboardRow[] _leaderboardRows;
+    [SerializeField] private GameObject _medalLockPanel, _loginLockPanel, _noLeaderboardPanel;
+    [SerializeField] private GameObject[] _grayOuts;
     private int _playerRank, _startRank, _displayCount;
     private LootLockerGetMemberRankResponse _playerRankResponse;
     private LeaderboardManager _leaderboardManager;
     private string _leaderboardKey, _playerID;
     private bool _isFirstPage = false, _isLastPage;
+    private LeaderboardActivation _activationStatus;
 
     void Start()
     {
@@ -20,26 +24,59 @@ public class Leaderboard: MonoBehaviour
         _displayCount = _leaderboardRows.Length;
         _leaderboardKey = GameManager.Instance.CurrentLevel.leaderboardKey;
         _playerID = PlayerPrefs.GetString("PlayerID");
-        PopulateLeaderboard(_leaderboardKey, _playerID);
+        ValidateActivation();
+        if (_activationStatus == LeaderboardActivation.Active)
+        {
+            PopulateLeaderboard(_leaderboardKey, _playerID);
+        }
+        else
+        {
+            GrayOut();
+        }
+    }
+
+    private void ValidateActivation()
+    {
+        if(_leaderboardKey == "None")
+        {
+            _activationStatus = LeaderboardActivation.NoLeaderboard;
+            _noLeaderboardPanel.SetActive(true);
+            return;
+        }
+
+        LoginStatus loginStatus = GameManager.Instance.LoginStatus;
+
+        //Need to change to logged in
+        if (loginStatus == LoginStatus.Offline)
+        {
+            _activationStatus = LeaderboardActivation.LoginLocked;
+            _loginLockPanel.SetActive(true);
+            return;
+        }
+
+        if((int)GameManager.Instance.CurrentPlayerRecord.medal > 3)
+        {
+            _activationStatus = LeaderboardActivation.MedalLocked;
+            _medalLockPanel.SetActive(true);
+            return;
+        }
+
+        _activationStatus = LeaderboardActivation.Active;
+        
+    }
+
+    private void GrayOut()
+    {
+        foreach(var gray in _grayOuts)
+        {
+            gray.SetActive(true);
+        }
     }
 
     #region Populate Members
     private async Task PopulateLeaderboard(string leaderboardKey, string playerID)
     {
-        //Need to change to logged in
-        if(GameManager.Instance.LoginStatus == LoginStatus.Offline)
-        {
-            Debug.Log("Player is offline. Leaderboard disabled.");
-            return;
-        }
         _leaderboardKey = leaderboardKey;
-
-        if(_leaderboardKey == "None")
-        {
-            Debug.Log("Level does not have leaderboard.");
-            return;
-        }
-
         _playerRank = await GetPlayerRank(leaderboardKey, playerID);
         GoToPlayerRank();
     }
@@ -112,6 +149,11 @@ public class Leaderboard: MonoBehaviour
 
     private void UpdateButtonFormat()
     {
+        if(_activationStatus != LeaderboardActivation.Active)
+        {
+
+        }
+
         if (_isFirstPage)
         {
 
