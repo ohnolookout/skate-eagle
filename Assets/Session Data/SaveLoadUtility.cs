@@ -12,14 +12,18 @@ public static class SaveLoadUtility
     #endregion
 
     #region Basic Save/Load
-    public static async void SaveGame(SessionData session, LoginStatus loginStatus)
+    public static async void SaveGame(SessionData session, GameManager gameManager)
 	{
 		session.SaveData.lastSaved = DateTime.Now;
 		string data = JsonConvert.SerializeObject(session.SaveData);
 		WriteToSavePath(data);
 		Debug.Log("Game data saved locally.");
 
-		var backupSaved = await SaveToCloud(SavePath, loginStatus);
+		var backupSaved = await SaveToCloud(SavePath, gameManager.LoginStatus);
+        if (!backupSaved)
+		{
+			gameManager.LoginStatus = LoginStatus.Offline;
+		}
 		Debug.Log($"Game data backed up: {backupSaved}");
 	}
 	private static void WriteToSavePath(string data)
@@ -31,12 +35,12 @@ public static class SaveLoadUtility
 		File.WriteAllText(SavePath, data);
 	}
 
-	public static SessionData LoadGame(LoginStatus loginStatus)
+	public static SessionData LoadGame(GameManager gameManager)
 	{
 		if (!File.Exists(SavePath))
 		{
 			Debug.Log("No save data found. Creating new game...");
-			return NewGame(loginStatus);
+			return NewGame(gameManager);
 		}
 
 		Debug.Log("Retrieving saved file at " + SavePath);
@@ -46,12 +50,12 @@ public static class SaveLoadUtility
 		Debug.Log($"Dirty records: {loadedGame.dirtyRecords.Count}");
 		return new SessionData(loadedGame);
 	}
-	public static SessionData NewGame(LoginStatus loginStatus)
+	public static SessionData NewGame(GameManager gameManager)
 	{
 		SaveData toSave = new SaveData();
 		SessionData newSession = new(toSave);
 		Debug.Log("New game created!");
-		SaveGame(newSession, loginStatus);
+		SaveGame(newSession, gameManager);
 		return new SessionData(toSave);
 	}
 	public static async Task UpdateRecord(GameManager gameManager, FinishScreenData finishData)
@@ -69,9 +73,10 @@ public static class SaveLoadUtility
 		if (isNewBest && !uploadSuccessful)
 		{
 			Debug.Log("Setting record to dirty because player is not logged in.");
+			gameManager.LoginStatus = LoginStatus.Offline;
 			session.SaveData.dirtyRecords[currentLevel.levelUID] = session.Record(currentLevel.levelUID);
 		}
-		SaveGame(session, gameManager.LoginStatus);
+		SaveGame(session, gameManager);
 	}
 	#endregion
 
@@ -151,7 +156,31 @@ public static class SaveLoadUtility
 		}
 		return returnResponse;
 	}
-    #endregion
+	#endregion
+
+	#region PlayerManagement
+	public static async Task<PlayerNameResponse> SetPlayerNameTask(string name)
+	{
+		float timeElapsed = 0;
+		PlayerNameResponse returnResponse = null;
+		LootLockerSDKManager.SetPlayerName(name, (response) =>
+		{
+			returnResponse = response;
+		});
+		while (returnResponse == null)
+		{
+			timeElapsed += Time.deltaTime;
+			if (timeElapsed > TimeoutInSeconds)
+			{
+				Debug.Log("Set player name out.");
+				break;
+			}
+			await Task.Delay(10);
+		}
+		return returnResponse;
+	}
+
+	#endregion
 
 
 }

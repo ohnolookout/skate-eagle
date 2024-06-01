@@ -9,6 +9,7 @@ public class SaveInspector : Editor
 {
     override public void OnInspectorGUI()
 	{
+		/*
 		if (GUILayout.Button("Save Game"))
 			//SaveSerial.SaveGame();
 		if (GUILayout.Button(
@@ -17,6 +18,7 @@ public class SaveInspector : Editor
 		if (GUILayout.Button(
 					"New Game"))
 			SaveLoadUtility.NewGame(LoginStatus.Offline);
+		*/
 	}
 
 }

@@ -9,20 +9,38 @@ using System.Linq;
 public static class LoginUtility
 {
     private const int TimeoutInSeconds = 5;
-    public static async Task<LoginStatus> GuestLogin()
+    public static async Task<LootLockerSessionResponse> RefreshLogin(GameManager gameManager)
     {
-        var response = await StartGuestSessionTask();
-        if (response != null && response.success)
+        Debug.Log("Initializing login...");
+        var sessionStatus = await StartSession();
+        //Will need to change to not be guest later;
+        if (sessionStatus != null)
         {
-            Debug.Log("Player logged in with ID " + response.player_id);
-            PlayerPrefs.SetString("PlayerID", response.player_id.ToString());
-            return LoginStatus.Guest;
+            await SubmitDirtyRecords(gameManager.Session, gameManager.Leaderboard);
         }
-        else
+        //Save serial to update removed dirty records
+        SaveLoadUtility.SaveGame(gameManager.Session, gameManager);
+        return sessionStatus;
+    }
+
+    private static async Task SubmitDirtyRecords(SessionData sessionData, LeaderboardManager leaderboardManager)
+    {
+        var dirtyUIDs = sessionData.SaveData.dirtyRecords.Keys.ToList();
+        foreach (string levelUID in dirtyUIDs)
         {
-            Debug.Log("Could not start player account session.");
-            return LoginStatus.Offline;
+            Debug.Log("Uploading dirty record for level " + sessionData.NodeDict[levelUID].Level.Name);
+            bool uploadSuccessful = await leaderboardManager.UpdateLeaderboardRecord(sessionData.SaveData.dirtyRecords[levelUID]);
+            if (uploadSuccessful)
+            {
+                Debug.Log("Dirty record upload successful!");
+                sessionData.SaveData.dirtyRecords.Remove(levelUID);
+            }
         }
+    }
+
+    public static async Task<LootLockerSessionResponse> StartSession()
+    {
+        return await StartGuestSessionTask();
     }
 
     private static async Task<LootLockerGuestSessionResponse> StartGuestSessionTask()
@@ -45,41 +63,5 @@ public static class LoginUtility
             await Task.Delay(10);
         }
         return returnResponse;
-    }
-
-
-    public static async Task<LoginStatus> RefreshLogin(GameManager gameManager)
-    {
-        if (gameManager.LoginStatus != LoginStatus.Offline)
-        {
-            return gameManager.LoginStatus;
-        }
-
-        Debug.Log("Initializing login...");
-        var loginStatus = await GuestLogin();
-        //Will need to change to not be guest later;
-        if (loginStatus != LoginStatus.Offline)
-        {
-            await SubmitDirtyRecords(gameManager.Session, gameManager.Leaderboard);
-        }
-        //Save serial to update removed dirty records
-        SaveLoadUtility.SaveGame(gameManager.Session, loginStatus);
-        return loginStatus;
-    }
-
-
-    private static async Task SubmitDirtyRecords(SessionData sessionData, LeaderboardManager leaderboardManager)
-    {
-        var dirtyUIDs = sessionData.SaveData.dirtyRecords.Keys.ToList();
-        foreach (string levelUID in dirtyUIDs)
-        {
-            Debug.Log("Uploading dirty record for level " + sessionData.NodeDict[levelUID].Level.Name);
-            bool uploadSuccessful = await leaderboardManager.UpdateLeaderboardRecord(sessionData.SaveData.dirtyRecords[levelUID]);
-            if (uploadSuccessful)
-            {
-                Debug.Log("Dirty record upload successful!");
-                sessionData.SaveData.dirtyRecords.Remove(levelUID);
-            }
-        }
     }
 }

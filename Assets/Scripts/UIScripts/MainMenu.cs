@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
@@ -7,11 +8,14 @@ public class MainMenu : MonoBehaviour
     public Level defaultLevel;
     private GameManager _gameManager;
     public GameObject levelScreen, titleScreen;
+    [SerializeField] private GameObject _newPlayerScreen;
     public LevelMenu levelMenu;
+    public TMP_InputField playerNameInputField;
 
     private void Start()
     {
         _gameManager = GameManager.Instance;
+        _gameManager.onFirstTimeUser += NewPlayerScreen;
         if (_gameManager.LevelLoader.GoToLevelMenu)
         {
             LevelScreen();
@@ -32,6 +36,7 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+
     public void Quit()
     {
         Application.Quit();
@@ -48,6 +53,12 @@ public class MainMenu : MonoBehaviour
     {
         titleScreen.SetActive(true);
         levelScreen.SetActive(false);
+    }
+
+    private void NewPlayerScreen()
+    {
+        _gameManager.onFirstTimeUser -= NewPlayerScreen;
+        _newPlayerScreen.SetActive(true);
     }
 
 }
