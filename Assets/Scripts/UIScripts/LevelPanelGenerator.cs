@@ -13,7 +13,7 @@ public class LevelPanelGenerator : MonoBehaviour
     public Image medalImage;
     public Sprite[] medalSprites;
     public MainMenu menu;
-    private Level selectedLevel;
+    public Level selectedLevel;
 
 
     public void Generate(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
@@ -42,7 +42,7 @@ public class LevelPanelGenerator : MonoBehaviour
         {
             return "Locked";
         }
-        int goldRequired = node.goldRequired - GameManager.Instance.Session.GoldPlusCount;
+        int goldRequired = node.goldRequired - GameManager.Instance.SessionData.GoldPlusCount;
         if (goldRequired < 1)
         {
             return "Complete previous level to unlock.";
@@ -84,8 +84,10 @@ public class LevelPanelGenerator : MonoBehaviour
         medal.SetActive(true);
     }
 
+    /*
     public void PlayLevel()
     {
         menu.LoadLevel(selectedLevel);
     }
+    */
 }

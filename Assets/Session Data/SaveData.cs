@@ -17,6 +17,14 @@ public class SaveData
 		dirtyRecords = new();
 	}
 
+	public SaveData(SerializedDictionary<string, PlayerRecord> records, SerializedDictionary<string, PlayerRecord> dirty, DateTime start, DateTime last)
+    {
+		recordDict = records;
+		dirtyRecords = dirty;
+		startDate = start;
+		lastSaved = last;
+    }
+
 }
 
 

@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using AYellowpaper.SerializedCollections;
 //Single instance accessed by GameManager that maintains all data for players' current session
 //Combines player records from SaveData with level list from ScriptableObject into single dictionary
 public class SessionData
 {
     private SaveData _saveData;
-    //private SerializedDictionary<string, PlayerRecord> _recordDict = new();
-    //private SerializedDictionary<string, PlayerRecord> _dirtyRecords = new();
     private Dictionary<Medal, int> _medalCount = new()
     {
         { Medal.Red, 0 },
@@ -21,8 +18,6 @@ public class SessionData
     private Dictionary<string, LevelNode> nodeDict = new();
     public int GoldPlusCount => _medalCount[Medal.Gold] + _medalCount[Medal.Blue] + _medalCount[Medal.Red];
     public Dictionary<Medal, int> MedalCount => _medalCount;
-    //public SerializedDictionary<string, PlayerRecord> RecordDict => _recordDict;
-    //public SerializedDictionary<string, PlayerRecord> DirtyRecords => _dirtyRecords;
     public Dictionary<string, LevelNode> NodeDict => nodeDict;
     public SaveData SaveData => _saveData;
 
@@ -41,24 +36,25 @@ public class SessionData
     public void BuildRecordsAndMedals(SaveData loadedGame, LevelNode firstNode)
     {
         LevelNode currentNode = firstNode;
-        //_recordDict = loadedGame.recordDict;
-        //_dirtyRecords = loadedGame.dirtyRecords;
+
         //Set first node to incomplete if it's currently locked (only happens at new game).
         if(!_saveData.recordDict.ContainsKey(firstNode.levelUID))
         {
             AddLevelToRecords(currentNode.level);
-            Record(currentNode.levelUID).status = CompletionStatus.Incomplete;
+            GetRecordByUID(currentNode.levelUID).status = CompletionStatus.Incomplete;
             currentNode = currentNode.next;
         }
         CompletionStatus lastRecordStatus = CompletionStatus.Complete;
+
         //Advance through nodes using next
         while(currentNode != null)
         {
             PlayerRecord record;
+
             //Access record if it exists, create new record if not.
             if (_saveData.recordDict.ContainsKey(currentNode.levelUID))
             {
-                record = Record(currentNode.levelUID);
+                record = GetRecordByUID(currentNode.levelUID);
             }
             else
             {
@@ -85,9 +81,9 @@ public class SessionData
         return _saveData.recordDict[level.levelUID];
     }
 
-    public bool UpdateRecord(FinishScreenData finishData, Level level)
+    public bool UpdateRecord(FinishData finishData, Level level)
     {
-        return Record(level.levelUID).Update(finishData, this);
+        return GetRecordByUID(level.levelUID).Update(finishData, this);
     }
 
     public void AdjustMedalCount(Medal medalToAdd, Medal medalToSubtract)
@@ -131,7 +127,7 @@ public class SessionData
 
     public bool NextLevelUnlocked(Level level)
     {
-        if (Record(level.levelUID).status != CompletionStatus.Complete || NextLevelNode(level.levelUID) == null)
+        if (GetRecordByUID(level.levelUID).status != CompletionStatus.Complete || NextLevelNode(level.levelUID) == null)
         {
             return false;
         }
@@ -144,7 +140,7 @@ public class SessionData
         return nextLevelRecord.status != CompletionStatus.Locked;
     }
 
-    public PlayerRecord Record(string UID)
+    public PlayerRecord GetRecordByUID(string UID)
     {
         if (_saveData.recordDict.ContainsKey(UID))
         {
@@ -154,7 +150,7 @@ public class SessionData
         return null;
     }
 
-    public PlayerRecord Record(Level level)
+    public PlayerRecord GetRecordByLevel(Level level)
     {
         if (_saveData.recordDict.ContainsKey(level.levelUID))
         {
@@ -175,13 +171,13 @@ public class SessionData
     public PlayerRecord PreviousLevelRecord(string UID)
     {
         LevelNode previousNode = PreviousLevelNode(UID);
-        return previousNode != null ? Record(previousNode.levelUID) : null;
+        return previousNode != null ? GetRecordByUID(previousNode.levelUID) : null;
     }
 
     public PlayerRecord NextLevelRecord(string UID)
     {
         LevelNode nextNode = NextLevelNode(UID);
-        return nextNode != null ? Record(nextNode.levelUID) : null;
+        return nextNode != null ? GetRecordByUID(nextNode.levelUID) : null;
     }
 
     public LevelNode PreviousLevelNode(string UID)

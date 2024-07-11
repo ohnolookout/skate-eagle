@@ -6,17 +6,18 @@ using UnityEngine.UI;
 public class NodeContainer : MonoBehaviour
 {
     public GameObject lockedFade;
-    public LevelMenu menu;
-    private LevelNode node;
+    public Button Button;
     public int containerIndex;
-    public Level level;
     public int goldRequired = 0;
+    public Level _level;
+    private LevelNode _node;
+    public LevelNode Node { get => _node; set => _node = value; }
 
     void Awake()
     {
-        node = new(level, goldRequired);
+        _node = new(_level, goldRequired);
     }
-
+    /*
     public void SendToLevelPanel()
     {
         menu.SetLevelPanel(node, containerIndex);
@@ -25,7 +26,7 @@ public class NodeContainer : MonoBehaviour
     public void SelectButton()
     {
         gameObject.GetComponent<Button>().Select();
-    }
+    }*/
 
     public void Setup(CompletionStatus status)
     {
@@ -39,39 +40,4 @@ public class NodeContainer : MonoBehaviour
         }
     }
 
-    public LevelNode Previous
-    {
-        get
-        {
-            return node.previous;
-        }
-        set
-        {
-            node.previous = value;
-        }
-    }
-
-    public LevelNode Next
-    {
-        get
-        {
-            return node.next;
-        }
-        set
-        {
-            node.next = value;
-        }
-    }
-
-    public LevelNode Node
-    {
-        get
-        {
-            return node;
-        }
-        set
-        {
-            node = value;
-        }
-    }
 }

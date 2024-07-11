@@ -1,32 +1,44 @@
 using System;
-using System.Threading.Tasks;
+using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
-using LootLocker.Requests;
 using Newtonsoft.Json;
-public static class SaveLoadUtility
+using PlayFab.ClientModels;
+using PlayFab;
+using AYellowpaper.SerializedCollections;
+public class SaveLoadUtility
 {
-    #region Declarations
-    public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
-	private const int TimeoutInSeconds = 5;
-    #endregion
+	#region Declarations
+	public static SaveLoadUtility Instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = new SaveLoadUtility();
+			}
+			return _instance;
+		}
+	}
 
-    #region Basic Save/Load
-    public static async void SaveGame(SessionData session, GameManager gameManager)
+	private static SaveLoadUtility _instance;
+	public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
+	public Action OnCheckCloudSaveComplete;
+	public Action<bool> OnSaveToCloudComplete;
+	#endregion
+
+	#region Local Save/Load
+	public string SaveGame(SessionData session)
 	{
 		session.SaveData.lastSaved = DateTime.Now;
 		string data = JsonConvert.SerializeObject(session.SaveData);
 		WriteToSavePath(data);
 		Debug.Log("Game data saved locally.");
-
-		var backupSaved = await SaveToCloud(SavePath, gameManager.LoginStatus);
-        if (!backupSaved)
-		{
-			gameManager.LoginStatus = LoginStatus.Offline;
-		}
-		Debug.Log($"Game data backed up: {backupSaved}");
+		return data;
 	}
-	private static void WriteToSavePath(string data)
+
+	private void WriteToSavePath(string data)
 	{
 		if (!File.Exists(SavePath))
 		{
@@ -35,154 +47,324 @@ public static class SaveLoadUtility
 		File.WriteAllText(SavePath, data);
 	}
 
-	public static SessionData LoadGame(GameManager gameManager)
+	public SessionData LoadGame()
 	{
 		if (!File.Exists(SavePath))
 		{
 			Debug.Log("No save data found. Creating new game...");
-			return NewGame(gameManager);
+			return NewGame();
 		}
 
-		Debug.Log("Retrieving saved file at " + SavePath);
 		string data = File.ReadAllText(SavePath);
 		SaveData loadedGame = JsonConvert.DeserializeObject<SaveData>(data);
-		Debug.Log($"Loaded data file with {loadedGame.recordDict.Count} entries, first created on {loadedGame.startDate}");
-		Debug.Log($"Dirty records: {loadedGame.dirtyRecords.Count}");
 		return new SessionData(loadedGame);
 	}
-	public static SessionData NewGame(GameManager gameManager)
+
+	public SessionData NewGame()
 	{
 		SaveData toSave = new SaveData();
 		SessionData newSession = new(toSave);
 		Debug.Log("New game created!");
-		SaveGame(newSession, gameManager);
+		SaveGame(newSession);
 		return new SessionData(toSave);
 	}
-	public static async Task UpdateRecord(GameManager gameManager, FinishScreenData finishData)
-	{
-		Level currentLevel = gameManager.CurrentLevel;
-		SessionData session = gameManager.Session;
-		bool isNewBest = session.UpdateRecord(finishData, currentLevel);
-		bool uploadSuccessful = false;
-		//Will need to change to not be guest later;
-		if (isNewBest && gameManager.LoginStatus != LoginStatus.Offline)
-		{
-			Debug.Log("Uploading new best time to leaderboard...");
-			uploadSuccessful = await gameManager.Leaderboard.UpdateLeaderboardRecord(session.Record(currentLevel.levelUID));
-		}
-		if (isNewBest && !uploadSuccessful)
-		{
-			Debug.Log("Setting record to dirty because player is not logged in.");
-			gameManager.LoginStatus = LoginStatus.Offline;
-			session.SaveData.dirtyRecords[currentLevel.levelUID] = session.Record(currentLevel.levelUID);
-		}
-		SaveGame(session, gameManager);
-	}
 	#endregion
 
+
+
+	public static SaveData MergeSaveData(SaveData localSave, SaveData cloudSave)
+	{
+		var mergedRecords = MergeSerializedDict(localSave.recordDict, cloudSave.recordDict);
+		var mergedDirtyRecords = MergeSerializedDict(localSave.dirtyRecords, cloudSave.dirtyRecords);
+		var startDate = localSave.startDate < cloudSave.startDate ? localSave.startDate : cloudSave.startDate;
+		var lastSaved = cloudSave.lastSaved;
+
+		return new SaveData(mergedRecords, mergedDirtyRecords, startDate, lastSaved);
+	}
+
+	private static SerializedDictionary<string, PlayerRecord> MergeSerializedDict(SerializedDictionary<string, PlayerRecord> dict1, SerializedDictionary<string, PlayerRecord> dict2)
+	{
+		SerializedDictionary<string, PlayerRecord> mergedDict = new();
+
+		foreach (var key in dict1.Keys.ToList())
+		{
+			mergedDict[key] = dict1[key];
+		}
+
+		foreach (var key in dict2.Keys.ToList())
+		{
+			if (!mergedDict.ContainsKey(key)
+				|| dict2[key].bestTime < mergedDict[key].bestTime)
+			{
+				mergedDict[key] = dict2[key];
+			}
+		}
+
+		return mergedDict;
+	}
+	/*
 	#region Cloud Saves
-	private static async Task<bool> SaveToCloud(string path, LoginStatus loginStatus)
-    {
-		var uploadSuccessful = false;
-		if (loginStatus == LoginStatus.Guest || loginStatus == LoginStatus.LoggedIn)
-		{
-			uploadSuccessful = await UploadFileFromPath(path);
-		}
-		return uploadSuccessful;
+
+	private void SaveToCloud(string data)
+	{
+		PlayFabClientAPI.UpdateUserData(
+			new UpdateUserDataRequest()
+			{
+				Data = new Dictionary<string, string>()
+				{
+					{"SaveData", data}
+				}
+			},
+			OnUpdateUserDataSuccess,
+			OnUpdateUserDataFailure
+		);
 	}
 
-	private static async Task<bool> UploadFileFromPath(string path)
+	private void OnUpdateUserDataSuccess(UpdateUserDataResult result)
 	{
-		Debug.Log("Beginning upload from path...");
-		int fileID = PlayerPrefs.GetInt("PlayerSaveDataFileID", 0);
-		if ( fileID != 0)
+		Debug.Log("Save successfully backed up on PlayFab.");
+		OnSaveToCloudComplete?.Invoke(true);
+	}
+
+	private void OnUpdateUserDataFailure(PlayFabError error)
+	{
+		Debug.Log("PlayFab save failed.");
+		OnSaveToCloudComplete?.Invoke(false);
+	}
+
+	public void CheckCloudSave(float lastSeenLocal, float lastSeenCloud)
+	{
+		if (!string.IsNullOrEmpty(PlayerPrefs.GetString(GameManager.RegisteredEmailKey)))
+		{
+			if (!float.IsPositiveInfinity(lastSeenCloud) && lastSeenCloud > lastSeenLocal)
+			{
+				LoadFromCloud();
+			}
+        }
+        else
         {
-			var response = await UpdatePlayerFileTask(fileID, path);
-			if (response != null && response.success == true)
-			{
-				Debug.Log("File was updated!");
-				return true;
-			}
+			OnCheckCloudSaveComplete?.Invoke();
         }
-
-		var secondResponse = await NewPlayerFileTask(path);
-		if (secondResponse != null && secondResponse.success)
-		{
-			Debug.Log("New file was uploaded!");
-			return true;
-		}
-
-		return false;
 	}
-	private static async Task<LootLockerPlayerFile> UpdatePlayerFileTask(int fileID, string path)
+	public void LoadFromCloud()
+	{
+		PlayFabClientAPI.GetUserData(
+			new GetUserDataRequest()
+			{
+				PlayFabId = PlayFabAuthService.PlayFabId
+			},
+			OnLoadFromCloudSuccess,
+			OnLoadFromCloudFailure
+			) ;
+	}
+
+	private void OnLoadFromCloudSuccess(GetUserDataResult result)
+	{
+		SaveData cloudSaveData = JsonConvert.DeserializeObject<SaveData>(result.Data["SaveData"].Value);
+		var mergedSave = MergeSaveData(GameManager.Instance.Session.SaveData, cloudSaveData);
+		GameManager.Instance.LoadExternalGame(mergedSave);
+		OnCheckCloudSaveComplete?.Invoke();
+
+	}
+
+	private void OnLoadFromCloudFailure(PlayFabError error)
     {
-		float timeElapsed = 0;
-		LootLockerPlayerFile returnResponse = null;
-		LootLockerSDKManager.UpdatePlayerFile(fileID, path, (response) =>
-		{
-			returnResponse = response;
-		});
-		while(returnResponse == null)
-		{
-			timeElapsed += Time.deltaTime;
-			if (timeElapsed > TimeoutInSeconds)
-			{
-				Debug.Log("Update player file timed out.");
-				break;
-			}
-			await Task.Delay(10);
-        }
-		return returnResponse;
+		Debug.Log("Playfab load failed.");
+		OnCheckCloudSaveComplete?.Invoke();
 	}
-	private static async Task<LootLockerPlayerFile> NewPlayerFileTask(string path)
-	{
-		float timeElapsed = 0;
-		LootLockerPlayerFile returnResponse = null;
-		string filePurpose = "saveFile";
-		LootLockerSDKManager.UploadPlayerFile(path, filePurpose, (response) =>
+
+	private static SaveData MergeSaveData(SaveData localSave, SaveData cloudSave)
+    {
+		var mergedRecords = MergeSerializedDict(localSave.recordDict, cloudSave.recordDict);
+		var mergedDirtyRecords = MergeSerializedDict(localSave.dirtyRecords, cloudSave.dirtyRecords);
+		var startDate = localSave.startDate < cloudSave.startDate ? localSave.startDate : cloudSave.startDate;
+		var lastSaved = cloudSave.lastSaved;
+
+		return new SaveData(mergedRecords, mergedDirtyRecords, startDate, lastSaved);
+    }
+
+	private static SerializedDictionary<string, PlayerRecord> MergeSerializedDict(SerializedDictionary<string, PlayerRecord> dict1, SerializedDictionary<string, PlayerRecord> dict2)
+    {
+		SerializedDictionary<string, PlayerRecord> mergedDict = new();
+
+		foreach (var key in dict1.Keys.ToList())
 		{
-			PlayerPrefs.SetInt("PlayerSaveDataFileID", response.id);
-			returnResponse = response;
-		});
-		while (returnResponse == null)
-		{
-			timeElapsed += Time.deltaTime;
-			if(timeElapsed > TimeoutInSeconds)
-            {
-				Debug.Log("New player file timed out.");
-				break;
-            }
-			await Task.Delay(10);
+			mergedDict[key] = dict1[key]; 
 		}
-		return returnResponse;
+
+		foreach (var key in dict2.Keys.ToList())
+		{
+			if (!mergedDict.ContainsKey(key)
+				|| dict2[key].bestTime < mergedDict[key].bestTime)
+			{
+				mergedDict[key] = dict2[key];
+			}
+		}
+
+		return mergedDict;
 	}
 	#endregion
 
-	#region PlayerManagement
-	public static async Task<PlayerNameResponse> SetPlayerNameTask(string name)
-	{
-		float timeElapsed = 0;
-		PlayerNameResponse returnResponse = null;
-		LootLockerSDKManager.SetPlayerName(name, (response) =>
-		{
-			returnResponse = response;
-		});
-		while (returnResponse == null)
-		{
-			timeElapsed += Time.deltaTime;
-			if (timeElapsed > TimeoutInSeconds)
-			{
-				Debug.Log("Set player name out.");
-				break;
-			}
-			await Task.Delay(10);
+	public static bool MergeSaveTest()
+    {
+		DateTime localStart = new(2023, 1, 1, 1, 1, 1, 1);
+		DateTime cloudStart = new(2023, 1, 1, 1, 1, 1, 1);
+		DateTime localLastSaved = new(2023, 1, 1, 1, 1, 1, 1);
+		DateTime cloudLastSaved = new(2024, 1, 1, 1, 1, 1, 1);
+
+		SerializedDictionary<string, PlayerRecord> localRecords = new();
+		SerializedDictionary<string, PlayerRecord> localDirty = new();
+		SerializedDictionary<string, PlayerRecord> cloudRecords = new();
+		SerializedDictionary<string, PlayerRecord> cloudDirty = new();
+
+		PlayerRecord one = new();
+		one.bestTime = 1;
+
+		PlayerRecord two = new();
+		two.bestTime = 2;
+
+		PlayerRecord three = new();
+		three.bestTime = 3;
+
+		PlayerRecord four = new();
+		four.bestTime = 4;
+
+		PlayerRecord five = new();
+		five.bestTime = 5;
+
+		PlayerRecord six = new();
+		six.bestTime = 6;
+
+		PlayerRecord seven = new();
+		seven.bestTime = 7;
+
+		localRecords["a"] = four;
+		localRecords["b"] = four;
+		localRecords["c"] = four;
+		localRecords["d"] = four;
+
+		cloudRecords["a"] = three;
+		cloudRecords["b"] = five;
+		cloudRecords["c"] = four;
+		cloudRecords["e"] = four;
+
+		localDirty["a"] = four;
+		localDirty["b"] = four;
+		localDirty["c"] = four;
+		localDirty["d"] = four;
+
+		cloudDirty["a"] = three;
+		cloudDirty["b"] = five;
+		cloudDirty["c"] = four;
+		cloudDirty["e"] = four;
+
+		SaveData localSave = new(localRecords, localDirty, localStart, localLastSaved);
+		SaveData cloudSave = new(cloudRecords, cloudDirty, cloudStart, cloudLastSaved);
+
+		var mergedSave = MergeSaveData(localSave, cloudSave);
+
+		bool success = true;
+
+		Debug.Log("--------------BEGINNING MERGED SAVE TEST--------------");
+
+		if(mergedSave.recordDict.Count != 5)
+        {
+			Debug.Log("FAIL");
+			success = false;
 		}
-		return returnResponse;
+
+		if (mergedSave.dirtyRecords.Count != 5)
+		{
+			Debug.Log("FAIL");
+			success = false;
+		}
+
+		if (mergedSave.recordDict["a"].bestTime != 3)
+        {
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'a' = {mergedSave.recordDict["a"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.recordDict["b"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'b' = {mergedSave.recordDict["b"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.recordDict["c"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'c' = {mergedSave.recordDict["c"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.recordDict["d"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'd' = {mergedSave.recordDict["d"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.recordDict["e"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'e' = {mergedSave.recordDict["e"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.dirtyRecords["a"].bestTime != 3)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'a' = {mergedSave.dirtyRecords["a"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.dirtyRecords["b"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'b' = {mergedSave.dirtyRecords["b"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.dirtyRecords["c"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'c' = {mergedSave.dirtyRecords["c"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.dirtyRecords["d"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'd' = {mergedSave.dirtyRecords["d"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.dirtyRecords["e"].bestTime != 4)
+		{
+			Debug.Log("FAIL");
+			Debug.Log($"Best time at record 'e' = {mergedSave.dirtyRecords["e"].bestTime}");
+			success = false;
+		}
+
+		if (mergedSave.startDate != localStart)
+		{
+			Debug.Log("FAIL");
+			success = false;
+		}
+
+		if (mergedSave.lastSaved != cloudLastSaved)
+		{
+			Debug.Log("FAIL");
+			success = false;
+		}
+
+		Debug.Log("SaveData merge test passed: " + success);
+		return success;
 	}
-
-	#endregion
-
-
+	*/
 }
 
 

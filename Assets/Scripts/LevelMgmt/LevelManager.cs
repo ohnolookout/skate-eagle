@@ -10,13 +10,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private Vector3 _finishPoint;
     [SerializeField] private Level _currentLevel;
     private GameManager _gameManager;
-    private AudioManager _audioManager;
     private static IPlayer _player;
     [SerializeField] private TerrainManager _terrainManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private Timer timer;
     public static Action<ILevelManager> OnLanding, OnGameOver;
-    public static Action<FinishScreenData> OnFinish;
+    public static Action<FinishData> OnFinish;
     public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart, OnLevelExit;
     public static Action OnFall { get; set; }
     public static Action<Vector2> OnActivateFinish { get; set; }
@@ -32,7 +31,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public bool HasCameraOperator { get => _cameraOperator != null; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _terrainManager != null; }
-    public bool HasAudioManager { get => _audioManager != null; }
     #endregion
 
     #region Monobehaviours
@@ -100,8 +98,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void AddSingletonManagers()
     {
         _gameManager = GameManager.Instance;
-        _audioManager = AudioManager.Instance;
-        if (_gameManager.LevelLoader.LevelIsLoaded)
+        if (_gameManager.CurrentLevel != null)
         {
             CurrentLevel = _gameManager.CurrentLevel;
         }
@@ -111,10 +108,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
             _gameManager.CurrentLevel = CurrentLevel;
         }
         OnFinish += _gameManager.UpdateRecord;
-        if (HasAudioManager)
-        {
-            _audioManager.SubscribeToLevelManagerEvents();
-        }
         
     }
 
@@ -204,7 +197,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     public void Finish(IPlayer _ = null)
     {
-        FinishScreenData finishData;
+        FinishData finishData;
         if (timer != null)
         {
             float finishTime = timer.StopTimer();

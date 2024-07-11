@@ -28,7 +28,7 @@ public class FinishScreenLoader : MonoBehaviour
         LevelManager.OnResultsScreen -= ActivateDisplay;
         LevelManager.OnLanding -= deactivateDisplay;
     }
-    public void GenerateFinishScreen(FinishScreenData finishData)
+    public void GenerateFinishScreen(FinishData finishData)
     {
         ClearOptionalText();
         playerTime.text = OverlayUtility.TimeToString(finishData.attemptTime);

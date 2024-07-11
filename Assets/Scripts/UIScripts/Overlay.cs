@@ -10,7 +10,7 @@ public class Overlay : MonoBehaviour
     public FinishScreenLoader finishLoader;
     [SerializeField] private ILevelManager _levelManager;
     private Action<ILevelManager> onLanding, onGameOver;
-    private Action<FinishScreenData> onFinish;
+    private Action<FinishData> onFinish;
     public StompBar stompBar;
     public Timer timer;
     public static Action OnOverlayLoaded, OnStandbyButton, OnRestartButton;
@@ -107,7 +107,7 @@ public class Overlay : MonoBehaviour
 
     public void BackToLevelMenu()
     {
-        GameManager.Instance.LevelLoader.BackToLevelMenu();
+        GameManager.Instance.BackToLevelMenu();
     }
 
     public void ActivateControls(bool activate)
@@ -127,7 +127,7 @@ public class Overlay : MonoBehaviour
     
     public void LoadNextLevel()
     {
-        GameManager.Instance.LevelLoader.LoadNextLevel();
+        GameManager.Instance.LoadNextLevel();
     }
     
 }

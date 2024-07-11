@@ -4,10 +4,10 @@ using UnityEngine;
 
 public static class FinishUtility
 {
-    public static FinishScreenData GenerateFinishData(Level level, PlayerRecord playerRecord, float attemptTime)
+    public static FinishData GenerateFinishData(Level level, PlayerRecord playerRecord, float attemptTime)
     {
         FinishScreenType finishType = FindFinishType(level, playerRecord, attemptTime, out Medal displayMedal);
-        FinishScreenData finishData = new(finishType, attemptTime, playerRecord.bestTime, displayMedal);
+        FinishData finishData = new(level.levelUID, finishType, attemptTime, playerRecord.bestTime, displayMedal);
         return finishData;
     }
 
@@ -30,13 +30,15 @@ public static class FinishUtility
     }
 }
 
-public struct FinishScreenData
+public struct FinishData
 {
     public float attemptTime, previousBest;
     public Medal medal;
     public FinishScreenType finishType;
-    public FinishScreenData(FinishScreenType finishType, float attemptTime, float previousBest, Medal medal)
+    public string levelUID;
+    public FinishData(string levelUID, FinishScreenType finishType, float attemptTime, float previousBest, Medal medal)
     {
+        this.levelUID = levelUID;
         this.attemptTime = attemptTime;
         this.previousBest = previousBest;
         this.medal = medal;

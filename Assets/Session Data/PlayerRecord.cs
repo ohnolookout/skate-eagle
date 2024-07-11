@@ -29,7 +29,7 @@ public class PlayerRecord
 
     }
 
-	public bool Update(FinishScreenData finishData, SessionData sessionData)
+	public bool Update(FinishData finishData, SessionData sessionData)
     {
 		if (finishData.finishType == FinishScreenType.Participant)
 		{

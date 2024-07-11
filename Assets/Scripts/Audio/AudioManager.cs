@@ -39,7 +39,7 @@ public class AudioManager : MonoBehaviour
 
     #endregion
 
-    #region Monobehaviors
+    #region Monobehaviours
     void Awake()
     {
         //Check to see if other instance exists that has already 
@@ -52,23 +52,10 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void ManualStart()
+    private void Start()
     {
-        if (_soundtrack != null)
-        {
-            PlaySoundtrack(_soundtrack);
-        }
-        if (_camera != null)
-        {
-            _updateZoom += _ => _updateZoomModifier = true;
-            _stopUpdateZoom += () =>
-            {
-                _modifierManager.ResetZoomModifier();
-                _updateZoomModifier = false;
-            };
-            _camera.OnZoomOut += _updateZoom;
-            _camera.OnFinishZoomIn += _stopUpdateZoom;
-        }
+        GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
+        GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
     }
     private void Update()
     {
@@ -97,22 +84,43 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region Initialization
-    public void SubscribeToLevelManagerEvents()
+    private void OnMenuLoaded(bool goToLevelMenu)
     {
+        ClearLoops();
+    }
+
+    private void OnLevelLoaded(Level level)
+    {
+        ClearLoops();
+
+        if (_soundtrack != null)
+        {
+            PlaySoundtrack(_soundtrack);
+        }
+
+        SubscribeToCameraEvents();
+
         LevelManager.OnRestart += ClearLoops;
         LevelManager.OnGameOver += _ => ClearLoops();
-        LevelManager.OnLanding += LoadComponents;
         LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
         LevelManager.OnFinish += _ => SetModifierFramerate(1);
         LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
         LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
     }
 
-    public void LoadComponents(ILevelManager levelManager)
+    private void SubscribeToCameraEvents()
     {
-        _player = LevelManager.GetPlayer;
-        _camera = levelManager.CameraOperator;
-        ManualStart();
+        if (_camera != null)
+        {
+            _updateZoom += _ => _updateZoomModifier = true;
+            _stopUpdateZoom += () =>
+            {
+                _modifierManager.ResetZoomModifier();
+                _updateZoomModifier = false;
+            };
+            _camera.OnZoomOut += _updateZoom;
+            _camera.OnFinishZoomIn += _stopUpdateZoom;
+        }
     }
 
     #endregion

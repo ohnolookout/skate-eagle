@@ -10,6 +10,10 @@ public class LevelNode
     public Level level;
     public int goldRequired, order;
 
+    public string Name => level.Name;
+    public string levelUID => level.levelUID;
+    public Level Level => level;
+
     public LevelNode(Level level, int goldRequired = 0)
     {
         this.level = level;
@@ -26,21 +30,4 @@ public class LevelNode
     }
 
 
-    public string Name
-    {
-        get
-        {
-            return level.Name;
-        }
-    }
-
-    public string levelUID
-    {
-        get
-        {
-            return level.levelUID;
-        }
-    }
-
-    public Level Level => level;
 }

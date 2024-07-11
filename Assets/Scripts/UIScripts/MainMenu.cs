@@ -1,49 +1,68 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    public LevelPanelGenerator levelPanel;
-    public Level defaultLevel;
+    public Button PlayButton;
+    public Button QuitButton;
+    public Button NewGameButton;
+    public Button LevelScreenBackButton;
+    public Button LevelScreenPlayButton;
+    public MenuPanel FirstTimeSetNamePanel;
+    public MenuPanel FirstTimeAddEmailPanel;
+    public MenuPanel SetNamePanel;
+    public MenuPanel SetEmailPanel;
+    public MenuPanel ConfirmNewGamePanel;
+    public LevelMenu LevelMenu;
     private GameManager _gameManager;
     public GameObject levelScreen, titleScreen;
-    [SerializeField] private GameObject _newPlayerScreen;
-    public LevelMenu levelMenu;
-    public TMP_InputField playerNameInputField;
 
-    private void Start()
+    void Awake()
     {
         _gameManager = GameManager.Instance;
-        _gameManager.onFirstTimeUser += NewPlayerScreen;
-        if (_gameManager.LevelLoader.GoToLevelMenu)
-        {
-            LevelScreen();
-            _gameManager.LevelLoader.GoToLevelMenu = false;
-        }
+        _gameManager.OnStartupComplete += OnStartupComplete;
+        _gameManager.OnMenuLoaded += OnMenuLoaded;
     }
-    public void ResetSaveData()
+
+    void Start()
     {
-        _gameManager.ResetSaveData();
-        levelMenu.Start();
+
+        PlayButton.onClick.AddListener(GoToLevelScreen);
+        QuitButton.onClick.AddListener(Application.Quit);
+        NewGameButton.onClick.AddListener(_gameManager.ResetSaveData);
+
+    }
+
+
+    //Show notification depending on whether it's a new player or not
+    private void OnStartupComplete()
+    {
+
+    }
+
+    private void OnMenuLoaded(bool goToLevelMenu)
+    {
+        if (goToLevelMenu)
+        {
+            GoToLevelScreen();
+        }
     }
 
     public void LoadLevel(Level level)
     {
-        _gameManager.LevelLoader.LoadLevel(level);
+        _gameManager.LoadLevel(level);
     }
+    /*
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
+    */
 
-    public void Quit()
-    {
-        Application.Quit();
-        Debug.Log("There is no escape.");
-    }
-
-    public void LevelScreen()
+    public void GoToLevelScreen()
     {
         titleScreen.SetActive(false);
         levelScreen.SetActive(true);
@@ -53,12 +72,6 @@ public class MainMenu : MonoBehaviour
     {
         titleScreen.SetActive(true);
         levelScreen.SetActive(false);
-    }
-
-    private void NewPlayerScreen()
-    {
-        _gameManager.onFirstTimeUser -= NewPlayerScreen;
-        _newPlayerScreen.SetActive(true);
     }
 
 }

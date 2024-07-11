@@ -1,32 +1,40 @@
 using UnityEngine;
-using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
-using LootLocker.Requests;
-using System.Collections.Generic;
 using System;
+using System.Linq;
+using System.Collections;
 
-public enum LoginStatus { LoggedIn, Guest, Offline };
 public class GameManager : MonoBehaviour
 {
     #region Declarations
-    private SessionData _sessionData;
-    private LootLockerSessionResponse _lootLockerSession;
-    private Level _currentLevel;
     private static GameManager _instance;
-    private LeaderboardManager _leaderboardManager;
-    private LevelLoader _levelLoader;
-    public Action onFirstTimeUser;
+    private SessionData _sessionData;
+    private Level _currentLevel = null;
+    private PlayFabManager _playFabManager;
+    private InitializationResult _initializationResult;
+    private bool _isAwaitingPlayFab = false;
+    private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
+    private Action _onFirstTimeUser;
+    private Action _onStartupComplete;
+    private Action<Level> _onLevelLoaded;
+    private Action<bool> _onMenuLoaded;
+    public GameObject loadingScreen;
+
+    public const string SeenBeforeKey = "SeenBefore";
+    public const string LastSeenKey = "LastSeen";
+    public const string CreateAccountOnSuccessfulAuth = "CreateAccountOnSuccessfulAuth";
+    public const string RegisteredEmailKey = "RegisteredEmail";
 
     public bool clearPlayerPrefs = false;
-    private LoginStatus _loginStatus = LoginStatus.Offline;
+    public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
     public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.levelUID);
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
-    public LeaderboardManager Leaderboard => _leaderboardManager;
-    public PlayerRecord CurrentPlayerRecord => _sessionData.Record(_currentLevel);
-    public SessionData Session => _sessionData;
-    public LevelLoader LevelLoader => _levelLoader;
-    public LoginStatus LoginStatus { get => _loginStatus; set => _loginStatus = value; }
-    public LootLockerSessionResponse LootLockerSession => _lootLockerSession;
+    public PlayerRecord CurrentPlayerRecord => _sessionData.GetRecordByLevel(_currentLevel);
+    public InitializationResult InitializationResult => _initializationResult;
+    public Action OnFirstTimeUser { get => _onFirstTimeUser; set => _onFirstTimeUser = value; }
+    public Action OnStartupComplete { get => _onStartupComplete; set => _onStartupComplete = value; }
+    public Action<Level> OnLevelLoaded { get => _onLevelLoaded; set => _onLevelLoaded = value; }
+    public Action<bool> OnMenuLoaded { get => _onMenuLoaded; set => _onMenuLoaded = value; } //bool true if load level menue;
     public static GameManager Instance
     {
         get
@@ -57,6 +65,7 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        _playFabManager = new();
 
 #if UNITY_EDITOR
         if (SceneManager.GetActiveScene().name == "Level_Editor")
@@ -66,74 +75,127 @@ public class GameManager : MonoBehaviour
 
         if (clearPlayerPrefs)
         {
+            Debug.Log("Clearing player prefs...");
             PlayerPrefs.DeleteAll();
             ResetSaveData();
 
         }
 #endif
 
-        _sessionData = SaveLoadUtility.LoadGame(this);        
-        _leaderboardManager = new();
-        _levelLoader = new(this);
     }
 
     private void Start()
     {
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
-        DoLogin();
+
+        loadingScreen.SetActive(true);
+        _isAwaitingPlayFab = true;
+
+        _playFabManager.OnInitializationComplete += OnInitializationComplete;
+        StartCoroutine(_playFabManager.Initialize(this));
+    }
+
+    private void OnInitializationComplete(InitializationResult result)
+    {
+        loadingScreen.SetActive(false);
+
+        _initializationResult = result;
+        if (_initializationResult.isFirstTime)
+        {
+            OnFirstTimeUser?.Invoke();
+        }
+        OnStartupComplete?.Invoke();
+
+        _isAwaitingPlayFab = false;
     }
     #endregion
 
     #region Session Management
-    private async Task CheckLogin()
+
+    public void LoadExternalGame(SaveData externalSave)
     {
-        if(_loginStatus == LoginStatus.Offline)
+        _sessionData = new(externalSave);
+    }
+
+    public void ResetSaveData()
+    {
+        _sessionData = _saveLoadUtility.NewGame();
+    }
+
+    public void UpdateRecord(FinishData finishData)
+    {
+        StartCoroutine(UpdateRecordRoutine(finishData));
+    }
+
+    private IEnumerator UpdateRecordRoutine(FinishData finishData)
+    {
+        bool isNewBest = _sessionData.UpdateRecord(finishData, _currentLevel);
+
+        if (isNewBest && !_initializationResult.isLoggedIn)
         {
-            DoLogin();
-        }
-    }
+            loadingScreen.SetActive(true);
+            _isAwaitingPlayFab = true;
 
-    private async Task DoLogin()
-    {
-        _lootLockerSession = await LoginUtility.RefreshLogin(this);
-        ParseSessionResponse(_lootLockerSession);
-    }
-    private void ParseSessionResponse(LootLockerSessionResponse response)
-    {
-        if (response == null || !response.success)
+            PlayFabManager initializer = new();
+            initializer.OnInitializationComplete += OnInitializationComplete;
+            StartCoroutine(initializer.Initialize(this));
+
+            yield return new WaitWhile(() => _isAwaitingPlayFab);
+        }
+
+        if (isNewBest && _initializationResult.isLoggedIn == true)
         {
-            _loginStatus = LoginStatus.Offline;
+            loadingScreen.SetActive(true);
+            _isAwaitingPlayFab = true;
+
+            Debug.Log("Uploading new best time to leaderboard...");
+            _playFabManager.OnLeadboardUpdateComplete += OnLeaderboardUpdateComplete;
+            _playFabManager.UpdateLeaderboardRecord(_sessionData.GetRecordByUID(finishData.levelUID));
         }
-        else
+
+        _saveLoadUtility.SaveGame(_sessionData);
+    }
+
+    private void OnLeaderboardUpdateComplete(PlayerRecord record, bool isSuccess)
+    {
+        _playFabManager.OnLeadboardUpdateComplete -= OnLeaderboardUpdateComplete;
+
+        if (!isSuccess)
         {
-            _loginStatus = LoginStatus.Guest;
+            SetRecordDirty(record);
         }
 
-        if (!response.seen_before)
+        _isAwaitingPlayFab = false;
+    }
+
+
+    public void SetRecordDirty(PlayerRecord record)
+    {
+        _sessionData.SaveData.dirtyRecords[record.levelUID] = record;
+    }
+
+    public void LoadLevel(Level level)
+    {
+        _currentLevel = level;
+        SceneManager.LoadScene("City");
+        OnLevelLoaded?.Invoke(level);
+
+    }
+
+    public void LoadNextLevel()
+    {
+        if (CurrentLevelNode.next == null)
         {
-            onFirstTimeUser?.Invoke();
+            return;
         }
+        LoadLevel(CurrentLevelNode.next.level);
     }
-
-    public async Task ResetSaveData()
+    public void BackToLevelMenu()
     {
-        await CheckLogin();
-        _sessionData = SaveLoadUtility.NewGame(this);
-    }
-
-    public async void UpdateRecord(FinishScreenData finishData)
-    {
-        await CheckLogin();
-        SaveLoadUtility.UpdateRecord(this, finishData);
-    }
-    #endregion
-
-    #region Player Management
-
-    public async Task<PlayerNameResponse> SetPlayerName(string name)
-    {
-        return await SaveLoadUtility.SetPlayerNameTask(name);
+        _currentLevel = null;
+        SceneManager.LoadScene("Start_Menu");
+        OnMenuLoaded?.Invoke(true);
     }
 
     #endregion

@@ -1,33 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using LootLocker.Requests;
-using System.Threading.Tasks;
+using PlayFab.ClientModels;
+using PlayFab;
 
 public enum LeaderboardActivation { MedalLocked, LoginLocked, NoLeaderboard, Active}
-public class Leaderboard: MonoBehaviour
+public class Leaderboard : MonoBehaviour
 {
     [SerializeField] private LeaderboardRow[] _leaderboardRows;
     [SerializeField] private GameObject _medalLockPanel, _loginLockPanel, _noLeaderboardPanel;
     [SerializeField] private GameObject[] _grayOuts;
     private int _playerRank, _startRank, _displayCount;
-    private LootLockerGetMemberRankResponse _playerRankResponse;
-    private LeaderboardManager _leaderboardManager;
     private string _leaderboardKey, _playerID;
     private bool _isFirstPage = false, _isLastPage;
     private LeaderboardActivation _activationStatus;
 
     void Start()
     {
-        _leaderboardManager = GameManager.Instance.Leaderboard;
         _displayCount = _leaderboardRows.Length;
-        _leaderboardKey = GameManager.Instance.CurrentLevel.leaderboardKey;
         _playerID = PlayerPrefs.GetString("PlayerID");
         ValidateActivation();
         if (_activationStatus == LeaderboardActivation.Active)
         {
-            PopulateLeaderboard(_leaderboardKey, _playerID);
+            PopulateLeaderboard(GameManager.Instance.CurrentLevel.leaderboardKey);
         }
         else
         {
@@ -37,24 +32,21 @@ public class Leaderboard: MonoBehaviour
 
     private void ValidateActivation()
     {
-        if(_leaderboardKey == "None")
+        if (_leaderboardKey == "None")
         {
             _activationStatus = LeaderboardActivation.NoLeaderboard;
             _noLeaderboardPanel.SetActive(true);
             return;
         }
 
-        LoginStatus loginStatus = GameManager.Instance.LoginStatus;
-
-        //Need to change to logged in
-        if (loginStatus == LoginStatus.Offline)
+        if (!GameManager.Instance.InitializationResult.isLoggedIn)
         {
             _activationStatus = LeaderboardActivation.LoginLocked;
             _loginLockPanel.SetActive(true);
             return;
         }
 
-        if((int)GameManager.Instance.CurrentPlayerRecord.medal > 3)
+        if ((int)GameManager.Instance.CurrentPlayerRecord.medal > 3)
         {
             _activationStatus = LeaderboardActivation.MedalLocked;
             _medalLockPanel.SetActive(true);
@@ -62,40 +54,60 @@ public class Leaderboard: MonoBehaviour
         }
 
         _activationStatus = LeaderboardActivation.Active;
-        
+
     }
 
     private void GrayOut()
     {
-        foreach(var gray in _grayOuts)
+        foreach (var gray in _grayOuts)
         {
             gray.SetActive(true);
         }
     }
 
     #region Populate Members
-    private async Task PopulateLeaderboard(string leaderboardKey, string playerID)
+    private void PopulateLeaderboard(string leaderboardKey)
     {
         _leaderboardKey = leaderboardKey;
-        _playerRank = await GetPlayerRank(leaderboardKey, playerID);
         GoToPlayerRank();
     }
 
-    private async Task UpdateMembers(int startRank)
+    private void OnLeaderboardRequestSuccess(GetLeaderboardResult leaderboardResult)
     {
-        LootLockerLeaderboardMember[] leaderboardMembers = await _leaderboardManager.GetLeaderboardFromRank(_leaderboardKey, startRank, _displayCount);
-        Debug.Log($"Updating leaderboard with {leaderboardMembers.Length} members");
-        for (int i = 0; i < leaderboardMembers.Length; i++)
+        if (leaderboardResult.Leaderboard.Count > 0)
+        {
+            Debug.Log("Setting start rank to " + leaderboardResult.Leaderboard[0].Position);
+            _startRank = leaderboardResult.Leaderboard[0].Position;
+        }
+        else
+        {
+            Debug.Log("No leaderboard members found, setting start rank to default of 0");
+            _startRank = 0;
+        }
+        UpdateMembers(leaderboardResult.Leaderboard);
+    }
+
+    private void OnLeaderboardRequestFailure(PlayFabError leaderboardResult)
+    {
+        Debug.Log("Leaderboard request failed!");
+        _activationStatus = LeaderboardActivation.LoginLocked;
+        _loginLockPanel.SetActive(true);
+    }
+
+    private void UpdateMembers(List<PlayerLeaderboardEntry> leaderboardEntries)
+    {
+        Debug.Log($"Updating leaderboard with {leaderboardEntries.Count} members");
+        for (int i = 0; i < leaderboardEntries.Count; i++)
         {
             _leaderboardRows[i].PanelIsActive(true);
-            _leaderboardRows[i].SetValues(startRank + i + 1, leaderboardMembers[i].player.name, leaderboardMembers[i].score);
+            _leaderboardRows[i].SetValues(leaderboardEntries[i].Position, leaderboardEntries[i].DisplayName, leaderboardEntries[i].StatValue);
         }
 
         _isFirstPage = _startRank == 0;
-        _isLastPage = leaderboardMembers.Length < _displayCount;
+        _isLastPage = leaderboardEntries.Count < _displayCount;
         if (_isLastPage)
         {
-            for(int i = leaderboardMembers.Length; i < _displayCount; i++)
+            for (int i = leaderboardEntries.Count; i < _displayCount; i++)
             {
                 _leaderboardRows[i].PanelIsActive(false);
             }
@@ -103,48 +115,92 @@ public class Leaderboard: MonoBehaviour
         UpdateButtonFormat();
     }
 
-    private async Task<int> GetPlayerRank(string leaderboardKey, string playerID)
+    private void RequestLeaderboardFromRank(string leaderboardName, int startPosition, int maxResultsCount = 10)
     {
-        _playerRankResponse = await _leaderboardManager.GetPlayerRank(leaderboardKey, playerID);
-        return _playerRankResponse.rank;
+        PlayFabClientAPI.GetLeaderboard(
+            new GetLeaderboardRequest()
+            {
+                StartPosition = startPosition,
+                StatisticName = leaderboardName,
+                CustomTags = null,
+                MaxResultsCount = maxResultsCount
+            },
+            OnLeaderboardRequestSuccess,
+            OnLeaderboardRequestFailure
+            );
     }
+
+    private void RequestLeaderboardAroundPlayer(string leaderboardName, int maxResultsCount = 10)
+    {
+        PlayFabClientAPI.GetLeaderboardAroundPlayer(
+            new GetLeaderboardAroundPlayerRequest()
+            {
+                StatisticName = leaderboardName,
+                CustomTags = null,
+                MaxResultsCount = maxResultsCount
+            },
+            OnLeaderboardAroundPlayerRequestSuccess,
+            OnLeaderboardAroundPlayerRequestFailure
+            );
+        
+    }
+
+    private void OnLeaderboardAroundPlayerRequestSuccess(GetLeaderboardAroundPlayerResult leaderboardResult)
+    {
+        if (leaderboardResult.Leaderboard.Count > 0)
+        {
+            Debug.Log("Setting start rank to " + leaderboardResult.Leaderboard[0].Position);
+            _startRank = leaderboardResult.Leaderboard[0].Position;
+        }
+        else
+        {
+            Debug.Log("No leaderboard members found, setting start rank to default of 0");
+            _startRank = 0;
+        }
+        UpdateMembers(leaderboardResult.Leaderboard);
+    }
+
+    private void OnLeaderboardAroundPlayerRequestFailure(PlayFabError error)
+    {
+        Debug.Log("Leaderboard around player request failed!");
+        _activationStatus = LeaderboardActivation.LoginLocked;
+        _loginLockPanel.SetActive(true);
+    }
+
     #endregion
 
     #region Navigation
 
     public void GoToPlayerRank()
     {
-        _startRank = _playerRank < 6 ? 0 : _playerRank - (_displayCount / 2);
-        UpdateMembers(_startRank);
+        RequestLeaderboardAroundPlayer(_leaderboardKey);
     }
 
     public void GoToFirstPage()
     {
         _startRank = 0;
-        UpdateMembers(_startRank);
+        RequestLeaderboardFromRank(_leaderboardKey, _startRank);
     }
-
-    public void GoToLastPage()
-    {
-        //_startRank = leaderboardLength - _length
-        UpdateMembers(_startRank);
-    }
-
     public void NextPage()
     {
         _startRank += 10;
-        UpdateMembers(_startRank);
+        RequestLeaderboardFromRank(_leaderboardKey, _startRank);
     }
 
-    public void LastPage()
+    public void PreviousPage()
     {
-        if (_startRank <= 10)
+        if (_startRank == 0)
         {
             return;
+        } else if (_startRank <= 10)
+        {
+            _startRank = 0;
+        } else
+        {
+            _startRank -= 10;
         }
 
-        _startRank -= 10;
-        UpdateMembers(_startRank);
+        RequestLeaderboardFromRank(_leaderboardKey, _startRank);
     }
 
     private void UpdateButtonFormat()
