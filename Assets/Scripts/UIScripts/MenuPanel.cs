@@ -8,62 +8,226 @@ using TMPro;
 
 public class MenuPanel : MonoBehaviour
 {
-    public GameObject MainPanel;
-    public GameObject ConfirmationPanel;
-    public Image MainGrayOut;
-    public Button MainGrayOutButton;
-    public Button MainYesButton;
-    public Button MainNoButton;
-    public Button ConfirmYesButton;
-    public Button ConfirmNoButton;
-    public TMP_Text ConfirmationText;
-    public TMP_Text MainErrorText;
+    public MenuPanelPreset CurrentPreset;
+    public List<MenuPanelPreset> SecondaryPanelPresets;
+    public bool HasBack;
+
+    public TMP_Text TitleText;
+    public TMP_Text BodyText;
+
+    public GameObject InputFieldsBlock;
     public TMP_InputField[] InputFields;
-    public UnityAction OnMainYesButtonClicked;
-    public UnityAction OnMainNoButtonClicked;
-    public UnityAction OnConfirmYesButtonClicked;
-    public UnityAction OnConfirmNoButtonClicked;
+    public TMP_Text[] InputFieldsPlaceholderText;
 
+    public GameObject ToggleBlock;
+    public Toggle Toggle;
+    public TMP_Text ToggleText;
 
-    void Start()
+    public GameObject VerticalButtonBlock;
+    public GameObject HorizontalButtonBlock;
+    public OverlayButton[] VerticalButtons;
+    public OverlayButton[] HorizontalButtons;
+    public GameObject CloseButtonBlock;
+    public OverlayButton CloseButton;
+
+    public Button ClickableTextButton;
+    public TMP_Text ClickableText;
+
+    public TMP_Text ErrorText;
+
+    private List<MenuPanelPreset> _presetHistory = new(); //Add most recent panel to history. Reset history when panel is loaded that can't go back.
+    public void ShowPanel()
     {
-        MainGrayOutButton.onClick.AddListener(OnMainGrayOutButtonClicked);
-        MainYesButton.onClick.AddListener(OnMainYesButtonClicked);
-        MainNoButton.onClick.AddListener(OnMainNoButtonClicked);
-
-        if (ConfirmationPanel != null)
-        {
-            ConfirmYesButton.onClick.AddListener(OnConfirmYesButtonClicked);
-            ConfirmNoButton.onClick.AddListener(OnConfirmNoButtonClicked);
-        }
+        gameObject.SetActive(true);
     }
 
-    private void OnMainGrayOutButtonClicked()
+    public void HidePanel()
     {
+
+        foreach (var input in InputFields)
+        {
+            input.text = "";
+        }
+
+        Toggle.isOn = false;
+
+        CloseButton.Button.onClick.RemoveAllListeners();
+
+        //Go back if panel has previous presets to go back to
+        if(HasBack && _presetHistory.Count > 0)
+        {
+            var lastPreset = _presetHistory[^1];
+            _presetHistory.RemoveAt(_presetHistory.Count - 1);
+            LoadPanelPreset(lastPreset, _presetHistory.Count > 0, true);
+            return;
+        }
+        //Otherwise turn off gameobject and reset alterable fields.
         gameObject.SetActive(false);
-    }
+        ErrorText.gameObject.SetActive(false);
 
-    public void ShowConfirmation()
-    {
-        if (ConfirmationPanel == null)
+        foreach(var input in InputFields)
         {
-            return;
+            input.text = "";
         }
 
-        ConfirmationPanel.SetActive(true);
-        MainGrayOut.enabled = false;
-
+        Toggle.isOn = false;
+    }
+    public void ShowSecondaryPanel(int i)
+    {
+        _presetHistory.Add(CurrentPreset);
+        LoadPanelPreset(SecondaryPanelPresets[i], true, true);
     }
 
-    public void CloseConfirmation()
+    public void ShowSecondaryPanel(UnityAction<MenuPanel, bool> showPanelAction)
     {
-        if (ConfirmationPanel == null)
+        _presetHistory.Add(CurrentPreset);
+        showPanelAction(this, true);
+    }
+
+    public void LoadPanelPreset(MenuPanelPreset preset, bool hasBack, bool activatePanel)
+    {
+        CurrentPreset = preset;
+        HasBack = hasBack;
+        if (!HasBack)
         {
-            return;
+            _presetHistory = new();
         }
 
-        ConfirmationPanel.SetActive(false);
-        MainGrayOut.enabled = true;
+        //Set title
+        ApplyTextPreset(TitleText, preset.TitleText);
+
+        //Set body
+        ApplyTextPreset(BodyText, preset.BodyText);
+
+        //Set buttons
+        //Vertical buttons
+        if (preset.VerticalButtonDefs.Count > 0)
+        {
+            ApplyDefinitionsToButtons(VerticalButtons, preset.VerticalButtonDefs);
+            VerticalButtonBlock.SetActive(true);
+        }
+        else
+        {
+            VerticalButtonBlock.SetActive(false);
+        }
+
+        //Horizontal buttons
+        if (preset.HorizontalButtonDefs.Count > 0)
+        {
+            ApplyDefinitionsToButtons(HorizontalButtons, preset.HorizontalButtonDefs);
+            HorizontalButtonBlock.SetActive(true);
+        }
+        else
+        {
+            HorizontalButtonBlock.SetActive(false);
+        }
+
+        //Close button
+        if (preset.CloseButtonDef != null)
+        {
+            CloseButtonBlock.SetActive(true);
+            CloseButton.ApplyDefinition(preset.CloseButtonDef);
+        }
+        else
+        {
+            CloseButtonBlock.SetActive(false);
+        }
+
+        //Set input fields
+        if (preset.InputPlaceholders.Count > 0)
+        {
+            InputFieldsBlock.SetActive(true);
+            ApplyInputFieldSettings(InputFields, InputFieldsPlaceholderText, preset.InputPlaceholders);
+        }
+        else
+        {
+            InputFieldsBlock.SetActive(false);
+        }
+
+        //Set toggle
+        if (!String.IsNullOrEmpty(preset.ToggleText))
+        {
+            ToggleText.text = preset.ToggleText;
+            Toggle.isOn = false;
+            Toggle.onValueChanged.RemoveAllListeners();
+            Toggle.onValueChanged.AddListener(preset.OnToggleChanged);
+            ToggleBlock.SetActive(true);
+        }
+        else
+        {
+            ToggleBlock.SetActive(false);
+        }
+
+        //Set text button block
+        if (!String.IsNullOrEmpty(preset.TextBlockButtonText))
+        {
+            ClickableText.text = preset.TextBlockButtonText;
+            ClickableTextButton.onClick.RemoveAllListeners();
+            ClickableTextButton.onClick.AddListener(preset.OnTextButtonClicked);
+            ClickableText.gameObject.SetActive(true);
+        }
+        else
+        {
+            ClickableText.gameObject.SetActive(false);
+        }
+
+        //Error text
+        ErrorText.gameObject.SetActive(false);
+
+        if (preset.OnLoadPanel != null)
+        {
+            preset.OnLoadPanel();
+        }
+
+        //Activate or deactivate panel depending on method call
+        gameObject.SetActive(activatePanel);
+    }
+
+    private static void ApplyDefinitionsToButtons(OverlayButton[] buttons, List<ButtonDefinition> definitions)
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (i < definitions.Count)
+            {
+                buttons[i].ApplyDefinition(definitions[i]);
+                buttons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                buttons[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private static void ApplyInputFieldSettings(TMP_InputField[] inputFields, TMP_Text[] inputPlaceholderText, List<string> inputPlaceholders)
+    {        
+        for (int i = 0; i < inputFields.Length; i++)
+        {
+            if (i < inputPlaceholders.Count)
+            {
+                inputFields[i].text = "";
+                inputPlaceholderText[i].text = inputPlaceholders[i];
+                inputFields[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                inputFields[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private static void ApplyTextPreset(TMP_Text text, string preset)
+    {
+        if(preset == "")
+        {
+            text.gameObject.SetActive(false);
+        }
+        else
+        {
+            text.text = preset;
+            text.gameObject.SetActive(true);
+        }
     }
 
 }
+

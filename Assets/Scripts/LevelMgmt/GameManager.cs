@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,27 +15,24 @@ public class GameManager : MonoBehaviour
     private InitializationResult _initializationResult;
     private bool _isAwaitingPlayFab = false;
     private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
-    private Action _onFirstTimeUser;
-    private Action _onStartupComplete;
+    private Action<InitializationResult> _onStartupComplete;
     private Action<Level> _onLevelLoaded;
     private Action<bool> _onMenuLoaded;
-    public GameObject loadingScreen;
-
-    public const string SeenBeforeKey = "SeenBefore";
-    public const string LastSeenKey = "LastSeen";
-    public const string CreateAccountOnSuccessfulAuth = "CreateAccountOnSuccessfulAuth";
-    public const string RegisteredEmailKey = "RegisteredEmail";
+    private Action<bool> _onLoading;
+    [SerializeField] private GameObject _loadingScreen;
+    public Slider loadingBar;
 
     public bool clearPlayerPrefs = false;
     public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
     public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.levelUID);
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public PlayerRecord CurrentPlayerRecord => _sessionData.GetRecordByLevel(_currentLevel);
-    public InitializationResult InitializationResult => _initializationResult;
-    public Action OnFirstTimeUser { get => _onFirstTimeUser; set => _onFirstTimeUser = value; }
-    public Action OnStartupComplete { get => _onStartupComplete; set => _onStartupComplete = value; }
+    public PlayFabManager PlayFabManager => _playFabManager;
+    public InitializationResult InitializationResult { get => _initializationResult; set => _initializationResult = value; }
+    public Action<InitializationResult> OnStartupComplete { get => _onStartupComplete; set => _onStartupComplete = value; }
     public Action<Level> OnLevelLoaded { get => _onLevelLoaded; set => _onLevelLoaded = value; }
     public Action<bool> OnMenuLoaded { get => _onMenuLoaded; set => _onMenuLoaded = value; } //bool true if load level menue;
+    public Action<bool> OnLoading { get => _onLoading; set => _onLoading = value; }
     public static GameManager Instance
     {
         get
@@ -66,6 +64,7 @@ public class GameManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
         _playFabManager = new();
+        OnLoading += ActivateLoadingScreen;
 
 #if UNITY_EDITOR
         if (SceneManager.GetActiveScene().name == "Level_Editor")
@@ -89,7 +88,7 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
-        loadingScreen.SetActive(true);
+        OnLoading?.Invoke(true);
         _isAwaitingPlayFab = true;
 
         _playFabManager.OnInitializationComplete += OnInitializationComplete;
@@ -98,14 +97,10 @@ public class GameManager : MonoBehaviour
 
     private void OnInitializationComplete(InitializationResult result)
     {
-        loadingScreen.SetActive(false);
+        OnLoading?.Invoke(false); ;
 
         _initializationResult = result;
-        if (_initializationResult.isFirstTime)
-        {
-            OnFirstTimeUser?.Invoke();
-        }
-        OnStartupComplete?.Invoke();
+        OnStartupComplete?.Invoke(result);
 
         _isAwaitingPlayFab = false;
     }
@@ -134,7 +129,6 @@ public class GameManager : MonoBehaviour
 
         if (isNewBest && !_initializationResult.isLoggedIn)
         {
-            loadingScreen.SetActive(true);
             _isAwaitingPlayFab = true;
 
             PlayFabManager initializer = new();
@@ -146,7 +140,6 @@ public class GameManager : MonoBehaviour
 
         if (isNewBest && _initializationResult.isLoggedIn == true)
         {
-            loadingScreen.SetActive(true);
             _isAwaitingPlayFab = true;
 
             Debug.Log("Uploading new best time to leaderboard...");
@@ -159,6 +152,7 @@ public class GameManager : MonoBehaviour
 
     private void OnLeaderboardUpdateComplete(PlayerRecord record, bool isSuccess)
     {
+        OnLoading?.Invoke(false);
         _playFabManager.OnLeadboardUpdateComplete -= OnLeaderboardUpdateComplete;
 
         if (!isSuccess)
@@ -177,10 +171,28 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(Level level)
     {
+        OnLoading?.Invoke(true);
         _currentLevel = level;
-        SceneManager.LoadScene("City");
-        OnLevelLoaded?.Invoke(level);
+        StartCoroutine(LoadSceneRoutine("City", level));
 
+    }
+
+    private IEnumerator LoadSceneRoutine(string sceneId, Level level)
+    {
+        loadingBar.value = 0;
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneId);
+
+        float progressValue;
+
+        while (!loadOperation.isDone)
+        {
+            progressValue = loadOperation.progress > 0.9f ? 1 : Mathf.Clamp01(loadingBar.value + Mathf.Clamp(loadOperation.progress - loadingBar.value, (1 - loadingBar.value)/100, (1 - loadingBar.value)/50));
+            loadingBar.value = progressValue;
+            yield return null;
+        }
+
+        OnLoading?.Invoke(false);
+        OnLevelLoaded?.Invoke(level);
     }
 
     public void LoadNextLevel()
@@ -193,9 +205,16 @@ public class GameManager : MonoBehaviour
     }
     public void BackToLevelMenu()
     {
+        OnLoading?.Invoke(true);
         _currentLevel = null;
         SceneManager.LoadScene("Start_Menu");
+        OnLoading?.Invoke(false);
         OnMenuLoaded?.Invoke(true);
+    }
+
+    private void ActivateLoadingScreen(bool isOn)
+    {
+        _loadingScreen.gameObject.SetActive(isOn);
     }
 
     #endregion

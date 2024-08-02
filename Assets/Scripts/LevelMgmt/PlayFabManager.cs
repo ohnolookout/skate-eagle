@@ -12,8 +12,12 @@ public struct InitializationResult
 {
     public bool isLoggedIn;
     public bool isFirstTime;
+    public bool hasEmail;
     public bool savedToCloud;
+    public bool doAskEmail;
+    public string displayName;
     public SessionData sessionData;
+    public int loginCount;
 
 }
 
@@ -32,13 +36,26 @@ public class PlayFabManager : MonoBehaviour
     private PlayerRecord _currentRecord;
     PlayFabAuthService _authService = PlayFabAuthService.Instance;
 
-    public Action<bool, bool, float> OnSilentAuthComplete;
-    public Action<bool> OnEmailAuthComplete;
-    public Action<bool, string, string> OnSetNameComplete;
+    public Action<bool, bool, bool, float> OnSilentAuthComplete;
+    public Action<bool, PlayFabError> OnEmailLoginComplete;
+    public Action<bool, PlayFabError> OnAddEmailComplete;
+    public Action<bool, string, PlayFabError> OnSetNameComplete;
+    public Action<string, string> OnUpdateStoredName;
     public Action<PlayerRecord, bool> OnLeadboardUpdateComplete;
     public Action<InitializationResult> OnInitializationComplete;
     public Action<bool> OnCheckCloudSaveComplete;
     public Action<bool> OnSaveToCloudComplete;
+
+    public const string SeenBeforeKey = "SeenBefore";
+    public const string LastSeenKey = "LastSeen";
+    public const string CreateAccountOnSuccessfulAuthKey = "CreateAccountOnSuccessfulAuth";
+    public const string RegisteredEmailKey = "RegisteredEmail";
+    public const string LoginCountKey = "LoginCount";
+    public const string DontAskEmailKey = "DontAskEmail";
+    public const string DisplayNameKey = "DisplayName";
+    public const string FormattedDisplayNameKey = "FormattedDisplayName";
+
+    public const int AskEmailEveryX = 5;
     #endregion
 
     #region Initializer
@@ -46,6 +63,10 @@ public class PlayFabManager : MonoBehaviour
     {
         Debug.Log("Staring PlayFab initialization...");
         _gameManager = gameManager;
+        _authService.InfoRequestParams = new()
+        {
+            GetUserAccountInfo = true
+        };
         result = new();
 
         //Silent authentication
@@ -97,6 +118,29 @@ public class PlayFabManager : MonoBehaviour
 
         //Return result with updated session data
         result.sessionData = _gameManager.SessionData;
+
+        //Increment login count
+        int loginCount = PlayerPrefs.GetInt(LoginCountKey, 0) + 1;
+        PlayerPrefs.SetInt(LoginCountKey, loginCount);
+        result.loginCount = loginCount;
+
+        //Determine whether to ask for email
+        if(!result.hasEmail && PlayerPrefs.GetInt(DontAskEmailKey, 0) == 0 && loginCount % AskEmailEveryX == 0)
+        {
+            Debug.Log("Setting ask email to true...");
+            result.doAskEmail = true;
+        }
+        else
+        {
+            Debug.Log("Setting ask email to false...");
+            result.doAskEmail = false;
+        }
+
+        if(result.isLoggedIn && result.displayName != PlayerPrefs.GetString(DisplayNameKey))
+        {
+            UpdateStoredName(result.displayName);
+        }
+
         OnInitializationComplete?.Invoke(result);
         OnInitializationComplete = null;
     }
@@ -113,8 +157,18 @@ public class PlayFabManager : MonoBehaviour
     {
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
+        
         var isFirstTime = CheckFirstTimeUser(true);
-        SilentAuthComplete(true, isFirstTime, ((DateTime)result.LastLoginTime).ToBinary());
+        var hasEmail = false;
+        string displayName = null;
+
+        if (result.InfoResultPayload != null)
+        {
+            hasEmail = !String.IsNullOrEmpty(result.InfoResultPayload.AccountInfo.Username);
+            displayName = result.InfoResultPayload.AccountInfo.TitleInfo.DisplayName;
+        }
+
+        SilentAuthComplete(true, isFirstTime, hasEmail, displayName, ((DateTime)result.LastLoginTime).ToBinary());
     }
 
     private void OnSilentAuthFailure(PlayFabError error)
@@ -122,17 +176,19 @@ public class PlayFabManager : MonoBehaviour
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
         var isFirstTime = CheckFirstTimeUser(false);
-        SilentAuthComplete(false, isFirstTime, float.PositiveInfinity);
+        SilentAuthComplete(false, isFirstTime, false, null, float.PositiveInfinity);
     }
 
-    private void SilentAuthComplete(bool isLoggedIn, bool isFirstTime, float cloudLastSeen)
+    private void SilentAuthComplete(bool isLoggedIn, bool isFirstTime, bool hasEmail, string displayName, float cloudLastSeen)
     {
 
         result.isLoggedIn = isLoggedIn;
         result.isFirstTime = isFirstTime;
+        result.hasEmail = hasEmail;
+        result.displayName = displayName;
         _lastSeenCloud = cloudLastSeen;
         _isAwaitingInitialize = false;
-        OnSilentAuthComplete?.Invoke(isLoggedIn, isFirstTime, cloudLastSeen);
+        OnSilentAuthComplete?.Invoke(isLoggedIn, isFirstTime, hasEmail, cloudLastSeen);
         OnSilentAuthComplete = null;
     }
     private bool CheckFirstTimeUser(bool isLoggedIn)
@@ -158,38 +214,77 @@ public class PlayFabManager : MonoBehaviour
     #endregion
 
     #region Add Email
-    public void EmailAuth(string email, string password, string confirmPassword)
+
+    public void AddEmail(string email, string password)
     {
         _authService.Email = email;
         _authService.Password = password;
 
-        PlayFabAuthService.OnLoginSuccess += OnEmailAuthSuccess;
-        PlayFabAuthService.OnPlayFabError += OnEmailAuthFailure;
+        PlayFabAuthService.OnLoginSuccess += OnAddEmailSuccess;
+        PlayFabAuthService.OnPlayFabError += OnAddEmailFailure;
+
+        _authService.Authenticate(Authtypes.RegisterPlayFabAccount);
+    }
+
+    private void OnAddEmailSuccess(LoginResult result)
+    {
+        PlayFabAuthService.OnLoginSuccess -= OnAddEmailSuccess;
+        PlayFabAuthService.OnPlayFabError -= OnAddEmailFailure;
+        var isFirstTime = CheckFirstTimeUser(true);
+        Debug.Log("Email successfully added!");
+
+        AddEmailComplete(true);
+    }
+
+    private void OnAddEmailFailure(PlayFabError error)
+    {
+        PlayFabAuthService.OnLoginSuccess -= OnAddEmailSuccess;
+        PlayFabAuthService.OnPlayFabError -= OnAddEmailFailure;
+
+        Debug.Log("Add email failed: " + error.ErrorMessage);
+        var isFirstTime = CheckFirstTimeUser(false);
+        AddEmailComplete(false, error);
+    }
+
+    private void AddEmailComplete(bool isSuccess, PlayFabError error = null)
+    {
+        OnAddEmailComplete?.Invoke(isSuccess, error);
+    }
+
+    #endregion
+
+    #region Email Login
+    //Need to add functionality to merge load and pull username.
+    public void EmailLogin(string email, string password)
+    {
+        _authService.Email = email;
+        _authService.Password = password;
+
+        PlayFabAuthService.OnLoginSuccess += OnEmailLoginSuccess;
+        PlayFabAuthService.OnPlayFabError += OnEmailLoginFailure;
 
         _authService.Authenticate(Authtypes.EmailAndPassword);
     }
-
-    private void OnEmailAuthSuccess(LoginResult result)
+    private void OnEmailLoginSuccess(LoginResult result)
     {
-        PlayFabAuthService.OnLoginSuccess -= OnEmailAuthSuccess;
-        PlayFabAuthService.OnPlayFabError -= OnEmailAuthFailure;
+        PlayFabAuthService.OnLoginSuccess -= OnEmailLoginSuccess;
+        PlayFabAuthService.OnPlayFabError -= OnEmailLoginFailure;
         var isFirstTime = CheckFirstTimeUser(true);
-        OnEmailAuthComplete(true);
+        EmailLoginComplete(true);
     }
 
-    private void OnEmailAuthFailure(PlayFabError error)
+    private void OnEmailLoginFailure(PlayFabError error)
     {
-        PlayFabAuthService.OnLoginSuccess -= OnEmailAuthSuccess;
-        PlayFabAuthService.OnPlayFabError -= OnEmailAuthFailure;
+        PlayFabAuthService.OnLoginSuccess -= OnEmailLoginSuccess;
+        PlayFabAuthService.OnPlayFabError -= OnEmailLoginFailure;
         var isFirstTime = CheckFirstTimeUser(false);
-        OnEmailAuthComplete(false);
+        EmailLoginComplete(false, error);
     }
 
-    private void EmailAuthComplete(bool isSuccess)
+    private void EmailLoginComplete(bool isSuccess, PlayFabError error = null)
     {
-        OnEmailAuthComplete?.Invoke(isSuccess);
+        OnEmailLoginComplete?.Invoke(isSuccess, error);
     }
-
     #endregion
 
     #region Set Name
@@ -198,7 +293,7 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.UpdateUserTitleDisplayName(
         new UpdateUserTitleDisplayNameRequest()
         {
-            DisplayName = displayName,
+            DisplayName = displayName + "#",
         },
 
         OnSetNameSuccess,
@@ -208,17 +303,23 @@ public class PlayFabManager : MonoBehaviour
 
     private void OnSetNameSuccess(UpdateUserTitleDisplayNameResult result)
     {
+        PlayerPrefs.SetString(DisplayNameKey, result.DisplayName);
         SetNameComplete(true, _submittedName, result.DisplayName);
     }
 
     private void OnSetNameFailure(PlayFabError error)
     {
-        SetNameComplete(false, _submittedName, null);
+        SetNameComplete(false, _submittedName, null, error);
     }
 
-    private void SetNameComplete(bool isSuccess, string submittedName = null, string displayName = null)
+    private void SetNameComplete(bool isSuccess, string submittedName = null, string displayName = null, PlayFabError error = null)
     {
-        OnSetNameComplete?.Invoke(isSuccess, submittedName, displayName);
+        string formattedDisplayName = "";
+        if (isSuccess)
+        {
+            UpdateStoredName(displayName);
+        }
+        OnSetNameComplete?.Invoke(isSuccess, displayName, error);
         OnSetNameComplete = null;
     }
 
@@ -227,6 +328,21 @@ public class PlayFabManager : MonoBehaviour
         var name = "SkateEagle";
         SetDisplayName(name);
     }
+
+    private void UpdateStoredName(string displayName)
+    {
+        PlayerPrefs.SetString(DisplayNameKey, displayName);
+        var formattedDisplayName = FormatDisplayName(displayName);
+        PlayerPrefs.SetString(FormattedDisplayNameKey, formattedDisplayName);
+        OnUpdateStoredName?.Invoke(displayName, formattedDisplayName);
+    }
+
+    public static string FormatDisplayName(string name)
+    {
+        var splitName = name.Split('#', 2);
+        return "<b>" + splitName[0] + "</b><color=#8A8A8A>#" + splitName[1];
+    }
+
     #endregion
 
     #region Save To Cloud
@@ -269,7 +385,7 @@ public class PlayFabManager : MonoBehaviour
     #region Load From Cloud
     public void CheckCloudLoad(float lastSeenLocal, float lastSeenCloud)
     {
-        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(GameManager.RegisteredEmailKey)))
+        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(RegisteredEmailKey)))
         {
             if (!float.IsPositiveInfinity(lastSeenCloud) && lastSeenCloud > lastSeenLocal)
             {

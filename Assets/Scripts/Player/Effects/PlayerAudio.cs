@@ -42,7 +42,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void Start()
     {
-        _audioManager.InitializeModifiers(_sounds);
+        _audioManager.InitializeModifiers(_player, _cameraOperator, _sounds);
         SubscribeToPlayerEvents();
     }
     void FixedUpdate()

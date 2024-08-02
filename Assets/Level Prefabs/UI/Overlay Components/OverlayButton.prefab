@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4436359967008359136}
   - component: {fileID: 8824555341458649737}
   - component: {fileID: 6982093139644486270}
+  - component: {fileID: 7404604229561389677}
   m_Layer: 5
   m_Name: OverlayButton
   m_TagString: Untagged
@@ -35,7 +36,6 @@ RectTransform:
   - {fileID: 7571050834362151958}
   - {fileID: 9082877994393486915}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -151,6 +151,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 40
+--- !u!114 &7404604229561389677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4436359967008359138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e5b467295ac734abb96c11ca60ac65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ButtonText: {fileID: 7571050834362151959}
+  BackgroundImage: {fileID: 8824555341458649737}
+  BorderImage: {fileID: 2511774126303476656}
+  Button: {fileID: 4436359967008359136}
+  Rect: {fileID: 4436359967008359139}
 --- !u!1 &5747280852006374101
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,7 +200,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4436359967008359139}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -248,6 +264,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 4436359967008359139}
     m_Modifications:
     - target: {fileID: 6089108023904934173, guid: 87a44e89f4483784dba2ae4f2624daed, type: 3}
@@ -370,10 +387,28 @@ PrefabInstance:
       propertyPath: m_fontColorGradientPreset
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6089108023904934175, guid: 87a44e89f4483784dba2ae4f2624daed, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87a44e89f4483784dba2ae4f2624daed, type: 3}
 --- !u!224 &7571050834362151958 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6089108023904934174, guid: 87a44e89f4483784dba2ae4f2624daed, type: 3}
   m_PrefabInstance: {fileID: 4436359967074757896}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7571050834362151959 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6089108023904934175, guid: 87a44e89f4483784dba2ae4f2624daed, type: 3}
+  m_PrefabInstance: {fileID: 4436359967074757896}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

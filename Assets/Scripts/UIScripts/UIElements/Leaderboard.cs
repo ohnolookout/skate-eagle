@@ -99,8 +99,9 @@ public class Leaderboard : MonoBehaviour
         Debug.Log($"Updating leaderboard with {leaderboardEntries.Count} members");
         for (int i = 0; i < leaderboardEntries.Count; i++)
         {
+            var displayName = PlayFabManager.FormatDisplayName(leaderboardEntries[i].DisplayName);
             _leaderboardRows[i].PanelIsActive(true);
-            _leaderboardRows[i].SetValues(leaderboardEntries[i].Position, leaderboardEntries[i].DisplayName, leaderboardEntries[i].StatValue);
+            _leaderboardRows[i].SetValues(leaderboardEntries[i].Position + 1, displayName, leaderboardEntries[i].StatValue);
         }
 
         _isFirstPage = _startRank == 0;

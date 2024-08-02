@@ -98,7 +98,7 @@ public class AudioManager : MonoBehaviour
             PlaySoundtrack(_soundtrack);
         }
 
-        SubscribeToCameraEvents();
+        //SubscribeToCameraEvents();
 
         LevelManager.OnRestart += ClearLoops;
         LevelManager.OnGameOver += _ => ClearLoops();
@@ -127,9 +127,12 @@ public class AudioManager : MonoBehaviour
 
     #region Modifier Management
 
-    public void InitializeModifiers(List<Sound> sounds)
+    public void InitializeModifiers(IPlayer player, ICameraOperator camera, List<Sound> sounds)
     {
+        _player = player;
+        _camera = camera;
         _modifierManager = new(_player, GetBodiesFromSounds(sounds));
+        SubscribeToCameraEvents();
     }
 
     private Rigidbody2D[] GetBodiesFromSounds(List<Sound> sounds)
