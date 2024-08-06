@@ -48,15 +48,6 @@ public class Overlay : MonoBehaviour
         hud.SetActive(false);
         ActivateControls(false);
     }
-    public void StartScreen(PlayerRecord playerRecord)
-    {
-        landing.SetActive(true);
-        gameOver.SetActive(false);
-        standby.SetActive(false);
-        hud.SetActive(false);
-        ActivateControls(false);
-        landingLoader.GenerateLanding(GameManager.Instance.CurrentLevel, playerRecord);
-    }
 
     public void ActivateStandbyScreen()
     {

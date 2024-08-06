@@ -45,6 +45,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ActivateTerrainManager(startPosition);
         SetPlayerPosition(startPosition);
         SubscribeToPlayerEvents();
+#if UNITY_EDITOR
+        StartCoroutine(CheckGameManagerInitializationRoutine());
+        return;
+#endif        
         OnLanding?.Invoke(this);
         if (!_overlayLoaded)
         {
@@ -55,6 +59,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             _inputEvents.OnRestart += GoToStandby;
         }
+        
     }
 
     private void OnEnable()
@@ -71,6 +76,20 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ResetStaticEvents();
     }
 
+    private IEnumerator CheckGameManagerInitializationRoutine()
+    {
+        yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
+        OnLanding?.Invoke(this);
+        if (!_overlayLoaded)
+        {
+            Debug.LogWarning("No overlay found by level manager. Going to standby.");
+            GoToStandby();
+        }
+        else
+        {
+            _inputEvents.OnRestart += GoToStandby;
+        }
+    }
 
     #endregion
 

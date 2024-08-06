@@ -15,10 +15,16 @@ public class Leaderboard : MonoBehaviour
     private bool _isFirstPage = false, _isLastPage;
     private LeaderboardActivation _activationStatus;
 
-    void Start()
+    void Awake()
     {
         _displayCount = _leaderboardRows.Length;
         _playerID = PlayerPrefs.GetString("PlayerID");
+        LevelManager.OnLanding += _ => Initialize();
+
+    }
+
+    private void Initialize()
+    {
         ValidateActivation();
         if (_activationStatus == LeaderboardActivation.Active)
         {

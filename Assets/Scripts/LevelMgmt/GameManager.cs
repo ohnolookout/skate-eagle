@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public Slider loadingBar;
 
     public bool clearPlayerPrefs = false;
+    private bool _isInitializing = false;
+    public bool IsInitializing => _isInitializing;
     public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
     public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.levelUID);
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
@@ -52,7 +54,6 @@ public class GameManager : MonoBehaviour
     #region Monobehaviours
     private void Awake()
     {
-
         //Check to see if other instance exists that has already 
         if (_instance != null && _instance != this)
         {
@@ -85,6 +86,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        _isInitializing = true;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
@@ -102,6 +104,7 @@ public class GameManager : MonoBehaviour
         _initializationResult = result;
         OnStartupComplete?.Invoke(result);
 
+        _isInitializing = false;
         _isAwaitingPlayFab = false;
     }
     #endregion

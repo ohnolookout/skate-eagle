@@ -13,16 +13,25 @@ public class LandingScreenLoader : MonoBehaviour
     [SerializeField] private GameObject display, globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, bestTimeBadgeGrayOut;
     public GameObject[] levelTimeGrays, strikeThroughs;
     public bool nextLevelUnlocked = false;
-    private Action<ILevelManager> onLanding;
+    private Action<ILevelManager> OnLanding;
 
     private void OnEnable()
     {
-        onLanding += (ctx) => GenerateLanding(GameManager.Instance.CurrentLevel, GameManager.Instance.CurrentPlayerRecord);
-        onLanding += _ => ActivateDisplay();
-        LevelManager.OnLanding += onLanding;
+        OnLanding += _ => GenerateLanding();
+        OnLanding += _ => ActivateDisplay();
+        LevelManager.OnLanding += OnLanding;
     }
     public void GenerateLanding(Level level, PlayerRecord playerRecord)
     {
+        levelName.text = playerRecord.levelName;
+        GenerateLevelTimes(level.MedalTimes);
+        GeneratePlayerBadge(playerRecord);
+        nextLevelButton.SetActive(GameManager.Instance.SessionData.NextLevelUnlocked(GameManager.Instance.CurrentLevel));
+    }
+    public void GenerateLanding()
+    {
+        var level = GameManager.Instance.CurrentLevel;
+        var playerRecord = GameManager.Instance.CurrentPlayerRecord;
         levelName.text = playerRecord.levelName;
         GenerateLevelTimes(level.MedalTimes);
         GeneratePlayerBadge(playerRecord);
