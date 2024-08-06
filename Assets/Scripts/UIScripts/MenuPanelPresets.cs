@@ -99,7 +99,7 @@ public static class MenuPanelPresets
 
         //Buttons        
         ButtonDefinition yesButton = new("Submit", OverlayButtonColor.Green, OnYesButton);
-        ButtonDefinition neutralButton = new("Submit", OverlayButtonColor.White, OnNeutralButton);
+        ButtonDefinition neutralButton = new("Skip", OverlayButtonColor.White, OnNeutralButton);
         preset.HorizontalButtonDefs = new() { yesButton, neutralButton };
 
         //Text inputs

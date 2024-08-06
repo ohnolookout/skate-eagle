@@ -136,7 +136,7 @@ public class PlayFabManager : MonoBehaviour
             result.doAskEmail = false;
         }
 
-        if(result.isLoggedIn && result.displayName != PlayerPrefs.GetString(DisplayNameKey))
+        if(result.isLoggedIn && result.displayName != PlayerPrefs.GetString(DisplayNameKey) && !string.IsNullOrEmpty(result.displayName))
         {
             UpdateStoredName(result.displayName);
         }
@@ -340,7 +340,7 @@ public class PlayFabManager : MonoBehaviour
     public static string FormatDisplayName(string name)
     {
         var splitName = name.Split('#', 2);
-        return "<b>" + splitName[0] + "</b><color=#8A8A8A>#" + splitName[1];
+        return splitName[0] + "<color=#8A8A8A>#" + splitName[1];
     }
 
     #endregion
@@ -471,7 +471,7 @@ public class PlayFabManager : MonoBehaviour
             new StatisticUpdate()
             {
                 StatisticName = record.leaderboardKey,
-                Value = (int)(record.bestTime * 1000)
+                Value = (int)(record.bestTime * -1000)
             }
         };
         PlayFabClientAPI.UpdatePlayerStatistics(

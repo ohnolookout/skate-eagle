@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(_playFabManager.Initialize(this));
     }
 
-    private void OnInitializationComplete(InitializationResult result)
+    public void OnInitializationComplete(InitializationResult result)
     {
         OnLoading?.Invoke(false); ;
 

@@ -101,7 +101,7 @@ public class Leaderboard : MonoBehaviour
         {
             var displayName = PlayFabManager.FormatDisplayName(leaderboardEntries[i].DisplayName);
             _leaderboardRows[i].PanelIsActive(true);
-            _leaderboardRows[i].SetValues(leaderboardEntries[i].Position + 1, displayName, leaderboardEntries[i].StatValue);
+            _leaderboardRows[i].SetValues(leaderboardEntries[i].Position + 1, displayName, leaderboardEntries[i].StatValue * -1);
         }
 
         _isFirstPage = _startRank == 0;

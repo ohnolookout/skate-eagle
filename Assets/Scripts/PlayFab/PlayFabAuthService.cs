@@ -51,10 +51,10 @@ public class PlayFabAuthService
     public bool ForceLink = false;
 
     // Accessbility for PlayFab ID & Session Tickets
-    public static string PlayFabId { get { return _playFabId; } }
+    public static string PlayFabId { get => _playFabId; set => _playFabId = value; }
     private static string _playFabId;
 
-    public static string SessionTicket { get { return _sessionTicket; } }
+    public static string SessionTicket { get => _sessionTicket ; set => _sessionTicket = value; }
     private static string _sessionTicket;
 
     private const string _LoginRememberKey = "PlayFabLoginRemember";
