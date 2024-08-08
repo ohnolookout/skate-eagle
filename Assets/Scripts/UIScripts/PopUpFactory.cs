@@ -171,6 +171,8 @@ public class PopUpFactory
         }
         ),
         hasBack, true);
+        _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
+        _popUpPanel.InputFields[2].contentType = TMP_InputField.ContentType.Password;
     }
     private void OnAddEmailComplete(bool isSuccess, PlayFabError error = null)
     {
@@ -236,6 +238,7 @@ public class PopUpFactory
                 );
 
         _popUpPanel.LoadPanelPreset(emailLoginPanel, hasBack, true);
+        _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
     }
 
     private void ShowSwitchEmailPopUp(MenuPanel popUpPanel, bool hasBack = false)
@@ -269,6 +272,7 @@ public class PopUpFactory
                 );
 
         _popUpPanel.LoadPanelPreset(emailLoginPanel, hasBack, true);
+        _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
     }
 
 
@@ -277,11 +281,11 @@ public class PopUpFactory
         if (isSuccess)
         {
             _gameManager.PlayFabManager.LoadFromCloud();
-            _popUpPanel.ShowSecondaryPanel(2);
+            _popUpPanel.ShowSecondaryPanel(1);
         }
         else
         {
-            _popUpPanel.ShowSecondaryPanel(1);
+            _popUpPanel.ShowSecondaryPanel(0);
             _popUpPanel.ErrorText.text = "Something went wrong:<br><br>" + error.ErrorMessage;
         }
     }
@@ -292,7 +296,7 @@ public class PopUpFactory
 
     public void ShowNewGamePanel(MenuPanel popUpPanel)
     {
-        _popUpPanel = popUpPanel;
+        _popUpPanel = popUpPanel; 
 
         MenuPanelPreset newGamePanel = MenuPanelPresets.ConfirmNewGamePanel(
             () =>
@@ -320,6 +324,8 @@ public class PopUpFactory
             () => _popUpPanel.ShowSecondaryPanel(ShowEmailLoginPopUp),
             //Switch account button
             () => _popUpPanel.ShowSecondaryPanel(ShowSwitchEmailPopUp),
+            //Delete account button
+            () => _gameManager.PlayFabManager.DeletePlayerAccount(),
             //Close button
             _popUpPanel.HidePanel,
             //On load panel
@@ -331,12 +337,14 @@ public class PopUpFactory
                     _popUpPanel.VerticalButtons[1].gameObject.SetActive(true);
                     _popUpPanel.VerticalButtons[2].gameObject.SetActive(true);
                     _popUpPanel.VerticalButtons[3].gameObject.SetActive(false);
+                    _popUpPanel.VerticalButtons[4].gameObject.SetActive(true);
                 }
                 else
                 {
                     _popUpPanel.VerticalButtons[1].gameObject.SetActive(false);
                     _popUpPanel.VerticalButtons[2].gameObject.SetActive(false);
                     _popUpPanel.VerticalButtons[3].gameObject.SetActive(true);
+                    _popUpPanel.VerticalButtons[4].gameObject.SetActive(true);
                 }
             }
         );

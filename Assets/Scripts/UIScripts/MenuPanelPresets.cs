@@ -206,7 +206,7 @@ public static class MenuPanelPresets
 
     #region Main Menu
     public static MenuPanelPreset PlayerSettingsPanel(UnityAction OnChangeNameButton, UnityAction OnSignInButton, UnityAction OnRegisterEmailButton, 
-        UnityAction OnSwitchAccountButton, UnityAction OnCloseButton, UnityAction OnLoadPanel)
+        UnityAction OnSwitchAccountButton, UnityAction OnDeleteAccountButton, UnityAction OnCloseButton, UnityAction OnLoadPanel)
     {
         MenuPanelPreset preset = new();
 
@@ -219,7 +219,8 @@ public static class MenuPanelPresets
         ButtonDefinition signIn = new("Sign In", OverlayButtonColor.White, OnSignInButton, 450);
         ButtonDefinition register = new("Register Email", OverlayButtonColor.White, OnRegisterEmailButton, 450);
         ButtonDefinition switchAccount = new("Switch Account", OverlayButtonColor.White, OnSwitchAccountButton, 450);
-        preset.VerticalButtonDefs = new() { changeName, signIn, register, switchAccount };
+        ButtonDefinition deleteAccount = new("DeleteAccount", OverlayButtonColor.White, OnDeleteAccountButton, 450);
+        preset.VerticalButtonDefs = new() { changeName, signIn, register, switchAccount, deleteAccount };
 
         preset.CloseButtonDef = new("Close", OverlayButtonColor.Orange, OnCloseButton);
 
@@ -233,7 +234,7 @@ public static class MenuPanelPresets
         MenuPanelPreset preset = TwoButtonSecondaryPanel(OnYesButton, OnNoButton);
         //Title and body
         preset.TitleText = "You Sure?";
-        preset.BodyText = "Starting a new game will delete all your records. There's no going back.";
+        preset.BodyText = "Starting a new game will delete all your records and leaderboard ranks. There's no going back.";
 
         //Buttons
         preset.HorizontalButtonDefs[0].Text = "Do It";

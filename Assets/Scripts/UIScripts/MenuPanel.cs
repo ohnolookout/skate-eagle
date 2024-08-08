@@ -68,6 +68,7 @@ public class MenuPanel : MonoBehaviour
         foreach(var input in InputFields)
         {
             input.text = "";
+            input.contentType = TMP_InputField.ContentType.Standard;
         }
 
         Toggle.isOn = false;
@@ -84,6 +85,7 @@ public class MenuPanel : MonoBehaviour
         showPanelAction(this, true);
     }
 
+    #region Loading Presets
     public void LoadPanelPreset(MenuPanelPreset preset, bool hasBack, bool activatePanel)
     {
         CurrentPreset = preset;
@@ -179,6 +181,9 @@ public class MenuPanel : MonoBehaviour
             preset.OnLoadPanel();
         }
 
+        //Secondary panel presets
+        SecondaryPanelPresets = preset.SecondaryPanelPresets;
+
         //Activate or deactivate panel depending on method call
         gameObject.SetActive(activatePanel);
     }
@@ -228,6 +233,7 @@ public class MenuPanel : MonoBehaviour
             text.gameObject.SetActive(true);
         }
     }
+    #endregion
 
 }
 

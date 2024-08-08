@@ -75,7 +75,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnLevelExit?.Invoke();
         ResetStaticEvents();
     }
-
+#if UNITY_EDITOR
     private IEnumerator CheckGameManagerInitializationRoutine()
     {
         yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
@@ -90,8 +90,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
             _inputEvents.OnRestart += GoToStandby;
         }
     }
-
-    #endregion
+#endif
+#endregion
 
     #region Start/End Functions
     private void ActivateTerrainManager(Vector3 startPosition)

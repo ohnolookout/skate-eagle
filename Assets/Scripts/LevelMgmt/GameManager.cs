@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     private SessionData _sessionData;
     private Level _currentLevel = null;
     private PlayFabManager _playFabManager;
-    private InitializationResult _initializationResult;
     private bool _isAwaitingPlayFab = false;
     private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
     private Action<InitializationResult> _onStartupComplete;
@@ -30,8 +29,7 @@ public class GameManager : MonoBehaviour
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public PlayerRecord CurrentPlayerRecord => _sessionData.GetRecordByLevel(_currentLevel);
     public PlayFabManager PlayFabManager => _playFabManager;
-    public InitializationResult InitializationResult { get => _initializationResult; set => _initializationResult = value; }
-    public Action<InitializationResult> OnStartupComplete { get => _onStartupComplete; set => _onStartupComplete = value; }
+    public InitializationResult InitializationResult { get => _playFabManager.InitializationResult; set => _playFabManager.InitializationResult = value; }
     public Action<Level> OnLevelLoaded { get => _onLevelLoaded; set => _onLevelLoaded = value; }
     public Action<bool> OnMenuLoaded { get => _onMenuLoaded; set => _onMenuLoaded = value; } //bool true if load level menue;
     public Action<bool> OnLoading { get => _onLoading; set => _onLoading = value; }
@@ -99,10 +97,7 @@ public class GameManager : MonoBehaviour
 
     public void OnInitializationComplete(InitializationResult result)
     {
-        OnLoading?.Invoke(false); ;
-
-        _initializationResult = result;
-        OnStartupComplete?.Invoke(result);
+        OnLoading?.Invoke(false);
 
         _isInitializing = false;
         _isAwaitingPlayFab = false;
@@ -130,7 +125,7 @@ public class GameManager : MonoBehaviour
     {
         bool isNewBest = _sessionData.UpdateRecord(finishData, _currentLevel);
 
-        if (isNewBest && !_initializationResult.isLoggedIn)
+        if (isNewBest && !InitializationResult.isLoggedIn)
         {
             _isAwaitingPlayFab = true;
 
@@ -141,7 +136,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitWhile(() => _isAwaitingPlayFab);
         }
 
-        if (isNewBest && _initializationResult.isLoggedIn == true)
+        if (isNewBest && InitializationResult.isLoggedIn == true)
         {
             _isAwaitingPlayFab = true;
 

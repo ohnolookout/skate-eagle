@@ -5,8 +5,9 @@ using System;
 using System.Linq;
 using PlayFab.ClientModels;
 using PlayFab;
-using AYellowpaper.SerializedCollections;
+using PlayFab.AdminModels;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 public struct InitializationResult
 {
@@ -24,7 +25,8 @@ public struct InitializationResult
 public class PlayFabManager : MonoBehaviour
 {
     #region Declarations
-    private InitializationResult result;
+    public InitializationResult InitializationResult;
+    private bool _isInitializing = false;
     private bool _isAwaitingInitialize = false;
     private bool _isAwaitingDirtyRecord = false;
     private float _lastSeenCloud = float.PositiveInfinity;
@@ -61,13 +63,14 @@ public class PlayFabManager : MonoBehaviour
     #region Initializer
     public IEnumerator Initialize(GameManager gameManager)
     {
-        Debug.Log("Staring PlayFab initialization...");
+        _isInitializing = true;
+        Debug.Log("Starting PlayFab initialization...");
         _gameManager = gameManager;
         _authService.InfoRequestParams = new()
         {
             GetUserAccountInfo = true
         };
-        result = new();
+        InitializationResult = new();
 
         //Silent authentication
         _isAwaitingInitialize = true;
@@ -82,7 +85,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log("Local save loaded.");
 
         //Submit any dirty records if logged in
-        if (result.isLoggedIn && _gameManager.SessionData.SaveData.dirtyRecords.Count > 0)
+        if (InitializationResult.isLoggedIn && _gameManager.SessionData.SaveData.dirtyRecords.Count > 0)
         {
             Debug.Log("Submitting dirty records...");
             _isAwaitingInitialize = true;
@@ -107,7 +110,7 @@ public class PlayFabManager : MonoBehaviour
         //Save game locally and to cloud
 
         var saveDataString = _saveLoadUtility.SaveGame(_gameManager.SessionData);
-        if (result.isLoggedIn)
+        if (InitializationResult.isLoggedIn)
         {
             _isAwaitingInitialize = true;
             SaveToCloud(saveDataString);
@@ -117,31 +120,32 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log("Save to cloud complete.");
 
         //Return result with updated session data
-        result.sessionData = _gameManager.SessionData;
+        InitializationResult.sessionData = _gameManager.SessionData;
 
         //Increment login count
         int loginCount = PlayerPrefs.GetInt(LoginCountKey, 0) + 1;
         PlayerPrefs.SetInt(LoginCountKey, loginCount);
-        result.loginCount = loginCount;
+        InitializationResult.loginCount = loginCount;
 
         //Determine whether to ask for email
-        if(!result.hasEmail && PlayerPrefs.GetInt(DontAskEmailKey, 0) == 0 && loginCount % AskEmailEveryX == 0)
+        if(!InitializationResult.hasEmail && PlayerPrefs.GetInt(DontAskEmailKey, 0) == 0 && loginCount % AskEmailEveryX == 0)
         {
             Debug.Log("Setting ask email to true...");
-            result.doAskEmail = true;
+            InitializationResult.doAskEmail = true;
         }
         else
         {
             Debug.Log("Setting ask email to false...");
-            result.doAskEmail = false;
+            InitializationResult.doAskEmail = false;
         }
 
-        if(result.isLoggedIn && result.displayName != PlayerPrefs.GetString(DisplayNameKey) && !string.IsNullOrEmpty(result.displayName))
+        if(InitializationResult.isLoggedIn && InitializationResult.displayName != PlayerPrefs.GetString(DisplayNameKey) && !string.IsNullOrEmpty(InitializationResult.displayName))
         {
-            UpdateStoredName(result.displayName);
+            UpdateStoredName(InitializationResult.displayName);
         }
 
-        OnInitializationComplete?.Invoke(result);
+        _isInitializing = false;
+        OnInitializationComplete?.Invoke(InitializationResult);
         OnInitializationComplete = null;
     }
     #endregion
@@ -151,13 +155,23 @@ public class PlayFabManager : MonoBehaviour
     {
         PlayFabAuthService.OnLoginSuccess += OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError += OnSilentAuthFailure;
-        _authService.Authenticate(Authtypes.Silent);
+        if (_authService.RememberMe)
+        {
+            Debug.Log("Authenticating via saved email id...");
+            _authService.Authenticate(Authtypes.EmailAndPassword);
+        }
+        else
+        {
+            Debug.Log("Authenticating via device id...");
+            _authService.Authenticate(Authtypes.Silent);
+        }
     }
     private void OnSilentAuthSuccess(LoginResult result)
     {
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
-        
+
+        Debug.Log("Silent auth success.");
         var isFirstTime = CheckFirstTimeUser(true);
         var hasEmail = false;
         string displayName = null;
@@ -175,6 +189,7 @@ public class PlayFabManager : MonoBehaviour
     {
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
+        Debug.Log("Silent auth error: " + error.ErrorMessage);
         var isFirstTime = CheckFirstTimeUser(false);
         SilentAuthComplete(false, isFirstTime, false, null, float.PositiveInfinity);
     }
@@ -182,10 +197,10 @@ public class PlayFabManager : MonoBehaviour
     private void SilentAuthComplete(bool isLoggedIn, bool isFirstTime, bool hasEmail, string displayName, float cloudLastSeen)
     {
 
-        result.isLoggedIn = isLoggedIn;
-        result.isFirstTime = isFirstTime;
-        result.hasEmail = hasEmail;
-        result.displayName = displayName;
+        InitializationResult.isLoggedIn = isLoggedIn;
+        InitializationResult.isFirstTime = isFirstTime;
+        InitializationResult.hasEmail = hasEmail;
+        InitializationResult.displayName = displayName;
         _lastSeenCloud = cloudLastSeen;
         _isAwaitingInitialize = false;
         OnSilentAuthComplete?.Invoke(isLoggedIn, isFirstTime, hasEmail, cloudLastSeen);
@@ -219,6 +234,7 @@ public class PlayFabManager : MonoBehaviour
     {
         _authService.Email = email;
         _authService.Password = password;
+        _authService.RememberMe = true;
 
         PlayFabAuthService.OnLoginSuccess += OnAddEmailSuccess;
         PlayFabAuthService.OnPlayFabError += OnAddEmailFailure;
@@ -259,6 +275,7 @@ public class PlayFabManager : MonoBehaviour
     {
         _authService.Email = email;
         _authService.Password = password;
+        _authService.RememberMe = true;
 
         PlayFabAuthService.OnLoginSuccess += OnEmailLoginSuccess;
         PlayFabAuthService.OnPlayFabError += OnEmailLoginFailure;
@@ -291,7 +308,7 @@ public class PlayFabManager : MonoBehaviour
     public void SetDisplayName(string displayName)
     {
         PlayFabClientAPI.UpdateUserTitleDisplayName(
-        new UpdateUserTitleDisplayNameRequest()
+        new PlayFab.ClientModels.UpdateUserTitleDisplayNameRequest()
         {
             DisplayName = displayName + "#",
         },
@@ -301,7 +318,7 @@ public class PlayFabManager : MonoBehaviour
         );
     }
 
-    private void OnSetNameSuccess(UpdateUserTitleDisplayNameResult result)
+    private void OnSetNameSuccess(PlayFab.ClientModels.UpdateUserTitleDisplayNameResult result)
     {
         PlayerPrefs.SetString(DisplayNameKey, result.DisplayName);
         SetNameComplete(true, _submittedName, result.DisplayName);
@@ -350,7 +367,7 @@ public class PlayFabManager : MonoBehaviour
     public void SaveToCloud(string data)
     {
         PlayFabClientAPI.UpdateUserData(
-            new UpdateUserDataRequest()
+            new PlayFab.ClientModels.UpdateUserDataRequest()
             {
                 Data = new Dictionary<string, string>()
                 {
@@ -362,7 +379,7 @@ public class PlayFabManager : MonoBehaviour
         );
     }
 
-    private void OnUpdateUserDataSuccess(UpdateUserDataResult result)
+    private void OnUpdateUserDataSuccess(PlayFab.ClientModels.UpdateUserDataResult result)
     {
         Debug.Log("Save successfully backed up on PlayFab.");
         SaveToCloudComplete(true);
@@ -402,7 +419,7 @@ public class PlayFabManager : MonoBehaviour
     public void LoadFromCloud()
     {
         PlayFabClientAPI.GetUserData(
-            new GetUserDataRequest()
+            new PlayFab.ClientModels.GetUserDataRequest()
             {
                 PlayFabId = PlayFabAuthService.PlayFabId
             },
@@ -411,7 +428,7 @@ public class PlayFabManager : MonoBehaviour
             );
     }
 
-    private void OnLoadFromCloudSuccess(GetUserDataResult result)
+    private void OnLoadFromCloudSuccess(PlayFab.ClientModels.GetUserDataResult result)
     {
         SaveData cloudSaveData = JsonConvert.DeserializeObject<SaveData>(result.Data["SaveData"].Value);
         var mergedSave = SaveLoadUtility.MergeSaveData(GameManager.Instance.SessionData.SaveData, cloudSaveData);
@@ -506,4 +523,35 @@ public class PlayFabManager : MonoBehaviour
     }
     #endregion
 
+    #region New Player
+
+    public void DeletePlayerAccount()
+    {
+        if (!InitializationResult.isLoggedIn)
+        {
+            Debug.Log("Can't delete account while offline.");
+            return;
+        }
+
+        PlayFabAdminAPI.DeletePlayer(
+            new DeletePlayerRequest(){ PlayFabId = PlayFabAuthService.PlayFabId },
+            (result) =>
+            {
+                Debug.Log("Player account successfully deleted.");
+                PlayerPrefs.DeleteAll();
+                _gameManager.ResetSaveData();
+                SceneManager.LoadScene("Start_Menu");
+                StartCoroutine(Initialize(GameManager.Instance));
+            },
+            (error) =>
+            {
+                Debug.Log("Error deleting player account: " + error.ErrorMessage);
+                _gameManager.OnLoading?.Invoke(false);
+            }
+        );
+
+
+    }
+
+    #endregion
 }

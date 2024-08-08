@@ -24,8 +24,6 @@ public class SaveLoadUtility
 
 	private static SaveLoadUtility _instance;
 	public static string SavePath => Application.persistentDataPath + "/SaveData.dat";
-	public Action OnCheckCloudSaveComplete;
-	public Action<bool> OnSaveToCloudComplete;
 	#endregion
 
 	#region Local Save/Load
@@ -103,107 +101,6 @@ public class SaveLoadUtility
 		return mergedDict;
 	}
 	/*
-	#region Cloud Saves
-
-	private void SaveToCloud(string data)
-	{
-		PlayFabClientAPI.UpdateUserData(
-			new UpdateUserDataRequest()
-			{
-				Data = new Dictionary<string, string>()
-				{
-					{"SaveData", data}
-				}
-			},
-			OnUpdateUserDataSuccess,
-			OnUpdateUserDataFailure
-		);
-	}
-
-	private void OnUpdateUserDataSuccess(UpdateUserDataResult result)
-	{
-		Debug.Log("Save successfully backed up on PlayFab.");
-		OnSaveToCloudComplete?.Invoke(true);
-	}
-
-	private void OnUpdateUserDataFailure(PlayFabError error)
-	{
-		Debug.Log("PlayFab save failed.");
-		OnSaveToCloudComplete?.Invoke(false);
-	}
-
-	public void CheckCloudSave(float lastSeenLocal, float lastSeenCloud)
-	{
-		if (!string.IsNullOrEmpty(PlayerPrefs.GetString(GameManager.RegisteredEmailKey)))
-		{
-			if (!float.IsPositiveInfinity(lastSeenCloud) && lastSeenCloud > lastSeenLocal)
-			{
-				LoadFromCloud();
-			}
-        }
-        else
-        {
-			OnCheckCloudSaveComplete?.Invoke();
-        }
-	}
-	public void LoadFromCloud()
-	{
-		PlayFabClientAPI.GetUserData(
-			new GetUserDataRequest()
-			{
-				PlayFabId = PlayFabAuthService.PlayFabId
-			},
-			OnLoadFromCloudSuccess,
-			OnLoadFromCloudFailure
-			) ;
-	}
-
-	private void OnLoadFromCloudSuccess(GetUserDataResult result)
-	{
-		SaveData cloudSaveData = JsonConvert.DeserializeObject<SaveData>(result.Data["SaveData"].Value);
-		var mergedSave = MergeSaveData(GameManager.Instance.Session.SaveData, cloudSaveData);
-		GameManager.Instance.LoadExternalGame(mergedSave);
-		OnCheckCloudSaveComplete?.Invoke();
-
-	}
-
-	private void OnLoadFromCloudFailure(PlayFabError error)
-    {
-		Debug.Log("Playfab load failed.");
-		OnCheckCloudSaveComplete?.Invoke();
-	}
-
-	private static SaveData MergeSaveData(SaveData localSave, SaveData cloudSave)
-    {
-		var mergedRecords = MergeSerializedDict(localSave.recordDict, cloudSave.recordDict);
-		var mergedDirtyRecords = MergeSerializedDict(localSave.dirtyRecords, cloudSave.dirtyRecords);
-		var startDate = localSave.startDate < cloudSave.startDate ? localSave.startDate : cloudSave.startDate;
-		var lastSaved = cloudSave.lastSaved;
-
-		return new SaveData(mergedRecords, mergedDirtyRecords, startDate, lastSaved);
-    }
-
-	private static SerializedDictionary<string, PlayerRecord> MergeSerializedDict(SerializedDictionary<string, PlayerRecord> dict1, SerializedDictionary<string, PlayerRecord> dict2)
-    {
-		SerializedDictionary<string, PlayerRecord> mergedDict = new();
-
-		foreach (var key in dict1.Keys.ToList())
-		{
-			mergedDict[key] = dict1[key]; 
-		}
-
-		foreach (var key in dict2.Keys.ToList())
-		{
-			if (!mergedDict.ContainsKey(key)
-				|| dict2[key].bestTime < mergedDict[key].bestTime)
-			{
-				mergedDict[key] = dict2[key];
-			}
-		}
-
-		return mergedDict;
-	}
-	#endregion
 
 	public static bool MergeSaveTest()
     {

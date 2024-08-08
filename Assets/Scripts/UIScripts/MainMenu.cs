@@ -28,7 +28,7 @@ public class MainMenu : MonoBehaviour
     void Awake()
     {
         _gameManager = GameManager.Instance;
-        _gameManager.OnStartupComplete += HandleStartUp;
+        _gameManager.PlayFabManager.OnInitializationComplete += HandleStartUp;
         _gameManager.OnMenuLoaded += OnMenuLoaded;
         _gameManager.PlayFabManager.OnUpdateStoredName += (displayName, formattedDisplayName) =>
         {
@@ -47,6 +47,7 @@ public class MainMenu : MonoBehaviour
     //Show notification depending on whether it's a new player or not
     private void HandleStartUp(InitializationResult result)
     {
+        _gameManager.PlayFabManager.OnInitializationComplete -= HandleStartUp;
         if (result.isFirstTime)
         {
             DoingFirstTimeSetup = true;
