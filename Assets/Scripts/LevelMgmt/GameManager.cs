@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     private Action<Level> _onLevelLoaded;
     private Action<bool> _onMenuLoaded;
     private Action<bool> _onLoading;
+    private Action _onAccountReset;
     [SerializeField] private GameObject _loadingScreen;
     public Slider loadingBar;
 
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     public Action<Level> OnLevelLoaded { get => _onLevelLoaded; set => _onLevelLoaded = value; }
     public Action<bool> OnMenuLoaded { get => _onMenuLoaded; set => _onMenuLoaded = value; } //bool true if load level menue;
     public Action<bool> OnLoading { get => _onLoading; set => _onLoading = value; }
+    public Action OnAccountReset { get => _onAccountReset; set => _onAccountReset = value; }
     public static GameManager Instance
     {
         get
@@ -92,11 +94,12 @@ public class GameManager : MonoBehaviour
         _isAwaitingPlayFab = true;
 
         _playFabManager.OnInitializationComplete += OnInitializationComplete;
-        StartCoroutine(_playFabManager.Initialize(this));
+        StartCoroutine(_playFabManager.Initialize(this, false));
     }
 
     public void OnInitializationComplete(InitializationResult result)
     {
+        Debug.Log("Initializaiton complete. Ending load screen.");
         OnLoading?.Invoke(false);
 
         _isInitializing = false;
@@ -116,6 +119,13 @@ public class GameManager : MonoBehaviour
         _sessionData = _saveLoadUtility.NewGame();
     }
 
+    public void OnResetAccount()
+    {
+        _sessionData = _saveLoadUtility.NewGame();
+        _onAccountReset?.Invoke();
+         StartCoroutine(_playFabManager.Initialize(this, true));
+    }
+
     public void UpdateRecord(FinishData finishData)
     {
         StartCoroutine(UpdateRecordRoutine(finishData));
@@ -128,10 +138,7 @@ public class GameManager : MonoBehaviour
         if (isNewBest && !InitializationResult.isLoggedIn)
         {
             _isAwaitingPlayFab = true;
-
-            PlayFabManager initializer = new();
-            initializer.OnInitializationComplete += OnInitializationComplete;
-            StartCoroutine(initializer.Initialize(this));
+            StartCoroutine(_playFabManager.Initialize(this, false));
 
             yield return new WaitWhile(() => _isAwaitingPlayFab);
         }
@@ -203,6 +210,7 @@ public class GameManager : MonoBehaviour
     }
     public void BackToLevelMenu()
     {
+        Debug.Log("Firing back to level menu...");
         OnLoading?.Invoke(true);
         _currentLevel = null;
         SceneManager.LoadScene("Start_Menu");

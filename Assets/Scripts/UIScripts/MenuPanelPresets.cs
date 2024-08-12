@@ -22,7 +22,7 @@ public static class MenuPanelPresets
         preset.HorizontalButtonDefs = new() { yesButton, neutralButton };
 
         //Text block and toggle
-        preset.TextBlockButtonText = "Already have an account? <br>Tap here to log in.";
+        preset.TextBlockButtonText = "Already have an account?<br>Tap here to log in.";
         preset.OnTextButtonClicked = OnPrimaryTextBlockButton;
 
         //Text inputs
@@ -86,28 +86,49 @@ public static class MenuPanelPresets
 
         return preset;
     }
+    public static MenuPanelPreset ChangeNameSuccessPanel(UnityAction OnNeutralButton, string name)
+    {
+        var preset = OneButtonSecondaryPanel(OnNeutralButton);
+
+        //Title and body
+        preset.TitleText = "Whattup";
+        preset.BodyText = name + "?<br><br>Cool name, I guess...";
+
+        return preset;
+    }
     #endregion
 
     #region Add Email
-    public static MenuPanelPreset AddEmailPanel(UnityAction OnYesButton, UnityAction OnNeutralButton, UnityAction<bool> OnToggleChanged, UnityAction OnSecondaryConfirmNeutralButton)
+    public static MenuPanelPreset AddEmailFirstTimePanel(UnityAction OnYesButton, UnityAction OnNeutralButton, UnityAction<bool> OnToggleChanged, UnityAction OnSecondaryConfirmNeutralButton)
+    {
+        MenuPanelPreset preset = AddEmailPanel(OnYesButton, OnNeutralButton, OnSecondaryConfirmNeutralButton);
+
+        //Title, body, buttons, inputs, and error secondary panel handled by AddEmailPanel
+
+        //Change button text
+        preset.HorizontalButtonDefs[1].Text = "Skip";
+
+        //Toggle
+        preset.ToggleText = "Don't ask again";
+        preset.OnToggleChanged = OnToggleChanged;
+
+        return preset;
+    }
+    public static MenuPanelPreset AddEmailPanel(UnityAction OnYesButton, UnityAction OnNeutralButton, UnityAction OnSecondaryConfirmNeutralButton)
     {
         MenuPanelPreset preset = new();
 
         //Title and body
         preset.TitleText = "Add Email?";
-        preset.BodyText = "Adding an email secures your account and lets you sync across devices. It's totally optional.";
+        preset.BodyText = "Adding an email secures your account and lets you sync across devices.";
 
         //Buttons        
         ButtonDefinition yesButton = new("Submit", OverlayButtonColor.Green, OnYesButton);
-        ButtonDefinition neutralButton = new("Skip", OverlayButtonColor.White, OnNeutralButton);
+        ButtonDefinition neutralButton = new("Back", OverlayButtonColor.White, OnNeutralButton);
         preset.HorizontalButtonDefs = new() { yesButton, neutralButton };
 
         //Text inputs
         preset.InputPlaceholders = new() { "Email", "Password", "Confirm Password" };
-
-        //Toggle
-        preset.ToggleText = "Don't ask again";
-        preset.OnToggleChanged = OnToggleChanged;
 
         //Secondary confrim panels
         var errorPanel = OneButtonSecondaryPanel(OnSecondaryConfirmNeutralButton);
@@ -121,8 +142,8 @@ public static class MenuPanelPresets
     #endregion
 
     #region Email Login
-    public static MenuPanelPreset EmailLoginPanel(UnityAction OnYesButton, UnityAction OnNeutralButton, UnityAction OnTextButtonClicked,
-        UnityAction OnSecondaryConfirmYesButton, UnityAction OnSecondaryConfirmNoButton, UnityAction OnSecondaryErrorNeutralButton, UnityAction OnSecondarySuccessNeutralButton)
+    public static MenuPanelPreset FirstTimeEmailLoginPanel(UnityAction OnYesButton, UnityAction OnNeutralButton,
+        UnityAction OnSecondaryErrorNeutralButton, UnityAction OnSecondarySuccessNeutralButton)
     {
         MenuPanelPreset preset = new();
 
@@ -136,11 +157,7 @@ public static class MenuPanelPresets
         preset.HorizontalButtonDefs = new() { yesButton, noButton };
 
         //Text inputs
-        preset.InputPlaceholders = new() { "Email", "Password"};
-
-        //Text block button
-        preset.TextBlockButtonText = "Or create a new account.";
-        preset.OnTextButtonClicked = OnTextButtonClicked;
+        preset.InputPlaceholders = new() { "Email", "Password" };
 
         //Secondary panels
         var errorPanel = OneButtonSecondaryPanel(OnSecondaryErrorNeutralButton);
@@ -148,10 +165,29 @@ public static class MenuPanelPresets
         errorPanel.BodyText = "Something went wrong.";
 
         var successPanel = OneButtonSecondaryPanel(OnSecondarySuccessNeutralButton);
-        errorPanel.TitleText = "Nice";
-        errorPanel.BodyText = "Successfully logged in to your account.";
+        successPanel.TitleText = "Nice";
+        successPanel.BodyText = "Successfully logged in to your account.";
 
-        preset.SecondaryPanelPresets = new(){ EmailLoginSecondaryConfirmPanel(OnSecondaryConfirmYesButton, OnSecondaryConfirmNoButton), errorPanel, successPanel };
+        preset.SecondaryPanelPresets = new() { errorPanel, successPanel };
+
+        return preset;
+    }
+    public static MenuPanelPreset EmailLoginPanel(UnityAction OnYesButton, UnityAction OnNeutralButton, UnityAction OnTextButtonClicked,
+        UnityAction OnSecondaryConfirmYesButton, UnityAction OnSecondaryConfirmNoButton, UnityAction OnSecondaryErrorNeutralButton, UnityAction OnSecondarySuccessNeutralButton)
+    {
+        var preset = FirstTimeEmailLoginPanel(OnYesButton, OnNeutralButton, OnSecondaryErrorNeutralButton, OnSecondarySuccessNeutralButton);
+
+        //Title, body, buttons, and text inputs handled by first time panel
+
+        //Text block button
+        preset.TextBlockButtonText = "Or tap here to add a new email.";
+        preset.OnTextButtonClicked = OnTextButtonClicked;
+
+        var confirmationPanelPreset = EmailLoginSecondaryConfirmPanel(OnSecondaryConfirmYesButton, OnSecondaryConfirmNoButton);
+        confirmationPanelPreset.SecondaryPanelPresets = new() { preset.SecondaryPanelPresets[0], preset.SecondaryPanelPresets[1] };
+
+        //Add confirmation panel
+        preset.SecondaryPanelPresets = new() { confirmationPanelPreset };
 
         return preset;
     }
@@ -219,7 +255,7 @@ public static class MenuPanelPresets
         ButtonDefinition signIn = new("Sign In", OverlayButtonColor.White, OnSignInButton, 450);
         ButtonDefinition register = new("Register Email", OverlayButtonColor.White, OnRegisterEmailButton, 450);
         ButtonDefinition switchAccount = new("Switch Account", OverlayButtonColor.White, OnSwitchAccountButton, 450);
-        ButtonDefinition deleteAccount = new("DeleteAccount", OverlayButtonColor.White, OnDeleteAccountButton, 450);
+        ButtonDefinition deleteAccount = new("Reset Account", OverlayButtonColor.White, OnDeleteAccountButton, 450);
         preset.VerticalButtonDefs = new() { changeName, signIn, register, switchAccount, deleteAccount };
 
         preset.CloseButtonDef = new("Close", OverlayButtonColor.Orange, OnCloseButton);
@@ -229,16 +265,41 @@ public static class MenuPanelPresets
 
         return preset;
     }
+
+    public static MenuPanelPreset ConfirmResetAccountPanel(UnityAction OnYesButton, UnityAction OnNoButton)
+    {
+        MenuPanelPreset preset = TwoButtonSecondaryPanel(OnYesButton, OnNoButton);
+        //Title and body
+        preset.TitleText = "You Sure?";
+        preset.BodyText = "This will delete your game progress and clear all your records from the leaderboard.<br><br>There's no going back.";
+        //Buttons
+        preset.HorizontalButtonDefs[0].Text = "Reset";
+        preset.HorizontalButtonDefs[1].Text = "Back";
+
+        return preset;
+    }
+
     public static MenuPanelPreset ConfirmNewGamePanel(UnityAction OnYesButton, UnityAction OnNoButton)
     {
         MenuPanelPreset preset = TwoButtonSecondaryPanel(OnYesButton, OnNoButton);
         //Title and body
         preset.TitleText = "You Sure?";
-        preset.BodyText = "Starting a new game will delete all your records and leaderboard ranks. There's no going back.";
+        preset.BodyText = "Starting a new game will delete your game progress, but your records will stay on the leaderboard.<br><br>To completely reset your account, use the settings menu.";
 
         //Buttons
         preset.HorizontalButtonDefs[0].Text = "Do It";
         preset.HorizontalButtonDefs[1].Text = "Don't It";
+
+        return preset;
+    }
+
+    public static MenuPanelPreset ResetAccountSuccessPanel(UnityAction OnNeutralButton)
+    {
+        var preset = OneButtonSecondaryPanel(OnNeutralButton);
+
+        //Title and body
+        preset.TitleText = "Success!";
+        preset.BodyText = "Your account has been reset.";
 
         return preset;
     }

@@ -44,15 +44,6 @@ public class MenuPanel : MonoBehaviour
     public void HidePanel()
     {
 
-        foreach (var input in InputFields)
-        {
-            input.text = "";
-        }
-
-        Toggle.isOn = false;
-
-        CloseButton.Button.onClick.RemoveAllListeners();
-
         //Go back if panel has previous presets to go back to
         if(HasBack && _presetHistory.Count > 0)
         {
@@ -62,16 +53,28 @@ public class MenuPanel : MonoBehaviour
             return;
         }
         //Otherwise turn off gameobject and reset alterable fields.
+        Close();
+    }
+
+    public void Close()
+    {
         gameObject.SetActive(false);
         ErrorText.gameObject.SetActive(false);
 
-        foreach(var input in InputFields)
+        foreach (var input in InputFields)
         {
             input.text = "";
             input.contentType = TMP_InputField.ContentType.Standard;
         }
 
+        CloseButton.Button.onClick.RemoveAllListeners();
+
         Toggle.isOn = false;
+
+    }
+    private void ResetFields()
+    {
+
     }
     public void ShowSecondaryPanel(int i)
     {
@@ -83,6 +86,12 @@ public class MenuPanel : MonoBehaviour
     {
         _presetHistory.Add(CurrentPreset);
         showPanelAction(this, true);
+    }
+
+    public void ShowSecondaryPanel(UnityAction<MenuPanel> showPanelAction)
+    {
+        _presetHistory.Add(CurrentPreset);
+        showPanelAction(this);
     }
 
     #region Loading Presets
@@ -166,11 +175,11 @@ public class MenuPanel : MonoBehaviour
             ClickableText.text = preset.TextBlockButtonText;
             ClickableTextButton.onClick.RemoveAllListeners();
             ClickableTextButton.onClick.AddListener(preset.OnTextButtonClicked);
-            ClickableText.gameObject.SetActive(true);
+            ClickableTextButton.transform.parent.gameObject.SetActive(true);
         }
         else
         {
-            ClickableText.gameObject.SetActive(false);
+            ClickableTextButton.transform.parent.gameObject.SetActive(false);
         }
 
         //Error text

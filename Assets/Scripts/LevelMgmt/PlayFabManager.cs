@@ -16,17 +16,16 @@ public struct InitializationResult
     public bool hasEmail;
     public bool savedToCloud;
     public bool doAskEmail;
+    public bool doResetAccount;
     public string displayName;
     public SessionData sessionData;
     public int loginCount;
-
 }
 
 public class PlayFabManager : MonoBehaviour
 {
     #region Declarations
     public InitializationResult InitializationResult;
-    private bool _isInitializing = false;
     private bool _isAwaitingInitialize = false;
     private bool _isAwaitingDirtyRecord = false;
     private float _lastSeenCloud = float.PositiveInfinity;
@@ -41,12 +40,13 @@ public class PlayFabManager : MonoBehaviour
     public Action<bool, bool, bool, float> OnSilentAuthComplete;
     public Action<bool, PlayFabError> OnEmailLoginComplete;
     public Action<bool, PlayFabError> OnAddEmailComplete;
-    public Action<bool, string, PlayFabError> OnSetNameComplete;
+    public Action<bool, string, string, PlayFabError> OnSetNameComplete;
     public Action<string, string> OnUpdateStoredName;
     public Action<PlayerRecord, bool> OnLeadboardUpdateComplete;
     public Action<InitializationResult> OnInitializationComplete;
     public Action<bool> OnCheckCloudSaveComplete;
     public Action<bool> OnSaveToCloudComplete;
+    public System.Action OnAccountReset;
 
     public const string SeenBeforeKey = "SeenBefore";
     public const string LastSeenKey = "LastSeen";
@@ -58,12 +58,12 @@ public class PlayFabManager : MonoBehaviour
     public const string FormattedDisplayNameKey = "FormattedDisplayName";
 
     public const int AskEmailEveryX = 5;
+    const int delayCount = 7;
     #endregion
 
     #region Initializer
-    public IEnumerator Initialize(GameManager gameManager)
+    public IEnumerator Initialize(GameManager gameManager, bool isReset)
     {
-        _isInitializing = true;
         Debug.Log("Starting PlayFab initialization...");
         _gameManager = gameManager;
         _authService.InfoRequestParams = new()
@@ -71,6 +71,16 @@ public class PlayFabManager : MonoBehaviour
             GetUserAccountInfo = true
         };
         InitializationResult = new();
+
+        if (isReset)
+        {
+            InitializationResult.doResetAccount = true;
+            yield return new WaitForSeconds(delayCount);
+        }
+        else
+        {
+            InitializationResult.doResetAccount = false;
+        }
 
         //Silent authentication
         _isAwaitingInitialize = true;
@@ -144,9 +154,8 @@ public class PlayFabManager : MonoBehaviour
             UpdateStoredName(InitializationResult.displayName);
         }
 
-        _isInitializing = false;
+        Debug.Log("Ending initialization...");
         OnInitializationComplete?.Invoke(InitializationResult);
-        OnInitializationComplete = null;
     }
     #endregion
 
@@ -175,6 +184,15 @@ public class PlayFabManager : MonoBehaviour
         var isFirstTime = CheckFirstTimeUser(true);
         var hasEmail = false;
         string displayName = null;
+        long lastLogin;
+        if (result.LastLoginTime != null)
+        {
+            lastLogin = ((DateTime)result.LastLoginTime).ToBinary();
+        }
+        else
+        {
+            lastLogin = DateTime.Now.ToBinary();
+        }
 
         if (result.InfoResultPayload != null)
         {
@@ -182,7 +200,7 @@ public class PlayFabManager : MonoBehaviour
             displayName = result.InfoResultPayload.AccountInfo.TitleInfo.DisplayName;
         }
 
-        SilentAuthComplete(true, isFirstTime, hasEmail, displayName, ((DateTime)result.LastLoginTime).ToBinary());
+        SilentAuthComplete(true, isFirstTime, hasEmail, displayName, lastLogin);
     }
 
     private void OnSilentAuthFailure(PlayFabError error)
@@ -307,6 +325,7 @@ public class PlayFabManager : MonoBehaviour
     #region Set Name
     public void SetDisplayName(string displayName)
     {
+        _submittedName = displayName;
         PlayFabClientAPI.UpdateUserTitleDisplayName(
         new PlayFab.ClientModels.UpdateUserTitleDisplayNameRequest()
         {
@@ -336,7 +355,7 @@ public class PlayFabManager : MonoBehaviour
         {
             UpdateStoredName(displayName);
         }
-        OnSetNameComplete?.Invoke(isSuccess, displayName, error);
+        OnSetNameComplete?.Invoke(isSuccess, submittedName, displayName, error);
         OnSetNameComplete = null;
     }
 
@@ -346,12 +365,12 @@ public class PlayFabManager : MonoBehaviour
         SetDisplayName(name);
     }
 
-    private void UpdateStoredName(string displayName)
+    private void UpdateStoredName(string submittedName)
     {
-        PlayerPrefs.SetString(DisplayNameKey, displayName);
-        var formattedDisplayName = FormatDisplayName(displayName);
+        PlayerPrefs.SetString(DisplayNameKey, submittedName);
+        var formattedDisplayName = FormatDisplayName(submittedName);
         PlayerPrefs.SetString(FormattedDisplayNameKey, formattedDisplayName);
-        OnUpdateStoredName?.Invoke(displayName, formattedDisplayName);
+        OnUpdateStoredName?.Invoke(submittedName, formattedDisplayName);
     }
 
     public static string FormatDisplayName(string name)
@@ -525,28 +544,26 @@ public class PlayFabManager : MonoBehaviour
 
     #region New Player
 
-    public void DeletePlayerAccount()
+    public void DeletePlayerAccount(GameManager gameManager)
     {
         if (!InitializationResult.isLoggedIn)
         {
             Debug.Log("Can't delete account while offline.");
             return;
         }
+        _gameManager.OnLoading(true);
 
         PlayFabAdminAPI.DeletePlayer(
             new DeletePlayerRequest(){ PlayFabId = PlayFabAuthService.PlayFabId },
             (result) =>
             {
                 Debug.Log("Player account successfully deleted.");
-                PlayerPrefs.DeleteAll();
-                _gameManager.ResetSaveData();
-                SceneManager.LoadScene("Start_Menu");
-                StartCoroutine(Initialize(GameManager.Instance));
+                gameManager.OnResetAccount();
             },
             (error) =>
             {
                 Debug.Log("Error deleting player account: " + error.ErrorMessage);
-                _gameManager.OnLoading?.Invoke(false);
+                gameManager.OnLoading?.Invoke(false);
             }
         );
 

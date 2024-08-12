@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using PlayFab;
 using TMPro;
@@ -10,10 +11,9 @@ public class PopUpFactory
 {
     MenuPanel _popUpPanel;
     GameManager _gameManager;
-    public bool DoingFirstTimeSetup;
     public PopUpFactory(MenuPanel popUpPanel)
     {
-        _popUpPanel = popUpPanel; 
+        _popUpPanel = popUpPanel;
         _gameManager = GameManager.Instance;
     }
 
@@ -34,21 +34,33 @@ public class PopUpFactory
                 ),
             hasBack, true);
     }
-    public void ShowFirstTimeSetNamePopUp(MenuPanel popUpPanel)
+    public void ShowFirstTimeSetNamePopUp(MenuPanel popUpPanel, bool isTrueFirstTime)
     {
         _popUpPanel = popUpPanel;
         var firstTimeNamePreset = MenuPanelPresets.SetNameFirstTimePanel(
-            () => SubmitDisplayName(true),
+            //OnPrimaryYesButton
+            () => SubmitDisplayName(isTrueFirstTime),
+            //OnPrimaryNeutralButton
             () => _popUpPanel.ShowSecondaryPanel(0),
-            () => ShowEmailLoginPopUp(_popUpPanel),
-            GenerateDisplayName,
+            //OnPrimaryTextBlockButton
+            () => _popUpPanel.ShowSecondaryPanel(ShowFirstTimeEmailLoginPopUp),
+            //OnSecondarySkipYesButton
+            () => GenerateDisplayName(isTrueFirstTime),
+            //OnSecondarySkipNeutralButton
             _popUpPanel.HidePanel,
+            //OnSecondaryErrorYesButton
             _popUpPanel.HidePanel,
+            //OnSecondaryErrorNeutralButton
             () => _popUpPanel.ShowSecondaryPanel(0)
             );
+        if (!isTrueFirstTime)
+        {
+            firstTimeNamePreset.TextBlockButtonText = "";
+            firstTimeNamePreset.OnTextButtonClicked = null;
+        }
         _popUpPanel.LoadPanelPreset(firstTimeNamePreset, false, true);
     }
-    private void SubmitDisplayName(bool isFirstTimeUser = false)
+    private void SubmitDisplayName(bool isFirstTimeUser)
     {
         var name = _popUpPanel.InputFields[0].text;
         if (!IsValidUsername(name))
@@ -66,12 +78,14 @@ public class PopUpFactory
         }
         else
         {
-            _gameManager.PlayFabManager.OnSetNameComplete += OnSetNameComplete;
+            _gameManager.PlayFabManager.OnSetNameComplete += OnChangeNameComplete;
 
         }
         _gameManager.PlayFabManager.SetDisplayName(_popUpPanel.InputFields[0].text);
     }
-    private void OnFirstTimeSetNameComplete(bool isSuccess, string storedName, PlayFabError error)
+
+
+    private void OnFirstTimeSetNameComplete(bool isSuccess, string submittedName, string storedName, PlayFabError error)
     {
         _gameManager.OnLoading?.Invoke(false);
         _gameManager.PlayFabManager.OnSetNameComplete -= OnFirstTimeSetNameComplete;
@@ -80,16 +94,23 @@ public class PopUpFactory
         {
             _popUpPanel.ShowSecondaryPanel(1);
             _popUpPanel.BodyText.text = "Something went wrong: <br><br>" + error.ErrorMessage + ".<br><br>You can try again or skip account setup for now and come back to it later.";
+            return;
         }
-        else
+
+        if(submittedName == "SkateEagle")
         {
-            ShowAddEmailPopUp(_popUpPanel);
+            ShowFirstTimeAddEmailPopUp(_popUpPanel);
+            return;
         }
+
+        //Show confirmation that goes to add email panel
+        var confirmationPopUp = MenuPanelPresets.ChangeNameSuccessPanel(() => ShowFirstTimeAddEmailPopUp(_popUpPanel), submittedName);
+        _popUpPanel.LoadPanelPreset(confirmationPopUp, false, true);
     }
-    private void OnSetNameComplete(bool isSuccess, string storedName, PlayFabError error)
+    private void OnChangeNameComplete(bool isSuccess, string submittedName, string storedName, PlayFabError error)
     {
         _gameManager.OnLoading?.Invoke(false);
-        _gameManager.PlayFabManager.OnSetNameComplete -= OnSetNameComplete;
+        _gameManager.PlayFabManager.OnSetNameComplete -= OnChangeNameComplete;
 
         if (!isSuccess)
         {
@@ -99,78 +120,71 @@ public class PopUpFactory
         }
         else
         {
-            _popUpPanel.HidePanel();
+            var confirmationPopUp = MenuPanelPresets.ChangeNameSuccessPanel(_popUpPanel.HidePanel, submittedName);
+            _popUpPanel.LoadPanelPreset(confirmationPopUp, false, true);
         }
     }
+
     private static bool IsValidUsername(string name)
     {
         return name.Length >= 3 && Regex.IsMatch(name, @"^[A-Za-z0-9]+$");
     }
 
-    private void GenerateDisplayName()
+    private void GenerateDisplayName(bool isTrueFirstTime)
     {
         _gameManager.OnLoading?.Invoke(true);
-        _gameManager.PlayFabManager.OnSetNameComplete += OnFirstTimeSetNameComplete;
+        if (isTrueFirstTime)
+        {
+            _gameManager.PlayFabManager.OnSetNameComplete += OnFirstTimeSetNameComplete;
+        }
+        else
+        {
+            _gameManager.PlayFabManager.OnSetNameComplete += OnChangeNameComplete;
+
+        }
         _gameManager.PlayFabManager.GenerateName();
     }
     #endregion
 
     #region Add Email
+    public void ShowFirstTimeAddEmailPopUp(MenuPanel popUpPanel)
+    {
+        _popUpPanel = popUpPanel;
+        _popUpPanel.LoadPanelPreset(MenuPanelPresets.AddEmailFirstTimePanel(
+        //OnYesButton
+            ValidateAndAddEmail,
+            //OnNeutralButton
+            _popUpPanel.HidePanel,
+            //OnToggleChanged
+            (toggle) => {
+                if (toggle)
+                {
+                    PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 1);
+                }
+                else
+                {
+                    PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 0);
+                }
+            },
+            //OnSecondaryConfirmNeutralButton
+            _popUpPanel.Close
+            ),
+            false, true);
+        _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
+        _popUpPanel.InputFields[2].contentType = TMP_InputField.ContentType.Password;
+    }
     public void ShowAddEmailPopUp(MenuPanel popUpPanel, bool hasBack = false)
     {
         _popUpPanel = popUpPanel;
         _popUpPanel.LoadPanelPreset(MenuPanelPresets.AddEmailPanel(
         //OnYesButton
-        () =>
-        {
-            //Validate email
-            if (!IsValidEmail(_popUpPanel.InputFields[0].text))
-            {
-                _popUpPanel.ErrorText.text = "Invalid email.";
-                _popUpPanel.ErrorText.gameObject.SetActive(true);
-                return;
-            }
-
-            //Validate passwords
-            if (_popUpPanel.InputFields[1].text.Length < 8)
-            {
-                _popUpPanel.ErrorText.text = "Password must be at least 8 characters.";
-                _popUpPanel.ErrorText.gameObject.SetActive(true);
-                return;
-            }
-
-            if (_popUpPanel.InputFields[1].text != _popUpPanel.InputFields[2].text)
-            {
-                _popUpPanel.ErrorText.text = "Passwords don't match.";
-                _popUpPanel.ErrorText.gameObject.SetActive(true);
-                return;
-            }
-
-            _popUpPanel.ErrorText.gameObject.SetActive(false);
-            _gameManager.PlayFabManager.OnAddEmailComplete += OnAddEmailComplete;
-            _gameManager.PlayFabManager.AddEmail(_popUpPanel.InputFields[0].text, _popUpPanel.InputFields[1].text);
-        },
-        //OnNeutralButton
-        () => {
-            _popUpPanel.gameObject.SetActive(false);
-        },
-        //OnToggleChanged
-        (toggle) => {
-            if (toggle)
-            {
-                PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 1);
-            }
-            else
-            {
-                PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 0);
-            }
-        },
-        //OnSecondaryConfirmNeutralButton
-        () => {
-            _popUpPanel.gameObject.SetActive(false);
-        }
-        ),
-        hasBack, true);
+            ValidateAndAddEmail,
+            //OnNeutralButton
+            _popUpPanel.HidePanel,
+            //OnSecondaryConfirmNeutralButton
+            _popUpPanel.Close
+            ),
+            hasBack, true);
         _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
         _popUpPanel.InputFields[2].contentType = TMP_InputField.ContentType.Password;
     }
@@ -191,6 +205,44 @@ public class PopUpFactory
         }
     }
 
+    private void ValidateAndAddEmail ()
+    {
+        if (ValidateAddEmailAndPasswords())
+        {
+            _popUpPanel.ErrorText.gameObject.SetActive(false);
+            _gameManager.PlayFabManager.OnAddEmailComplete += OnAddEmailComplete;
+            _gameManager.PlayFabManager.AddEmail(_popUpPanel.InputFields[0].text, _popUpPanel.InputFields[1].text);
+        }
+    }
+
+    private bool ValidateAddEmailAndPasswords()
+    {
+        //Validate email
+        if (!IsValidEmail(_popUpPanel.InputFields[0].text))
+        {
+            _popUpPanel.ErrorText.text = "Invalid email.";
+            _popUpPanel.ErrorText.gameObject.SetActive(true);
+            return false;
+        }
+
+        //Validate passwords
+        if (_popUpPanel.InputFields[1].text.Length < 8)
+        {
+            _popUpPanel.ErrorText.text = "Password must be at least 8 characters.";
+            _popUpPanel.ErrorText.gameObject.SetActive(true);
+            return false;
+        }
+
+        if (_popUpPanel.InputFields[1].text != _popUpPanel.InputFields[2].text)
+        {
+            _popUpPanel.ErrorText.text = "Passwords don't match.";
+            _popUpPanel.ErrorText.gameObject.SetActive(true);
+            return false;
+        }
+
+        return true;
+    }
+
     private bool IsValidEmail(string emailAddress)
     {
         var pattern = @"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
@@ -198,9 +250,44 @@ public class PopUpFactory
         var regex = new Regex(pattern);
         return regex.IsMatch(emailAddress);
     }
+
     #endregion
 
     #region Email Login
+    private void ShowFirstTimeEmailLoginPopUp(MenuPanel popUpPanel)
+    {
+        _popUpPanel = popUpPanel;
+        var emailLoginPanel = MenuPanelPresets.FirstTimeEmailLoginPanel(
+                //OnYesButton
+                () =>
+                {
+                    var email = _popUpPanel.InputFields[0].text;
+                    var password = _popUpPanel.InputFields[1].text;
+
+                    if (!IsValidEmail(email))
+                    {
+                        _popUpPanel.ErrorText.text = "Invalid email.";
+                        _popUpPanel.ErrorText.gameObject.SetActive(true);
+                        return;
+                    }
+
+                    _popUpPanel.ErrorText.gameObject.SetActive(false);
+
+                    _gameManager.PlayFabManager.OnEmailLoginComplete += OnEmailLoginComplete;
+                    _gameManager.PlayFabManager.EmailLogin(email, password);
+                },
+                //OnNeutralButton
+                _popUpPanel.HidePanel,
+                //OnSecondaryErrorNeutralButton
+                _popUpPanel.HidePanel,
+                //OnSecondarySuccessNeutralButton
+                _popUpPanel.HidePanel
+                );
+
+        _popUpPanel.LoadPanelPreset(emailLoginPanel, true, true);
+        _popUpPanel.InputFields[1].contentType = TMP_InputField.ContentType.Password;
+    }
+
     private void ShowEmailLoginPopUp(MenuPanel popUpPanel, bool hasBack = false)
     {
         _popUpPanel = popUpPanel;
@@ -210,7 +297,7 @@ public class PopUpFactory
                 //OnNeutralButton
                 _popUpPanel.HidePanel,
                 //OnTextBlockButton
-                () => ShowAddEmailPopUp(_popUpPanel, true),
+                () => _popUpPanel.ShowSecondaryPanel(ShowAddEmailPopUp),
                 //OnSecondaryConfirmationYesButton
                 () =>
                 {
@@ -286,7 +373,7 @@ public class PopUpFactory
         else
         {
             _popUpPanel.ShowSecondaryPanel(0);
-            _popUpPanel.ErrorText.text = "Something went wrong:<br><br>" + error.ErrorMessage;
+            _popUpPanel.BodyText.text = "Something went wrong:<br><br>" + error.ErrorMessage;
         }
     }
 
@@ -296,9 +383,9 @@ public class PopUpFactory
 
     public void ShowNewGamePanel(MenuPanel popUpPanel)
     {
-        _popUpPanel = popUpPanel; 
+        _popUpPanel = popUpPanel;
 
-        MenuPanelPreset newGamePanel = MenuPanelPresets.ConfirmNewGamePanel(
+        var newGamePanel = MenuPanelPresets.ConfirmNewGamePanel(
             () =>
             {
                 _gameManager.ResetSaveData();
@@ -319,15 +406,16 @@ public class PopUpFactory
             //Change name button
             () => _popUpPanel.ShowSecondaryPanel(ShowSetNamePopUp),
             //Sign in button
-            () => _popUpPanel.ShowSecondaryPanel(ShowAddEmailPopUp),
-            //Register email button
             () => _popUpPanel.ShowSecondaryPanel(ShowEmailLoginPopUp),
+            //Register email button
+            () => _popUpPanel.ShowSecondaryPanel(ShowAddEmailPopUp),
             //Switch account button
             () => _popUpPanel.ShowSecondaryPanel(ShowSwitchEmailPopUp),
             //Delete account button
-            () => _gameManager.PlayFabManager.DeletePlayerAccount(),
+            //() => _gameManager.PlayFabManager.DeletePlayerAccount(_gameManager),
+            () => _popUpPanel.ShowSecondaryPanel(ShowConfirmResetAccountPopUp),
             //Close button
-            _popUpPanel.HidePanel,
+            _popUpPanel.Close,
             //On load panel
             () => {
                 _popUpPanel.BodyText.text = PlayerPrefs.GetString(PlayFabManager.FormattedDisplayNameKey, "Skate Eagle");
@@ -350,6 +438,28 @@ public class PopUpFactory
         );
 
         _popUpPanel.LoadPanelPreset(settingsPanel, false, true);
+    }
+
+    private void ShowConfirmResetAccountPopUp(MenuPanel popUpPanel, bool hasBack = true)
+    {
+        _popUpPanel = popUpPanel;
+        var confirmPopUp = MenuPanelPresets.ConfirmResetAccountPanel(
+            //OnYesButton
+            () => _gameManager.PlayFabManager.DeletePlayerAccount(_gameManager),
+            //OnNoButton
+            _popUpPanel.HidePanel
+        );
+
+        _popUpPanel.LoadPanelPreset(confirmPopUp, hasBack, true);
+    }
+
+    public void ShowResetAccountSuccessPopUp(MenuPanel popUpPanel)
+    {
+        _popUpPanel = popUpPanel;
+        _popUpPanel.LoadPanelPreset(MenuPanelPresets.ResetAccountSuccessPanel(
+            () => ShowFirstTimeSetNamePopUp(_popUpPanel, false)
+            ), 
+            false, true);
     }
 
     #endregion

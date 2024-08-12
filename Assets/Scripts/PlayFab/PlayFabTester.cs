@@ -218,7 +218,7 @@ public class PlayFabTester : MonoBehaviour
     private void ReturnToPlayer()
     {
         GameManager.Instance.PlayFabManager.OnInitializationComplete += GameManager.Instance.OnInitializationComplete;
-        StartCoroutine(GameManager.Instance.PlayFabManager.Initialize(GameManager.Instance));
+        StartCoroutine(GameManager.Instance.PlayFabManager.Initialize(GameManager.Instance, false));
     }
 
 }
