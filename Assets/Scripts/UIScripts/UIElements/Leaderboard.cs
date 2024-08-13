@@ -11,15 +11,14 @@ public class Leaderboard : MonoBehaviour
     [SerializeField] private LeaderboardRow[] _leaderboardRows;
     [SerializeField] private GameObject _medalLockPanel, _loginLockPanel, _noLeaderboardPanel;
     [SerializeField] private GameObject[] _grayOuts;
-    private int _displayCount, _playerRank = -1, _startRank = 0, _highlightedRowIndex = -1;
-    private string _leaderboardKey, _playerID;
+    private int _displayCount, _playerRank = -1, _startRank = 0, _highlightedRowIndex = -1, _lastRank = -1;
+    private string _leaderboardKey;
     private bool _isFirstPage = false, _isLastPage = false;
     private LeaderboardActivation _activationStatus;
     public Button FirstPageButton;
     public Button PreviousPageButton;
     public Button PlayerPageButton;
     public Button NextPageButton;
-    public Button LastPageButton;
     private static Color _buttonColorEnabled = new(1, 1, 1, 1);
     private static Color _buttonColorDisabled = new(160 / 255f, 160 / 255f, 160 / 255f, 61 / 255f);
 
@@ -46,7 +45,6 @@ public class Leaderboard : MonoBehaviour
     void Awake()
     {
         _displayCount = _leaderboardRows.Length;
-        _playerID = PlayerPrefs.GetString("PlayerID");
         LevelManager.OnLanding += _ => Initialize();
 
         FirstPageButton.onClick.AddListener(GoToFirstPage);
@@ -116,6 +114,11 @@ public class Leaderboard : MonoBehaviour
         if (leaderboardResult.Leaderboard.Count > 0)
         {
             _startRank = leaderboardResult.Leaderboard[0].Position;
+        } else if (leaderboardResult.Leaderboard.Count == 0 && _startRank >= _displayCount)
+        {
+            _lastRank = _startRank - 1;
+            PreviousPage();
+            return;
         }
         else
         {
@@ -169,21 +172,27 @@ public class Leaderboard : MonoBehaviour
                 {
                     doLookForPlayerId = false;
                     _playerRank = _startRank + i;
-                    _leaderboardRows[i].Highlight();
                     _highlightedRowIndex = i;
                 }
             } else if (doLookForPlayerRank && _playerRank == _startRank + i)
             {
                 doLookForPlayerRank = false;
-                _leaderboardRows[i].Highlight();
                 _highlightedRowIndex = i;
             }
         }
 
+        if(_highlightedRowIndex != -1)
+        {
+            _leaderboardRows[_highlightedRowIndex].Highlight();
+        }
+
         IsFirstPage = _startRank == 0;
-        IsLastPage = leaderboardEntries.Count < _displayCount;
+        IsLastPage = leaderboardEntries.Count < _displayCount || 
+            (_lastRank != -1 && _startRank + _displayCount >= _lastRank) ||
+            _highlightedRowIndex > 5;
         if (IsLastPage)
         {
+            _lastRank = _startRank + leaderboardEntries.Count;
             for (int i = leaderboardEntries.Count; i < _displayCount; i++)
             {
                 _leaderboardRows[i].PanelIsActive(false);
@@ -281,15 +290,11 @@ public class Leaderboard : MonoBehaviour
         {
             NextPageButton.image.color = _buttonColorEnabled;
             NextPageButton.interactable = true;
-            LastPageButton.image.color = _buttonColorEnabled;
-            LastPageButton.interactable = true;
         }
         else
         {
             NextPageButton.image.color = _buttonColorDisabled;
             NextPageButton.interactable = false;
-            LastPageButton.image.color = _buttonColorDisabled;
-            LastPageButton.interactable = false;
         }
     }
 
