@@ -16,7 +16,7 @@ public class OverlayButton : MonoBehaviour
     public RectTransform Rect;
     public static Dictionary<OverlayButtonColor, Color> DarkColorDict = new()
     {
-        { OverlayButtonColor.White, new(255/255f, 255 / 255f, 255 / 255f, 150 /255f) },
+        { OverlayButtonColor.White, new(255 / 255f, 255 / 255f, 255 / 255f, 150 /255f) },
         { OverlayButtonColor.Green, new(81 / 255f, 128 / 255f, 87 / 255f, 150 / 255f) },
         { OverlayButtonColor.Orange, new(154 / 255f, 114 / 255f, 78 / 255f, 150 / 255f) }
     };

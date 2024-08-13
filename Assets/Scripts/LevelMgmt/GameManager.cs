@@ -99,7 +99,6 @@ public class GameManager : MonoBehaviour
 
     public void OnInitializationComplete(InitializationResult result)
     {
-        Debug.Log("Initializaiton complete. Ending load screen.");
         OnLoading?.Invoke(false);
 
         _isInitializing = false;
