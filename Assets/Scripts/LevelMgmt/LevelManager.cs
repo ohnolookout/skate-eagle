@@ -8,11 +8,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Declarations
     public Vector3 startPosition = new();
     [SerializeField] private Level _currentLevel;
-    private GameManager _gameManager;
-    private static IPlayer _player;
     [SerializeField] private TerrainManager _terrainManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
+    private GameManager _gameManager;
+    private bool _doTriggerLoadLevel = true;
+    private static IPlayer _player;
     public static Action<ILevelManager> OnLanding { get; set; }
     public static Action<ILevelManager> OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
@@ -80,6 +81,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             _inputEvents.OnRestart += GoToStandby;
         }
+        if (_doTriggerLoadLevel)
+        {
+            _gameManager.OnLevelLoaded?.Invoke(_currentLevel);
+        }
     }
 #endif
 #endregion
@@ -117,6 +122,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Debug.Log("No level loaded in game manager. Adding default level from level manager.");
             _gameManager.CurrentLevel = CurrentLevel;
         }
+        _gameManager.OnLevelLoaded += _ => _doTriggerLoadLevel = false;
         OnFinish += _gameManager.UpdateRecord;
         
     }
