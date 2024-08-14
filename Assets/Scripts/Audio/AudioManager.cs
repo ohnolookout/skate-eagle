@@ -91,7 +91,6 @@ public class AudioManager : MonoBehaviour
 
     private void OnLevelLoaded(Level level)
     {
-        Debug.Log("Audiomanager has detected loaded level.");
         ClearLoops();
 
         if (_soundtrack != null)
@@ -151,7 +150,6 @@ public class AudioManager : MonoBehaviour
 
     public void StartUpdatingModifiers(bool doUpdate)
     {
-        Debug.Log("Starting to update modifiers...");
         _updateLocalModifiers = doUpdate;
     }
 

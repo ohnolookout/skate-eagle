@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class GameManager : MonoBehaviour
     private PlayFabManager _playFabManager;
     private bool _isAwaitingPlayFab = false;
     private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
-    private Action<InitializationResult> _onStartupComplete;
     private Action<Level> _onLevelLoaded;
     private Action<bool> _onMenuLoaded;
     private Action<bool> _onLoading;
@@ -145,8 +145,6 @@ public class GameManager : MonoBehaviour
         if (isNewBest && InitializationResult.isLoggedIn == true)
         {
             _isAwaitingPlayFab = true;
-
-            Debug.Log("Uploading new best time to leaderboard...");
             _playFabManager.OnLeadboardUpdateComplete += OnLeaderboardUpdateComplete;
             _playFabManager.UpdateLeaderboardRecord(_sessionData.GetRecordByUID(finishData.levelUID));
         }
@@ -175,14 +173,14 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(Level level)
     {
-        OnLoading?.Invoke(true);
         _currentLevel = level;
-        StartCoroutine(LoadSceneRoutine("City", level));
+        StartCoroutine(LoadSceneRoutine("City", () => OnLevelLoaded?.Invoke(level)));
 
     }
 
-    private IEnumerator LoadSceneRoutine(string sceneId, Level level)
+    private IEnumerator LoadSceneRoutine(string sceneId, UnityAction callback = null)
     {
+        OnLoading?.Invoke(true);
         loadingBar.value = 0;
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneId);
 
@@ -194,9 +192,9 @@ public class GameManager : MonoBehaviour
             loadingBar.value = progressValue;
             yield return null;
         }
-
+        
         OnLoading?.Invoke(false);
-        OnLevelLoaded?.Invoke(level);
+        callback();
     }
 
     public void LoadNextLevel()
@@ -209,12 +207,8 @@ public class GameManager : MonoBehaviour
     }
     public void BackToLevelMenu()
     {
-        Debug.Log("Firing back to level menu...");
-        OnLoading?.Invoke(true);
         _currentLevel = null;
-        SceneManager.LoadScene("Start_Menu");
-        OnLoading?.Invoke(false);
-        OnMenuLoaded?.Invoke(true);
+        StartCoroutine(LoadSceneRoutine("Start_Menu", () => OnMenuLoaded?.Invoke(true)));
     }
 
     private void ActivateLoadingScreen(bool isOn)
