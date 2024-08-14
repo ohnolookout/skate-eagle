@@ -7,28 +7,28 @@ public class LevelManager : MonoBehaviour, ILevelManager
 {
     #region Declarations
     public Vector3 startPosition = new();
-    private Vector3 _finishPoint;
     [SerializeField] private Level _currentLevel;
     private GameManager _gameManager;
     private static IPlayer _player;
     [SerializeField] private TerrainManager _terrainManager;
     [SerializeField] private InputEventController _inputEvents;
-    [SerializeField] private Timer timer;
-    public static Action<ILevelManager> OnLanding, OnGameOver;
-    public static Action<FinishData> OnFinish;
-    public static Action OnAttempt, OnStandby, OnResultsScreen, OnRestart, OnLevelExit;
-    public static Action OnFall { get; set; }
-    public static Action<Vector2> OnActivateFinish { get; set; }
-    private bool _overlayLoaded = false;
     [SerializeField] private CameraOperator _cameraOperator;
+    public static Action<ILevelManager> OnLanding { get; set; }
+    public static Action<ILevelManager> OnGameOver { get; set; }
+    public static Action<FinishData> OnFinish { get; set; }
+    public static Action OnAttempt { get; set; }
+    public static Action OnStandby { get; set; }
+    public static Action OnResultsScreen { get; set; }
+    public static Action OnRestart { get; set; }
+    public static Action OnLevelExit { get; set; }
+    public static Action OnFall { get; set; }
+    public static Action OnCrossFinish { get; set; }
+    public static Action<Vector2> OnActivateFinishLine { get; set; }
 
 
-    public Vector3 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
     public static IPlayer GetPlayer { get => _player; }
-    public ICameraOperator CameraOperator { get => _cameraOperator; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
-    public bool HasCameraOperator { get => _cameraOperator != null; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _terrainManager != null; }
     #endregion
@@ -45,20 +45,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ActivateTerrainManager(startPosition);
         SetPlayerPosition(startPosition);
         SubscribeToPlayerEvents();
+        Timer.OnStopTimer += OnStopTimer;
+
 #if UNITY_EDITOR
         StartCoroutine(CheckGameManagerInitializationRoutine());
         return;
 #endif        
         OnLanding?.Invoke(this);
-        if (!_overlayLoaded)
-        {
-            Debug.LogWarning("No overlay found by level manager. Going to standby.");
-            GoToStandby();
-        }
-        else
-        {
-            _inputEvents.OnRestart += GoToStandby;
-        }
+        _inputEvents.OnRestart += GoToStandby;
         
     }
 
@@ -66,9 +60,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _inputEvents = new(InputType.UI);
         _inputEvents.OnSubmit += Submit;
-        Overlay.OnOverlayLoaded += () => _overlayLoaded = true;
-        Overlay.OnStandbyButton += GoToStandby;
-        Overlay.OnRestartButton += RestartGame;
     }
     private void OnDisable()
     {
@@ -80,7 +71,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
         OnLanding?.Invoke(this);
-        if (!_overlayLoaded)
+        if (_currentLevel.Name == "EditorLevel")
         {
             Debug.LogWarning("No overlay found by level manager. Going to standby.");
             GoToStandby();
@@ -110,8 +101,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
 #endif
 
-        _finishPoint = _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition);
-        _terrainManager.OnActivateFinish += ActivateFinish;
+        _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition);
+        _terrainManager.OnActivateFinish += ActivateFinishLine;
     }
 
     private void AddSingletonManagers()
@@ -148,7 +139,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             float halfPlayerHeight = 4.25f;
             _player.Transform.position = new(position.x, position.y + halfPlayerHeight + 1.1f);
-        }
+        } 
     }
     public void SetLevel(Level level)
     {
@@ -164,13 +155,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnResultsScreen = null;
         OnStandby = null;
         OnRestart = null;
-        OnActivateFinish = null;
+        OnActivateFinishLine = null;
     }
 
-    public void BackToMenu()
-    {
-        SceneManager.LoadScene("Start_Menu");
-    }
     #endregion
 
     #region Event Invokers
@@ -195,6 +182,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void StartAttempt(IPlayer _ = null)
     {
+        Debug.Log("Starting attempt...");
         _inputEvents.OnRestart += RestartGame;
         OnAttempt?.Invoke();
     }
@@ -210,22 +198,19 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnStandby?.Invoke();
     }
 
-    public void ActivateFinish(Vector2 finishPoint)
+    public void ActivateFinishLine(Vector2 finishPoint)
     {
-        OnActivateFinish?.Invoke(finishPoint);
+        OnActivateFinishLine?.Invoke(finishPoint);
     }
     public void Finish(IPlayer _ = null)
     {
+        OnCrossFinish?.Invoke();        
+    }
+
+    private void OnStopTimer(float finishTime)
+    {
         FinishData finishData;
-        if (timer != null)
-        {
-            float finishTime = timer.StopTimer();
-            finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, finishTime);
-        }
-        else
-        {
-            finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, 1);
-        }
+        finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, finishTime);
         OnFinish?.Invoke(finishData);
     }
     public void Fall()

@@ -14,7 +14,7 @@ public class ActiveState : PlayerState
     {
         _playerTransform = _player.NormalBody.transform;
         _playerBody = _player.NormalBody;
-        LevelManager.OnActivateFinish += DoActivateFinish;
+        LevelManager.OnActivateFinishLine += DoActivateFinish;
         LevelManager.OnFall += () => ChangeState(_stateFactory.GetState(PlayerStateType.Fallen));
         _isRootState = true;
     }
@@ -131,6 +131,6 @@ public class ActiveState : PlayerState
     {
         _finishPoint = finishPoint;
         _checkFinish = true;
-        LevelManager.OnActivateFinish -= DoActivateFinish;
+        LevelManager.OnActivateFinishLine -= DoActivateFinish;
     }
 }

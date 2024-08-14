@@ -13,21 +13,8 @@ public class FinishScreenLoader : MonoBehaviour
     [SerializeField] private TMP_Text previousTime, playerTime;
     [SerializeField] private Sprite[] medalSprites;
     [SerializeField] private GameObject[] statusTexts;
-    private Action<ILevelManager> deactivateDisplay;
 
-    private void OnEnable()
-    {
-        LevelManager.OnFinish += GenerateFinishScreen;
-        LevelManager.OnResultsScreen += ActivateDisplay;
-        deactivateDisplay += _ => DeactivateDisplay();
-        LevelManager.OnLanding += deactivateDisplay;
-    }
-    private void OnDisable()
-    {
-        LevelManager.OnFinish -= GenerateFinishScreen;
-        LevelManager.OnResultsScreen -= ActivateDisplay;
-        LevelManager.OnLanding -= deactivateDisplay;
-    }
+
     public void GenerateFinishScreen(FinishData finishData)
     {
         ClearOptionalText();
@@ -43,7 +30,6 @@ public class FinishScreenLoader : MonoBehaviour
             medal.GetComponent<Image>().sprite = medalSprites[(int)finishData.medal];
             medal.SetActive(true);
         }
-
     }
 
     public void ClearOptionalText()

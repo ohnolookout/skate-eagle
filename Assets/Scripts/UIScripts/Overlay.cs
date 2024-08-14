@@ -1,124 +1,89 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.UI;
 
 
 public class Overlay : MonoBehaviour
 {
-    public GameObject gameOver, finish, standby, mobileControls, hud, landing;
-    public LandingScreenLoader landingLoader;
-    public FinishScreenLoader finishLoader;
-    [SerializeField] private ILevelManager _levelManager;
-    private Action<ILevelManager> onLanding, onGameOver;
-    private Action<FinishData> onFinish;
-    public StompBar stompBar;
-    public Timer timer;
-    public static Action OnOverlayLoaded, OnStandbyButton, OnRestartButton;
+    [SerializeField] private GameObject _gameOverObject, _finishObject, _standbyObject, _mobileControlsObject, _hudObject, _landingObject;
+    [SerializeField] private LandingScreenLoader _landingLoader;
+    [SerializeField] private FinishScreenLoader _finishLoader;
+    [SerializeField] private StompBar _stompBar;
+    [SerializeField] private Timer _timer;
+    [SerializeField] private Button _playButton;
+    [SerializeField] private Button _nextLevelButton;
+    [SerializeField] private Button _menuButton;
+    [SerializeField] private Button _restartButton;
+    [SerializeField] private Button _continueButton;
+    private ILevelManager _levelManager;
+    public Timer Timer => _timer;
 
     private void Awake()
     {
-        OnOverlayLoaded?.Invoke();
-        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
-    }
+        _levelManager = transform.parent.GetComponent<ILevelManager>();
 
-    private void OnEnable()
-    {
-        onLanding += _ => ActivateStartScreen();
-        LevelManager.OnLanding += onLanding;
-        onGameOver += _ => ActivateGameOverScreen();
-        LevelManager.OnGameOver += onGameOver;
+        LevelManager.OnGameOver += ActivateGameOverScreen;
         LevelManager.OnAttempt += StartAttempt;
+        LevelManager.OnResultsScreen += ActivateResultsScreen;
         LevelManager.OnStandby += ActivateStandbyScreen;
-        onFinish += _ => ActivateControls(false);
-        LevelManager.OnFinish += onFinish;
-        LevelManager.OnResultsScreen += ActivateFinishScreen;
+        LevelManager.OnFinish += LoadResultsScreen;
+        LevelManager.OnRestart += ActivateStartScreen;
+
+        _playButton.onClick.AddListener(_levelManager.GoToStandby);
+        _nextLevelButton.onClick.AddListener(GameManager.Instance.LoadNextLevel);
+        _menuButton.onClick.AddListener(GameManager.Instance.BackToLevelMenu);
+        _restartButton.onClick.AddListener(_levelManager.RestartGame);
+        _continueButton.onClick.AddListener(_levelManager.RestartGame);
     }
 
-    private void OnDisable()
-    {
-        OnOverlayLoaded = null;
-        OnStandbyButton = null;
-        OnRestartButton = null;
-    }
     public void ActivateStartScreen()
     {
-        landing.SetActive(true);
-        gameOver.SetActive(false);
-        standby.SetActive(false);
-        hud.SetActive(false);
+        _landingObject.SetActive(true);
+        _gameOverObject.SetActive(false);
+        _standbyObject.SetActive(false);
+        _hudObject.SetActive(false);
         ActivateControls(false);
     }
 
     public void ActivateStandbyScreen()
     {
-        landing.SetActive(false);
-        standby.SetActive(true);
-        hud.SetActive(true);
+        _landingObject.SetActive(false);
+        _standbyObject.SetActive(true);
+        _hudObject.SetActive(true);
         ActivateControls(true);
     }
 
-    public void StandbyScreen()
-    {
-        OnStandbyButton?.Invoke();
-        _levelManager.GoToStandby();
-    }
-
-
     public void StartAttempt()
     {
-        standby.SetActive(false);
+        _standbyObject.SetActive(false);
     }
 
-    public void GameOverScreen()
+    public void ActivateGameOverScreen(ILevelManager _)
     {
-        gameOver.SetActive(true);
-        ActivateControls(false);
-    }
-    public void ActivateGameOverScreen()
-    {
-        gameOver.SetActive(true);
-        timer.StopTimer();
-        ActivateControls(false);
-    }
-    public void ActivateFinishScreen()
-    {
-        hud.SetActive(false);
+        _gameOverObject.SetActive(true);
         ActivateControls(false);
     }
 
-    public void FillStompBar(float fillAmount)
+    public void LoadResultsScreen(FinishData finishData)
     {
-        stompBar.Fill(fillAmount);
+        ActivateControls(false);
+        _finishLoader.GenerateFinishScreen(finishData);
     }
-
-    public void BackToMenu()
+    public void ActivateResultsScreen()
     {
-        SceneManager.LoadScene("Start_Menu");
-    }
-
-    public void BackToLevelMenu()
-    {
-        GameManager.Instance.BackToLevelMenu();
+        _hudObject.SetActive(false);
+        ActivateControls(false);
+        _finishLoader.ActivateDisplay();
     }
 
     public void ActivateControls(bool activate)
     {
-        if(mobileControls is null)
+        if(_mobileControlsObject is null)
         {
             return;
         }
-        mobileControls.SetActive(activate);
-    }
-
-    public void RestartLevel()
-    {
-        OnRestartButton?.Invoke();
-        _levelManager.RestartGame();
-    }
-    
-    public void LoadNextLevel()
-    {
-        GameManager.Instance.LoadNextLevel();
+        _mobileControlsObject.SetActive(activate);
     }
     
 }

@@ -9,12 +9,18 @@ public class Timer : MonoBehaviour
     public TMP_Text timeText;
     private float timeElapsed = 0;
     private bool running = false;
-    public static Action<float> OnStopTimer;
+    public static Action<float> OnStopTimer { get; set; }
 
     private void OnEnable()
     {
         LevelManager.OnAttempt += StartTimer;
-        LevelManager.OnGameOver += _ => StopTimer();
+        LevelManager.OnGameOver += _ => StopTimer(false);
+        LevelManager.OnCrossFinish += () => StopTimer(true);
+    }
+
+    private void OnDisable()
+    {
+        OnStopTimer = null;
     }
 
     void Update()
@@ -35,9 +41,15 @@ public class Timer : MonoBehaviour
         running = true;
     }
 
-    public float StopTimer()
+    public float StopTimer(bool doTriggerEvent)
     {
         running = false;
+
+        if (doTriggerEvent)
+        {
+            OnStopTimer?.Invoke(timeElapsed);
+        }
+
         return timeElapsed;
     }
     private void UpdateTimeDisplay(float time)

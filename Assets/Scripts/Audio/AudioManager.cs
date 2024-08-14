@@ -50,12 +50,12 @@ public class AudioManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
+        GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
     }
 
     private void Start()
     {
-        GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
-        GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
     }
     private void Update()
     {
@@ -91,6 +91,7 @@ public class AudioManager : MonoBehaviour
 
     private void OnLevelLoaded(Level level)
     {
+        Debug.Log("Audiomanager has detected loaded level.");
         ClearLoops();
 
         if (_soundtrack != null)
@@ -150,6 +151,7 @@ public class AudioManager : MonoBehaviour
 
     public void StartUpdatingModifiers(bool doUpdate)
     {
+        Debug.Log("Starting to update modifiers...");
         _updateLocalModifiers = doUpdate;
     }
 
