@@ -21,7 +21,7 @@ public class Overlay : MonoBehaviour
 
     private void Awake()
     {
-        _levelManager = transform.parent.GetComponent<ILevelManager>();
+        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
 
         LevelManager.OnGameOver += ActivateGameOverScreen;
         LevelManager.OnAttempt += StartAttempt;
