@@ -83,6 +83,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         UpdatePosition();
         _isZooming = _zoom.UpdateZoom();
     }
+    /*
     void OnDrawGizmos()
     {
         if (!Application.isPlaying)
@@ -118,6 +119,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         Gizmos.DrawLine(new(bottomLeft.x, bufferY), new(topRight.x, bufferY));
         
     }
+    */
     #endregion
 
     #region Position

@@ -5,7 +5,7 @@ using UnityEngine;
 public class ParallaxBackground : MonoBehaviour
 {
 
-    private float defaultPanelLength, defaultHalfLayerWidth, lastShiftX;
+    private float defaultPanelLength, defaultHalfLayerWidth;
     private Transform[] panels = new Transform[3];
     private Vector3 startPosition;
     private Camera cam;
@@ -28,7 +28,6 @@ public class ParallaxBackground : MonoBehaviour
         camScript = cam.GetComponent<ICameraOperator>();
         transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, transform.position.z);
         startPosition = transform.position;
-        lastShiftX = startPosition.x;
     }
 
     void FixedUpdate()
