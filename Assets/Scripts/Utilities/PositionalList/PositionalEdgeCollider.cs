@@ -14,7 +14,7 @@ public class PositionalEdgeCollider : IDoublePosition, IPosition
         _endPosition = _collider.points[^1];
     }
 
-    public Vector3 Position => _startPosition;
+    public Vector3 Position { get => _startPosition; set => _startPosition = value; }
 
     public Vector3 StartPosition => _startPosition;
 

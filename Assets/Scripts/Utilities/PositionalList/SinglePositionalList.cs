@@ -5,8 +5,8 @@ using System;
 
 public class SinglePositionalList<T> : PositionalList<T> where T: IPosition
 {
-    public SinglePositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading):
-        base(allObjects, updateTrailing, updateLeading)
+    public SinglePositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null) :
+        base(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved)
     {
     }
 

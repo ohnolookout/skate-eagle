@@ -64,7 +64,7 @@ public class PlayFabManager : MonoBehaviour
     #region Initializer
     public IEnumerator Initialize(GameManager gameManager, bool isReset)
     {
-        Debug.Log("Starting PlayFab initialization...");
+        //Debug.Log("Starting PlayFab initialization...");
         _gameManager = gameManager;
         _authService.InfoRequestParams = new()
         {
@@ -88,26 +88,27 @@ public class PlayFabManager : MonoBehaviour
         SilentAuth();
 
         yield return new WaitWhile(() => _isAwaitingInitialize);
-        Debug.Log("Silent auth complete.");
+        //Debug.Log("Silent auth complete.");
 
         //Load local save
         _gameManager.SessionData = _saveLoadUtility.LoadGame();
-        Debug.Log("Local save loaded.");
+        //Debug.Log("Local save loaded.");
 
         //Submit any dirty records if logged in
+        //NEEDS TO BE FIXED
         if (InitializationResult.isLoggedIn && _gameManager.SessionData.SaveData.dirtyRecords.Count > 0)
         {
-            Debug.Log("Submitting dirty records...");
-            _isAwaitingInitialize = true;
-            StartCoroutine(SubmitDirtyRecords());
+            //Debug.Log("Submitting dirty records...");
+            //_isAwaitingInitialize = true;
+            //StartCoroutine(SubmitDirtyRecords());
         }
         else
         {
-            Debug.Log("No dirty records to submit.");
+            //Debug.Log("No dirty records to submit.");
         }
 
         yield return new WaitWhile(() => _isAwaitingInitialize);
-        Debug.Log("Submit dirty records complete.");
+        //Debug.Log("Submit dirty records complete.");
 
         //Merge cloud save if cloud save is more recent than local save
         var lastSeenLocal = _gameManager.SessionData.SaveData.lastSaved.ToBinary();
@@ -115,7 +116,7 @@ public class PlayFabManager : MonoBehaviour
         CheckCloudLoad(lastSeenLocal, _lastSeenCloud);
 
         yield return new WaitWhile(() => _isAwaitingInitialize);
-        Debug.Log("Load cloud save complete.");
+        //Debug.Log("Load cloud save complete.");
 
         //Save game locally and to cloud
 
@@ -127,7 +128,7 @@ public class PlayFabManager : MonoBehaviour
         }
 
         yield return new WaitWhile(() => _isAwaitingInitialize);
-        Debug.Log("Save to cloud complete.");
+        //Debug.Log("Save to cloud complete.");
 
         //Return result with updated session data
         InitializationResult.sessionData = _gameManager.SessionData;
@@ -140,12 +141,12 @@ public class PlayFabManager : MonoBehaviour
         //Determine whether to ask for email
         if(!InitializationResult.hasEmail && PlayerPrefs.GetInt(DontAskEmailKey, 0) == 0 && loginCount % AskEmailEveryX == 0)
         {
-            Debug.Log("Setting ask email to true...");
+            //Debug.Log("Setting ask email to true...");
             InitializationResult.doAskEmail = true;
         }
         else
         {
-            Debug.Log("Setting ask email to false...");
+            //Debug.Log("Setting ask email to false...");
             InitializationResult.doAskEmail = false;
         }
 
@@ -154,7 +155,7 @@ public class PlayFabManager : MonoBehaviour
             UpdateStoredName(InitializationResult.displayName);
         }
 
-        Debug.Log("Ending initialization...");
+        //Debug.Log("Ending initialization...");
         OnInitializationComplete?.Invoke(InitializationResult);
     }
     #endregion
@@ -166,12 +167,12 @@ public class PlayFabManager : MonoBehaviour
         PlayFabAuthService.OnPlayFabError += OnSilentAuthFailure;
         if (_authService.RememberMe)
         {
-            Debug.Log("Authenticating via saved email id...");
+            //Debug.Log("Authenticating via saved email id...");
             _authService.Authenticate(Authtypes.EmailAndPassword);
         }
         else
         {
-            Debug.Log("Authenticating via device id...");
+            //Debug.Log("Authenticating via device id...");
             _authService.Authenticate(Authtypes.Silent);
         }
     }
@@ -180,7 +181,7 @@ public class PlayFabManager : MonoBehaviour
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
 
-        Debug.Log("Silent auth success.");
+        //Debug.Log("Silent auth success.");
         var isFirstTime = CheckFirstTimeUser(true);
         var hasEmail = false;
         string displayName = null;
@@ -207,7 +208,7 @@ public class PlayFabManager : MonoBehaviour
     {
         PlayFabAuthService.OnLoginSuccess -= OnSilentAuthSuccess;
         PlayFabAuthService.OnPlayFabError -= OnSilentAuthFailure;
-        Debug.Log("Silent auth error: " + error.ErrorMessage);
+        //Debug.Log("Silent auth error: " + error.ErrorMessage);
         var isFirstTime = CheckFirstTimeUser(false);
         SilentAuthComplete(false, isFirstTime, false, null, float.PositiveInfinity);
     }

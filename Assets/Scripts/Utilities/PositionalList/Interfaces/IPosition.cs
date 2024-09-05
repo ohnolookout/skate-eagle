@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IPosition 
 {
-    Vector3 Position { get; }
+    Vector3 Position { get; set; }
 }

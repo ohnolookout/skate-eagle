@@ -15,6 +15,10 @@ public abstract class PositionalList<T> where T : IPosition
     private protected Func<float> _updateTrailingX, _updateLeadingX;
     //_trailingIndex is exclusive and _leadingIndex is inclusive.
 
+#if UNITY_EDITOR
+    public bool DoLog = false;
+#endif
+
 
     public List<T> CurrentObjects { get => _currentObjects; }
     public List<T> AllObjects { get => _allObjects; }
@@ -27,8 +31,19 @@ public abstract class PositionalList<T> where T : IPosition
     #endregion
 
     #region Constructor and Initialization
-    public PositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading)
+    public PositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading, 
+        Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
+        if(onObjectAdded != null)
+        {
+            OnObjectAdded += onObjectAdded;
+        }
+
+        if(onObjectRemoved != null)
+        {
+            OnObjectRemoved += onObjectRemoved;
+        }
+
         _allObjects = allObjects;
         _currentObjects = new();
         _updateTrailingX = updateTrailing;
@@ -49,13 +64,20 @@ public abstract class PositionalList<T> where T : IPosition
     }
     public void FindInitialValues()
     {
+
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Finding initial values for positional list with count {_allObjects.Count}");
+        };
+#endif
         FindInitialTrailing();
         FindInitialLeading();
     }
 
     private void FindInitialTrailing()
     {
-        _trailingIndex = 0;
+    _trailingIndex = 0;
         if (NextTrailingPosition().x > _trailingX)
         {
             _trailingIndex = -1;
@@ -63,10 +85,26 @@ public abstract class PositionalList<T> where T : IPosition
         }
         while (NextTrailingIndex < _allObjects.Count - 1 && NextTrailingPosition().x < _trailingX)
         {
+
+#if UNITY_EDITOR
+            if (DoLog)
+            {
+                Debug.Log($"_trailingIndex: {_trailingIndex} _trailingX :{_trailingX} NextTrailingPosition.x: {NextTrailingPosition().x}");
+            };
+#endif
+
             _trailingIndex++;
         }
         if (NextTrailingPosition().x >= _trailingX)
         {
+
+#if UNITY_EDITOR
+            if (DoLog)
+            {
+                Debug.Log($"Adding trailing object before X: {NextTrailingPosition().x}");
+            };
+#endif
+
             AddTrailingObject();
         }
     }
@@ -83,6 +121,14 @@ public abstract class PositionalList<T> where T : IPosition
         }
         while (NextLeadingIndex < _allObjects.Count && NextLeadingPosition().x <= _leadingX)
         {
+
+#if UNITY_EDITOR
+            if (DoLog)
+            {
+                Debug.Log($"Adding leading object at index: {_leadingIndex + 1} _leadingX :{_leadingX} NextLeadingPosition.x: {NextLeadingPosition().x}");
+            };
+#endif
+
             AddLeadingObject();
         }
     }
@@ -104,6 +150,14 @@ public abstract class PositionalList<T> where T : IPosition
     protected bool UpdateCurrentObjects()
     {
         bool objectsChanged = false;
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Updating current objects. Trailing X: {_trailingX} Leading X: {_leadingX}");
+            Debug.Log($"Current trailing X: {CurrentTrailingPosition().x} Current leading X: {CurrentLeadingPosition().x}");
+            Debug.Log($"Next trailing X: {NextTrailingPosition().x} Next leading X: {NextLeadingPosition().x}");
+        };
+#endif
 
         if (CurrentTrailingIndex < _allObjects.Count && CurrentTrailingPosition().x < _trailingX)
         {
@@ -205,6 +259,29 @@ public abstract class PositionalList<T> where T : IPosition
         }
         return true;
     }
+    #endregion
+
+    #region Change Object Order
+    public void MoveTrailingToLeading(Vector2 newPosition)
+    {
+        var trailingObj = _allObjects[0];
+        trailingObj.Position = newPosition;
+        _allObjects.RemoveAt(0);
+        _allObjects.Add(trailingObj);
+        _trailingIndex--;
+        _leadingIndex--;
+    }
+
+    public void MoveLeadingToTrailing(Vector2 newPosition)
+    {
+        var leadingObj = _allObjects[^1];
+        leadingObj.Position = newPosition;
+        _allObjects.RemoveAt(_allObjects.Count - 1);
+        _allObjects.Insert(0, leadingObj);
+        _trailingIndex++;
+        _leadingIndex++;
+    }
+
     #endregion
 
     #region Abstract Funcs

@@ -12,7 +12,6 @@ public class ParallaxBackground : MonoBehaviour
     private ICameraOperator camScript;
     private SpriteRenderer[] spriteRenderers = new SpriteRenderer[3];
     public float parallaxMagnitude;
-    public BackgroundContainer container;
     private int currentCenterPanel = 1;
 
     void Start()

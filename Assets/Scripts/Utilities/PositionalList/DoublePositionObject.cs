@@ -22,7 +22,7 @@ public class DoublePositionObject<T> : IPosition, IDoublePosition
         _endPosition = endPosition;
     }
 
-    public Vector3 Position => _position;
+    public Vector3 Position { get => _position; set => _position = value; }
     public Vector3 StartPosition => _startPosition;
     public Vector3 EndPosition => _endPosition;
     public T Value => _value;

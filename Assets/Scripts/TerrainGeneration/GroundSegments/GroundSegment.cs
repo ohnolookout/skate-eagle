@@ -19,7 +19,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
     public Vector3 StartPosition => _curve.StartPoint.ControlPoint;
     public Vector3 EndPosition => _curve.EndPoint.ControlPoint;
-    public Vector3 Position => _curve.StartPoint.ControlPoint;
+    public Vector3 Position { get => _curve.StartPoint.ControlPoint; set => transform.position = value; }
     public CurveType Type { get => _curve.Type; }
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }

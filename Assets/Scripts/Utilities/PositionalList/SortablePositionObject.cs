@@ -13,7 +13,7 @@ public class SortablePositionObject<T> : IPosition, ISortable
         _position = position;
         _sortKey = sortKey;
     }
-    public Vector3 Position => _position;
+    public Vector3 Position { get => _position; set => _position = value; }
     public T Value => _value;
     public float SortKey { get => _sortKey;}
 }

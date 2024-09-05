@@ -11,6 +11,6 @@ public class PositionObject<T> : IPosition
         _value = value;
         _position = position;
     }
-    public Vector3 Position => _position;
+    public Vector3 Position { get => _position; set => _position = value; }
     public T Value => _value;
 }

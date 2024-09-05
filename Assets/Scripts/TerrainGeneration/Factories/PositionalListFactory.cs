@@ -30,11 +30,11 @@ public static class PositionalListFactory<T> where T : IPosition
         return positionalList;
     }
 
-    public static SinglePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer)
+    public static SinglePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
         Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
         Func<float> updateLeading = () => cameraOperator.LeadingCorner.x + leadingBuffer;
-        SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
+        SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved);
         return positionalList;
     }
     #endregion
