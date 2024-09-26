@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3388790049885609557}
+  - component: {fileID: 8970277582043373405}
   m_Layer: 0
   m_Name: PanelTemplate
   m_TagString: Untagged
@@ -34,6 +35,20 @@ Transform:
   - {fileID: 6603880021889083657}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8970277582043373405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2516214786880242832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0473933b4fca1564ebd36c013bd0705f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LeftAnchor: {fileID: 6603880021889083657}
+  RightAnchor: {fileID: 8757727184809122240}
 --- !u!1 &4103959911275628021
 GameObject:
   m_ObjectHideFlags: 0
