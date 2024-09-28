@@ -5,8 +5,8 @@ using System;
 
 public class DoublePositionalList<T> : PositionalList<T> where T : IDoublePosition, IPosition
 {
-    public DoublePositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading) :
-        base(allObjects, updateTrailing, updateLeading)
+    public DoublePositionalList(List<T> allObjects, Func<float> updateTrailing, Func<float> updateLeading, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null) :
+        base(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved)
     {
     }
 

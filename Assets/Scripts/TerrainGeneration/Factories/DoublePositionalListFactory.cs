@@ -28,11 +28,11 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
         return positionalList;
     }
 
-    public static DoublePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer)
+    public static DoublePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
         Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
         Func<float> updateLeading = () => cameraOperator.LeadingCorner.x + leadingBuffer;
-        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
+        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectAdded);
         return positionalList;
     }
 }

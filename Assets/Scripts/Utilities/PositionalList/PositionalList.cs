@@ -240,16 +240,19 @@ public abstract class PositionalList<T> where T : IPosition
             throw new Exception("BoundedObjectList must contain one or more elements");
         }
 
-        if (!ValidateListOrder(_allObjects))
+        if (!ValidateListOrder(_allObjects, DoLog))
         {
             throw new Exception("Unordered list sent to BoundedObjectList");
         }
     }
-    private static bool ValidateListOrder(List<T> toValidate)
+    private static bool ValidateListOrder(List<T> toValidate, bool doLog = false)
     {
         Vector3 lastPosition = toValidate[0].Position;
-        foreach (var boundedObj in toValidate)
-        {
+        foreach (var boundedObj in toValidate) { 
+            if (doLog)
+            {
+                Debug.Log($"Validating position for object at {boundedObj.Position}");
+            }
             if (boundedObj.Position.x < lastPosition.x)
             {
                 Debug.Log($"Invalid list order. {boundedObj.Position} comes before {lastPosition}");
@@ -259,7 +262,7 @@ public abstract class PositionalList<T> where T : IPosition
         }
         return true;
     }
-    #endregion
+#endregion
 
     #region Change Object Order
     public void MoveTrailingToLeading(Vector2 newPosition)

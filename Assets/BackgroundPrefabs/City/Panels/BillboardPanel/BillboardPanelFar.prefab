@@ -60,6 +60,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BillboardPanelFar
       objectReference: {fileID: 0}
+    - target: {fileID: 3971560953380390722, guid: 56386412393cec14b997840e0104e55d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7783d0f40dd96db47a2ed69efc1f40f1, type: 3}
+    - target: {fileID: 4228580576579121773, guid: 56386412393cec14b997840e0104e55d, type: 3}
+      propertyPath: m_Name
+      value: CenterBumpNearSprite
+      objectReference: {fileID: 0}
     - target: {fileID: 4604413363287622584, guid: 56386412393cec14b997840e0104e55d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -104,6 +112,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 7783d0f40dd96db47a2ed69efc1f40f1, type: 3}
+    - target: {fileID: 5267692435736073063, guid: 56386412393cec14b997840e0104e55d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a0d4dbdde6b799c439db91a75ea40afb, type: 3}
+    - target: {fileID: 5824142538286346944, guid: 56386412393cec14b997840e0104e55d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ece46bbe4e07bca46bc64545763d5133, type: 3}
     - target: {fileID: 6027613124038854028, guid: 56386412393cec14b997840e0104e55d, type: 3}
       propertyPath: m_Name
       value: CenterBumpFar
@@ -113,7 +129,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: a0d4dbdde6b799c439db91a75ea40afb, type: 3}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4228580576579121773, guid: 56386412393cec14b997840e0104e55d, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56386412393cec14b997840e0104e55d, type: 3}

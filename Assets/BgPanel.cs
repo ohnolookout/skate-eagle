@@ -13,7 +13,7 @@ public class BgPanel : MonoBehaviour, IDoublePosition, IPosition
     public Vector3 StartPosition => LeftAnchor.position;
     public Vector3 EndPosition => RightAnchor.position;    
 
-    void Start()
+    void Awake()
     {
         PositionBgObjects = new();
         foreach (var obj in BgObjects)
