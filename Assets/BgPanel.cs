@@ -6,20 +6,9 @@ public class BgPanel : MonoBehaviour, IDoublePosition, IPosition
 {
     public Transform LeftAnchor;
     public Transform RightAnchor;
-    public List<GameObject> BgObjects;
-    public List<PositionObject<GameObject>> PositionBgObjects;
+    public List<CitySprite> SpriteObjects;
     public float XWidth => RightAnchor.position.x - LeftAnchor.position.x;
     public Vector3 Position { get => transform.position; set => transform.position = value; }
     public Vector3 StartPosition => LeftAnchor.position;
-    public Vector3 EndPosition => RightAnchor.position;    
-
-    void Awake()
-    {
-        PositionBgObjects = new();
-        foreach (var obj in BgObjects)
-        {
-            PositionBgObjects.Add(new(obj, obj.transform.position));
-        }
-        
-    }
+    public Vector3 EndPosition => RightAnchor.position; 
 }
