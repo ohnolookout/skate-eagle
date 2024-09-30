@@ -32,7 +32,7 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
     {
         Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
         Func<float> updateLeading = () => cameraOperator.LeadingCorner.x + leadingBuffer;
-        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectAdded);
+        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved);
         return positionalList;
     }
 }

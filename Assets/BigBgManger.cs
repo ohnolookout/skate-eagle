@@ -59,13 +59,14 @@ public class BigBgManger : MonoBehaviour
             OnPanelAdded,
             OnPanelRemoved
         );
+        Debug.Log($"_orderedSpriteObjects length: {_orderedSpriteObjects.Count}");
         _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
             _orderedSpriteObjects,
             _cameraOperator,
-            CameraBuffer * 2,
-            CameraBuffer * 2,
-            OnObjectAdded,
-            OnObjectRemoved
+            CameraBuffer,
+            CameraBuffer,
+            OnSpriteAdded,
+            OnSpriteRemoved
         );
 
     }
@@ -77,7 +78,7 @@ public class BigBgManger : MonoBehaviour
     void FixedUpdate()
     {
         _panelPositionalList.Update();
-        //_spriteObjectPositionalList.Update();
+        _spriteObjectPositionalList.Update();
 
 
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
@@ -103,7 +104,7 @@ public class BigBgManger : MonoBehaviour
             _panelPositionalList.MoveLeadingToTrailing(new(_trailingObjectX - _currentPanelWidth, leadingObject.Position.y));
         }
     }
-
+    /*
     void OnDrawGizmos()
     {
         if (!Application.isPlaying)
@@ -122,7 +123,7 @@ public class BigBgManger : MonoBehaviour
         Gizmos.DrawSphere(new(_leadingObjectX + _currentPanelWidth, 0), 25);
         Gizmos.DrawSphere(new(_trailingObjectX - _currentPanelWidth, 0), 25);
     }
-
+    */
     private void AddPanelToBg(BgPanel panel)
     {
         //Debug.Log("Adding panel to orderdBgPanels at X position: " + (_positionCoefficient + _orderedBgPanels.Count) * _panelWidth);
@@ -161,13 +162,15 @@ public class BigBgManger : MonoBehaviour
 
     }
 
-    private void OnObjectAdded(CitySprite addedObj, ListSection section)
+    private void OnSpriteAdded(CitySprite addedObj, ListSection section)
     {
+        Debug.Log("Sprite added...");
         addedObj.gameObject.SetActive(true);
     }
 
-    private void OnObjectRemoved(CitySprite removedObj, ListSection section)
+    private void OnSpriteRemoved(CitySprite removedObj, ListSection section)
     {
+        Debug.Log("Sprite removed...");
         removedObj.gameObject.SetActive(false);
     }
 
