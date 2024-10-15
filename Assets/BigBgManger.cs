@@ -7,8 +7,10 @@ public class BigBgManger : MonoBehaviour
 {
     [SerializeField] private List<BgPanel> _bgPanelPool;
     [SerializeField] private int _panelCount;
+    [SerializeField] private int _panelOrder;
     [SerializeField] private Transform _leftAnchor;
     [SerializeField] private Transform _rightAnchor;
+    public bool HasSharedObjectPool = false;
 
     private List<BgPanel> _orderedBgPanels = new();
     private List<CitySprite> _orderedSpriteObjects = new();
@@ -20,6 +22,7 @@ public class BigBgManger : MonoBehaviour
     private float _panelWidth;
     private float _totalWidth;
     private float _positionCoefficient;
+    private bool _hasIndividualSprites;
     public int CameraBuffer = 30;
 
     private float _currentHalfWidth;
@@ -45,11 +48,21 @@ public class BigBgManger : MonoBehaviour
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
 
-        var panelSequence = RandomIndexOrder(_bgPanelPool.Count, _panelCount);
-        foreach (var index in panelSequence)
+        List<int> indexSequence;
+        if (HasSharedObjectPool)
+        {
+            indexSequence = BackgroundContainer.BgPanelSequence.GetRange(_panelOrder * _panelCount, _panelCount);
+        }
+        else
+        {
+            indexSequence = BackgroundContainer.RandomIndexOrder(_panelCount, _panelCount);
+        }
+        foreach (var index in indexSequence)
         {
             AddPanelToBg(_bgPanelPool[index]);
         }
+
+        _hasIndividualSprites = _orderedSpriteObjects.Count > 0;
 
         _panelPositionalList = DoublePositionalListFactory<BgPanel>.CameraOperatorTracker(
             _orderedBgPanels,
@@ -59,26 +72,28 @@ public class BigBgManger : MonoBehaviour
             OnPanelAdded,
             OnPanelRemoved
         );
-        Debug.Log($"_orderedSpriteObjects length: {_orderedSpriteObjects.Count}");
-        _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
-            _orderedSpriteObjects,
-            _cameraOperator,
-            CameraBuffer,
-            CameraBuffer,
-            OnSpriteAdded,
-            OnSpriteRemoved
-        );
+
+        if (_hasIndividualSprites)
+        {
+            _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
+                _orderedSpriteObjects,
+                _cameraOperator,
+                CameraBuffer,
+                CameraBuffer,
+                OnSpriteAdded,
+                OnSpriteRemoved
+            );
+        }
 
     }
-
     void Update()
     {
-
-    }
-    void FixedUpdate()
-    {
         _panelPositionalList.Update();
-        _spriteObjectPositionalList.Update();
+
+        if (_hasIndividualSprites)
+        {
+            _spriteObjectPositionalList.Update();
+        }
 
 
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
@@ -95,16 +110,23 @@ public class BigBgManger : MonoBehaviour
         if (_trailingObjectX <= _trailingBoundX)
         {
             var trailingObject = _panelPositionalList.AllObjects[0];
-            Debug.Log($"Moving trailing object from {trailingObject.Position} to ({_leadingObjectX + _panelWidth}, {trailingObject.Position.y})");
             _panelPositionalList.MoveTrailingToLeading(new(_leadingObjectX + _currentPanelWidth, trailingObject.Position.y));
+            if (_hasIndividualSprites)
+            {
+                _spriteObjectPositionalList.OrderTrailingToLeading(trailingObject.SpriteObjects.Count);
+            }
         }
         else if (_leadingObjectX >= _leadingBoundX)
         {
             var leadingObject = _panelPositionalList.AllObjects[^1];
             _panelPositionalList.MoveLeadingToTrailing(new(_trailingObjectX - _currentPanelWidth, leadingObject.Position.y));
+            if (_hasIndividualSprites)
+            {
+                _spriteObjectPositionalList.OrderLeadingToTrailing(leadingObject.SpriteObjects.Count);
+            }
         }
     }
-    /*
+    
     void OnDrawGizmos()
     {
         if (!Application.isPlaying)
@@ -123,33 +145,20 @@ public class BigBgManger : MonoBehaviour
         Gizmos.DrawSphere(new(_leadingObjectX + _currentPanelWidth, 0), 25);
         Gizmos.DrawSphere(new(_trailingObjectX - _currentPanelWidth, 0), 25);
     }
-    */
+    
     private void AddPanelToBg(BgPanel panel)
     {
         //Debug.Log("Adding panel to orderdBgPanels at X position: " + (_positionCoefficient + _orderedBgPanels.Count) * _panelWidth);
         panel.gameObject.SetActive(true);
         panel.transform.localPosition = new((_positionCoefficient + _orderedBgPanels.Count) * _panelWidth, panel.transform.localPosition.y);
         _orderedBgPanels.Add(panel);
-        _orderedSpriteObjects.AddRange(panel.SpriteObjects);
+        if (panel.SpriteObjects.Count > 0)
+        {
+            _orderedSpriteObjects.AddRange(panel.SpriteObjects);
+        }
     }
 
-    public static List<int> RandomIndexOrder(int poolSize, int listSize)
-    {
-        var indexPool = new List<int>();
-        var returnSequence = new List<int>();
-        for (int i = 0; i < poolSize; i++)
-        {
-            indexPool.Add(i);
-        }
-        while (returnSequence.Count < listSize)
-        {
-            var randomSelection = UnityEngine.Random.Range(0, indexPool.Count);
-            returnSequence.Add(indexPool[randomSelection]);
-            indexPool.RemoveAt(randomSelection);
-        }
-
-        return returnSequence;
-    }
+    
 
     #region Add/Remove
     private void OnPanelAdded(BgPanel addedPanel, ListSection section)

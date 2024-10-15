@@ -285,6 +285,25 @@ public abstract class PositionalList<T> where T : IPosition
         _leadingIndex++;
     }
 
+    public void OrderTrailingToLeading(int countToMove)
+    {
+        var chunkToMove = _allObjects.GetRange(0, countToMove);
+        _allObjects.RemoveRange(0, countToMove);
+        _allObjects.AddRange(chunkToMove);
+        _trailingIndex -= countToMove;
+        _leadingIndex -= countToMove;
+    }
+
+    public void OrderLeadingToTrailing(int countToMove)
+    {
+        var startIndex = _allObjects.Count - countToMove;
+        var chunkToMove = _allObjects.GetRange(startIndex, countToMove);
+        _allObjects.RemoveRange(startIndex, countToMove);
+        chunkToMove.AddRange(_allObjects);
+        _allObjects = chunkToMove;
+        _trailingIndex += countToMove;
+        _leadingIndex += countToMove;
+    }
     #endregion
 
     #region Abstract Funcs
