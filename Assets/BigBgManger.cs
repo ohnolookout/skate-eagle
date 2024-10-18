@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class BigBgManger : MonoBehaviour
 {
+    #region Declarations
     [SerializeField] private List<BgPanel> _bgPanelPool;
     [SerializeField] private int _panelCount;
     [SerializeField] private int _panelOrder;
@@ -32,58 +33,23 @@ public class BigBgManger : MonoBehaviour
     private float _leadingObjectX => _panelPositionalList.AllObjects[^1].Position.x;
     private float _trailingBoundX => _cameraOperator.gameObject.transform.position.x - _currentHalfWidth - CameraBuffer;
     private float _leadingBoundX => _cameraOperator.gameObject.transform.position.x + _currentHalfWidth + CameraBuffer;
+    #endregion
 
-
+    #region Monobehaviours
     void Start()
     {
         _startPosition = transform.position;
-        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
         _panelWidth = _bgPanelPool[0].XWidth;
         _totalWidth = _panelWidth * _panelCount;
         _positionCoefficient = (-_panelCount / 2) + 0.5f;
-
-        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
 
         _leftAnchor.transform.position = new(-_totalWidth / 2, 0);
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
 
-        List<int> indexSequence;
-        if (HasSharedObjectPool)
-        {
-            indexSequence = BackgroundContainer.BgPanelSequence.GetRange(_panelOrder * _panelCount, _panelCount);
-        }
-        else
-        {
-            indexSequence = BackgroundContainer.RandomIndexOrder(_panelCount, _panelCount);
-        }
-        foreach (var index in indexSequence)
-        {
-            AddPanelToBg(_bgPanelPool[index]);
-        }
+        ArrangePanels();
 
-        _hasIndividualSprites = _orderedSpriteObjects.Count > 0;
-
-        _panelPositionalList = DoublePositionalListFactory<BgPanel>.CameraOperatorTracker(
-            _orderedBgPanels,
-            _cameraOperator,
-            CameraBuffer,
-            CameraBuffer,
-            OnPanelAdded,
-            OnPanelRemoved
-        );
-
-        if (_hasIndividualSprites)
-        {
-            _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
-                _orderedSpriteObjects,
-                _cameraOperator,
-                CameraBuffer,
-                CameraBuffer,
-                OnSpriteAdded,
-                OnSpriteRemoved
-            );
-        }
+        BuildPositionalLists();
 
     }
     void Update()
@@ -95,7 +61,6 @@ public class BigBgManger : MonoBehaviour
             _spriteObjectPositionalList.Update();
         }
 
-
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
         float xDelta = _cameraOperator.gameObject.transform.position.x * ParallaxRatio;
         float camLayerDelta = _cameraOperator.gameObject.transform.position.x * (1 - ParallaxRatio);
@@ -104,29 +69,8 @@ public class BigBgManger : MonoBehaviour
         float lengthDifference = (expectedPercentWidthFromCamera - currentPercentWidthFromCamera) * _currentHalfWidth;
         transform.position = new Vector3(_startPosition.x + xDelta - lengthDifference, transform.position.y, transform.position.z);
 
-        //Shift objects from back to front if they exceed bounds
-        //Use object's distance to determine new x coord
-
-        if (_trailingObjectX <= _trailingBoundX)
-        {
-            var trailingObject = _panelPositionalList.AllObjects[0];
-            _panelPositionalList.MoveTrailingToLeading(new(_leadingObjectX + _currentPanelWidth, trailingObject.Position.y));
-            if (_hasIndividualSprites)
-            {
-                _spriteObjectPositionalList.OrderTrailingToLeading(trailingObject.SpriteObjects.Count);
-            }
-        }
-        else if (_leadingObjectX >= _leadingBoundX)
-        {
-            var leadingObject = _panelPositionalList.AllObjects[^1];
-            _panelPositionalList.MoveLeadingToTrailing(new(_trailingObjectX - _currentPanelWidth, leadingObject.Position.y));
-            if (_hasIndividualSprites)
-            {
-                _spriteObjectPositionalList.OrderLeadingToTrailing(leadingObject.SpriteObjects.Count);
-            }
-        }
     }
-    
+    /*
     void OnDrawGizmos()
     {
         if (!Application.isPlaying)
@@ -145,10 +89,31 @@ public class BigBgManger : MonoBehaviour
         Gizmos.DrawSphere(new(_leadingObjectX + _currentPanelWidth, 0), 25);
         Gizmos.DrawSphere(new(_trailingObjectX - _currentPanelWidth, 0), 25);
     }
-    
+    */
+    #endregion
+
+    #region Initialization
+    private void ArrangePanels()
+    {
+        List<int> indexSequence;
+        if (HasSharedObjectPool)
+        {
+            indexSequence = BackgroundContainer.BgPanelSequence.GetRange(_panelOrder * _panelCount, _panelCount);
+        }
+        else
+        {
+            indexSequence = BackgroundContainer.RandomIndexOrder(_panelCount, _panelCount);
+        }
+        foreach (var index in indexSequence)
+        {
+            AddPanelToBg(_bgPanelPool[index]);
+        }
+
+        _hasIndividualSprites = _orderedSpriteObjects.Count > 0;
+    }
+
     private void AddPanelToBg(BgPanel panel)
     {
-        //Debug.Log("Adding panel to orderdBgPanels at X position: " + (_positionCoefficient + _orderedBgPanels.Count) * _panelWidth);
         panel.gameObject.SetActive(true);
         panel.transform.localPosition = new((_positionCoefficient + _orderedBgPanels.Count) * _panelWidth, panel.transform.localPosition.y);
         _orderedBgPanels.Add(panel);
@@ -158,42 +123,81 @@ public class BigBgManger : MonoBehaviour
         }
     }
 
-    
+    private void BuildPositionalLists()
+    {
+        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
+
+        _panelPositionalList = DoublePositionalListFactory<BgPanel>.CameraOperatorTracker(
+            _orderedBgPanels,
+            _cameraOperator,
+            CameraBuffer * 1.5f,
+            CameraBuffer * 1.5f,
+            OnPanelAdded,
+            OnPanelRemoved
+        );
+
+        if (_hasIndividualSprites)
+        {
+            _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
+                _orderedSpriteObjects,
+                _cameraOperator,
+                CameraBuffer,
+                CameraBuffer,
+                OnSpriteAdded,
+                OnSpriteRemoved
+            );
+        }
+    }
+
+    #endregion
 
     #region Add/Remove
     private void OnPanelAdded(BgPanel addedPanel, ListSection section)
     {
-
+        return;
     }
 
     private void OnPanelRemoved(BgPanel removedPanel, ListSection section)
     {
-
+        if (section == ListSection.Trailing)
+        {
+            MoveTrailingPanelToLeading(removedPanel);
+        }
+        else
+        {
+            MoveLeadingPanelToTrailing(removedPanel);
+        }
     }
 
     private void OnSpriteAdded(CitySprite addedObj, ListSection section)
     {
-        Debug.Log("Sprite added...");
         addedObj.gameObject.SetActive(true);
     }
 
     private void OnSpriteRemoved(CitySprite removedObj, ListSection section)
     {
-        Debug.Log("Sprite removed...");
         removedObj.gameObject.SetActive(false);
     }
 
     #endregion
 
     #region MovePanels
-    private void MoveTrailingPanelToLeading()
+    private void MoveTrailingPanelToLeading(BgPanel removedPanel)
     {
-
+        _panelPositionalList.MoveTrailingToLeading(new(_leadingObjectX + _currentPanelWidth, removedPanel.Position.y));
+        if (_hasIndividualSprites)
+        {
+            _spriteObjectPositionalList.OrderTrailingToLeading(removedPanel.SpriteObjects.Count);
+        }
     }
 
-    private void MoveLeadingPanelToTrailing()
+    private void MoveLeadingPanelToTrailing(BgPanel removedPanel)
     {
-
+        _panelPositionalList.MoveLeadingToTrailing(new(_trailingObjectX - _currentPanelWidth, removedPanel.Position.y));
+        if (_hasIndividualSprites)
+        {
+            _spriteObjectPositionalList.OrderLeadingToTrailing(removedPanel.SpriteObjects.Count);
+        }
     }
 
     #endregion

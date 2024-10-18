@@ -150,6 +150,8 @@ public abstract class PositionalList<T> where T : IPosition
     protected bool UpdateCurrentObjects()
     {
         bool objectsChanged = false;
+
+        /*
 #if UNITY_EDITOR
         if (DoLog)
         {
@@ -158,7 +160,7 @@ public abstract class PositionalList<T> where T : IPosition
             Debug.Log($"Next trailing X: {NextTrailingPosition().x} Next leading X: {NextLeadingPosition().x}");
         };
 #endif
-
+        */
         if (CurrentTrailingIndex < _allObjects.Count && CurrentTrailingPosition().x < _trailingX)
         {
             RemoveTrailingObject();
@@ -207,6 +209,13 @@ public abstract class PositionalList<T> where T : IPosition
         OnObjectAdded?.Invoke(addedObj, ListSection.Trailing);
         _trailingIndex--;
 
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Adding trailing object at index {_trailingIndex + 1}");
+        }
+#endif
+
     }
 
     public virtual void RemoveTrailingObject()
@@ -214,6 +223,12 @@ public abstract class PositionalList<T> where T : IPosition
         OnObjectRemoved?.Invoke(_currentObjects[0], ListSection.Trailing);
         _currentObjects.RemoveAt(0);
         _trailingIndex++;
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Removing trailing object at index {_trailingIndex + 1}");
+        }
+#endif
     }
 
     public virtual void AddLeadingObject()
@@ -222,6 +237,13 @@ public abstract class PositionalList<T> where T : IPosition
         _currentObjects.Add(addedObj);
         OnObjectAdded?.Invoke(addedObj, ListSection.Leading);
         _leadingIndex++;
+
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Adding leading object at index {_leadingIndex}");
+        }
+#endif
     }
 
     public virtual void RemoveLeadingObject()
@@ -229,6 +251,13 @@ public abstract class PositionalList<T> where T : IPosition
         OnObjectRemoved?.Invoke(_currentObjects[_currentObjects.Count - 1], ListSection.Leading);
         _currentObjects.RemoveAt(_currentObjects.Count - 1);
         _leadingIndex--;
+
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Removing leading object at index {_leadingIndex}");
+        }
+#endif
     }
     #endregion
 
@@ -292,6 +321,15 @@ public abstract class PositionalList<T> where T : IPosition
         _allObjects.AddRange(chunkToMove);
         _trailingIndex -= countToMove;
         _leadingIndex -= countToMove;
+
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Moving {countToMove} sprites from trailing to leading...");
+            Debug.Log($"New trailing index: {_trailingIndex}");
+            Debug.Log($"New leading index: {_leadingIndex}");
+        }
+#endif
     }
 
     public void OrderLeadingToTrailing(int countToMove)
@@ -303,6 +341,15 @@ public abstract class PositionalList<T> where T : IPosition
         _allObjects = chunkToMove;
         _trailingIndex += countToMove;
         _leadingIndex += countToMove;
+
+#if UNITY_EDITOR
+        if (DoLog)
+        {
+            Debug.Log($"Moving {countToMove} sprites from leading to trailing...");
+            Debug.Log($"New trailing index: {_trailingIndex}");
+            Debug.Log($"New leading index: {_leadingIndex}");
+        }
+#endif
     }
     #endregion
 
