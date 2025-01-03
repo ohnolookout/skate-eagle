@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 470924458280951432}
   - component: {fileID: 470924458280951433}
   - component: {fileID: 470924458280951478}
-  - component: {fileID: 470924458280951479}
-  - component: {fileID: 470924458280951476}
   - component: {fileID: 541643563}
   m_Layer: 0
   m_Name: Ground
@@ -29,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 470924458280951477}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -19.7, y: -4.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1971053207 &470924458280951432
 SpriteShapeRenderer:
@@ -54,6 +52,8 @@ SpriteShapeRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -96,6 +96,7 @@ SpriteShapeRenderer:
   m_LocalAABB:
     m_Center: {x: 0, y: -3.28, z: 0}
     m_Extent: {x: 2, y: 2.5600002, z: 0}
+  m_SpriteSortPoint: 0
 --- !u!114 &470924458280951433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,8 +117,6 @@ MonoBehaviour:
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -126,8 +125,6 @@ MonoBehaviour:
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -142,11 +139,17 @@ MonoBehaviour:
   m_ColliderDetail: 16
   m_ColliderOffset: 0.451
   m_UpdateCollider: 0
-  m_OptimizeCollider: 1
-  m_OptimizeGeometry: 1
   m_EnableTangents: 0
   m_GeometryCached: 0
   m_UTess2D: 0
+  m_UpdateShadow: 0
+  m_ShadowDetail: 16
+  m_ShadowOffset: 0.5
+  m_BoundsScale: 2
+  m_Creator: {fileID: 0}
+  m_Modifiers: []
+  m_ColliderSegment: []
+  m_ShadowSegment: []
 --- !u!68 &470924458280951478
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -155,11 +158,32 @@ EdgeCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 470924458280951477}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points: []
@@ -167,53 +191,6 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!114 &470924458280951479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 470924458280951477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8e59907a1a0fc84bb5a6f779d1941d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shapeController: {fileID: 470924458280951433}
-  spline:
-    m_IsOpenEnded: 0
-    m_ControlPoints: []
-  cameraScript: {fileID: 0}
-  initialCurveCount: 4
-  minLength: 10
-  maxLength: 50
-  minClimb: -5
-  maxClimb: 3
-  minSlope: 0.4
-  maxSlope: 1.5
-  minVelocity: 3
-  maxVelocity: 6
-  colliderCreator: {fileID: 470924458280951476}
-  finishFlag: {fileID: 6849070183138834917, guid: aa12db359f56e85498d87da578195f0b, type: 3}
-  logic: {fileID: 0}
---- !u!114 &470924458280951476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 470924458280951477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27e88e46bcf18444a91b5cc909726bcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spline:
-    m_IsOpenEnded: 0
-    m_ControlPoints: []
-  groundSpline: {fileID: 470924458280951479}
-  controller: {fileID: 470924458280951433}
-  edgeOffset: 1.2
 --- !u!114 &541643563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,11 +204,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShadowGroup: 0
-  m_ComponentVersion: 1
+  m_Priority: 0
+  m_ComponentVersion: 5
   m_HasRenderer: 1
   m_UseRendererSilhouette: 0
   m_CastsShadows: 1
   m_SelfShadows: 1
+  m_AlphaCutoff: 0.1
   m_ApplyToSortingLayers: 432980e2000000002514c32d
   m_ShapePath:
   - {x: -2.2000008, y: -3.2799997, z: 0}
@@ -239,5 +218,28 @@ MonoBehaviour:
   - {x: 2.2000008, y: -0.7199998, z: 0}
   - {x: 2.2000008, y: -3.2799997, z: 0}
   m_ShapePathHash: -1807981355
-  m_Mesh: {fileID: 0}
   m_InstanceId: 66290
+  m_ShadowShape2DComponent: {fileID: 0}
+  m_ShadowShape2DProvider:
+    rid: -2
+  m_ShadowCastingSource: 1
+  m_ShadowMesh:
+    m_Mesh: {fileID: 0}
+    m_LocalBounds:
+      m_Center: {x: 0, y: -1.9999998, z: 0}
+      m_Extent: {x: 2.2000008, y: 1.28, z: 0}
+    m_EdgeProcessing: 1
+    m_TrimEdge: 0
+    m_FlipX: 0
+    m_FlipY: 0
+    m_InitialTrim: 0
+  m_CastingOption: 2
+  m_PreviousTrimEdge: 0
+  m_PreviousEdgeProcessing: 1
+  m_PreviousShadowCastingSource: 1
+  m_PreviousShadowShape2DSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

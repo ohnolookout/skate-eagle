@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     private SessionData _sessionData;
     private Level _currentLevel = null;
-    private PlayFabManager _playFabManager;
+    [SerializeField] private PlayFabManager _playFabManager;
     private bool _isAwaitingPlayFab = false;
     private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
     private Action<Level> _onLevelLoaded;
@@ -64,7 +64,8 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        _playFabManager = new();
+        //_playFabManager = gameObject.AddComponent<PlayFabManager>();
+        //_playFabManager = new();
         OnLoading += ActivateLoadingScreen;
 
 #if UNITY_EDITOR

@@ -376,6 +376,10 @@ public class PlayFabManager : MonoBehaviour
 
     public static string FormatDisplayName(string name)
     {
+        if(name == null)
+        {
+            return "";
+        }
         var splitName = name.Split('#', 2);
         return splitName[0] + "<color=#8A8A8A>#" + splitName[1];
     }
