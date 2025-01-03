@@ -56,7 +56,7 @@ public static class TerrainGenerator
     #endregion
 
     #region Segment Generation
-    private static IGroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
+    public static IGroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
     {
         IGroundSegment newSegment = CreateSegment(terrain, curve);
         terrain.SegmentList.Add(newSegment);
@@ -69,8 +69,9 @@ public static class TerrainGenerator
     private static IGroundSegment CreateSegment(LevelTerrain terrain, Curve curve)
     {
         //Instantiate segment object and add its script to segmentList
-        IGroundSegment newSegment = terrain.InstantiateSegment().GetComponent<IGroundSegment>();
+        var newSegment = terrain.InstantiateSegment().GetComponent<IGroundSegment>();
         //Set the new segment's curve and deactivate the segment.
+        Debug.Log("New segment: " + newSegment);
         newSegment.ApplyCurve(curve);
         newSegment.gameObject.SetActive(false);
 #if UNITY_EDITOR
@@ -93,7 +94,7 @@ public static class TerrainGenerator
         return newCollider;
     }
 
-    private static CurvePoint GenerateStartSegment(LevelTerrain terrain, Vector3 startPosition)
+    public static CurvePoint GenerateStartSegment(LevelTerrain terrain, Vector3 startPosition)
     {
         //Create startline at location of player
         IGroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(startPosition)));

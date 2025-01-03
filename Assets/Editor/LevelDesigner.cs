@@ -118,7 +118,6 @@ public class LevelDesigner : EditorWindow
         }
         UpdateLevel();
         _levelManager.SetLevel(_currentLevel);
-        //gameManager.CurrentLevel = _currentLevel;
         _terrainManager.GenerateTerrain(_currentLevel, new(0,0));
     }
 

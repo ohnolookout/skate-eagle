@@ -32,7 +32,9 @@ public class LevelTerrain : MonoBehaviour
 
     public GameObject InstantiateSegment()
     {
-        return Instantiate(_segmentPrefab, transform, true);
+        var seg = Instantiate(_segmentPrefab, transform, true);
+        Debug.Log(seg);
+        return seg;
     }
 
     public void InstantiateFinish(Vector3 finishLinePoint, Vector3 backstopPoint)
