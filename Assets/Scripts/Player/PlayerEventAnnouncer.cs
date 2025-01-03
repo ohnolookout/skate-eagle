@@ -64,6 +64,13 @@ public class PlayerEventAnnouncer
         _actionDict[action]?.Invoke(_player);
     }
 
+    //Invokes event and then clears all subscribed actions.
+    public void InvokeAndClearAction(PlayerEvent action)
+    {
+        InvokeAction(action);
+        _actionDict[action] = null;
+    }
+
     public void SubscribeToEvent(PlayerEvent eventName, Action<IPlayer> action)
     {
         _actionDict[eventName] += action;

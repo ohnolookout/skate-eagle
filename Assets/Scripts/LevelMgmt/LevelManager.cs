@@ -156,6 +156,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         OnLanding = null;
         OnAttempt = null;
+        OnCrossFinish = null;
         OnFinish = null;
         OnGameOver = null;
         OnResultsScreen = null;

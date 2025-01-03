@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 612912610731922026}
-  - component: {fileID: 5630886585080765743}
   m_Layer: 0
   m_Name: GroundSpawn
   m_TagString: GroundSpawner
@@ -24,28 +23,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4671667058845963952}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 84.802734, y: 44.425137, z: 7.381081}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5630886585080765743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4671667058845963952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b6b7133e014894ebfabea4183bc841, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundSegment: {fileID: 8534229130528223514, guid: 62822a7926fed344b93d55536ef4abb3, type: 3}
-  colliderMaterial: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
-  finishFlag: {fileID: 6849070183138834917, guid: aa12db359f56e85498d87da578195f0b, type: 3}
-  backstop: {fileID: 0}
-  testMode: 0
