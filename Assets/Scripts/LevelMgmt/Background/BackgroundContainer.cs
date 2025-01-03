@@ -32,7 +32,7 @@ public class BackgroundContainer : MonoBehaviour
         float camSizeChange = mainCam.orthographicSize - camSize;
         scaleChange = (camSizeChange / camSize) * scaleRatio;
         transform.localScale = startScale * (1 + scaleChange);
-        transform.localPosition = startPosition - new Vector3(0, camScript.Zoom.ZoomYDelta/4, 0);
+        transform.localPosition = startPosition - new Vector3(0, camScript.Zoom.ZoomYDelta/2, 0);
     }
 
     public static List<int> RandomIndexOrder(int poolSize, int listSize)

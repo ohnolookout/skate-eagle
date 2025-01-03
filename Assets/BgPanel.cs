@@ -12,10 +12,12 @@ public class BgPanel : MonoBehaviour, IDoublePosition, IPosition
     public Vector3 StartPosition => LeftAnchor.position;
     public Vector3 EndPosition => RightAnchor.position; 
 
+    /*
     void OnDrawGizmos()
     {
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, 15);
     }
+    */
 }
