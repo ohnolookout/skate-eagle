@@ -44,7 +44,7 @@ public static class DeepCopy
 
     public static CurveDefinition CopyCurveDefinition(CurveDefinition curveToCopy)
     {
-        HalfCurveDefinition[] copiedDefs = new HalfCurveDefinition[curveToCopy.Definitions.Length];
+        ProceduralCurveSection[] copiedDefs = new ProceduralCurveSection[curveToCopy.Definitions.Length];
         for(int i = 0; i < curveToCopy.Definitions.Length; i++)
         {
             copiedDefs[i] = curveToCopy.Definitions[i];
@@ -52,9 +52,9 @@ public static class DeepCopy
         return new CurveDefinition(curveToCopy.Name, copiedDefs, curveToCopy.Quantity);
     }
 
-    public static HalfCurveDefinition CopyHalfCurve(HalfCurveDefinition halfCurveToCopy)
+    public static ProceduralCurveSection CopyHalfCurve(ProceduralCurveSection halfCurveToCopy)
     {
-        return new HalfCurveDefinition(halfCurveToCopy.Length, halfCurveToCopy.Shape, halfCurveToCopy.Slope, halfCurveToCopy.Skew);
+        return new ProceduralCurveSection(halfCurveToCopy.Length, halfCurveToCopy.Shape, halfCurveToCopy.Slope);
     }
 
     public static Grade CopyGrade(Grade gradeToCopy)

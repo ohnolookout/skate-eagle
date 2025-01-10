@@ -7,17 +7,17 @@ public class CurveDefinition
 {
     #region Declarations
     [HideInInspector] public string _name;
-    public HalfCurveDefinition[] _definitions;
+    public ProceduralCurveSection[] _definitions;
     public int _quantity, _maxConsecutive;
-    public HalfCurveDefinition[] Definitions => _definitions;
-    public HalfCurveDefinition Peak => Definitions[1];
+    public ProceduralCurveSection[] Definitions => _definitions;
+    public ProceduralCurveSection Peak => Definitions[1];
     public string Name { get => _name; set => _name = value; }
     public int Quantity { get => _quantity; set => _quantity = value; }
     public int MaxConsecutive { get => _maxConsecutive; set => _maxConsecutive = value; }
     #endregion
 
 
-    public CurveDefinition(string name, HalfCurveDefinition[] definitions, int quantity = 1, int maxConsecutive = 2)
+    public CurveDefinition(string name, ProceduralCurveSection[] definitions, int quantity = 1, int maxConsecutive = 2)
     {
         _name = name;
         _definitions = definitions;
@@ -28,8 +28,8 @@ public class CurveDefinition
     public CurveDefinition()
     {
         _name = "Default Curve";
-        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
-        HalfCurveDefinition peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        ProceduralCurveSection valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
+        ProceduralCurveSection peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
         _definitions = new[] { valley, peak };
         _quantity = 1;
     }

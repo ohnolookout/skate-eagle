@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct CurveParameters
+public struct ProceduralCurveSectionParams
 {
     public float lengthMin, lengthMax, roundMin, roundMax, steepMin, steepMax;
-    public SkewType skew;
 
 
-    public CurveParameters(float lengthMin, float lengthMax, float roundMin, float roundMax, float steepMin, float steepMax, SkewType skew = SkewType.Center)
+    public ProceduralCurveSectionParams(float lengthMin, float lengthMax, float roundMin, float roundMax, float steepMin, float steepMax)
     {
         this.lengthMin = lengthMin;
         this.lengthMax = lengthMax;
@@ -16,20 +15,18 @@ public struct CurveParameters
         this.roundMax = roundMax;
         this.steepMin = steepMin;
         this.steepMax = steepMax;
-        this.skew = skew;
     }
 
-    public CurveParameters(HalfCurveDefinition definition)
+    public ProceduralCurveSectionParams(ProceduralCurveSection definition)
     {
-        Vector2 lengthMinMax = HalfCurveDefinition.Lengths(definition._length);
+        Vector2 lengthMinMax = ProceduralCurveSection.Lengths(definition._length);
         this.lengthMin = lengthMinMax.x;
         this.lengthMax = lengthMinMax.y;
-        Vector2 roundMinMax = HalfCurveDefinition.Shapes(definition._shape);
+        Vector2 roundMinMax = ProceduralCurveSection.Shapes(definition._shape);
         this.roundMin = roundMinMax.x;
         this.roundMax = roundMinMax.y;
-        Vector2 slopeMinMax = HalfCurveDefinition.Slopes(definition._slope);
+        Vector2 slopeMinMax = ProceduralCurveSection.Slopes(definition._slope);
         this.steepMin = slopeMinMax.x;
         this.steepMax = slopeMinMax.y;
-        this.skew = definition._skew;
     }
 }
