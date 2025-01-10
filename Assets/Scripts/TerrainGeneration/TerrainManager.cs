@@ -6,7 +6,7 @@ using System;
 public class TerrainManager : MonoBehaviour
 {
     #region Declarations
-    private LevelTerrain _terrain;
+    private Terrain _terrain;
     [SerializeField] private GameObject _terrainPrefab;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private GroundColliderManager _colliderManager;
@@ -15,7 +15,7 @@ public class TerrainManager : MonoBehaviour
     private bool _trackCollision = false;
     public Action<Vector2> OnActivateFinish;
     private DoublePositionalList<IGroundSegment> _positionalSegmentList;
-    public LevelTerrain Terrain { get => _terrain; }
+    public Terrain Terrain { get => _terrain; }
     #endregion
 
     #region Monobehaviors
@@ -69,7 +69,7 @@ public class TerrainManager : MonoBehaviour
         return _finishPoint;
     }
 
-    private void InitializePositionalList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
+    private void InitializePositionalList(Terrain terrain, float trailingBuffer, float leadingBuffer)
     {
         _positionalSegmentList = GetPositionalSegmentList(terrain, trailingBuffer, leadingBuffer);
         ActivateInitialSegments(_positionalSegmentList);
@@ -78,7 +78,7 @@ public class TerrainManager : MonoBehaviour
 
     private void InitializeTerrain(Level level, Vector3 startPosition)
     {
-        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<LevelTerrain>();
+        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<Terrain>();
 
         TerrainGenerator.GenerateLevel(level, _terrain, startPosition, out _finishPoint);
 
@@ -100,7 +100,7 @@ public class TerrainManager : MonoBehaviour
     #endregion
 
     #region PositionalList
-    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
+    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(Terrain terrain, float trailingBuffer, float leadingBuffer)
     {
         return DoublePositionalListFactory<IGroundSegment>.CameraOperatorTracker(terrain.SegmentList, Camera.main.GetComponent<ICameraOperator>(), trailingBuffer, leadingBuffer);
     }

@@ -6,7 +6,7 @@ using System;
 public static class TerrainGenerator
 {
     #region Level Generation
-    public static void GenerateLevel(Level level, LevelTerrain terrain, Vector3 playerStartPosition, out Vector2 finishPoint)
+    public static void GenerateLevel(Level level, Terrain terrain, Vector3 playerStartPosition, out Vector2 finishPoint)
     {
         if (level.LevelSections.Count < 1)
         {
@@ -24,7 +24,7 @@ public static class TerrainGenerator
         finishPoint = GenerateFinishSegment(terrain, endOfLastSegment);
     }
 
-    private static CurvePoint GenerateAllSequences(LevelTerrain terrain, Dictionary<Grade, Sequence> curveSequences, CurvePoint endOfMostRecentSegment)
+    private static CurvePoint GenerateAllSequences(Terrain terrain, Dictionary<Grade, Sequence> curveSequences, CurvePoint endOfMostRecentSegment)
     {
         foreach (var sequence in curveSequences)
         {
@@ -33,10 +33,10 @@ public static class TerrainGenerator
         return endOfMostRecentSegment;
     }
 
-    private static void GenerateSegmentsFromSequence(LevelTerrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
+    private static void GenerateSegmentsFromSequence(Terrain terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
     {
         //Instantiate segments for each curve from sequence using sequence's grade.
-        foreach (CurveDefinition curveDef in sequence.Curves)
+        foreach (ProceduralCurveDefinition curveDef in sequence.Curves)
         {
             //First create curve values, then add segment with corresponding gameobject
             Curve nextCurve = CurveFactory.CurveFromDefinition(curveDef, startPoint, grade.MinClimb, grade.MaxClimb);
@@ -46,7 +46,7 @@ public static class TerrainGenerator
         endPoint = startPoint;
     }
 
-    private static void ResetTerrain(LevelTerrain terrain)
+    private static void ResetTerrain(Terrain terrain)
     {
         terrain.transform.position = new(0, 0);
         terrain.SegmentList = new();
@@ -56,7 +56,30 @@ public static class TerrainGenerator
     #endregion
 
     #region Segment Generation
-    private static IGroundSegment GenerateCompleteSegment(LevelTerrain terrain, Curve curve, Vector3? colliderStartPoint = null)
+    /*
+    public static IGroundSegment GenerateCompleteSegment(Terrain terrain, List<FixedHalfCurve> halfCurves, Vector3? colliderStartPoint = null)
+    {
+        if (terrain.SegmentList.Count == 0)
+        {
+            terrain.StartPoint.RightTangent = new(1, halfCurves[0].Slope);
+            terrain.EndPoint = terrain.StartPoint;
+            Debug.Log("endPoint right tangent: " + terrain.EndPoint.RightTangent);
+        }
+        Curve curve = CurveFactory.FixedCurve(halfCurves, terrain.EndPoint);
+        var newSegment = terrain.InstantiateSegment().GetComponent<IGroundSegment>();
+        newSegment.ApplyCurve(curve);
+
+        terrain.SegmentList.Add(newSegment);
+        terrain.EndPoint = newSegment.Curve.EndPoint;
+
+        EdgeCollider2D newCollider = CreateCollider(terrain, curve, terrain.ColliderMaterial, colliderStartPoint);
+        terrain.ColliderList.Add(newCollider); //Delete when colliders fixed
+        terrain.PositionalColliderList.Add(new(newCollider));
+        return newSegment;
+
+    }
+    */
+    private static IGroundSegment GenerateCompleteSegment(Terrain terrain, Curve curve, Vector3? colliderStartPoint = null)
     {
         IGroundSegment newSegment = CreateSegment(terrain, curve);
         terrain.SegmentList.Add(newSegment);
@@ -66,7 +89,7 @@ public static class TerrainGenerator
         return newSegment;
 
     }
-    private static IGroundSegment CreateSegment(LevelTerrain terrain, Curve curve)
+    private static IGroundSegment CreateSegment(Terrain terrain, Curve curve)
     {
         //Instantiate segment object and add its script to segmentList
         IGroundSegment newSegment = terrain.InstantiateSegment().GetComponent<IGroundSegment>();
@@ -84,7 +107,7 @@ public static class TerrainGenerator
         return newSegment;
     }
 
-    private static EdgeCollider2D CreateCollider(LevelTerrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, Vector3? firstPoint = null, float resolutionMult = 10)
+    private static EdgeCollider2D CreateCollider(Terrain terrain, Curve curve, PhysicsMaterial2D colliderMaterial, Vector3? firstPoint = null, float resolutionMult = 10)
     {
         GameObject colliderObject = new("Collider");
         colliderObject.transform.parent = terrain.transform;
@@ -93,21 +116,21 @@ public static class TerrainGenerator
         return newCollider;
     }
 
-    private static CurvePoint GenerateStartSegment(LevelTerrain terrain, Vector3 startPosition)
+    public static CurvePoint GenerateStartSegment(Terrain terrain, Vector3 startPosition)
     {
         //Create startline at location of player
         IGroundSegment newSegment = GenerateCompleteSegment(terrain, CurveFactory.StartLine(new(startPosition)));
         return newSegment.Curve.EndPoint;
     }
 
-    private static Vector2 GenerateFinishSegment(LevelTerrain terrain, CurvePoint endOfLastSegment)
+    private static Vector2 GenerateFinishSegment(Terrain terrain, CurvePoint endOfLastSegment)
     {
         IGroundSegment finishSegment = GenerateCompleteSegment(terrain, CurveFactory.FinishLine(endOfLastSegment), terrain.ColliderList[^1].points[^1]);
         Vector2 finishPoint = AddFinishObjectsToSegment(terrain, finishSegment, terrain.SegmentList[^1].Curve.GetPoint(1).ControlPoint, terrain.SegmentList[^1].EndPoint);
         return finishPoint;
     }
 
-    private static Vector2 AddFinishObjectsToSegment(LevelTerrain terrain, IGroundSegment segment, Vector3 finishPoint, Vector3 backstopPoint)
+    private static Vector2 AddFinishObjectsToSegment(Terrain terrain, IGroundSegment segment, Vector3 finishPoint, Vector3 backstopPoint)
     {
         finishPoint += new Vector3(50, 1);
         GameObject.Instantiate(terrain.FinishFlagPrefab, finishPoint, segment.gameObject.transform.rotation, segment.gameObject.transform);        

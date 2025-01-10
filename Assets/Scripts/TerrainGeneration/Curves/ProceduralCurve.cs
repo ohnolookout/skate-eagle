@@ -2,31 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomCurve : Curve
+public class ProceduralCurve : Curve
 {
     int hillStatus = 1;
     float _climbMin, _climbMax;
     CurvePoint _startPoint;
-    CurveDefinition _curveDef;
+    ProceduralCurveDefinition _curveDef;
 
-    public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint, float climbMin, float climbMax)
+    public ProceduralCurve(ProceduralCurveDefinition curveDef, CurvePoint startPoint, float climbMin, float climbMax)
     {
         _startPoint = startPoint;
         _climbMin = climbMin;
         _climbMax = climbMax;
         _curveDef = curveDef;
         curvePoints = CurvePointsFromDefinition(curveDef);
-        curveType = CurveType.Custom;
+        curveType = CurveType.Procedural;
         GenerateCurveStats();
 
     }
 
-    private List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef)
+    private List<CurvePoint> CurvePointsFromDefinition(ProceduralCurveDefinition curveDef)
     {
         List<CurvePoint> curvePoints = new();
         for (int i = 0; i < curveDef.Definitions.Length; i++)
         {
-            CurveParameters curveParams = new(curveDef.Definitions[i]);
+            OldCurveParameters curveParams = new(curveDef.Definitions[i]);
             if (i == 0)
             {
                 curvePoints = CalculateCurvePointPair(curveParams, _startPoint, _climbMin, _climbMax);
@@ -47,7 +47,7 @@ public class CustomCurve : Curve
         return curvePoints;
     }
 
-    private List<CurvePoint> CalculateCurvePointPair(CurveParameters parameters, CurvePoint startPoint, float climbMin, float climbMax)
+    private List<CurvePoint> CalculateCurvePointPair(OldCurveParameters parameters, CurvePoint startPoint, float climbMin, float climbMax)
     {
         List<CurvePoint> curvePoints = new();
         Vector3 prevTangent = -startPoint.LeftTangent.normalized;

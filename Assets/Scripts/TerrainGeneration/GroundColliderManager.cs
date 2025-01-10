@@ -13,12 +13,12 @@ public class GroundColliderManager
     private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private List<DoublePositionalList<PositionalEdgeCollider>> _normalBodyColliders, _ragdollBodyColliders, _activeColliderList;
     private List<PositionalEdgeCollider> _toActivate, _toDeactivate;
-    private LevelTerrain _terrain;
+    private Terrain _terrain;
     public Action OnActivateLastSegment;
     #endregion
 
     #region Constructor
-    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, LevelTerrain terrain, int startingIndex = 0)
+    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, Terrain terrain, int startingIndex = 0)
     {
         LevelManager.OnGameOver += _ => SwitchToRagdoll();
         _normalBodies = normalBodies;

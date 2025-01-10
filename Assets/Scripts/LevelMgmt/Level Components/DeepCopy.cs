@@ -33,28 +33,28 @@ public static class DeepCopy
     public static LevelSection CopySection(LevelSection sectionToCopy)
     {
         Grade grade = CopyGrade(sectionToCopy.Grade);
-        List<CurveDefinition> curves = new();
+        List<ProceduralCurveDefinition> curves = new();
         List<Sequence> sequencesToCache = new();
-        foreach (CurveDefinition curve in sectionToCopy.Curves)
+        foreach (ProceduralCurveDefinition curve in sectionToCopy.Curves)
         {
             curves.Add(CopyCurveDefinition(curve));
         }
         return new LevelSection(sectionToCopy.Name, grade, curves);
     }
 
-    public static CurveDefinition CopyCurveDefinition(CurveDefinition curveToCopy)
+    public static ProceduralCurveDefinition CopyCurveDefinition(ProceduralCurveDefinition curveToCopy)
     {
         HalfCurveDefinition[] copiedDefs = new HalfCurveDefinition[curveToCopy.Definitions.Length];
         for(int i = 0; i < curveToCopy.Definitions.Length; i++)
         {
             copiedDefs[i] = curveToCopy.Definitions[i];
         }
-        return new CurveDefinition(curveToCopy.Name, copiedDefs, curveToCopy.Quantity);
+        return new ProceduralCurveDefinition(curveToCopy.Name, copiedDefs, curveToCopy.Quantity);
     }
 
     public static HalfCurveDefinition CopyHalfCurve(HalfCurveDefinition halfCurveToCopy)
     {
-        return new HalfCurveDefinition(halfCurveToCopy.Length, halfCurveToCopy.Shape, halfCurveToCopy.Slope, halfCurveToCopy.Skew);
+        return new HalfCurveDefinition(halfCurveToCopy.Length, halfCurveToCopy.Shape, halfCurveToCopy.Slope);
     }
 
     public static Grade CopyGrade(Grade gradeToCopy)

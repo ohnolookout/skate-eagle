@@ -26,7 +26,7 @@ public class CameraHighLowManager
     #endregion
 
     #region Constructors
-    public CameraHighLowManager(ICameraOperator cameraOperator, LevelTerrain terrain)
+    public CameraHighLowManager(ICameraOperator cameraOperator, Terrain terrain)
     {
         _currentX = () => _cameraOperator.CurrentHighLowX;
         _cameraOperator = cameraOperator;
@@ -45,7 +45,7 @@ public class CameraHighLowManager
         LevelManager.GetPlayer.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchDirection);
     }
 
-    private void BuildHighLowCaches(LevelTerrain terrain)
+    private void BuildHighLowCaches(Terrain terrain)
     {
         //Get low and high point minmax caches from positional list factory
         PositionalListFactory<PositionObject<Vector3>>.HighLowPositional(this, _cameraOperator, terrain, out _lowPoints, out _highPoints);

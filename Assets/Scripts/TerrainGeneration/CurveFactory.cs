@@ -14,8 +14,12 @@ public static class CurveFactory
         return new StartLineCurve(startPoint);
     }
 
-    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
+    public static Curve CurveFromDefinition(ProceduralCurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
     {
-        return new CustomCurve(definition, startPoint, climbMin, climbMax);
+        return new ProceduralCurve(definition, startPoint, climbMin, climbMax);
+    }
+    public static Curve FixedCurve(List<FixedHalfCurve> halfCurves, CurvePoint startPoint)
+    {
+        return new FixedCurve(halfCurves, startPoint);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 
 
-public class LevelTerrain : MonoBehaviour
+public class Terrain : MonoBehaviour
 {
     #region Declarations
     private List<IGroundSegment> _segmentList;

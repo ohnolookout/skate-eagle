@@ -3,7 +3,7 @@ using UnityEngine.U2D;
 using System;
 
 [ExecuteAlways]
-public class GroundSegment : MonoBehaviour, IGroundSegment
+public class TerrainSegment : MonoBehaviour, IGroundSegment
 {
     #region Declarations
     private Curve _curve;

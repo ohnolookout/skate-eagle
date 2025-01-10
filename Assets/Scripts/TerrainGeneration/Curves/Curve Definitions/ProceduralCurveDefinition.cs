@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 [Serializable]
-public class CurveDefinition
+public class ProceduralCurveDefinition : CurveDefinition
 {
     #region Declarations
     [HideInInspector] public string _name;
@@ -17,7 +17,7 @@ public class CurveDefinition
     #endregion
 
 
-    public CurveDefinition(string name, HalfCurveDefinition[] definitions, int quantity = 1, int maxConsecutive = 2)
+    public ProceduralCurveDefinition(string name, HalfCurveDefinition[] definitions, int quantity = 1, int maxConsecutive = 2)
     {
         _name = name;
         _definitions = definitions;
@@ -25,11 +25,11 @@ public class CurveDefinition
         _maxConsecutive = maxConsecutive;
     }
 
-    public CurveDefinition()
+    public ProceduralCurveDefinition()
     {
         _name = "Default Curve";
-        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
-        HalfCurveDefinition peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal, SkewType.Center);
+        HalfCurveDefinition valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
+        HalfCurveDefinition peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
         _definitions = new[] { valley, peak };
         _quantity = 1;
     }
@@ -37,5 +37,10 @@ public class CurveDefinition
     public void SetName(string newName)
     {
         _name = newName;
+    }
+
+    public CurveParameters GetCurveParameters(Vector2 initialRightTangent)
+    {
+
     }
 }

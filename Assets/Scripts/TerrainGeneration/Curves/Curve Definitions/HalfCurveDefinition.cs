@@ -9,8 +9,6 @@ public enum LengthType { Short = 0, Medium = 1, Long = 2, Jumbo = 3};
 public enum ShapeType { Roller, SoftPeak, HardPeak, SoftTable, HardTable }
 [Serializable]
 public enum SlopeType { Flat, Gentle, Normal, Steep };
-[Serializable]
-public enum SkewType { Left, Right, Center, Random };
 #endregion
 
 [Serializable]
@@ -20,19 +18,16 @@ public class HalfCurveDefinition
     public ShapeType _shape;
     public LengthType _length;
     public SlopeType _slope;
-    public SkewType _skew;
     public LengthType Length => _length;
     public ShapeType Shape => _shape;
     public SlopeType Slope => _slope;
-    public SkewType Skew => _skew;
 #endregion
 
-    public HalfCurveDefinition(LengthType length, ShapeType shape, SlopeType slope, SkewType skew)
+    public HalfCurveDefinition(LengthType length, ShapeType shape, SlopeType slope)
     {
         _length = length;
         _shape = shape;
         _slope = slope;
-        _skew = skew;
     }
 
     public static Vector2 Lengths(LengthType lengthType)

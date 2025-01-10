@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum CurveType { StartLine, FinishLine, Custom };
+public enum CurveType { StartLine, FinishLine, Procedural, Fixed };
 public class Curve
 {
     //private float length;

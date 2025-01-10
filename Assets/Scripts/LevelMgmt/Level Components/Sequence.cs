@@ -6,18 +6,18 @@ using System;
 [Serializable]
 public class Sequence
 {
-    public List<CurveDefinition> _curves;
+    public List<ProceduralCurveDefinition> _curves;
 
     public Sequence()
     {
         _curves = new();
     }
-    public void Add(CurveDefinition curve)
+    public void Add(ProceduralCurveDefinition curve)
     {
         _curves.Add(curve);
     }
 
-    public List<CurveDefinition> Curves
+    public List<ProceduralCurveDefinition> Curves
     {
         get
         {

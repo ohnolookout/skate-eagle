@@ -40,7 +40,7 @@ public static class PositionalListFactory<T> where T : IPosition
     #endregion
 
     #region HighLowManager Positional List
-    public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, LevelTerrain terrain,
+    public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, Terrain terrain,
         out PositionalMinMax<SortablePositionObject<Vector3>> lowPointCache, out PositionalMinMax<SortablePositionObject<HighPoint>> highPointCache)
     {
         BuildSortableLists(terrain, out var sortableLowPoints, out var sortableHighPoints);
@@ -51,7 +51,7 @@ public static class PositionalListFactory<T> where T : IPosition
         highPointCache = new(highPointList, ComparisonType.Greatest);
     }
 
-    private static void BuildSortableLists(LevelTerrain terrain, out List<SortablePositionObject<Vector3>> sortableLowPoints, out List<SortablePositionObject<HighPoint>> sortableHighPoints)
+    private static void BuildSortableLists(Terrain terrain, out List<SortablePositionObject<Vector3>> sortableLowPoints, out List<SortablePositionObject<HighPoint>> sortableHighPoints)
     {
         sortableLowPoints = new();
         sortableHighPoints = new();
