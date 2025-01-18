@@ -3,7 +3,7 @@ public enum RunState { Landing, Standby, Active, Finished, GameOver, Fallen }
 public interface ILevelManager
 {
     Level CurrentLevel { get; set; }
-    TerrainManager TerrainManager { get; set; }
+    GroundManager TerrainManager { get; set; }
     bool HasPlayer { get; }
     bool HasTerrainManager { get ; }
 

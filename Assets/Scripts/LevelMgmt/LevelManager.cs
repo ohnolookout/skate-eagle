@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Declarations
     public Vector3 startPosition = new();
     [SerializeField] private Level _currentLevel;
-    [SerializeField] private TerrainManager _terrainManager;
+    [SerializeField] private GroundManager _terrainManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
     private GameManager _gameManager;
@@ -29,7 +29,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public static IPlayer GetPlayer { get => _player; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
-    public TerrainManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
+    public GroundManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _terrainManager != null; }
     #endregion

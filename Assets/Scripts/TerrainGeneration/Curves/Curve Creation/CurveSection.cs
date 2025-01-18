@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CurveSection
+public abstract class CurveSection
 {
-    
+    public abstract CurveSectionParameters GetSectionParameters(Vector2 prevTangent);
 }

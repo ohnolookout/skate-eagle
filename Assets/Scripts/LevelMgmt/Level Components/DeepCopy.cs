@@ -54,7 +54,7 @@ public static class DeepCopy
 
     public static ProceduralCurveSection CopyHalfCurve(ProceduralCurveSection halfCurveToCopy)
     {
-        return new ProceduralCurveSection(halfCurveToCopy.Length, halfCurveToCopy.Shape, halfCurveToCopy.Slope);
+        return new ProceduralCurveSection(halfCurveToCopy.LengthType, halfCurveToCopy.ShapeType, halfCurveToCopy.PitchType, halfCurveToCopy.SectionType);
     }
 
     public static Grade CopyGrade(Grade gradeToCopy)

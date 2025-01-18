@@ -9,9 +9,8 @@ public static class CurveCollider
 
     #region Generation
     //Includes firstPoint to ensure exact transitions
-    public static EdgeCollider2D GenerateCollider(Curve curve, GameObject host, PhysicsMaterial2D material, Vector3? firstPoint = null, float resolutionMult = 10)
+    public static EdgeCollider2D GenerateCollider(Curve curve, EdgeCollider2D collider, PhysicsMaterial2D material, Vector3? firstPoint, float resolutionMult = 10)
     {
-        var collider = host.AddComponent<EdgeCollider2D>();
         collider.sharedMaterial = material;
         if (curve.Type == CurveType.StartLine)
         {
@@ -35,10 +34,11 @@ public static class CurveCollider
         return collider;
     }
 
-    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint = null)
+    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint)
     {
+        //Debug.Log("Calculating collider points...");
         List<Vector2> points = new();
-        if (!(firstVectorPoint is null))
+        if (firstVectorPoint != null)
         {
             points.Add((Vector3)firstVectorPoint);
         } 

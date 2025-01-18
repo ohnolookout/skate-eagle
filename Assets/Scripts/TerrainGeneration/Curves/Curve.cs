@@ -9,7 +9,6 @@ public class Curve
     //private float length;
     private List<float> segmentLengths;
     public List<CurvePoint> curvePoints;
-    public CurvePoint startPoint, endPoint;
     public CurveType curveType;
     private float length;
     private protected Vector3 _lowpoint, _highpoint;
@@ -17,8 +16,6 @@ public class Curve
     public void GenerateCurveStats()
     {
         length = GetCurveLength();
-        startPoint = curvePoints[0];
-        endPoint = curvePoints[^1];
     }
     private float GetCurveLength()
     {
@@ -41,9 +38,9 @@ public class Curve
     public CurveType Type { get => curveType; }
     public Vector3 Lowpoint { get => _lowpoint; }
     public Vector3 Highpoint => _highpoint;
-    public CurvePoint StartPoint { get => startPoint; }
-    public CurvePoint EndPoint { get => endPoint; }
-    public List<float> SegmentLengths { get => segmentLengths; }
+    public CurvePoint StartPoint => curvePoints[0];
+    public CurvePoint EndPoint => curvePoints[^1];
+    public List<float> SegmentLengths => segmentLengths;
 
 
 }

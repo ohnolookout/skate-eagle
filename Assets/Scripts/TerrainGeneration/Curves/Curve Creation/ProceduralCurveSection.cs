@@ -1,6 +1,9 @@
 
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
+using JetBrains.Annotations;
 
 #region Enums
 [Serializable]
@@ -8,31 +11,75 @@ public enum LengthType { Short = 0, Medium = 1, Long = 2, Jumbo = 3};
 [Serializable]
 public enum ShapeType { Roller, SoftPeak, HardPeak, SoftTable, HardTable }
 [Serializable]
-public enum SlopeType { Flat, Gentle, Normal, Steep };
+public enum PitchType { Flat, Gentle, Normal, Steep };
+[Serializable]
+public enum SectionType { Peak, Valley};
 #endregion
 
 [Serializable]
-public class ProceduralCurveSection
+public class ProceduralCurveSection:CurveSection
 {
     #region Declarations
-    public ShapeType _shape;
-    public LengthType _length;
-    public SlopeType _slope;
-    public LengthType Length => _length;
-    public ShapeType Shape => _shape;
-    public SlopeType Slope => _slope;
-#endregion
+    public ShapeType _shapeType;
+    public LengthType _lengthType;
+    public PitchType _pitchType;
+    public float ClimbMin = 0;
+    public float ClimbMax = 0;
+    public SectionType _sectionType;
+    public LengthType LengthType => _lengthType;
+    public ShapeType ShapeType => _shapeType;
+    public PitchType PitchType => _pitchType;
+    public SectionType SectionType => _sectionType;
+    public float LengthMin => LengthMinMax().x;
+    public float LengthMax => LengthMinMax().y;
+    public float ShapeMin => ShapeMinMax().x;
+    public float ShapeMax => ShapeMinMax().y;
+    public float PitchMin => PitchMinMax().x;
+    public float PitchMax => PitchMinMax().y;
 
-    public ProceduralCurveSection(LengthType length, ShapeType shape, SlopeType slope)
+    #endregion
+
+    public ProceduralCurveSection(LengthType lengthType, ShapeType shapeType, PitchType slopeType, SectionType sectionType)
     {
-        _length = length;
-        _shape = shape;
-        _slope = slope;
+        _lengthType = lengthType;
+        _shapeType = shapeType;
+        _pitchType = slopeType;
+        _sectionType = sectionType;
     }
 
-    public static Vector2 Lengths(LengthType lengthType)
+    public override CurveSectionParameters GetSectionParameters(Vector2 prevTangent)
+    {   //Set modifier for curve to be concave or convex
+        int peakValleyModifier = 1;
+        if (_sectionType == SectionType.Valley)
+        {
+            peakValleyModifier = -1;
+        }
+
+        //Create a limiter 6on parameters based on the right tangent of the previous curve section
+        float prevSlope = Mathf.Abs(prevTangent.y / prevTangent.x);
+        float prevTangSpacer = prevTangent.x + Mathf.Abs(prevTangent.y) / 3;
+
+        //Generate length, climb, and shape from min and max values
+        float length = UnityEngine.Random.Range(LengthMin + prevTangSpacer, LengthMax + prevTangSpacer);
+        float climb = UnityEngine.Random.Range(ClimbMin, ClimbMax);
+        float shape = UnityEngine.Random.Range(ShapeMin, ShapeMax);
+
+        //Generate pitch based on length, climb, and previous tangent
+        float grade = climb / length;
+        float adjustedPitchMin = Mathf.Max(PitchMin, Mathf.Abs(prevSlope * 0.4f)) + (grade * peakValleyModifier);
+        float adjustedPitchMax = Mathf.Min(PitchMax, Mathf.Abs(prevSlope * 2f)) + (grade * peakValleyModifier);
+        float pitch = UnityEngine.Random.Range(adjustedPitchMin, adjustedPitchMax) * peakValleyModifier;
+
+        //Return results as parameter object
+        return new CurveSectionParameters(length, shape, pitch, climb);
+    }
+
+
+    #region Parameter Type Conversions
+    //Converts enums into vectors of min/max values
+    public Vector2 LengthMinMax()
     {
-        return lengthType switch
+        return _lengthType switch
         {
             LengthType.Short => new Vector2(25, 40),
             LengthType.Medium => new Vector2(35, 55),
@@ -41,22 +88,9 @@ public class ProceduralCurveSection
             _ => new Vector2(35, 60)
         };
     }
-
-    public static Vector2 Slopes(SlopeType slopeType)
+    public Vector2 ShapeMinMax()
     {
-        return slopeType switch
-        {
-            SlopeType.Flat => new Vector2(0.4f, 0.7f),
-            SlopeType.Gentle => new Vector2(0.6f, 1.1f),
-            SlopeType.Normal => new Vector2(1.0f, 1.5f),
-            SlopeType.Steep => new Vector2(1.5f, 2.2f),
-            _ => new Vector2(0.8f, 1.4f)
-        };
-    }
-
-    public static Vector2 Shapes(ShapeType shapeType)
-    {
-        return shapeType switch
+        return _shapeType switch
         {
             ShapeType.HardTable => new Vector2(0.1f, 0.3f),
             ShapeType.SoftTable => new Vector2(0.3f, 0.45f),
@@ -66,7 +100,19 @@ public class ProceduralCurveSection
             _ => new Vector2(0.45f, 0.55f)
         };
     }
+    public Vector2 PitchMinMax()
+    {
+        return _pitchType switch
+        {
+            PitchType.Flat => new Vector2(0.4f, 0.7f),
+            PitchType.Gentle => new Vector2(0.6f, 1.1f),
+            PitchType.Normal => new Vector2(1.0f, 1.5f),
+            PitchType.Steep => new Vector2(1.5f, 2.2f),
+            _ => new Vector2(0.8f, 1.4f)
+        };
+    }
 
-   
+    #endregion
+
 
 }

@@ -10,7 +10,7 @@ public class LevelDesigner : EditorWindow
     public string _name;
     public MedalTimes _medalTimes = new();
     public List<LevelSection> _levelSections = new();
-    private TerrainManager _terrainManager;
+    private GroundManager _terrainManager;
     private LevelManager _levelManager;
     private bool isLevelEditor;
     ScriptableObject _target;
@@ -167,7 +167,7 @@ public class LevelDesigner : EditorWindow
     private void AddTerrainGeneration()
     {
         _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-        _terrainManager = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<TerrainManager>();
+        _terrainManager = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<GroundManager>();
 
     }
 

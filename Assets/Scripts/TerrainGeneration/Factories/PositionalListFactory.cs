@@ -40,7 +40,7 @@ public static class PositionalListFactory<T> where T : IPosition
     #endregion
 
     #region HighLowManager Positional List
-    public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, LevelTerrain terrain,
+    public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, Ground terrain,
         out PositionalMinMax<SortablePositionObject<Vector3>> lowPointCache, out PositionalMinMax<SortablePositionObject<HighPoint>> highPointCache)
     {
         BuildSortableLists(terrain, out var sortableLowPoints, out var sortableHighPoints);
@@ -51,36 +51,38 @@ public static class PositionalListFactory<T> where T : IPosition
         highPointCache = new(highPointList, ComparisonType.Greatest);
     }
 
-    private static void BuildSortableLists(LevelTerrain terrain, out List<SortablePositionObject<Vector3>> sortableLowPoints, out List<SortablePositionObject<HighPoint>> sortableHighPoints)
+    private static void BuildSortableLists(Ground terrain, out List<SortablePositionObject<Vector3>> sortableLowPoints, out List<SortablePositionObject<HighPoint>> sortableHighPoints)
     {
         sortableLowPoints = new();
         sortableHighPoints = new();
         var segments = terrain.SegmentList;
 
-        for (int i = 0; i < segments.Count; i++)
-        {
-            AddSegmentToSortableLists(segments, i, sortableLowPoints, sortableHighPoints);
-        }
+        AddSegmentsToSortableLists(segments, sortableLowPoints, sortableHighPoints);
     }
 
-    private static void AddSegmentToSortableLists(List<IGroundSegment> segments, int i, List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
-    {
-        Curve currentCurve = segments[i].Curve;
-
-        sortableLowPoints.Add(new SortablePositionObject<Vector3>(currentCurve.Lowpoint, currentCurve.Lowpoint, currentCurve.Lowpoint.y));
-
-        Vector3 leadingLowPoint;
-        if (i < segments.Count - 1)
+    private static void AddSegmentsToSortableLists(List<IGroundSegment> segments,  List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
+{
+        for (int i = 0; i < segments.Count; i++)
         {
-            leadingLowPoint = segments[i + 1].Curve.Lowpoint;
-        }
-        else
-        {
-            leadingLowPoint = currentCurve.Lowpoint;
-        }
+            var currentCurve = segments[i].Curve;
 
-        HighPoint newHighPoint = new(currentCurve.Highpoint, currentCurve.Lowpoint, leadingLowPoint);
-        sortableHighPoints.Add(new SortablePositionObject<HighPoint>(newHighPoint, newHighPoint.High, newHighPoint.Distance));
+            var currentLowpoint = segments[i].gameObject.transform.TransformPoint(currentCurve.Lowpoint);
+
+            sortableLowPoints.Add(new SortablePositionObject<Vector3>(currentLowpoint, currentLowpoint, currentLowpoint.y));
+
+            Vector3 leadingLowPoint;
+            if (i < segments.Count - 1)
+            {
+                leadingLowPoint = segments[i + 1].gameObject.transform.TransformPoint(segments[i + 1].Curve.Lowpoint);
+            }
+            else
+            {
+                leadingLowPoint = currentLowpoint;
+            }
+
+            HighPoint newHighPoint = new(segments[i].gameObject.transform.TransformPoint(currentCurve.Highpoint), currentLowpoint, leadingLowPoint);
+            sortableHighPoints.Add(new SortablePositionObject<HighPoint>(newHighPoint, newHighPoint.High, newHighPoint.Distance));
+        }
     }
 
     public static SinglePositionalList<T> CameraTransformHighLowTracker(List<T> allObjects, CameraHighLowManager highLowManager, ICameraOperator cameraOperator, bool isHigh)

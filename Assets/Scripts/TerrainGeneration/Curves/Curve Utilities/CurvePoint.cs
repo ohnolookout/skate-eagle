@@ -9,8 +9,8 @@ public struct CurvePoint
     public CurvePoint(Vector3 control)
     {
         controlPoint = control;
-        leftTangent = new Vector3(0, 0);
-        rightTangent = new Vector3(0, 0);
+        leftTangent = new(0, 0);
+        rightTangent = new(0, 0);
     }
 
     public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang)
@@ -21,45 +21,22 @@ public struct CurvePoint
     }
 
 
-    public Vector3 ControlPoint
-    {
-        get
-        {
-            return controlPoint;
-        }
-        set
-        {
-            controlPoint = value;
-        }
-    }
 
-    public Vector3 LeftTangent
-    {
-        get
-        {
-            return leftTangent;
-        }
-        set
-        {
-            leftTangent = value;
-        }
-    }
-
-    public Vector3 RightTangent
-    {
-        get
-        {
-            return rightTangent;
-        }
-        set
-        {
-            rightTangent = value;
-        }
-    }
-
+    public Vector3 ControlPoint { get => controlPoint; set => controlPoint = value; }  
+    public Vector3 LeftTangent {  get => leftTangent; set => leftTangent = value; }
+    public Vector3 RightTangent {  get => rightTangent; set => rightTangent = value; } 
     public void SetTangents(float slope, float velocity)
     {
         leftTangent = new Vector3(-velocity, -velocity * slope);
         rightTangent = new Vector3(velocity, velocity * slope);
+    }
+
+    public void Log()
+    {
+        Debug.Log("~~~Curve Point~~~");
+        Debug.Log($"Control Point: {controlPoint}");
+        Debug.Log($"Left Tangent: {leftTangent}");
+        Debug.Log($"Right Tangent: {rightTangent}");
+
     }
 }

@@ -40,7 +40,12 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<ILevelManager>();
 
 #if UNITY_EDITOR
-        CheckLevelManager();
+        if (_levelManager == null || !_levelManager.HasPlayer || !_levelManager.HasTerrainManager)
+        {
+            Debug.LogWarning("Level manager, terrain manager, or player not found by camera operator. Camera will be static.");
+            Destroy(this);
+            return;
+        }
 #endif
         //Assign default camera components
         _cam = GetComponent<Camera>();
@@ -61,7 +66,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     void Start()
     {
         //Create minmax caches for high and low points
-        _highLowManager = new(this, _levelManager.TerrainManager.Terrain);
+        _highLowManager = new(this, _levelManager.TerrainManager.Ground);
         _highLowManager.HighPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
         _highLowManager.LowPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
         _zoom.SubscribeToPlayerLanding(_player);
@@ -148,14 +153,4 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         _trailingCorner = _cam.ViewportToWorldPoint(new Vector3(0, 1, 0));
     }
     #endregion
-    private void CheckLevelManager()
-    {
-
-        if (_levelManager == null || !_levelManager.HasPlayer || !_levelManager.HasTerrainManager)
-        {
-            Debug.LogWarning("Level manager, terrain manager, or player not found by camera operator. Camera will be static.");
-            Destroy(this);
-            return;
-        }
-    }
 }

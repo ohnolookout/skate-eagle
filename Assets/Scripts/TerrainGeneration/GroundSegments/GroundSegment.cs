@@ -8,33 +8,34 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     #region Declarations
     private Curve _curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
+    private EdgeCollider2D _collider;
     private Spline _masterSpline;
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
-    private bool _isFinish = false;
+    public bool isFinish = false;
     public Action<IGroundSegment> OnActivate { get; set; }
     public Curve Curve { get => _curve; }
     public Spline Spline { get => _masterSpline; }
-    public Vector2 StartPoint { get => _curve.StartPoint.ControlPoint; }
-    public Vector2 EndPoint { get => _curve.EndPoint.ControlPoint; }
-    public Vector3 StartPosition => _curve.StartPoint.ControlPoint;
-    public Vector3 EndPosition => _curve.EndPoint.ControlPoint;
-    public Vector3 Position { get => _curve.StartPoint.ControlPoint; set => transform.position = value; }
+    public Vector3 StartPosition => transform.TransformPoint(_curve.StartPoint.ControlPoint);
+    public Vector3 EndPosition => transform.TransformPoint(_curve.EndPoint.ControlPoint);
+    public Vector3 Position { get => transform.TransformPoint(_curve.StartPoint.ControlPoint); set => transform.position = value; }
     public CurveType Type { get => _curve.Type; }
+    public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
-    public bool IsFinish { get => _isFinish; set => _isFinish = value; }
+    public bool IsFinish { get => isFinish; set => isFinish = value; }
     #endregion
 
 
     void Awake()
     {
+        _collider = gameObject.GetComponentInChildren<EdgeCollider2D>();
         _masterSpline = _fillShapeController.spline;
         FormatSpline(_masterSpline);
     }
 
     void OnEnable()
     {
-        if (_isFinish)
+        if (isFinish)
         {
             OnActivate?.Invoke(this);
         }

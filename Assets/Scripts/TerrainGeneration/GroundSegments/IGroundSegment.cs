@@ -7,13 +7,12 @@ using System;
 public interface IGroundSegment : IDoublePosition, IPosition
 {
     Curve Curve { get; }
-    Vector2 EndPoint { get; }
     Spline Spline { get; }
-    Vector2 StartPoint { get; }
     CurveType Type { get; }
     GameObject gameObject { get; }
     bool IsFinish { get; set; }
     Action<IGroundSegment> OnActivate { get; set; }
+    EdgeCollider2D Collider { get; set; }
 
     void ApplyCurve(Curve curve);
     bool ContainsX(float targetX);

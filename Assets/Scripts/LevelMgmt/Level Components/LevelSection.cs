@@ -40,7 +40,7 @@ public class LevelSection
 
     private void NameCurve(CurveDefinition curve)
     {
-        string name = $"{curve.Peak.Length} {curve.Peak.Slope} {curve.Peak.Shape}";
+        string name = $"{curve.Peak.LengthType} {curve.Peak.PitchType} {curve.Peak.ShapeType}";
         curve.Name = name;
     }
 

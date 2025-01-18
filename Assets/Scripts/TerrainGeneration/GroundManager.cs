@@ -3,41 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class TerrainManager : MonoBehaviour
+public class GroundManager : MonoBehaviour
 {
     #region Declarations
-    private LevelTerrain _terrain;
+    private Ground _ground;
     [SerializeField] private GameObject _terrainPrefab;
+    [SerializeField] private GameObject _finishFlagPrefab;
+    [SerializeField] private GameObject _backstopPrefab;
+    [SerializeField] private GameObject _finishFlag;
+    [SerializeField] private GameObject _backstop;
+    public IGroundSegment finishSegment;
+    public IGroundSegment startSegment;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private GroundColliderManager _colliderManager;
-    private Vector2 _finishPoint;
+    private Vector2 _startPoint = new(0,0);
+    private Vector2 _finishPoint = new(0, 0);
     const float _cameraBuffer = 25;
     private bool _trackCollision = false;
     public Action<Vector2> OnActivateFinish;
     private DoublePositionalList<IGroundSegment> _positionalSegmentList;
-    public LevelTerrain Terrain { get => _terrain; }
+    public Ground Ground { get => _ground; }
+    public Vector2 StartPoint { get => _startPoint; set => _startPoint = value; }
+    public Vector2 FinishPont { get => _finishPoint; set => _finishPoint = value; }
     #endregion
 
     #region Monobehaviors
-
+    private void Awake()
+    {
+    }
     private void Start()
     {
-        if (_terrain == null)
+        finishSegment.OnActivate += OnFinishActivation;
+        if (_ground == null)
         {
             Debug.LogWarning("No terrain found by terrain manager. Destroying terrain manager.");
             DestroyImmediate(gameObject);
             return;
         }
-        _colliderManager.OnActivateLastSegment += _terrain.ActivateFinishObjects;
+        
+        //_colliderManager.OnActivateLastSegment += _ground.ActivateFinishObjects;
+        
     }
 
     void Update()
     {
         _positionalSegmentList.Update();
+        /*
         if (_trackCollision)
         {
             _colliderManager.Update();
         }
+        */
     }
     private void OnEnable()
     {
@@ -62,14 +78,14 @@ public class TerrainManager : MonoBehaviour
 
         InitializeTerrain(level, startPosition);
 
-        _colliderManager = new(_normalBodies, _ragdollBodies, _terrain);
+        //_colliderManager = new(_normalBodies, _ragdollBodies, _ground);
 
-        InitializePositionalList(_terrain, _cameraBuffer, _cameraBuffer);
+        InitializePositionalList(_ground, _cameraBuffer, _cameraBuffer);
         
         return _finishPoint;
     }
 
-    private void InitializePositionalList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
+    private void InitializePositionalList(Ground terrain, float trailingBuffer, float leadingBuffer)
     {
         _positionalSegmentList = GetPositionalSegmentList(terrain, trailingBuffer, leadingBuffer);
         ActivateInitialSegments(_positionalSegmentList);
@@ -78,11 +94,9 @@ public class TerrainManager : MonoBehaviour
 
     private void InitializeTerrain(Level level, Vector3 startPosition)
     {
-        _terrain = Instantiate(_terrainPrefab, transform).GetComponent<LevelTerrain>();
+        _ground = Instantiate(_terrainPrefab, transform).GetComponent<Ground>();
 
-        TerrainGenerator.GenerateLevel(level, _terrain, startPosition, out _finishPoint);
-
-        _terrain.SegmentList[^1].OnActivate += OnFinishActivation;
+        GroundGenerator.GenerateLevel(level, this, _ground, startPosition);
     }
 
     private void OnFinishActivation(IGroundSegment segment)
@@ -97,10 +111,38 @@ public class TerrainManager : MonoBehaviour
             DestroyImmediate(transform.GetChild(0).gameObject);
         }
     }
+
+    public void SetStartPoint(IGroundSegment segment, int curvePointIndex)
+    {
+        startSegment = segment;
+        _startPoint = transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
+    }
+
+    public void SetFinishPoint(IGroundSegment segment, int finishPointIndex)
+    {
+        //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
+        if (finishSegment != null)
+        {
+            finishSegment.IsFinish = false;
+            DestroyImmediate(_finishFlag);
+            DestroyImmediate(_backstop);
+        }
+
+        finishSegment = segment;
+        segment.IsFinish = true;
+
+        //Add finish flag to designated point in GroundSegment. Mark point as finishPoint.        
+        _finishPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
+        _finishFlag = Instantiate(_finishFlagPrefab, _finishPoint, transform.rotation, segment.gameObject.transform);
+
+        //Add backstop to endpoint of GroundSegment
+        _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
+
+    }
     #endregion
 
     #region PositionalList
-    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(LevelTerrain terrain, float trailingBuffer, float leadingBuffer)
+    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(Ground terrain, float trailingBuffer, float leadingBuffer)
     {
         return DoublePositionalListFactory<IGroundSegment>.CameraOperatorTracker(terrain.SegmentList, Camera.main.GetComponent<ICameraOperator>(), trailingBuffer, leadingBuffer);
     }

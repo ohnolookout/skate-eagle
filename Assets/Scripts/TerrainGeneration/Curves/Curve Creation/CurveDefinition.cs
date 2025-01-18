@@ -28,8 +28,8 @@ public class CurveDefinition
     public CurveDefinition()
     {
         _name = "Default Curve";
-        ProceduralCurveSection valley = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
-        ProceduralCurveSection peak = new(LengthType.Medium, ShapeType.Roller, SlopeType.Normal);
+        ProceduralCurveSection valley = new(LengthType.Medium, ShapeType.Roller, PitchType.Normal, SectionType.Peak);
+        ProceduralCurveSection peak = new(LengthType.Medium, ShapeType.Roller, PitchType.Normal, SectionType.Valley);
         _definitions = new[] { valley, peak };
         _quantity = 1;
     }

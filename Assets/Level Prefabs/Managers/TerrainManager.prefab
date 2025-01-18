@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8543057658911296974}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 251.62743, y: -1.058028, z: -13.705789}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8543057658911296973
 MonoBehaviour:
@@ -41,9 +41,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8543057658911296974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8454d3d22d68d6b40a53658c03b82e74, type: 3}
+  m_Script: {fileID: 11500000, guid: 9dfc37ebfe0aa664186bb4782b568479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainPrefab: {fileID: 6362839127374078604, guid: 1f49bbbce52b5444ca2600fe84e3dc11, type: 3}
+  _finishFlagPrefab: {fileID: 6849070183138834917, guid: aa12db359f56e85498d87da578195f0b, type: 3}
+  _backstopPrefab: {fileID: 8604669192707788244, guid: 3806a06a8635be3429cab4e2beadbd95, type: 3}
+  _finishFlag: {fileID: 0}
+  _backstop: {fileID: 0}
   _normalBodies: []
   _ragdollBodies: []

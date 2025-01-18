@@ -13,17 +13,17 @@ public class GroundColliderManager
     private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private List<DoublePositionalList<PositionalEdgeCollider>> _normalBodyColliders, _ragdollBodyColliders, _activeColliderList;
     private List<PositionalEdgeCollider> _toActivate, _toDeactivate;
-    private LevelTerrain _terrain;
+    private Ground _ground;
     public Action OnActivateLastSegment;
     #endregion
 
     #region Constructor
-    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, LevelTerrain terrain, int startingIndex = 0)
+    public GroundColliderManager(List<Rigidbody2D> normalBodies, List<Rigidbody2D> ragdollBodies, Ground terrain, int startingIndex = 0)
     {
         LevelManager.OnGameOver += _ => SwitchToRagdoll();
         _normalBodies = normalBodies;
         _ragdollBodies = ragdollBodies;
-        _terrain = terrain;
+        _ground = terrain;
         _toActivate = new();
         _toDeactivate = new();
         InstantiatePositionalLists();
@@ -99,7 +99,7 @@ public class GroundColliderManager
     #region Build Positional Lists
     private void InstantiatePositionalLists()
     {
-        _positionalColliders = _terrain.PositionalColliderList;
+        //_positionalColliders = _ground.PositionalColliderList;
         _colliderStatusDict = _positionalColliders.ToDictionary(collider => collider, _ => 0);
         _normalBodyColliders = PositionalListsFromBodies(_normalBodies, _positionalColliders);
         SubscribeToAllListsEvents(_normalBodyColliders);
@@ -108,6 +108,7 @@ public class GroundColliderManager
         _activeColliderList = _normalBodyColliders;
     }
 
+    //Creates a separate positional list that tracks active list positions for each rigidbody2d in a second list
     private List<DoublePositionalList<PositionalEdgeCollider>> PositionalListsFromBodies(
         List<Rigidbody2D> bodies, List<PositionalEdgeCollider> colliders)
     {

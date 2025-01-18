@@ -274,6 +274,7 @@ public abstract class PositionalList<T> where T : IPosition
             throw new Exception("Unordered list sent to BoundedObjectList");
         }
     }
+    //Returns true if each value has a larger x coordinate than the one before
     private static bool ValidateListOrder(List<T> toValidate, bool doLog = false)
     {
         Vector3 lastPosition = toValidate[0].Position;

@@ -14,18 +14,12 @@ public class FinishLineCurve : Curve
     private List<CurvePoint> GenerateFinishPoints(CurvePoint startPoint)
     {
         List<CurvePoint> curvePoints = new();
-        curvePoints.Add(FirstPoint(startPoint));
+        curvePoints.Add(new(new(0,0), startPoint.LeftTangent, -startPoint.LeftTangent));
         curvePoints.Add(SecondPoint(curvePoints[0]));
         curvePoints.Add(ThirdPoint(curvePoints[1]));
         _highpoint = curvePoints[0].ControlPoint;
         _lowpoint = curvePoints[1].ControlPoint;
         return curvePoints;
-    }
-
-    private CurvePoint FirstPoint(CurvePoint startPoint)
-    {
-        startPoint.RightTangent = -startPoint.LeftTangent;
-        return startPoint;
     }
 
     private CurvePoint SecondPoint(CurvePoint startPoint)

@@ -20,19 +20,7 @@ public class Grade
     }
 
 
-    public float MinClimb
-    {
-        get
-        {
-            return _minClimb;
-        }
-    }
-    public float MaxClimb
-    {
-        get
-        {
-            return _maxClimb;
-        }
-    }
+    public float MinClimb => _minClimb;
+    public float MaxClimb => _maxClimb;
 
 }
