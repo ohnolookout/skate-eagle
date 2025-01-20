@@ -93,7 +93,9 @@ public class LevelDesigner : EditorWindow
     private void PopulateEditorFields()
     {
         GUILayout.Label("Level Designer", EditorStyles.boldLabel);
+
         EditorGUI.BeginChangeCheck();
+
         _name = EditorGUILayout.TextField("Level Name", _name);
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
@@ -102,6 +104,7 @@ public class LevelDesigner : EditorWindow
         EditorGUILayout.EndScrollView();
         _so.ApplyModifiedProperties();
         _so.Update();
+
         if (EditorGUI.EndChangeCheck())
         {
             UpdateLevel();

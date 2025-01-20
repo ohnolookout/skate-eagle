@@ -51,6 +51,7 @@ public class Level : ScriptableObject
         _name = name;
         _medalTimes = medalTimes;
         _levelSections = DeepCopy.CopyLevelSections(levelSections);
+        MapSectionGradesToCurves();
     }
 
     public void ReassignValues(Level level)
@@ -58,6 +59,19 @@ public class Level : ScriptableObject
         _name = level.Name;
         _medalTimes = DeepCopy.CopyMedalTimes(level.MedalTimes);
         _levelSections = DeepCopy.CopyLevelSections(level.LevelSections);
+        MapSectionGradesToCurves();
+    }
+
+    private void MapSectionGradesToCurves()
+    {
+        foreach (LevelSection section in _levelSections)
+        {
+            var grade = section.Grade;
+            foreach (CurveDefinition curve in section.Curves)
+            {
+                curve.MapGradeToCurveDefs(grade);
+            }
+        }
     }
 
 

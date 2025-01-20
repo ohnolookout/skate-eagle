@@ -38,4 +38,13 @@ public class CurveDefinition
     {
         _name = newName;
     }
+
+    public void MapGradeToCurveDefs(Grade grade)
+    {
+        foreach (var definition in _definitions)
+        {
+            definition.ClimbMin = grade.ClimbMin;
+            definition.ClimbMax = grade.ClimbMax;
+        }
+    }
 }

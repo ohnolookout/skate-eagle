@@ -59,6 +59,6 @@ public static class DeepCopy
 
     public static Grade CopyGrade(Grade gradeToCopy)
     {
-        return new Grade(gradeToCopy.MinClimb, gradeToCopy.MaxClimb);
+        return new Grade(gradeToCopy.ClimbMin, gradeToCopy.ClimbMax);
     }
 }

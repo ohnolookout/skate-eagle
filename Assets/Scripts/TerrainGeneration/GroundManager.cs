@@ -99,7 +99,6 @@ public class GroundManager : MonoBehaviour
     {
         startSegment = segment;
         _startPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
-        Debug.Log("Start point set to " + _startPoint);
     }
 
     public void SetFinishPoint(IGroundSegment segment, int finishPointIndex)

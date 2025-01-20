@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872745c09bebb3642a6525b467396663, type: 3}
   m_Name: 03_TwoFlavors
   m_EditorClassIdentifier: 
-  _UID: 4ca552e9-9d0b-4024-a360-08d12d5ada1e
+  _UID: b9430224-7d3b-4b1b-aaaa-3af67621b5da
   _name: 03_TwoFlavors
   _medalTimes:
     _bronzeTime: 19
@@ -26,45 +26,57 @@ MonoBehaviour:
       _minClimb: 0
       _maxClimb: -2
     _curves:
-    - _name: Short Flat Roller Center
+    - _name: Medium Normal Roller
       _definitions:
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 0
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 1
       _quantity: 1
       _maxConsecutive: 2
   - _name: Two tone
     _grade:
-      _minClimb: 0
-      _maxClimb: -2
+      _minClimb: -3
+      _maxClimb: -8
     _curves:
-    - _name: Short Flat Roller Center
+    - _name: Medium Normal Roller
       _definitions:
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 0
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 1
       _quantity: 4
       _maxConsecutive: 2
-    - _name: Medium Gentle Roller Center
+    - _name: Medium Normal Roller
       _definitions:
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
-      - _shape: 0
-        _length: 1
-        _slope: 2
-        _skew: 2
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 0
+      - _shapeType: 0
+        _lengthType: 1
+        _pitchType: 2
+        ClimbMin: 0
+        ClimbMax: -2
+        _sectionType: 1
       _quantity: 5
       _maxConsecutive: 2
-  leaderboardKey: Two_Flavors_Global
+  leaderboardKey: None

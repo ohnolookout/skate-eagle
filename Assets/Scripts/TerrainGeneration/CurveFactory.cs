@@ -14,8 +14,8 @@ public static class CurveFactory
         return new StartLineCurve();
     }
 
-    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)
+    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint)
     {
-        return new CustomCurve(definition, startPoint, climbMin, climbMax);
+        return new CustomCurve(definition, startPoint);
     }
 }

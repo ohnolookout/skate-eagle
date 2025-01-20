@@ -29,16 +29,16 @@ public static class GroundGenerator
     {
         foreach (var sequence in curveSequences)
         {
-            GenerateSegmentsFromSequence(terrain, sequence.Key, sequence.Value, endOfMostRecentSegment, out endOfMostRecentSegment);
+            GenerateSegmentsFromSequence(terrain, sequence.Value, endOfMostRecentSegment, out endOfMostRecentSegment);
         }
         return endOfMostRecentSegment;
     }
 
-    private static void GenerateSegmentsFromSequence(Ground terrain, Grade grade, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
+    private static void GenerateSegmentsFromSequence(Ground terrain, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
     {
         foreach (CurveDefinition curveDef in sequence.Curves)
         {
-            terrain.AddSegment(curveDef, grade);
+            terrain.AddSegment(curveDef);
         }
         endPoint = terrain.EndPoint;
     }

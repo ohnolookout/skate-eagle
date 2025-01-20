@@ -20,7 +20,7 @@ public class Grade
     }
 
 
-    public float MinClimb => _minClimb;
-    public float MaxClimb => _maxClimb;
+    public float ClimbMin => _minClimb;
+    public float ClimbMax => _maxClimb;
 
 }

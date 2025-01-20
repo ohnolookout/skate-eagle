@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class CustomCurve : Curve
 {
-    float _climbMin, _climbMax;
     CurveDefinition _curveDef;
 
-    public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint, float climbMin, float climbMax)
+    public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint)
     {
-        _climbMin = climbMin;
-        _climbMax = climbMax;
         _curveDef = curveDef;
         //Use inverted left tangent from last point as starting right tangent
         curvePoints = CurvePointsFromDefinition(curveDef, -startPoint.LeftTangent);
@@ -27,8 +24,6 @@ public class CustomCurve : Curve
         CurvePoint startPoint = new(new(0, 0), -prevTang, prevTang);
         for (int i = 0; i < curveDef.Definitions.Length; i++)
         {
-            curveDef.Definitions[i].ClimbMin = _climbMin;
-            curveDef.Definitions[i].ClimbMax = _climbMax;
             CurveSectionParameters sectionParams = curveDef.Definitions[i].GetSectionParameters(startPoint.RightTangent);
             
             if (i == 0)

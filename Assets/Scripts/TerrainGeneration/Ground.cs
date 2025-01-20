@@ -114,9 +114,9 @@ public class Ground : MonoBehaviour
         return newSegment;
     }
 
-    public IGroundSegment AddSegment(CurveDefinition curveDef, Grade grade)
+    public IGroundSegment AddSegment(CurveDefinition curveDef)
     {
-        var curve = CurveFactory.CurveFromDefinition(curveDef, _endPoint, grade.MinClimb, grade.MaxClimb);
+        var curve = CurveFactory.CurveFromDefinition(curveDef, _endPoint);
         return AddSegment(curve);
     }
 
@@ -129,7 +129,7 @@ public class Ground : MonoBehaviour
 
     public IGroundSegment AddFinish(CurveDefinition curveDef, int finishIndex, GroundManager manager)
     {
-        var finishSegment = AddSegment(curveDef, new Grade());
+        var finishSegment = AddSegment(curveDef);
 
         return finishSegment;
         
@@ -137,7 +137,7 @@ public class Ground : MonoBehaviour
 
     public IGroundSegment AddStart(CurveDefinition curveDef, int startIndex)
     {
-        var startSegment = AddSegment(curveDef, new Grade());
+        var startSegment = AddSegment(curveDef);
 
         return startSegment;
     }
