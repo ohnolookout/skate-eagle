@@ -99,7 +99,6 @@ public class GroundColliderManager
     #region Build Positional Lists
     private void InstantiatePositionalLists()
     {
-        //_positionalColliders = _ground.PositionalColliderList;
         _colliderStatusDict = _positionalColliders.ToDictionary(collider => collider, _ => 0);
         _normalBodyColliders = PositionalListsFromBodies(_normalBodies, _positionalColliders);
         SubscribeToAllListsEvents(_normalBodyColliders);

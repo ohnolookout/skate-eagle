@@ -55,13 +55,12 @@ public static class PositionalListFactory<T> where T : IPosition
     {
         sortableLowPoints = new();
         sortableHighPoints = new();
-        var segments = terrain.SegmentList;
 
-        AddSegmentsToSortableLists(segments, sortableLowPoints, sortableHighPoints);
+        AddSegmentsToSortableLists(terrain.SegmentList, sortableLowPoints, sortableHighPoints);
     }
 
     private static void AddSegmentsToSortableLists(List<IGroundSegment> segments,  List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
-{
+    {
         for (int i = 0; i < segments.Count; i++)
         {
             var currentCurve = segments[i].Curve;

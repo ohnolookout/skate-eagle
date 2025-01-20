@@ -15,12 +15,12 @@ public class BackgroundContainer : MonoBehaviour
 
     private void Awake()
     {
-        startPosition = transform.position;
-        startScale = transform.localScale;
         BgPanelSequence = RandomIndexOrder(_bgPanelPoolCount, _bgPanelSequenceCount);
     }
     void Start()
     {
+        startPosition = transform.localPosition;
+        startScale = transform.localScale;
         mainCam = Camera.main;
         camScript = mainCam.GetComponent<ICameraOperator>();
         camSize = mainCam.orthographicSize;

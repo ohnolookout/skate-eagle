@@ -25,8 +25,8 @@ public class ParallaxBackground : MonoBehaviour
         defaultHalfLayerWidth = defaultPanelLength * 1.5f;
         cam = Camera.main;
         camScript = cam.GetComponent<ICameraOperator>();
-        transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, transform.position.z);
-        startPosition = transform.position;
+        //transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, transform.position.z);
+        startPosition = transform.localPosition;
     }
 
     void FixedUpdate()

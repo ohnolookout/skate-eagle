@@ -10,7 +10,7 @@ public class LevelDesigner : EditorWindow
     public string _name;
     public MedalTimes _medalTimes = new();
     public List<LevelSection> _levelSections = new();
-    private GroundManager _terrainManager;
+    private GroundManager _groundManager;
     private LevelManager _levelManager;
     private bool isLevelEditor;
     ScriptableObject _target;
@@ -63,7 +63,7 @@ public class LevelDesigner : EditorWindow
             if (GUILayout.Button("Clear Level", GUILayout.ExpandWidth(false)))
             {
                 AddTerrainGeneration();
-                _terrainManager.DeleteChildren();
+                _groundManager.DeleteChildren();
             }
         }
         else
@@ -118,8 +118,7 @@ public class LevelDesigner : EditorWindow
         }
         UpdateLevel();
         _levelManager.SetLevel(_currentLevel);
-        //gameManager.CurrentLevel = _currentLevel;
-        _terrainManager.GenerateTerrain(_currentLevel, new(0,0));
+        _groundManager.GenerateGround(_currentLevel);
     }
 
     private void SaveLevel()
@@ -167,7 +166,7 @@ public class LevelDesigner : EditorWindow
     private void AddTerrainGeneration()
     {
         _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-        _terrainManager = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<GroundManager>();
+        _groundManager = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<GroundManager>();
 
     }
 

@@ -21,7 +21,6 @@ public class CustomCurve : Curve
 
     private List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
-        Debug.Log("Applying curve def with previous tangent: " + prevTang);
         List<CurvePoint> curvePoints = new();
 
         //Initialize startPoint with tangents of previous point

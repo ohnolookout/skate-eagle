@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Declarations
     public Vector3 startPosition = new();
     [SerializeField] private Level _currentLevel;
-    [SerializeField] private GroundManager _terrainManager;
+    [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
     private GameManager _gameManager;
@@ -29,9 +29,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public static IPlayer GetPlayer { get => _player; }
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
-    public GroundManager TerrainManager { get => _terrainManager; set => _terrainManager = value; }
+    public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
     public bool HasPlayer { get => _player != null; }
-    public bool HasTerrainManager { get => _terrainManager != null; }
+    public bool HasTerrainManager { get => _groundManager != null; }
     #endregion
 
     #region Monobehaviours
@@ -43,8 +43,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void Start()
     {
-        ActivateTerrainManager(startPosition);
-        SetPlayerPosition(startPosition);
+        ActivateTerrainManager();
+        SetPlayerPosition(_groundManager.StartPoint);
         SubscribeToPlayerEvents();
         Timer.OnStopTimer += OnStopTimer;
 
@@ -90,7 +90,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 #endregion
 
     #region Start/End Functions
-    private void ActivateTerrainManager(Vector3 startPosition)
+    private void ActivateTerrainManager()
     {
 
 #if UNITY_EDITOR
@@ -106,8 +106,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
 #endif
 
-        _terrainManager.GenerateTerrain(_gameManager.CurrentLevel, startPosition);
-        _terrainManager.OnActivateFinish += ActivateFinishLine;
+        _groundManager.GenerateGround(_gameManager.CurrentLevel);
+        _groundManager.OnActivateFinish += ActivateFinishLine;
     }
 
     private void AddSingletonManagers()
@@ -144,7 +144,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
         if (HasPlayer)
         {
             float halfPlayerHeight = 4.25f;
-            _player.Transform.position = new(position.x, position.y + halfPlayerHeight + 1.1f);
+            var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
+            _player.Transform.position = startPosition;
+            _player.NormalBody.position = startPosition;
         } 
     }
     public void SetLevel(Level level)

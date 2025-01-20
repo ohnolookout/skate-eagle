@@ -15,11 +15,9 @@ public class GroundManager : MonoBehaviour
     public IGroundSegment finishSegment;
     public IGroundSegment startSegment;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
-    private GroundColliderManager _colliderManager;
-    private Vector2 _startPoint = new(0,0);
+    private Vector2 _startPoint = new(400f, -150f);
     private Vector2 _finishPoint = new(0, 0);
     const float _cameraBuffer = 25;
-    private bool _trackCollision = false;
     public Action<Vector2> OnActivateFinish;
     private DoublePositionalList<IGroundSegment> _positionalSegmentList;
     public Ground Ground { get => _ground; }
@@ -41,24 +39,11 @@ public class GroundManager : MonoBehaviour
             return;
         }
         
-        //_colliderManager.OnActivateLastSegment += _ground.ActivateFinishObjects;
-        
     }
 
     void Update()
     {
         _positionalSegmentList.Update();
-        /*
-        if (_trackCollision)
-        {
-            _colliderManager.Update();
-        }
-        */
-    }
-    private void OnEnable()
-    {
-        LevelManager.OnAttempt += () => _trackCollision = true;
-        LevelManager.OnFinish += _ => _trackCollision = false;
     }
 
     private void OnDisable()
@@ -69,16 +54,14 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Initialization
-    public Vector2 GenerateTerrain(Level level, Vector3 startPosition)
+    public Vector2 GenerateGround(Level level)
     {
         if (transform.childCount > 0)
         {
             DeleteChildren();
         }
 
-        InitializeTerrain(level, startPosition);
-
-        //_colliderManager = new(_normalBodies, _ragdollBodies, _ground);
+        InitializeTerrain(level);
 
         InitializePositionalList(_ground, _cameraBuffer, _cameraBuffer);
         
@@ -92,11 +75,11 @@ public class GroundManager : MonoBehaviour
         AssignPositionalEvents(_positionalSegmentList);
     }
 
-    private void InitializeTerrain(Level level, Vector3 startPosition)
+    private void InitializeTerrain(Level level)
     {
         _ground = Instantiate(_terrainPrefab, transform).GetComponent<Ground>();
 
-        GroundGenerator.GenerateLevel(level, this, _ground, startPosition);
+        GroundGenerator.GenerateLevel(level, this, _ground);
     }
 
     private void OnFinishActivation(IGroundSegment segment)
@@ -115,7 +98,8 @@ public class GroundManager : MonoBehaviour
     public void SetStartPoint(IGroundSegment segment, int curvePointIndex)
     {
         startSegment = segment;
-        _startPoint = transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
+        _startPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
+        Debug.Log("Start point set to " + _startPoint);
     }
 
     public void SetFinishPoint(IGroundSegment segment, int finishPointIndex)

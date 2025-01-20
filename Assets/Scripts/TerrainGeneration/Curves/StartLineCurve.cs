@@ -6,10 +6,10 @@ public class StartLineCurve : Curve
 {
     const float _thirdPointXVelocity = 10;
     const float _thirdPointXSlope = -1.1f;
-    public StartLineCurve(CurvePoint origin)
+    public StartLineCurve()
     {
-        curvePoints = GenerateCurvePoints(origin.ControlPoint);
-        curveType = CurveType.FinishLine;
+        curvePoints = GenerateCurvePoints(new(0,0));
+        curveType = CurveType.StartLine;
         _highpoint = curvePoints[1].ControlPoint;
         _lowpoint = curvePoints[2].ControlPoint;
         GenerateCurveStats();
@@ -17,24 +17,26 @@ public class StartLineCurve : Curve
 
     private static List<CurvePoint> GenerateCurvePoints(Vector3 origin)
     {
-        return new() { FirstPoint(origin), SecondPoint(origin), ThirdPoint(origin) };
+        var firstPoint = FirstPoint();
+        var secondPoint = SecondPoint();
+        var thirdPoint = ThirdPoint(secondPoint.ControlPoint);
+        return new() { firstPoint, secondPoint, thirdPoint };
     }
 
-    private static CurvePoint FirstPoint(Vector3 origin)
+    private static CurvePoint FirstPoint()
     {
-        Vector3 firstLocation = new(origin.x - 400, origin.y + 150);
-        return new(firstLocation, new Vector2(0, -1), new Vector2(40, -130));
+        return new(new(0, 0), new(0, -1), new(40, -130));
     }
 
-    private static CurvePoint SecondPoint(Vector3 origin)
+    private static CurvePoint SecondPoint()
     {
-        return new(origin, new Vector2(-45, 0.5f), new Vector2(10, -0.5f));
+        return new(new(400, -150), new(-45, 0.5f), new(10, -0.5f));
     }
 
-    private static CurvePoint ThirdPoint(Vector3 origin)
+    private static CurvePoint ThirdPoint(Vector3 secondPoint)
     {
         Vector3 leftTangent = new(-_thirdPointXVelocity, -_thirdPointXVelocity * _thirdPointXSlope);
         Vector3 rightTangent = new(_thirdPointXVelocity, _thirdPointXVelocity * _thirdPointXSlope);
-        return new(origin + new Vector3(30, -12), leftTangent, rightTangent);
+        return new(secondPoint + new Vector3(30, -12), leftTangent, rightTangent);
     }
 }

@@ -9,9 +9,9 @@ public static class CurveFactory
         return new FinishLineCurve(startPoint);
     }
 
-    public static Curve StartLine(CurvePoint startPoint)
+    public static Curve StartLine()
     {
-        return new StartLineCurve(startPoint);
+        return new StartLineCurve();
     }
 
     public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint, float climbMin, float climbMax)

@@ -66,7 +66,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     void Start()
     {
         //Create minmax caches for high and low points
-        _highLowManager = new(this, _levelManager.TerrainManager.Ground);
+        _highLowManager = new(this, _levelManager.GroundManager.Ground);
         _highLowManager.HighPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
         _highLowManager.LowPoints.MinMax.OnNewMinMax += (_) => _zoom.UpdateHighLowZoom(_highLowManager);
         _zoom.SubscribeToPlayerLanding(_player);
@@ -128,6 +128,12 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     #endregion
 
     #region Position
+    private void SetInitialPosition()
+    {
+        var startPosition = new Vector3(_levelManager.GroundManager.StartPoint.x + _offset.x, _levelManager.GroundManager.StartPoint.y + _offset.y, transform.position.z);
+        //Set camera's position to player's position plus offset
+        transform.position = startPosition; 
+    }
     private void UpdatePosition()
     {
         //Add offset and zoom changes to low point y
