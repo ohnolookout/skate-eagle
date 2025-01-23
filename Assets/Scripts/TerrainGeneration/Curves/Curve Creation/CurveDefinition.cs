@@ -7,20 +7,20 @@ public class CurveDefinition
 {
     #region Declarations
     [HideInInspector] public string _name;
-    public ProceduralCurveSection[] _definitions;
+    public CurveSection[] _curveSections;
     public int _quantity, _maxConsecutive;
-    public ProceduralCurveSection[] Definitions => _definitions;
-    public ProceduralCurveSection Peak => Definitions[1];
+    public CurveSection[] Definitions => _curveSections;
+    public CurveSection Peak => Definitions[1];
     public string Name { get => _name; set => _name = value; }
     public int Quantity { get => _quantity; set => _quantity = value; }
     public int MaxConsecutive { get => _maxConsecutive; set => _maxConsecutive = value; }
     #endregion
 
 
-    public CurveDefinition(string name, ProceduralCurveSection[] definitions, int quantity = 1, int maxConsecutive = 2)
+    public CurveDefinition(string name, CurveSection[] definitions, int quantity = 1, int maxConsecutive = 2)
     {
         _name = name;
-        _definitions = definitions;
+        _curveSections = definitions;
         _quantity = quantity;
         _maxConsecutive = maxConsecutive;
     }
@@ -30,7 +30,7 @@ public class CurveDefinition
         _name = "Default Curve";
         ProceduralCurveSection valley = new(LengthType.Medium, ShapeType.Roller, PitchType.Normal, SectionType.Peak);
         ProceduralCurveSection peak = new(LengthType.Medium, ShapeType.Roller, PitchType.Normal, SectionType.Valley);
-        _definitions = new[] { valley, peak };
+        _curveSections = new[] { valley, peak };
         _quantity = 1;
     }
 
@@ -41,10 +41,9 @@ public class CurveDefinition
 
     public void MapGradeToCurveDefs(Grade grade)
     {
-        foreach (var definition in _definitions)
+        foreach (var definition in _curveSections)
         {
-            definition.ClimbMin = grade.ClimbMin;
-            definition.ClimbMax = grade.ClimbMax;
+            definition.AddGrade(grade);
         }
     }
 }

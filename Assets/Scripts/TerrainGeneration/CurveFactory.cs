@@ -18,4 +18,5 @@ public static class CurveFactory
     {
         return new CustomCurve(definition, startPoint);
     }
+
 }

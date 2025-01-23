@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class CustomCurve : Curve
 {
-    CurveDefinition _curveDef;
 
     public CustomCurve(CurveDefinition curveDef, CurvePoint startPoint)
     {
-        _curveDef = curveDef;
+        curveDefinition = curveDef;
         //Use inverted left tangent from last point as starting right tangent
         curvePoints = CurvePointsFromDefinition(curveDef, -startPoint.LeftTangent);
         curveType = CurveType.Custom;

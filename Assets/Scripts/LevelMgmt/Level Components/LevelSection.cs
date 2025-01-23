@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 [Serializable]
 public class LevelSection
 {
@@ -40,7 +41,14 @@ public class LevelSection
 
     private void NameCurve(CurveDefinition curve)
     {
-        string name = $"{curve.Peak.LengthType} {curve.Peak.PitchType} {curve.Peak.ShapeType}";
+        string name = "Custom curve";
+
+        if (curve._curveSections[0].GetType() == typeof(ProceduralCurveSection))
+        {
+            var proceduralSection = (ProceduralCurveSection)curve._curveSections[0];
+            name = $"{proceduralSection.LengthType} {proceduralSection.PitchType} {proceduralSection.ShapeType}";
+        }
+
         curve.Name = name;
     }
 
@@ -157,37 +165,7 @@ public class LevelSection
         Debug.Log(curveNames);
     }
 
-    public List<CurveDefinition> Curves
-    {
-        get
-        {
-            return _curves;
-        }
-    }
-
-
-    public Grade Grade
-    {
-        get
-        {
-            return _grade;
-        }
-        set
-        {
-            _grade = value;
-        }
-    }
-
-    public string Name
-    {
-        get
-        {
-            return _name;
-        }
-        set
-        {
-            _name = value;
-        }
-    }
-
+    public List<CurveDefinition> Curves => _curves;
+    public Grade Grade { get => _grade; set => _grade = value; }
+    public string Name { get => _name; set => _name = value; }
 }

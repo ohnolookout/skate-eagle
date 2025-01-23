@@ -7,12 +7,24 @@ using Unity.VisualScripting;
 [CustomEditor(typeof(Ground))]
 public class GroundEditor : Editor
 {
+    Ground ground;
+    public void OnEnable()
+    {
+        ground = target as Ground;
+    }
     public override void OnInspectorGUI()
     {
-        var ground = target.GetComponent<Ground>();
         if (GUILayout.Button("Add Segment"))
         {
-            ground.AddSegment();
+            ground.AddSegment(new CurveDefinition());
+        }
+        if(GUILayout.Button("Remove Segment"))
+        {
+            ground.RemoveSegment();
+        }
+        if(GUILayout.Button("Remove Segment At Index"))
+        {
+            ground.RemoveSegment(8);
         }
     }
 }

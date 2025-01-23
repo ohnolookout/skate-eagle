@@ -44,7 +44,7 @@ public static class DeepCopy
 
     public static CurveDefinition CopyCurveDefinition(CurveDefinition curveToCopy)
     {
-        ProceduralCurveSection[] copiedDefs = new ProceduralCurveSection[curveToCopy.Definitions.Length];
+        CurveSection[] copiedDefs = new CurveSection[curveToCopy.Definitions.Length];
         for(int i = 0; i < curveToCopy.Definitions.Length; i++)
         {
             copiedDefs[i] = curveToCopy.Definitions[i];

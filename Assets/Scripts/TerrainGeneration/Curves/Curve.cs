@@ -9,6 +9,7 @@ public class Curve
     //private float length;
     private List<float> segmentLengths;
     public List<CurvePoint> curvePoints;
+    public CurveDefinition curveDefinition;
     public CurveType curveType;
     private float length;
     private protected Vector3 _lowpoint, _highpoint;

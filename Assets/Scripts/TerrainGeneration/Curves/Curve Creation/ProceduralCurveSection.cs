@@ -74,6 +74,11 @@ public class ProceduralCurveSection:CurveSection
         return new CurveSectionParameters(length, shape, pitch, climb);
     }
 
+    public override void AddGrade(Grade grade)
+    {
+        ClimbMin = grade.ClimbMin;
+        ClimbMax = grade.ClimbMax;
+    }
 
     #region Parameter Type Conversions
     //Converts enums into vectors of min/max values

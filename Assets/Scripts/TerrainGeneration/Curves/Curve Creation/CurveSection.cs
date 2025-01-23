@@ -5,4 +5,5 @@ using UnityEngine;
 public abstract class CurveSection
 {
     public abstract CurveSectionParameters GetSectionParameters(Vector2 prevTangent);
+    public abstract void AddGrade(Grade grade);
 }
