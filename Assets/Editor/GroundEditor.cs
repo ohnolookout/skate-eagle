@@ -26,5 +26,9 @@ public class GroundEditor : Editor
         {
             ground.RemoveSegment(8);
         }
+        if (GUILayout.Button("Insert Segment At Index"))
+        {
+            ground.InsertSegment(new CurveDefinition(), 8);
+        }
     }
 }

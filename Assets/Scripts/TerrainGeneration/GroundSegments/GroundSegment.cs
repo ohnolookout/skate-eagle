@@ -13,6 +13,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
     public bool isFinish = false;
+    private Ground _parentGround;
     public Action<IGroundSegment> OnActivate { get; set; }
     public Curve Curve { get => _curve; }
     public Spline Spline { get => _masterSpline; }
@@ -151,6 +152,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         }
     }
 
-
+    public void AssignParent(Ground parent)
+    {
+        _parentGround = parent;
+    }
 
 }
