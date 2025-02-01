@@ -9,17 +9,17 @@ public class LevelSection
 {
     public string _name;
     public Grade _grade;
-    public List<CurveDefinition> _curves = new();
+    public List<ProceduralCurveDefinition> _curves = new();
     private static System.Random random = new();
 
     public LevelSection()
     {
         _name = "New Section";
         _grade = new();
-        _curves.Add(new CurveDefinition());
+        _curves.Add(new ProceduralCurveDefinition());
     }
 
-    public LevelSection(string name, Grade grade, List<CurveDefinition> curves)
+    public LevelSection(string name, Grade grade, List<ProceduralCurveDefinition> curves)
     {
         _name = name;
         _grade = grade;
@@ -28,7 +28,7 @@ public class LevelSection
 
     public bool Validate()
     {
-        foreach (CurveDefinition curve in Curves)
+        foreach (ProceduralCurveDefinition curve in Curves)
         {
             NameCurve(curve);
         }
@@ -39,13 +39,13 @@ public class LevelSection
         return true;
     }
 
-    private void NameCurve(CurveDefinition curve)
+    private void NameCurve(ProceduralCurveDefinition curve)
     {
         string name = "Custom curve";
 
-        if (curve._curveSections[0].GetType() == typeof(ProceduralCurveSection))
+        if (curve.curveSections[0].GetType() == typeof(ProceduralCurveSection))
         {
-            var proceduralSection = (ProceduralCurveSection)curve._curveSections[0];
+            var proceduralSection = (ProceduralCurveSection)curve.curveSections[0];
             name = $"{proceduralSection.LengthType} {proceduralSection.PitchType} {proceduralSection.ShapeType}";
         }
 
@@ -64,22 +64,22 @@ public class LevelSection
             return sequence;
         }
         int totalCount = 0;
-        Dictionary<CurveDefinition, int> curveQuantities = new();
-        List<CurveDefinition> possibleCurves = new();
+        Dictionary<ProceduralCurveDefinition, int> curveQuantities = new();
+        List<ProceduralCurveDefinition> possibleCurves = new();
         //Build dictionary of curve quantities to decrement as curves are added as well as a total count of all curves
         //and a list of possible curves that will be adjusted as curves become available or unavailable to generate.
-        foreach(CurveDefinition curve in _curves)
+        foreach(ProceduralCurveDefinition curve in _curves)
         {
             curveQuantities[curve] = curve.Quantity;
             totalCount += curve.Quantity;
             possibleCurves.Add(curve);
         }
-        CurveDefinition lastCurve = new CurveDefinition();
+        ProceduralCurveDefinition lastCurve = new ProceduralCurveDefinition();
         int consecCount = 1;
         int currentCount = 0;
         while (totalCount > currentCount)
         {
-            CurveDefinition currentCurve = GetNextCurve(curveQuantities, possibleCurves, lastCurve, consecCount, totalCount - currentCount);
+            ProceduralCurveDefinition currentCurve = GetNextCurve(curveQuantities, possibleCurves, lastCurve, consecCount, totalCount - currentCount);
             sequence.Add(currentCurve);
             curveQuantities[currentCurve]--;
             if (curveQuantities[currentCurve] <= 0)
@@ -105,10 +105,10 @@ public class LevelSection
         return sequence;
     }
 
-    private CurveDefinition GetNextCurve(Dictionary<CurveDefinition, int> curveQuantities, List<CurveDefinition> possibleCurves,
-        CurveDefinition lastCurve, int consecCount, int totalRemaining)
+    private ProceduralCurveDefinition GetNextCurve(Dictionary<ProceduralCurveDefinition, int> curveQuantities, List<ProceduralCurveDefinition> possibleCurves,
+        ProceduralCurveDefinition lastCurve, int consecCount, int totalRemaining)
     {
-        foreach(CurveDefinition curve in possibleCurves)
+        foreach(ProceduralCurveDefinition curve in possibleCurves)
         {
             if (curveQuantities[curve] <= curve.MaxConsecutive)
             {
@@ -144,10 +144,10 @@ public class LevelSection
         return null;
     }
 
-    public void LogCurveList(List<CurveDefinition> curveList)
+    public void LogCurveList(List<ProceduralCurveDefinition> curveList)
     {
         string curveNames = "Curves: ";
-        foreach(CurveDefinition curve in curveList)
+        foreach(ProceduralCurveDefinition curve in curveList)
         {
             curveNames += curve.Name + " ";
         }
@@ -158,14 +158,14 @@ public class LevelSection
         Validate();
         Debug.Log($"Logging section {_name}...");
         string curveNames = "Curves: ";
-        foreach (CurveDefinition curve in _curves)
+        foreach (ProceduralCurveDefinition curve in _curves)
         {
             curveNames += curve.Name + " ";
         }
         Debug.Log(curveNames);
     }
 
-    public List<CurveDefinition> Curves => _curves;
+    public List<ProceduralCurveDefinition> Curves => _curves;
     public Grade Grade { get => _grade; set => _grade = value; }
     public string Name { get => _name; set => _name = value; }
 }

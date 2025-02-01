@@ -67,7 +67,7 @@ public class Level : ScriptableObject
         foreach (LevelSection section in _levelSections)
         {
             var grade = section.Grade;
-            foreach (CurveDefinition curve in section.Curves)
+            foreach (ProceduralCurveDefinition curve in section.Curves)
             {
                 curve.MapGradeToCurveDefs(grade);
             }

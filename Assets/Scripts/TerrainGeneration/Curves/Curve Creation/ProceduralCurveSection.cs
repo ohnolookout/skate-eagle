@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using JetBrains.Annotations;
+using UnityEngine.UIElements;
 
 #region Enums
 [Serializable]
@@ -17,7 +18,7 @@ public enum SectionType { Peak, Valley};
 #endregion
 
 [Serializable]
-public class ProceduralCurveSection:CurveSection
+public class ProceduralCurveSection : CurveSection
 {
     #region Declarations
     public ShapeType _shapeType;
@@ -48,12 +49,9 @@ public class ProceduralCurveSection:CurveSection
     }
 
     public override CurveSectionParameters GetSectionParameters(Vector2 prevTangent)
-    {   //Set modifier for curve to be concave or convex
-        int peakValleyModifier = 1;
-        if (_sectionType == SectionType.Valley)
-        {
-            peakValleyModifier = -1;
-        }
+    {   
+        //Set modifier for curve to be concave or convex
+        int peakValleyModifier = _sectionType == SectionType.Valley ? -1 : 1;
 
         //Create a limiter 6on parameters based on the right tangent of the previous curve section
         float prevSlope = Mathf.Abs(prevTangent.y / prevTangent.x);
@@ -74,7 +72,7 @@ public class ProceduralCurveSection:CurveSection
         return new CurveSectionParameters(length, shape, pitch, climb);
     }
 
-    public override void AddGrade(Grade grade)
+    public void AddGrade(Grade grade)
     {
         ClimbMin = grade.ClimbMin;
         ClimbMax = grade.ClimbMax;

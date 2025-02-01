@@ -5,13 +5,13 @@ using System.Linq;
 
 public static class SectionCache
 {
-    private static bool IsWithinRepetitionLimits(Sequence sequence, Dictionary<CurveDefinition, int> maxRepetitions)
+    private static bool IsWithinRepetitionLimits(Sequence sequence, Dictionary<ProceduralCurveDefinition, int> maxRepetitions)
     {
-        CurveDefinition lastCurve = sequence.Curves[0];
+        ProceduralCurveDefinition lastCurve = sequence.Curves[0];
         int repetitions = 1;
         for (int i = 1; i < sequence.Curves.Count; i++)
         {
-            CurveDefinition currentCurve = sequence.Curves[i];
+            ProceduralCurveDefinition currentCurve = sequence.Curves[i];
             if (currentCurve != lastCurve)
             {
                 lastCurve = currentCurve;
@@ -27,13 +27,13 @@ public static class SectionCache
         return true;
     }
 
-    private static bool IsWithinRepetitionLimits(List<CurveDefinition> sequence, Dictionary<CurveDefinition, int> maxRepetitions)
+    private static bool IsWithinRepetitionLimits(List<ProceduralCurveDefinition> sequence, Dictionary<ProceduralCurveDefinition, int> maxRepetitions)
     {
-        CurveDefinition lastCurve = sequence[0];
+        ProceduralCurveDefinition lastCurve = sequence[0];
         int repetitions = 1;
         for (int i = 1; i < sequence.Count; i++)
         {
-            CurveDefinition currentCurve = sequence[i];
+            ProceduralCurveDefinition currentCurve = sequence[i];
             if (currentCurve != lastCurve)
             {
                 lastCurve = currentCurve;
@@ -54,7 +54,7 @@ public static class SectionCache
         return ValidateCurveList(section.GenerateSequence().Curves, section.Curves);
     }
 
-    public static bool ValidateCurveList(List<CurveDefinition> sequence, List<CurveDefinition> possibleCurves)
+    public static bool ValidateCurveList(List<ProceduralCurveDefinition> sequence, List<ProceduralCurveDefinition> possibleCurves)
     {
         var quantityDict = CurveQuantityDict(possibleCurves, out var curveCount);
         if(!AchievesAllQuantities(sequence, quantityDict))
@@ -72,7 +72,7 @@ public static class SectionCache
         return true;
     }
 
-    private static bool AchievesAllQuantities(List<CurveDefinition> sequence, Dictionary<CurveDefinition, int> quantityDict)
+    private static bool AchievesAllQuantities(List<ProceduralCurveDefinition> sequence, Dictionary<ProceduralCurveDefinition, int> quantityDict)
     {
         foreach(var curve in sequence)
         {
@@ -93,9 +93,9 @@ public static class SectionCache
         return true;
     }
 
-    public static Dictionary<CurveDefinition, int> MaxRepetitionDict(List<CurveDefinition> curves)
+    public static Dictionary<ProceduralCurveDefinition, int> MaxRepetitionDict(List<ProceduralCurveDefinition> curves)
     {
-        Dictionary<CurveDefinition, int> maxRepetitions = new();
+        Dictionary<ProceduralCurveDefinition, int> maxRepetitions = new();
         foreach (var curve in curves)
         {
             maxRepetitions[curve] = curve.MaxConsecutive;
@@ -103,21 +103,21 @@ public static class SectionCache
         return maxRepetitions;
     }
 
-    public static Dictionary<CurveDefinition, int> MaxRepetitionDict(LevelSection section)
+    public static Dictionary<ProceduralCurveDefinition, int> MaxRepetitionDict(LevelSection section)
     {
-        Dictionary<CurveDefinition, int> maxRepetitions = new();
-        foreach (CurveDefinition curve in section.Curves)
+        Dictionary<ProceduralCurveDefinition, int> maxRepetitions = new();
+        foreach (ProceduralCurveDefinition curve in section.Curves)
         {
             maxRepetitions[curve] = curve.MaxConsecutive;
         }
         return maxRepetitions;
     }
 
-    public static Dictionary<CurveDefinition, int> CurveQuantityDict(List<CurveDefinition> curves, out int curveCount)
+    public static Dictionary<ProceduralCurveDefinition, int> CurveQuantityDict(List<ProceduralCurveDefinition> curves, out int curveCount)
     {
-        Dictionary<CurveDefinition, int> curveQuantities = new();
+        Dictionary<ProceduralCurveDefinition, int> curveQuantities = new();
         curveCount = 0;
-        foreach (CurveDefinition curve in curves)
+        foreach (ProceduralCurveDefinition curve in curves)
         {
             curveQuantities[curve] = curve.Quantity;
             curveCount += curve.Quantity;

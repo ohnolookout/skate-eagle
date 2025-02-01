@@ -36,7 +36,7 @@ public static class GroundGenerator
 
     private static void GenerateSegmentsFromSequence(Ground terrain, Sequence sequence, CurvePoint startPoint, out CurvePoint endPoint)
     {
-        foreach (CurveDefinition curveDef in sequence.Curves)
+        foreach (ProceduralCurveDefinition curveDef in sequence.Curves)
         {
             terrain.AddSegment(curveDef);
         }
