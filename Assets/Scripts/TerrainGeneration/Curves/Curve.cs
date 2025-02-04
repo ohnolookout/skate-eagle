@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
-public enum CurveType { Procedural, Fixed };
+public enum CurveType { Procedural, Fixed, StartLine, FinishLine };
 public class Curve
 {
     //private float length;
@@ -20,11 +21,11 @@ public class Curve
 
         //Initialize startPoint with tangents of previous point
         CurvePoint startPoint = new(new(0, 0), -prevTang, prevTang);
-        for (int i = 0; i < curveDef.curveSections.Length; i++)
+        foreach(var section in curveDef.curveSections)
         {
-            CurveSectionParameters sectionParams = curveDef.curveSections[i].GetSectionParameters(startPoint.RightTangent);
+            var sectionParams = section.GetSectionParameters(startPoint.RightTangent);
 
-            if (i == 0)
+            if (curvePoints.Count == 0)
             {
                 curvePoints = CalculateCurvePointPair(sectionParams, startPoint);
                 _highpoint = curvePoints[0].ControlPoint;
@@ -45,7 +46,7 @@ public class Curve
         return curvePoints;
     }
 
-    private List<CurvePoint> CalculateCurvePointPair(CurveSectionParameters sectionParams, CurvePoint startPoint)
+    public List<CurvePoint> CalculateCurvePointPair(CurveSectionParameters sectionParams, CurvePoint startPoint)
     {
         List<CurvePoint> curvePoints = new();
 
@@ -68,7 +69,7 @@ public class Curve
         return curvePoints;
     }
 
-    private void EvaluateHighLow(Vector3 newPoint)
+    public void EvaluateHighLow(Vector3 newPoint)
     {
         if (newPoint.y >= _highpoint.y)
         {

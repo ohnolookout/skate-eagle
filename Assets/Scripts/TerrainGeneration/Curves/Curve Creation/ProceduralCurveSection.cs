@@ -18,7 +18,7 @@ public enum SectionType { Peak, Valley};
 #endregion
 
 [Serializable]
-public class ProceduralCurveSection : CurveSection
+public class ProceduralCurveSection : ICurveSection
 {
     #region Declarations
     public ShapeType _shapeType;

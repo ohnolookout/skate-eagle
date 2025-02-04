@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FixedCurveSection : CurveSection
+[Serializable]
+public class FixedCurveSection : ICurveSection
 {
     public SectionType sectionType;
     public float length;
@@ -34,7 +36,7 @@ public class FixedCurveSection : CurveSection
         int peakValleyModifier = sectionType == SectionType.Valley ? -1 : 1;
         
         var grade = climb / length;
-        var adjustedPitch = pitch + grade * peakValleyModifier;
+        var adjustedPitch = (pitch + grade) * peakValleyModifier;
 
         return new CurveSectionParameters(length, shape, adjustedPitch, climb);
     }
