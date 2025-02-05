@@ -12,14 +12,14 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private GameObject _backstopPrefab;
     [SerializeField] private GameObject _finishFlag;
     [SerializeField] private GameObject _backstop;
-    public IGroundSegment finishSegment;
-    public IGroundSegment startSegment;
+    public GroundSegment finishSegment;
+    public GroundSegment startSegment;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private Vector2 _startPoint = new(400f, -150f);
     private Vector2 _finishPoint = new(0, 0);
     const float _cameraBuffer = 25;
     public Action<Vector2> OnActivateFinish;
-    private DoublePositionalList<IGroundSegment> _positionalSegmentList;
+    private DoublePositionalList<GroundSegment> _positionalSegmentList;
     public Ground Ground { get => _ground; }
     public Vector2 StartPoint { get => _startPoint; set => _startPoint = value; }
     public Vector2 FinishPont { get => _finishPoint; set => _finishPoint = value; }
@@ -82,7 +82,7 @@ public class GroundManager : MonoBehaviour
         GroundGenerator.GenerateLevel(level, this, _ground);
     }
 
-    private void OnFinishActivation(IGroundSegment segment)
+    private void OnFinishActivation(GroundSegment segment)
     {
         segment.OnActivate -= OnFinishActivation;
         OnActivateFinish?.Invoke(_finishPoint);
@@ -95,13 +95,13 @@ public class GroundManager : MonoBehaviour
         }
     }
 
-    public void SetStartPoint(IGroundSegment segment, int curvePointIndex)
+    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
         startSegment = segment;
         _startPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
     }
 
-    public void SetFinishPoint(IGroundSegment segment, int finishPointIndex)
+    public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
     {
         //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
         if (finishSegment != null)
@@ -125,12 +125,12 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region PositionalList
-    private static DoublePositionalList<IGroundSegment> GetPositionalSegmentList(Ground terrain, float trailingBuffer, float leadingBuffer)
+    private static DoublePositionalList<GroundSegment> GetPositionalSegmentList(Ground terrain, float trailingBuffer, float leadingBuffer)
     {
-        return DoublePositionalListFactory<IGroundSegment>.CameraOperatorTracker(terrain.SegmentList, Camera.main.GetComponent<ICameraOperator>(), trailingBuffer, leadingBuffer);
+        return DoublePositionalListFactory<GroundSegment>.CameraOperatorTracker(terrain.SegmentList, Camera.main.GetComponent<ICameraOperator>(), trailingBuffer, leadingBuffer);
     }
 
-    private static void ActivateInitialSegments(DoublePositionalList<IGroundSegment> segmentList)
+    private static void ActivateInitialSegments(DoublePositionalList<GroundSegment> segmentList)
     {
         foreach (var segment in segmentList.CurrentObjects)
         {
@@ -138,7 +138,7 @@ public class GroundManager : MonoBehaviour
         }
     }
 
-    private static void AssignPositionalEvents(DoublePositionalList<IGroundSegment> positionalList)
+    private static void AssignPositionalEvents(DoublePositionalList<GroundSegment> positionalList)
     {
         positionalList.OnObjectAdded += (obj, _) => obj.gameObject.SetActive(true);
         positionalList.OnObjectRemoved += (obj, _) => obj.gameObject.SetActive(false);

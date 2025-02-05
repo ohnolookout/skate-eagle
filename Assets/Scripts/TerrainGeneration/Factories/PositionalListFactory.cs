@@ -59,7 +59,7 @@ public static class PositionalListFactory<T> where T : IPosition
         AddSegmentsToSortableLists(terrain.SegmentList, sortableLowPoints, sortableHighPoints);
     }
 
-    private static void AddSegmentsToSortableLists(List<IGroundSegment> segments,  List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
+    private static void AddSegmentsToSortableLists(List<GroundSegment> segments,  List<SortablePositionObject<Vector3>> sortableLowPoints, List<SortablePositionObject<HighPoint>> sortableHighPoints)
     {
         for (int i = 0; i < segments.Count; i++)
         {

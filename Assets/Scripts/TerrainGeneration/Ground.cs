@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.HableCurve;
 public class Ground : MonoBehaviour
 {
     #region Declarations
-    [SerializeField] private List<IGroundSegment> _segmentList;
+    [SerializeField] private List<GroundSegment> _segmentList;
     private PositionalList<PositionObject<Vector3>> _lowPointList, _highPointList;
     private float _minMaxBuffer = 100;
     private GameObject _finishFlag, _backstop;
@@ -17,7 +17,7 @@ public class Ground : MonoBehaviour
     private CurvePoint _startPoint = new(new(0, 0));
     private CurvePoint _endPoint = new(new(0, 0));
 
-    public List<IGroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
+    public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
     public PositionalList<PositionObject<Vector3>> LowPointList { get => _lowPointList; set => _lowPointList = value; }
     public PositionalList<PositionObject<Vector3>> HighPointList { get => _highPointList; set => _highPointList = value; }
@@ -29,7 +29,7 @@ public class Ground : MonoBehaviour
     
     #region Add/Remove Segments
     //Add segment to start at current endpoint
-    public IGroundSegment AddSegment(Curve curve)
+    public GroundSegment AddSegment(Curve curve)
     {
         //Create new segment, set to end of current segment, and add to _segmentList
         var newSegment = Instantiate(_segmentPrefab, transform, true).GetComponent<GroundSegment>();
@@ -64,13 +64,13 @@ public class Ground : MonoBehaviour
         return newSegment;
     }
 
-    public IGroundSegment AddSegment(CurveDefinition curveDef)
+    public GroundSegment AddSegment(CurveDefinition curveDef)
     {
         var curve = CurveFactory.CurveFromDefinition(curveDef, _endPoint);
         return AddSegment(curve);
     }
 
-    public IGroundSegment InsertSegment(CurveDefinition curveDef, int index)
+    public GroundSegment InsertSegment(CurveDefinition curveDef, int index)
     {
         if (index < 0 || index >= _segmentList.Count)
         {
@@ -120,7 +120,7 @@ public class Ground : MonoBehaviour
     #region Set End Point
 
     //Sets endpoint to the endpoint of given segment index and return segment
-    private IGroundSegment SetEndPointToIndex(int index)
+    private GroundSegment SetEndPointToIndex(int index)
     {
         if (index < 0 || index >= _segmentList.Count)
         {
@@ -135,7 +135,7 @@ public class Ground : MonoBehaviour
 
     //Sets endpoint to segment preceding given index. If index is 0, sets endpoint to default curvepoint at (0, 0)
 
-    private IGroundSegment SetEndPointToPreviousSegment(int index)
+    private GroundSegment SetEndPointToPreviousSegment(int index)
     {
         if (index < 0 || index >= _segmentList.Count + 1)
         {
@@ -151,7 +151,7 @@ public class Ground : MonoBehaviour
         return SetEndPointToIndex(index - 1);
     }
 
-    private IGroundSegment SetEndPointToLastSegment()
+    private GroundSegment SetEndPointToLastSegment()
     {
         return SetEndPointToIndex(_segmentList.Count - 1);
     }
@@ -160,7 +160,7 @@ public class Ground : MonoBehaviour
 
     #region Adjust Segments
 
-    private void MoveSegmentToCurvePoint(IGroundSegment segment, CurvePoint startPoint, bool doUpdateCollider, IGroundSegment previousSegment = null)
+    private void MoveSegmentToCurvePoint(GroundSegment segment, CurvePoint startPoint, bool doUpdateCollider, GroundSegment previousSegment = null)
     {
         segment.gameObject.transform.position = startPoint.ControlPoint;
 
@@ -176,7 +176,7 @@ public class Ground : MonoBehaviour
     //
     private void RecalculateSegmentsFromIndex(int startIndex)
     {
-        IGroundSegment previousSegment = SetEndPointToPreviousSegment(startIndex);
+        GroundSegment previousSegment = SetEndPointToPreviousSegment(startIndex);
 
         //Copy remaining elements of segmentList to temp list, remove from segmentList
         var remainingSegments = _segmentList.GetRange(startIndex, _segmentList.Count - startIndex);
@@ -194,18 +194,17 @@ public class Ground : MonoBehaviour
     #region Build Segments
 
     //Create collider object on groundsegment, set inactive, and return collider
-    public EdgeCollider2D AddColliderToSegment(IGroundSegment segment, Vector3? firstPoint, float resolution = 10)
+    public EdgeCollider2D AddColliderToSegment(GroundSegment segment, Vector3? firstPoint, float resolution = 10)
     {
         segment.Collider = CurveCollider.GenerateCollider(segment.Curve, segment.Collider, _colliderMaterial, firstPoint, resolution);
         return segment.Collider;
     }
 
     //This is fucked up as of 1-22-25
-    public Vector3? LastColliderPoint(IGroundSegment currentSegment, IGroundSegment prevSegment = null)
+    public Vector3? LastColliderPoint(GroundSegment currentSegment, GroundSegment prevSegment = null)
     {
         if (prevSegment == null)
         {
-            Debug.Log("No previous segment found. Returning null.");
             return null;
         }
         var worldPoint = prevSegment.gameObject.transform.TransformPoint(prevSegment.Collider.points[^1]);

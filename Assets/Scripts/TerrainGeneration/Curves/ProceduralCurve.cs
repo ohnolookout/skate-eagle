@@ -10,7 +10,7 @@ public class ProceduralCurve : Curve
     {
         curveDefinition = curveDef;
         //Use inverted left tangent from last point as starting right tangent
-        curvePoints = curveDefinition.GenerateCurvePoints(-startPoint.LeftTangent);
+        curvePoints = CurvePointsFromDefinition(curveDefinition, -startPoint.LeftTangent);
         //curvePoints = CurvePointsFromDefinition(curveDefinition, -startPoint.LeftTangent);
         curveType = CurveType.Procedural;
         GenerateCurveStats();

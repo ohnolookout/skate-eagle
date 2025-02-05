@@ -51,7 +51,7 @@ public static class GroundGenerator
     #endregion
 
     #region Segment Generation
-    private static IGroundSegment GenerateStartSegment(Ground ground, GroundManager manager)
+    private static GroundSegment GenerateStartSegment(Ground ground, GroundManager manager)
     {
         //Create startline at location of player
         var startCurve = CurveFactory.StartLine();
@@ -59,7 +59,7 @@ public static class GroundGenerator
         manager.SetStartPoint(startSegment, 1);
         return startSegment;
     }
-    private static IGroundSegment GenerateFinishSegment(Ground ground, GroundManager manager, CurvePoint endOfLastSegment)
+    private static GroundSegment GenerateFinishSegment(Ground ground, GroundManager manager, CurvePoint endOfLastSegment)
     {
         var finishCurve = CurveFactory.FinishLine(endOfLastSegment);
         var finishSegment = ground.AddSegment(finishCurve);

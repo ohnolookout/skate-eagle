@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 
 public enum CurveType { Procedural, Fixed, StartLine, FinishLine };
+[Serializable]
 public class Curve
 {
     //private float length;

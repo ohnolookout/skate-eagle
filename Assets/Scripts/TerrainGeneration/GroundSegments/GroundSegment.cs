@@ -6,7 +6,7 @@ using System;
 public class GroundSegment : MonoBehaviour, IGroundSegment
 {
     #region Declarations
-    private Curve _curve;
+    public Curve _curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
     private EdgeCollider2D _collider;
     private Spline _masterSpline;
@@ -14,7 +14,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     private int _containmentBuffer = 20;
     public bool isFinish = false;
     private Ground _parentGround;
-    public Action<IGroundSegment> OnActivate { get; set; }
+    public Action<GroundSegment> OnActivate { get; set; }
     public Curve Curve { get => _curve; }
     public Spline Spline { get => _masterSpline; }
     public Vector3 StartPosition => transform.TransformPoint(_curve.StartPoint.ControlPoint);

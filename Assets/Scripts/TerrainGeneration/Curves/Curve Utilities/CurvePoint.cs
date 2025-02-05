@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public struct CurvePoint
 {
     private Vector3 controlPoint, leftTangent, rightTangent;

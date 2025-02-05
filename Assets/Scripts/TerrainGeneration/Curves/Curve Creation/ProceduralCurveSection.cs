@@ -7,13 +7,9 @@ using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
 #region Enums
-[Serializable]
 public enum LengthType { Short = 0, Medium = 1, Long = 2, Jumbo = 3};
-[Serializable]
 public enum ShapeType { Roller, SoftPeak, HardPeak, SoftTable, HardTable }
-[Serializable]
 public enum PitchType { Flat, Gentle, Normal, Steep };
-[Serializable]
 public enum SectionType { Peak, Valley};
 #endregion
 

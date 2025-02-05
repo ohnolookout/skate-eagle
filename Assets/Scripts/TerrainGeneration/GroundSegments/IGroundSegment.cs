@@ -11,7 +11,7 @@ public interface IGroundSegment : IDoublePosition, IPosition
     CurveType Type { get; }
     GameObject gameObject { get; }
     bool IsFinish { get; set; }
-    Action<IGroundSegment> OnActivate { get; set; }
+    Action<GroundSegment> OnActivate { get; set; }
     EdgeCollider2D Collider { get; set; }
 
     void ApplyCurve(Curve curve);
