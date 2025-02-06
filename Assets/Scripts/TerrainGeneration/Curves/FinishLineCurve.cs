@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class FinishLineCurve : Curve
 {
     public FinishLineCurve(CurvePoint startPoint)
@@ -37,3 +37,4 @@ public class FinishLineCurve : Curve
         return point;
     }
 }
+*/

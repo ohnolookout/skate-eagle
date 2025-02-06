@@ -16,7 +16,7 @@ public class GroundEditor : Editor
     {
         if (GUILayout.Button("Add Segment"))
         {
-            ground.AddSegment(new FixedCurveDefinition());
+            ground.AddSegment(new CurveDefinition());
         }
         if(GUILayout.Button("Remove Segment"))
         {
@@ -28,7 +28,7 @@ public class GroundEditor : Editor
         }
         if (GUILayout.Button("Insert Segment At Index"))
         {
-            ground.InsertSegment(new FixedCurveDefinition(), 8);
+            ground.InsertSegment(new CurveDefinition(), 8);
         }
     }
 }

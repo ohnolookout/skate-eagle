@@ -6,6 +6,7 @@ using Unity.IO.LowLevel.Unsafe;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
+/*
 #region Enums
 public enum LengthType { Short = 0, Medium = 1, Long = 2, Jumbo = 3};
 public enum ShapeType { Roller, SoftPeak, HardPeak, SoftTable, HardTable }
@@ -115,3 +116,4 @@ public class ProceduralCurveSection : ICurveSection
 
 
 }
+*/

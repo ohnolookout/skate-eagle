@@ -7,6 +7,7 @@ public static class GroundGenerator
 {
     #region Level Generation
     //public static void GenerateLevel(Level level, Ground terrain, Vector3 playerStartPosition, out Vector2 finishPoint)
+    /*
     public static void GenerateLevel(Level level, GroundManager manager, Ground terrain)
     {
         if (level.LevelSections.Count < 1)
@@ -48,20 +49,23 @@ public static class GroundGenerator
         terrain.transform.position = new(0, 0);
         terrain.SegmentList = new();
     }
+    */
     #endregion
 
     #region Segment Generation
+    
     private static GroundSegment GenerateStartSegment(Ground ground, GroundManager manager)
     {
         //Create startline at location of player
-        var startCurve = CurveFactory.StartLine();
+        var startCurve = CurveFactory.DefaultStartLine();
         var startSegment = ground.AddSegment(startCurve);
         manager.SetStartPoint(startSegment, 1);
         return startSegment;
     }
+    
     private static GroundSegment GenerateFinishSegment(Ground ground, GroundManager manager, CurvePoint endOfLastSegment)
     {
-        var finishCurve = CurveFactory.FinishLine(endOfLastSegment);
+        var finishCurve = CurveFactory.DefaultFinishLine(endOfLastSegment);
         var finishSegment = ground.AddSegment(finishCurve);
         manager.SetFinishPoint(finishSegment, 1);
         return finishSegment;

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class LevelValidator : MonoBehaviour
 {
     public Level level;
@@ -68,3 +68,4 @@ public class LevelValidator : MonoBehaviour
 
 
 }
+*/

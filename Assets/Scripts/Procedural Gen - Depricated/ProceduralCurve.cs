@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class ProceduralCurve : Curve
 {
     public new ProceduralCurveDefinition curveDefinition;
@@ -20,3 +20,4 @@ public class ProceduralCurve : Curve
 
 
 }
+*/

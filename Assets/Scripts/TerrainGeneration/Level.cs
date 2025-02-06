@@ -12,19 +12,21 @@ public class Level : ScriptableObject
     public string _UID;
     public string _name;
     public MedalTimes _medalTimes;
-    public List<LevelSection> _levelSections;
+    //public List<LevelSection> _levelSections;
     public string leaderboardKey = "None";
     public string Name => _name;
     public string levelUID => _UID;
     public MedalTimes MedalTimes => _medalTimes;
-    public List<LevelSection> LevelSections => _levelSections;
+    //public List<LevelSection> LevelSections => _levelSections;
 
     public Level()
     {
         _name = "Default Level";
         _medalTimes = new(60, 45, 30, 20, 10);
+        /*
         _levelSections = new();
         _levelSections.Add(new LevelSection());
+        */
     }
 
     private void OnValidate()
@@ -38,7 +40,7 @@ public class Level : ScriptableObject
 #endif
     }
 
-
+    /*
     public void ManualReset()
     {
         List<LevelSection> defaultSections = new();
@@ -121,12 +123,6 @@ public class Level : ScriptableObject
         }
         return isValid;
     }
-
-    public void LogSections()
-    {
-        foreach(LevelSection section in _levelSections)
-        {
-            section.Log();
-        }
-    }
+    */
 }
+

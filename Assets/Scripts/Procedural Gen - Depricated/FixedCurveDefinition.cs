@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 [Serializable]
 public class FixedCurveDefinition : CurveDefinition
 {
@@ -23,3 +23,4 @@ public class FixedCurveDefinition : CurveDefinition
     }
 
 }
+*/

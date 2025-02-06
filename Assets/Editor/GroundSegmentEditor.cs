@@ -7,8 +7,8 @@ using UnityEngine;
 public class GroundSegmentEditor: Editor
 {
     GroundSegment _segment;
-    FixedCurve _curve;
-    List<FixedCurveSection> _curveSections;
+    Curve _curve;
+    List<CurveSection> _curveSections;
     SerializedObject _so;
     SerializedProperty _serializedCurve;
     public void OnEnable()

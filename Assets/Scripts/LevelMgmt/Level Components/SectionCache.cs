@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+/*
 public static class SectionCache
 {
     private static bool IsWithinRepetitionLimits(Sequence sequence, Dictionary<ProceduralCurveDefinition, int> maxRepetitions)
@@ -125,3 +125,4 @@ public static class SectionCache
         return curveQuantities;
     }
 }
+*/

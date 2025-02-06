@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using System.Linq;
 using static System.Collections.Specialized.BitVector32;
+
+/*
 [Serializable]
 public class LevelSection
 {
@@ -169,3 +171,4 @@ public class LevelSection
     public Grade Grade { get => _grade; set => _grade = value; }
     public string Name { get => _name; set => _name = value; }
 }
+*/

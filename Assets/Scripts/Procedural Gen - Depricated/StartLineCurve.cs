@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class StartLineCurve : Curve
 {
     const float _thirdPointXVelocity = 10;
     const float _thirdPointXSlope = -1.1f;
-    public StartLineCurve()
+    public StartLineCurve(CurveDefinition curvedef = null, CurvePoint startPoint = null)
     {
         curvePoints = GenerateCurvePoints(new(0,0));
         curveType = CurveType.StartLine;
@@ -40,3 +41,4 @@ public class StartLineCurve : Curve
         return new(secondPoint + new Vector3(30, -12), leftTangent, rightTangent);
     }
 }
+*/

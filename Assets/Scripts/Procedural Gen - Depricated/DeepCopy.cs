@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public static class DeepCopy
 {
     public static Level CopyLevel(Level levelToCopy)
@@ -62,3 +62,4 @@ public static class DeepCopy
         return new Grade(gradeToCopy.ClimbMin, gradeToCopy.ClimbMax);
     }
 }
+*/

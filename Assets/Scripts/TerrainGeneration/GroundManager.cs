@@ -79,7 +79,7 @@ public class GroundManager : MonoBehaviour
     {
         _ground = Instantiate(_terrainPrefab, transform).GetComponent<Ground>();
 
-        GroundGenerator.GenerateLevel(level, this, _ground);
+        //GroundGenerator.GenerateLevel(level, this, _ground);
     }
 
     private void OnFinishActivation(GroundSegment segment)

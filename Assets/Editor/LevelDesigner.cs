@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 
+/*
 public class LevelDesigner : EditorWindow
 {
     public string _name;
@@ -174,3 +175,4 @@ public class LevelDesigner : EditorWindow
     }
 
 }
+*/

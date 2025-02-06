@@ -14,8 +14,21 @@ public class Curve
     public CurveDefinition curveDefinition;
     public CurveType curveType;
     private float length;
-    private protected Vector3 _lowpoint, _highpoint;    
+    private protected Vector3 _lowpoint, _highpoint;
+    public Curve(CurveDefinition curveDef, CurvePoint startPoint)
+    {
+        curveDefinition = curveDef;
+        curvePoints = CurvePointsFromDefinition(curveDefinition, -startPoint.LeftTangent);
+        curveType = CurveType.Fixed;
+        GenerateCurveStats();
+    }
 
+    public Curve(List<CurvePoint> curvePoints)
+    {
+        this.curvePoints = curvePoints;
+        curveType = CurveType.Fixed;
+        GenerateCurveStats();
+    }
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();

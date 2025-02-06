@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-[Serializable]
+/*[Serializable]
 public class ProceduralCurveDefinition : CurveDefinition
 {
     #region Declarations
@@ -47,3 +47,4 @@ public class ProceduralCurveDefinition : CurveDefinition
         }
     }
 }
+*/
