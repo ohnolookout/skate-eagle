@@ -29,6 +29,13 @@ public class Curve
         curveType = CurveType.Fixed;
         GenerateCurveStats();
     }
+
+    public void RefreshCurve(Vector2 prevTang)
+    {
+        curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang); 
+        GenerateCurveStats();
+    }
+
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();
