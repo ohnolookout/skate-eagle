@@ -4,6 +4,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.U2D;
 using System;
 
+#nullable enable
 public interface IGroundSegment : IDoublePosition, IPosition
 {
     Curve Curve { get; }
@@ -14,8 +15,9 @@ public interface IGroundSegment : IDoublePosition, IPosition
     Action<GroundSegment> OnActivate { get; set; }
     EdgeCollider2D Collider { get; set; }
 
-    void ApplyCurve(Curve curve);
+    void Generate(Ground parent, CurveDefinition curveDef, GroundSegment? previousSegment);
     bool ContainsX(float targetX);
     bool EndsBeforeX(float endX);
     bool StartsAfterX(float startX);
+    Vector2 EndPositionAsWorldPoint();
 }

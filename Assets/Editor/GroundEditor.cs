@@ -22,13 +22,20 @@ public class GroundEditor : Editor
         {
             ground.RemoveSegment();
         }
-        if(GUILayout.Button("Remove Segment At Index"))
-        {
-            ground.RemoveSegment(8);
-        }
         if (GUILayout.Button("Insert Segment At Index"))
         {
             ground.InsertSegment(new CurveDefinition(), 8);
         }
+        if (GUILayout.Button("Reset Segment List"))
+        {
+            bool clear = EditorUtility.DisplayDialog("Clear Segment List", "Are you sure you want to clear all segments?", "Yes", "No");
+            if (!clear)
+            {
+                return;
+            }
+            ground.ResetSegmentList();
+        }
+
+        DrawDefaultInspector();
     }
 }

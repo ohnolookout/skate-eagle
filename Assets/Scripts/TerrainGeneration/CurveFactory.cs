@@ -23,7 +23,7 @@ public static class CurveFactory
     */
     public static Curve DefaultFixedCurve(CurvePoint startPoint)
     {
-        return new Curve(new(), startPoint);
+        return new Curve(new(), -startPoint.LeftTangent);
     }
     /*
     public static Curve DefaultProceduralCurve(CurvePoint startPoint)
@@ -36,9 +36,9 @@ public static class CurveFactory
         return new ProceduralCurve(definition, startPoint);
     }
     */
-    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint)
+    public static Curve CurveFromDefinition(CurveDefinition definition, Vector2 prevTang)
     {
-        return new Curve(definition, startPoint);
+        return new Curve(definition, prevTang);
     }
 
     public static Curve DefaultStartLine()

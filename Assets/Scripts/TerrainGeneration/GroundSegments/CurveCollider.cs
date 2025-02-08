@@ -12,7 +12,7 @@ public static class CurveCollider
     public static EdgeCollider2D GenerateCollider(Curve curve, EdgeCollider2D collider, PhysicsMaterial2D material, Vector3? firstPoint, float resolutionMult = 10)
     {
         collider.sharedMaterial = material;
-        if (curve.Type == CurveType.StartLine)
+        if (curve.Type == CurveType.StartLine || firstPoint == null)
         {
             firstPoint = curve.GetPoint(0).ControlPoint;
         }

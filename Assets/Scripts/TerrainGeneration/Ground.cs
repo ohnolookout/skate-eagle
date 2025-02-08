@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
-using static UnityEngine.Rendering.HableCurve;
-
 
 public class Ground : MonoBehaviour
 {
@@ -14,8 +11,8 @@ public class Ground : MonoBehaviour
     [SerializeField] GameObject _segmentPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     public GameObject FinishFlagPrefab, BackstopPrefab;
-    private CurvePoint _startPoint = new(new(0, 0));
-    private CurvePoint _endPoint = new(new(0, 0));
+    [SerializeField] private CurvePoint _startPoint = new(new(0, 0));
+    [SerializeField] private CurvePoint _endPoint = new(new(0, 0));
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
@@ -29,28 +26,18 @@ public class Ground : MonoBehaviour
     
     #region Add/Remove Segments
     //Add segment to start at current endpoint
-    public GroundSegment AddSegment(Curve curve)
+    public GroundSegment AddSegment(CurveDefinition curveDef)
     {
-        //Create new segment, set to end of current segment, and add to _segmentList
+        //Create new segment, set start point to end of current segment, and add to _segmentList
         var newSegment = Instantiate(_segmentPrefab, transform, true).GetComponent<GroundSegment>();
-        newSegment.AssignParent(this);
-        newSegment.ApplyCurve(curve);
+        var prevSegment = _segmentList.Count == 0 ? null : _segmentList[^1];
+        Vector2 startPoint = prevSegment == null ? new Vector2(0, 0) : prevSegment.EndPositionAsWorldPoint();
 
         //Move segment to current endpoint, update endpoint, and add to segmentList
-        newSegment.transform.position = _endPoint.ControlPoint;
-
-        //Add collider
-        if (_segmentList.Count == 0)
-        {
-            AddColliderToSegment(newSegment, LastColliderPoint(newSegment));
-        }
-        else
-        {
-            AddColliderToSegment(newSegment, LastColliderPoint(newSegment, _segmentList[^1]));
-        }
+        newSegment.transform.position = startPoint;
+        newSegment.Generate(this, curveDef, prevSegment);
 
         _segmentList.Add(newSegment);
-        SetEndPointToLastSegment();
 
         //Deactivate segment. Reactivate if in editor mode.
         newSegment.gameObject.SetActive(false);
@@ -64,21 +51,12 @@ public class Ground : MonoBehaviour
         return newSegment;
     }
 
-    public GroundSegment AddSegment(CurveDefinition curveDef)
-    {
-        var curve = CurveFactory.CurveFromDefinition(curveDef, _endPoint);
-        return AddSegment(curve);
-    }
-
     public GroundSegment InsertSegment(CurveDefinition curveDef, int index)
     {
         if (index < 0 || index >= _segmentList.Count)
         {
             return null;
         }
-
-        //Change endpoint to endpoint of segment before index
-        SetEndPointToPreviousSegment(index);
 
         //Split segment list into two lists at index, remove all segments after index from original list
         var tempList = _segmentList.GetRange(index, _segmentList.Count-index);
@@ -87,6 +65,11 @@ public class Ground : MonoBehaviour
         //Add segment using curveDef
         var newSegment = AddSegment(curveDef);
 
+        //Update previous segment of first segment in tempList
+        if (tempList.Count > 0)
+        {
+            tempList[0].PreviousSegment = newSegment;
+        }
         _segmentList.AddRange(tempList);
 
         //Recalculate segment positions after index
@@ -107,16 +90,33 @@ public class Ground : MonoBehaviour
             return;
         }
 
-        var segment = _segmentList[index].gameObject;
+        var segmentObj = _segmentList[index].gameObject;
         _segmentList.RemoveAt(index);
-        DestroyImmediate(segment);
+        DestroyImmediate(segmentObj);
         
-        //SetEndPointToIndex(_segmentList.Count - 1);
+        RecalculateSegmentsFromIndex(index);
+    }
+    public void RemoveSegment(GroundSegment segment)
+    {
+        var index = _segmentList.IndexOf(segment);
+        _segmentList.Remove(segment);
+        
+        if(index == 0) 
+        {
+            _segmentList[index].PreviousSegment = null;
+        }
+        else
+        {
+            _segmentList[index].PreviousSegment = _segmentList[index - 1];
+        }
+
+        DestroyImmediate(segment.gameObject);
+
         RecalculateSegmentsFromIndex(index);
     }
 
     #endregion
-
+    /*
     #region Set End Point
 
     //Sets endpoint to the endpoint of given segment index and return segment
@@ -157,60 +157,42 @@ public class Ground : MonoBehaviour
     }
 
     #endregion
-
+    */
     #region Adjust Segments
 
-    private void MoveSegmentToCurvePoint(GroundSegment segment, CurvePoint startPoint, bool doUpdateCollider, GroundSegment previousSegment = null)
-    {
-        segment.gameObject.transform.position = startPoint.ControlPoint;
-
-        if (doUpdateCollider)
-        {
-            var segmentStartPoint = segment.Curve.curvePoints[0];
-            segmentStartPoint.RightTangent = -startPoint.LeftTangent;
-
-            AddColliderToSegment(segment, LastColliderPoint(segment, previousSegment));
-        }
-    }
-
-    //
+    //Recalculate segments beginning at startIndex
+    //First segment to be recalculated also recalculates its curve.
     private void RecalculateSegmentsFromIndex(int startIndex)
     {
-        GroundSegment previousSegment = SetEndPointToPreviousSegment(startIndex);
 
         //Copy remaining elements of segmentList to temp list, remove from segmentList
         var remainingSegments = _segmentList.GetRange(startIndex, _segmentList.Count - startIndex);
-        //_segmentList.RemoveRange(index, _segmentList.Count - index);
 
         for (int i = startIndex; i < _segmentList.Count; i++)
         {
-            MoveSegmentToCurvePoint(_segmentList[i], _endPoint, i == startIndex, previousSegment);
-            SetEndPointToIndex(i);
+            _segmentList[i].gameObject.transform.position = _segmentList[i].PreviousSegment.EndPositionAsWorldPoint();
+
+            if(i == startIndex)
+            {
+                _segmentList[i].RefreshCurve();
+            }
         }
     }
+
+    public void RecalculateSegmentsFromSegment(GroundSegment segment)
+    {
+        int index = _segmentList.IndexOf(segment);
+        if (index == -1)
+        {
+            return;
+        }
+        RecalculateSegmentsFromIndex(index + 1);
+    }
+
 
     #endregion
 
     #region Build Segments
-
-    //Create collider object on groundsegment, set inactive, and return collider
-    public EdgeCollider2D AddColliderToSegment(GroundSegment segment, Vector3? firstPoint, float resolution = 10)
-    {
-        segment.Collider = CurveCollider.GenerateCollider(segment.Curve, segment.Collider, _colliderMaterial, firstPoint, resolution);
-        return segment.Collider;
-    }
-
-    //This is fucked up as of 1-22-25
-    public Vector3? LastColliderPoint(GroundSegment currentSegment, GroundSegment prevSegment = null)
-    {
-        if (prevSegment == null)
-        {
-            return null;
-        }
-        var worldPoint = prevSegment.gameObject.transform.TransformPoint(prevSegment.Collider.points[^1]);
-        return currentSegment.gameObject.transform.InverseTransformPoint(worldPoint);
-    }
-
     public void PopulateMinMaxLists()
     {
         List<PositionObject<Vector3>> lowPoints = new(), highPoints = new();
@@ -225,6 +207,16 @@ public class Ground : MonoBehaviour
         Transform camTransform = Camera.main.transform;
         _lowPointList = PositionalListFactory<PositionObject<Vector3>>.TransformTracker(lowPoints, camTransform, _minMaxBuffer, _minMaxBuffer);
         _highPointList = PositionalListFactory<PositionObject<Vector3>>.TransformTracker(highPoints, camTransform, _minMaxBuffer, _minMaxBuffer);
+    }
+
+    public void ResetSegmentList()
+    {
+        while(transform.childCount > 0)
+        {
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        _segmentList.Clear();
+        _endPoint = new CurvePoint(new(0, 0));
     }
     #endregion
 }

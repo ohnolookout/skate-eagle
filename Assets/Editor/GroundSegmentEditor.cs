@@ -7,13 +7,13 @@ using UnityEngine;
 public class GroundSegmentEditor: Editor
 {
     GroundSegment _segment;
-    Curve _curve;
-    List<CurveSection> _curveSections;
     SerializedObject _so;
     SerializedProperty _serializedCurve;
+    CurveDefinition _curveDef;
     public void OnEnable()
     {
         _segment = target as GroundSegment;
+        _curveDef = _segment.Curve.curveDefinition;
         _so = new(target);
         _serializedCurve = _so.FindProperty("_curve");
     }
@@ -22,11 +22,22 @@ public class GroundSegmentEditor: Editor
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedCurve, true);
 
+        _so.ApplyModifiedProperties();
+        _so.Update();
 
-
-        if(EditorGUI.EndChangeCheck())
+        if (EditorGUI.EndChangeCheck())
         {
-
+            _segment.RefreshCurve();
+            _segment.TriggerGroundRecalculation(); 
         }
+
+        if (GUILayout.Button("Delete"))
+        {
+            _segment.Delete();
+            return;
+        }
+
+        DrawDefaultInspector();
     }
+
 }

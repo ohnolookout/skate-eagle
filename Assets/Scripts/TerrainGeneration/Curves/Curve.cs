@@ -15,10 +15,10 @@ public class Curve
     public CurveType curveType;
     private float length;
     private protected Vector3 _lowpoint, _highpoint;
-    public Curve(CurveDefinition curveDef, CurvePoint startPoint)
+    public Curve(CurveDefinition curveDef, Vector2 prevTang)
     {
         curveDefinition = curveDef;
-        curvePoints = CurvePointsFromDefinition(curveDefinition, -startPoint.LeftTangent);
+        curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
         curveType = CurveType.Fixed;
         GenerateCurveStats();
     }
@@ -30,7 +30,7 @@ public class Curve
         GenerateCurveStats();
     }
 
-    public void RefreshCurve(Vector2 prevTang)
+    public void Refresh(Vector2 prevTang)
     {
         curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang); 
         GenerateCurveStats();
@@ -120,6 +120,14 @@ public class Curve
     public CurvePoint GetPoint(int i)
     {
         return curvePoints[i];
+    }
+
+    public void LogCurvePoints()
+    {
+        foreach (var point in curvePoints)
+        {
+            point.Log();
+        }
     }
 
     public int Count { get => curvePoints.Count; }

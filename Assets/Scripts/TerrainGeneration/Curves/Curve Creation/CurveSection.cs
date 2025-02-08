@@ -13,12 +13,13 @@ public class CurveSection
     public float pitch;
     public float climb;
 
-    public CurveSection(SectionType sectionType, float length, float shape, float pitch)
+    public CurveSection(SectionType sectionType, float length, float shape, float pitch, float climb)
     {
         this.sectionType = sectionType;
         this.length = length;
         this.shape = shape;
         this.pitch = pitch;
+        this.climb = climb;
     }
 
     public CurveSection(SectionType sectionType)
@@ -41,4 +42,25 @@ public class CurveSection
 
         return new CurveSectionParameters(length, shape, adjustedPitch, climb);
     }
+
+    public void DeepCopy(CurveSection sectionToCopy)
+    {
+        sectionType = sectionToCopy.sectionType;
+        length = sectionToCopy.length;
+        shape = sectionToCopy.shape;
+        pitch = sectionToCopy.pitch;
+        climb = sectionToCopy.climb;
+    }
+
+    public void Log()
+    {
+        Debug.Log("~~~Curve Section~~~");
+        Debug.Log($"Section Type: {sectionType}");
+        Debug.Log($"Length: {length}");
+        Debug.Log($"Shape: {shape}");
+        Debug.Log($"Pitch: {pitch}");
+        Debug.Log($"Climb: {climb}");
+    }
 }
+
+

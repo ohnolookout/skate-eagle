@@ -10,6 +10,7 @@ public class CurveDefinition
     public string name;
     public CurveDefinition(List<CurveSection> definitions)
     {
+        name = "Default Curve";
         curveSections = new();
         foreach (var def in definitions)
         {
@@ -23,4 +24,15 @@ public class CurveDefinition
         CurveSection valley = new(SectionType.Valley);
         curveSections = new List<CurveSection> { peak, valley };
     }
+
+    public void Log()
+    {
+        Debug.Log($"~~~Curve Definition~~~");
+        Debug.Log($"Name: {name}");
+        foreach (var section in curveSections)
+        {
+            section.Log();
+        }
+    }
+
 }

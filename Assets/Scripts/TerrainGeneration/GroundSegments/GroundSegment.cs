@@ -8,12 +8,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     #region Declarations
     public Curve _curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
-    private EdgeCollider2D _collider;
+    [SerializeField] PhysicsMaterial2D _colliderMaterial;
+    [SerializeField] private EdgeCollider2D _collider;
     private Spline _masterSpline;
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
     public bool isFinish = false;
     private Ground _parentGround;
+#nullable enable
+    private GroundSegment? _previousSegment;
+    public GroundSegment? PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
+#nullable disable
     public Action<GroundSegment> OnActivate { get; set; }
     public Curve Curve { get => _curve; }
     public Spline Spline { get => _masterSpline; }
@@ -31,7 +36,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     {
         _collider = gameObject.GetComponentInChildren<EdgeCollider2D>();
         _masterSpline = _fillShapeController.spline;
-        FormatSpline(_masterSpline);
     }
 
     void OnEnable()
@@ -49,12 +53,43 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         //Gizmos.DrawSphere(_curve.Lowpoint, 1);
     }
 #endif
-
-    public void ApplyCurve(Curve curve)
+#nullable enable
+    public void Generate(Ground parent, CurveDefinition curveDef, GroundSegment? previousSegment)
     {
-        _curve = curve;
-        GenerateSpline(_masterSpline, curve, _floorHeight);
-        InsertCurveToOpenSpline(_edgeShapeController.spline, curve);
+        _parentGround = parent;
+        _previousSegment = previousSegment;
+        var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
+        _curve = CurveFactory.CurveFromDefinition(curveDef, prevTang);
+
+        GroundSegmentUtility.FormatSpline(_masterSpline, false);
+
+        GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
+        GroundSegmentUtility.InsertCurveToOpenSpline(_edgeShapeController.spline, _curve);
+        AddCollider();
+    }
+#nullable disable
+
+    public void RefreshCurve()
+    {
+        var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
+        _curve.Refresh(prevTang);
+
+        GroundSegmentUtility.FormatSpline(_masterSpline, false);
+        GroundSegmentUtility.FormatSpline(_edgeShapeController.spline, true);
+
+        GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
+        GroundSegmentUtility.InsertCurveToOpenSpline(_edgeShapeController.spline, _curve);
+        AddCollider();
+    }
+
+    public void Delete()
+    {
+        _parentGround.RemoveSegment(this);
+    }
+
+    public void TriggerGroundRecalculation()
+    {
+        _parentGround.RecalculateSegmentsFromSegment(this);
     }
 
     public bool StartsAfterX(float startX)
@@ -66,95 +101,20 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     {
         return _curve.EndPoint.ControlPoint.x <= endX;
     }
-
-    private static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
-    {
-        InsertCurveToSpline(spline, curve, 1);
-        UpdateCorners(spline, floorHeight);
-    }
-
-    private static void UpdateCorners(Spline spline, float lowerY)
-    {
-        UpdateRightCorners(spline, lowerY);
-        UpdateLeftCorners(spline, lowerY);
-    }
-
-    private static void UpdateRightCorners(Spline spline, float lowerY)
-    {
-        //Reassigns the lower right corner (last index on the spline) to the same x as the preceding point and the y of the preceding point - the lowerBoundY buffer.
-        int lastIndex = spline.GetPointCount() - 1;
-        spline.SetPosition(lastIndex, new Vector3(spline.GetPosition(lastIndex - 1).x, spline.GetPosition(lastIndex - 1).y - lowerY));
-        spline.SetTangentMode(lastIndex, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(lastIndex, new Vector3(-1, 0));
-        spline.SetRightTangent(lastIndex, new Vector3(0, 1));
-        //Resets the corner point's tangent mode in case it was changed.
-        spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
-        spline.SetRightTangent(lastIndex - 1, new Vector2(0, -1));
-    }
-    private static void UpdateLeftCorners(Spline spline, float lowerY)
-    {
-
-        spline.SetPosition(0, new Vector3(spline.GetPosition(1).x, spline.GetPosition(1).y - lowerY));
-        spline.SetTangentMode(0, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(0, new Vector3(0, 1));
-        spline.SetRightTangent(0, new Vector3(1, 0));
-        spline.SetTangentMode(1, ShapeTangentMode.Broken);
-        spline.SetLeftTangent(1, new Vector2(0, -1));
-    }
-
-
-    private static void InsertCurveToOpenSpline(Spline spline, Curve curve)
-    {
-        CopyCurvePointToSpline(spline, curve.GetPoint(0), 0);
-        CopyCurvePointToSpline(spline, curve.GetPoint(1), 1);
-        for (int i = 2; i < curve.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
-        }
-    }
-
-    private static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
-    {
-        for (int i = 0; i < curve.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curve.GetPoint(i), index);
-            index++;
-        }
-        spline.SetTangentMode(index, ShapeTangentMode.Broken);
-        spline.SetRightTangent(index, new Vector3(0, -1));
-
-    }
-    private static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
-    {
-        spline.InsertPointAt(index, curvePoint.ControlPoint);
-        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
-        spline.SetLeftTangent(index, curvePoint.LeftTangent);
-        spline.SetRightTangent(index, curvePoint.RightTangent);
-    }
-
-    private static void CopyCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
-    {
-        spline.SetPosition(index, curvePoint.ControlPoint);
-        spline.SetTangentMode(index, ShapeTangentMode.Continuous);
-        spline.SetLeftTangent(index, curvePoint.LeftTangent);
-        spline.SetRightTangent(index, curvePoint.RightTangent);
-    }
     public bool ContainsX(float targetX)
     {
         return (targetX > _curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < _curve.EndPoint.ControlPoint.x + _containmentBuffer);
     }
-    public static void FormatSpline(Spline spline)
+    private EdgeCollider2D AddCollider(float resolution = 10)
     {
-        spline.isOpenEnded = false;
-        while (spline.GetPointCount() > 2)
-        {
-            spline.RemovePointAt(2);
-        }
+        var firstPoint = GroundSegmentUtility.LastColliderPoint(this);
+        _collider = CurveCollider.GenerateCollider(_curve, _collider, _colliderMaterial, firstPoint, resolution);
+        return _collider;
     }
 
-    public void AssignParent(Ground parent)
+    public Vector2 EndPositionAsWorldPoint()
     {
-        _parentGround = parent;
+        return transform.TransformPoint(_curve.EndPoint.ControlPoint);
     }
 
 }

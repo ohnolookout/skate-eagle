@@ -351,7 +351,6 @@ public class PlayFabManager : MonoBehaviour
 
     private void SetNameComplete(bool isSuccess, string submittedName = null, string displayName = null, PlayFabError error = null)
     {
-        string formattedDisplayName = "";
         if (isSuccess)
         {
             UpdateStoredName(displayName);
