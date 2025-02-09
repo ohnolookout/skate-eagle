@@ -27,6 +27,7 @@ public class GroundSegmentEditor: Editor
 
         if (EditorGUI.EndChangeCheck())
         {
+            Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
             _segment.RefreshCurve();
             _segment.TriggerGroundRecalculation(); 
         }

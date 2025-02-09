@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public struct CurvePoint
 {
-    private Vector3 controlPoint, leftTangent, rightTangent;
+    [SerializeField] private Vector3 controlPoint, leftTangent, rightTangent;
 
     public CurvePoint(Vector3 control)
     {
@@ -20,7 +20,6 @@ public struct CurvePoint
         leftTangent = lTang;
         rightTangent = rTang;
     }
-
 
 
     public Vector3 ControlPoint { get => controlPoint; set => controlPoint = value; }  

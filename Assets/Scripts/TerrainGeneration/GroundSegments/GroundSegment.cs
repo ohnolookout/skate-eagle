@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.U2D;
 using System;
+using UnityEditor;
 
 [ExecuteAlways]
+[Serializable]
 public class GroundSegment : MonoBehaviour, IGroundSegment
 {
     #region Declarations
@@ -14,11 +16,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     private int _floorHeight = 100;
     private int _containmentBuffer = 20;
     public bool isFinish = false;
-    private Ground _parentGround;
-#nullable enable
-    private GroundSegment? _previousSegment;
-    public GroundSegment? PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
-#nullable disable
+    public Ground parentGround;
+    [SerializeField] private GroundSegment _previousSegment;
+    public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public Action<GroundSegment> OnActivate { get; set; }
     public Curve Curve { get => _curve; }
     public Spline Spline { get => _masterSpline; }
@@ -56,7 +56,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 #nullable enable
     public void Generate(Ground parent, CurveDefinition curveDef, GroundSegment? previousSegment)
     {
-        _parentGround = parent;
+        Undo.RegisterCompleteObjectUndo(this, "Generating segment");
+        parentGround = parent;
         _previousSegment = previousSegment;
         var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
         _curve = CurveFactory.CurveFromDefinition(curveDef, prevTang);
@@ -64,6 +65,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         GroundSegmentUtility.FormatSpline(_masterSpline, false);
 
         GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
+
+        Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
         GroundSegmentUtility.InsertCurveToOpenSpline(_edgeShapeController.spline, _curve);
         AddCollider();
     }
@@ -71,25 +74,29 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 
     public void RefreshCurve()
     {
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing segment");
         var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
         _curve.Refresh(prevTang);
 
         GroundSegmentUtility.FormatSpline(_masterSpline, false);
+
+        Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
         GroundSegmentUtility.FormatSpline(_edgeShapeController.spline, true);
 
         GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
+
         GroundSegmentUtility.InsertCurveToOpenSpline(_edgeShapeController.spline, _curve);
         AddCollider();
     }
 
     public void Delete()
     {
-        _parentGround.RemoveSegment(this);
+        parentGround.RemoveSegment(this);
     }
 
     public void TriggerGroundRecalculation()
     {
-        _parentGround.RecalculateSegmentsFromSegment(this);
+        parentGround.RecalculateSegmentsFromSegment(this);
     }
 
     public bool StartsAfterX(float startX)
@@ -107,14 +114,10 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     }
     private EdgeCollider2D AddCollider(float resolution = 10)
     {
+        Undo.RegisterCompleteObjectUndo(_collider, "Add Collider");
         var firstPoint = GroundSegmentUtility.LastColliderPoint(this);
         _collider = CurveCollider.GenerateCollider(_curve, _collider, _colliderMaterial, firstPoint, resolution);
         return _collider;
-    }
-
-    public Vector2 EndPositionAsWorldPoint()
-    {
-        return transform.TransformPoint(_curve.EndPoint.ControlPoint);
     }
 
 }

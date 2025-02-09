@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class Ground : MonoBehaviour
 {
@@ -28,10 +29,13 @@ public class Ground : MonoBehaviour
     //Add segment to start at current endpoint
     public GroundSegment AddSegment(CurveDefinition curveDef)
     {
+        Undo.RegisterFullObjectHierarchyUndo(this, "Add Segment");
+
         //Create new segment, set start point to end of current segment, and add to _segmentList
         var newSegment = Instantiate(_segmentPrefab, transform, true).GetComponent<GroundSegment>();
+
         var prevSegment = _segmentList.Count == 0 ? null : _segmentList[^1];
-        Vector2 startPoint = prevSegment == null ? new Vector2(0, 0) : prevSegment.EndPositionAsWorldPoint();
+        Vector2 startPoint = prevSegment == null ? new Vector2(0, 0) : prevSegment.EndPosition;
 
         //Move segment to current endpoint, update endpoint, and add to segmentList
         newSegment.transform.position = startPoint;
@@ -48,6 +52,7 @@ public class Ground : MonoBehaviour
             newSegment.gameObject.SetActive(true);
         }
 #endif
+
         return newSegment;
     }
 
@@ -57,6 +62,7 @@ public class Ground : MonoBehaviour
         {
             return null;
         }
+        Undo.RegisterFullObjectHierarchyUndo(this, "Insert Segment");
 
         //Split segment list into two lists at index, remove all segments after index from original list
         var tempList = _segmentList.GetRange(index, _segmentList.Count-index);
@@ -80,97 +86,54 @@ public class Ground : MonoBehaviour
 
     public void RemoveSegment()
     {
-        RemoveSegment(_segmentList.Count - 1);
-    }
-
-    public void RemoveSegment(int index)
-    {
-        if (index < 0 || index >= _segmentList.Count)
+        if (_segmentList.Count == 0)
         {
             return;
         }
 
-        var segmentObj = _segmentList[index].gameObject;
-        _segmentList.RemoveAt(index);
-        DestroyImmediate(segmentObj);
-        
-        RecalculateSegmentsFromIndex(index);
+        RemoveSegment(_segmentList[^1]);
     }
+
     public void RemoveSegment(GroundSegment segment)
     {
+        Undo.RegisterFullObjectHierarchyUndo(this, "Remove Segment");
         var index = _segmentList.IndexOf(segment);
         _segmentList.Remove(segment);
         
+        //Update previous segment of segment after removal
         if(index == 0) 
         {
             _segmentList[index].PreviousSegment = null;
         }
-        else
+        else if(index < _segmentList.Count)
         {
             _segmentList[index].PreviousSegment = _segmentList[index - 1];
         }
 
-        DestroyImmediate(segment.gameObject);
+        Undo.RegisterFullObjectHierarchyUndo(segment, "Remove Segment");
+        Undo.DestroyObjectImmediate(segment.gameObject);
 
         RecalculateSegmentsFromIndex(index);
+
     }
 
     #endregion
-    /*
-    #region Set End Point
-
-    //Sets endpoint to the endpoint of given segment index and return segment
-    private GroundSegment SetEndPointToIndex(int index)
-    {
-        if (index < 0 || index >= _segmentList.Count)
-        {
-            throw new Exception("Index out of range");
-        }
-
-        var segment = _segmentList[index]; 
-        _endPoint = segment.Curve.EndPoint;
-        _endPoint.ControlPoint = segment.gameObject.transform.TransformPoint(_endPoint.ControlPoint);
-        return segment;        
-    }
-
-    //Sets endpoint to segment preceding given index. If index is 0, sets endpoint to default curvepoint at (0, 0)
-
-    private GroundSegment SetEndPointToPreviousSegment(int index)
-    {
-        if (index < 0 || index >= _segmentList.Count + 1)
-        {
-            throw new Exception("Index out of range");
-        }
-
-        if(index == 0)
-        {
-            _endPoint = new CurvePoint(new(0, 0));
-            return null;
-        }
-
-        return SetEndPointToIndex(index - 1);
-    }
-
-    private GroundSegment SetEndPointToLastSegment()
-    {
-        return SetEndPointToIndex(_segmentList.Count - 1);
-    }
-
-    #endregion
-    */
     #region Adjust Segments
 
     //Recalculate segments beginning at startIndex
     //First segment to be recalculated also recalculates its curve.
     private void RecalculateSegmentsFromIndex(int startIndex)
     {
-
+        Undo.RegisterCompleteObjectUndo(this, "Recalculate Segments");
         //Copy remaining elements of segmentList to temp list, remove from segmentList
         var remainingSegments = _segmentList.GetRange(startIndex, _segmentList.Count - startIndex);
 
         for (int i = startIndex; i < _segmentList.Count; i++)
         {
-            _segmentList[i].gameObject.transform.position = _segmentList[i].PreviousSegment.EndPositionAsWorldPoint();
+            Vector3 endPosition = _segmentList[i].PreviousSegment != null ? _segmentList[i].PreviousSegment.EndPosition : Vector3.zero;
+
+            Undo.RegisterFullObjectHierarchyUndo(_segmentList[i].gameObject, "Recalculate Segment");
+            _segmentList[i].gameObject.transform.position = endPosition;
 
             if(i == startIndex)
             {
@@ -211,12 +174,13 @@ public class Ground : MonoBehaviour
 
     public void ResetSegmentList()
     {
-        while(transform.childCount > 0)
+        Undo.RegisterFullObjectHierarchyUndo(this, "Reset Segment List");
+        while (transform.childCount > 0)
         {
-            DestroyImmediate(transform.GetChild(0).gameObject);
+            Undo.RegisterFullObjectHierarchyUndo(transform.GetChild(0).gameObject, "Destroy Segment");
+            Undo.DestroyObjectImmediate(transform.GetChild(0).gameObject);
         }
         _segmentList.Clear();
-        _endPoint = new CurvePoint(new(0, 0));
     }
     #endregion
 }

@@ -19,5 +19,4 @@ public interface IGroundSegment : IDoublePosition, IPosition
     bool ContainsX(float targetX);
     bool EndsBeforeX(float endX);
     bool StartsAfterX(float startX);
-    Vector2 EndPositionAsWorldPoint();
 }

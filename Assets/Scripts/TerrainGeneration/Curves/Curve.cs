@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEditor;
 
 public enum CurveType { Procedural, Fixed, StartLine, FinishLine };
 [Serializable]
