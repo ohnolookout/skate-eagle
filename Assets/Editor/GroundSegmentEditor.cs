@@ -27,6 +27,7 @@ public class GroundSegmentEditor: Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
             _segment.RefreshCurve();
+            _segment.parentGround.RecalculateSegments(_segment);
         }
         
         if (GUILayout.Button("Duplicate"))

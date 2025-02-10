@@ -81,7 +81,7 @@ public class Ground : MonoBehaviour
         _segmentList.AddRange(tempList);
 
         //Recalculate segment positions after index
-        RecalculateSegmentsFromIndex(index + 1);
+        RecalculateSegments(index + 1);
 
         return newSegment;
     }
@@ -130,7 +130,7 @@ public class Ground : MonoBehaviour
         Undo.RegisterFullObjectHierarchyUndo(segment, "Remove Segment");
         Undo.DestroyObjectImmediate(segment.gameObject);
 
-        RecalculateSegmentsFromIndex(index);
+        RecalculateSegments(index);
 
     }
 
@@ -139,7 +139,7 @@ public class Ground : MonoBehaviour
 
     //Recalculate segments beginning at startIndex
     //First segment to be recalculated also recalculates its curve.
-    private void RecalculateSegmentsFromIndex(int startIndex)
+    private void RecalculateSegments(int startIndex)
     {
         Undo.RegisterCompleteObjectUndo(this, "Recalculate Segments");
         //Copy remaining elements of segmentList to temp list, remove from segmentList
@@ -159,14 +159,14 @@ public class Ground : MonoBehaviour
         }
     }
 
-    public void RecalculateSegmentsFromSegment(GroundSegment segment)
+    public void RecalculateSegments(GroundSegment segment)
     {
         int index = _segmentList.IndexOf(segment);
         if (index == -1)
         {
             return;
         }
-        RecalculateSegmentsFromIndex(index + 1);
+        RecalculateSegments(index + 1);
     }
 
 
