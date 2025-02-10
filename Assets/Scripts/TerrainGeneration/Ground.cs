@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using static UnityEngine.Rendering.HableCurve;
 
 public class Ground : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class Ground : MonoBehaviour
 
         //Create new segment, set start point to end of current segment, and add to _segmentList
         var newSegment = Instantiate(_segmentPrefab, transform, true).GetComponent<GroundSegment>();
+        Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
 
         var prevSegment = _segmentList.Count == 0 ? null : _segmentList[^1];
         Vector2 startPoint = prevSegment == null ? new Vector2(0, 0) : prevSegment.EndPosition;
@@ -82,6 +84,21 @@ public class Ground : MonoBehaviour
         RecalculateSegmentsFromIndex(index + 1);
 
         return newSegment;
+    }
+
+    public GroundSegment DuplicateSegment(GroundSegment segment)
+    {
+        var index = _segmentList.IndexOf(segment);
+        if (index == -1)
+        {
+            return null;
+        }
+
+        //Copy curve definition so that original def is not modified
+        var copiedCurveDef = DeepCopy.CopyCurveDefinition(segment.Curve.curveDefinition);
+        var segIndex = _segmentList.IndexOf(segment);
+
+        return InsertSegment(copiedCurveDef, segIndex);
     }
 
     public void RemoveSegment()

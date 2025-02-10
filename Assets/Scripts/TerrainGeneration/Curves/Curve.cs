@@ -31,12 +31,6 @@ public class Curve
         GenerateCurveStats();
     }
 
-    public void Refresh(Vector2 prevTang)
-    {
-        curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang); 
-        GenerateCurveStats();
-    }
-
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();

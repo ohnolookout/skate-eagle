@@ -56,14 +56,18 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 #nullable enable
     public void Generate(Ground parent, CurveDefinition curveDef, GroundSegment? previousSegment)
     {
-        Undo.RegisterCompleteObjectUndo(this, "Generating segment");
+        Undo.RegisterFullObjectHierarchyUndo(this, "Generating segment");
         parentGround = parent;
         _previousSegment = previousSegment;
         var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
-        _curve = CurveFactory.CurveFromDefinition(curveDef, prevTang);
-
+        _curve = new(curveDef, prevTang);
+        
+        //Set splines to default formatting
         GroundSegmentUtility.FormatSpline(_masterSpline, false);
+        Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
+        GroundSegmentUtility.FormatSpline(_edgeShapeController.spline, true);
 
+        Undo.RegisterFullObjectHierarchyUndo(this, "Generating segment");
         GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
 
         Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
@@ -76,17 +80,27 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     {
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing segment");
         var prevTang = _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
-        _curve.Refresh(prevTang);
+        _curve = new(_curve.curveDefinition, prevTang);
 
+        //Set splines to default formatting
         GroundSegmentUtility.FormatSpline(_masterSpline, false);
-
         Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
         GroundSegmentUtility.FormatSpline(_edgeShapeController.spline, true);
 
+        Undo.RegisterFullObjectHierarchyUndo(this, "Generating segment");
         GroundSegmentUtility.GenerateSpline(_masterSpline, _curve, _floorHeight);
 
+        Undo.RegisterFullObjectHierarchyUndo(_edgeShapeController.gameObject, "Set edge");
         GroundSegmentUtility.InsertCurveToOpenSpline(_edgeShapeController.spline, _curve);
         AddCollider();
+
+        TriggerGroundRecalculation();
+    }
+
+    public void Reset()
+    {
+        _curve.curveDefinition = new CurveDefinition();
+        RefreshCurve();
     }
 
     public void Delete()

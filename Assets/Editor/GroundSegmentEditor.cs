@@ -9,11 +9,9 @@ public class GroundSegmentEditor: Editor
     GroundSegment _segment;
     SerializedObject _so;
     SerializedProperty _serializedCurve;
-    CurveDefinition _curveDef;
     public void OnEnable()
     {
         _segment = target as GroundSegment;
-        _curveDef = _segment.Curve.curveDefinition;
         _so = new(target);
         _serializedCurve = _so.FindProperty("_curve");
     }
@@ -29,7 +27,16 @@ public class GroundSegmentEditor: Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
             _segment.RefreshCurve();
-            _segment.TriggerGroundRecalculation(); 
+        }
+        
+        if (GUILayout.Button("Duplicate"))
+        {
+            _segment.parentGround.DuplicateSegment(_segment);
+        }
+
+        if (GUILayout.Button("Reset"))
+        {
+            _segment.Reset();
         }
 
         if (GUILayout.Button("Delete"))
