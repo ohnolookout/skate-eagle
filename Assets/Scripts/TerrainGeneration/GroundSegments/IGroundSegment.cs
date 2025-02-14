@@ -15,7 +15,6 @@ public interface IGroundSegment : IDoublePosition, IPosition
     Action<GroundSegment> OnActivate { get; set; }
     EdgeCollider2D Collider { get; set; }
 
-    void Generate(Ground parent, CurveDefinition curveDef, GroundSegment? previousSegment);
     bool ContainsX(float targetX);
     bool EndsBeforeX(float endX);
     bool StartsAfterX(float startX);

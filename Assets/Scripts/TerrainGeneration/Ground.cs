@@ -25,7 +25,7 @@ public class Ground : MonoBehaviour
     #endregion
 
 
-    
+    /*
     #region Add/Remove Segments
     //Add segment to start at current endpoint
     public GroundSegment AddSegment(CurveDefinition curveDef)
@@ -135,6 +135,7 @@ public class Ground : MonoBehaviour
     }
 
     #endregion
+
     #region Adjust Segments
 
     //Recalculate segments beginning at startIndex
@@ -200,4 +201,5 @@ public class Ground : MonoBehaviour
         _segmentList.Clear();
     }
     #endregion
+    */
 }

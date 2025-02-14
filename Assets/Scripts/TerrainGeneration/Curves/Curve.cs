@@ -9,9 +9,9 @@ public enum CurveType { Procedural, Fixed, StartLine, FinishLine };
 [Serializable]
 public class Curve
 {
-    //private float length;
     private List<float> segmentLengths;
-    public List<CurvePoint> curvePoints;
+    //Can unserialize once switch to spawn model
+    [SerializeField] private List<CurvePoint> _curvePoints;
     public CurveDefinition curveDefinition;
     public CurveType curveType;
     private float length;
@@ -19,14 +19,14 @@ public class Curve
     public Curve(CurveDefinition curveDef, Vector2 prevTang)
     {
         curveDefinition = curveDef;
-        curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
+        _curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
         curveType = CurveType.Fixed;
         GenerateCurveStats();
     }
 
     public Curve(List<CurvePoint> curvePoints)
     {
-        this.curvePoints = curvePoints;
+        _curvePoints = curvePoints;
         curveType = CurveType.Fixed;
         GenerateCurveStats();
     }
@@ -104,9 +104,9 @@ public class Curve
     {
         segmentLengths = new();
         float length = 0;
-        for (int i = 0; i < curvePoints.Count - 1; i++)
+        for (int i = 0; i < _curvePoints.Count - 1; i++)
         {
-            segmentLengths.Add(BezierMath.Length(curvePoints[i].ControlPoint, curvePoints[i].RightTangent, curvePoints[i + 1].LeftTangent, curvePoints[i + 1].ControlPoint));
+            segmentLengths.Add(BezierMath.Length(_curvePoints[i].ControlPoint, _curvePoints[i].RightTangent, _curvePoints[i + 1].LeftTangent, _curvePoints[i + 1].ControlPoint));
             length += segmentLengths[^1];
         }
         return length;
@@ -114,23 +114,24 @@ public class Curve
 
     public CurvePoint GetPoint(int i)
     {
-        return curvePoints[i];
+        return _curvePoints[i];
     }
 
     public void LogCurvePoints()
     {
-        foreach (var point in curvePoints)
+        foreach (var point in _curvePoints)
         {
             point.Log();
         }
     }
 
-    public int Count { get => curvePoints.Count; }
+    public int Count { get => _curvePoints.Count; }
     public CurveType Type { get => curveType; }
     public Vector3 Lowpoint { get => _lowpoint; }
     public Vector3 Highpoint => _highpoint;
-    public CurvePoint StartPoint => curvePoints[0];
-    public CurvePoint EndPoint => curvePoints[^1];
+    public List<CurvePoint> CurvePoints => _curvePoints;
+    public CurvePoint StartPoint => _curvePoints[0];
+    public CurvePoint EndPoint => _curvePoints[^1];
     public List<float> SegmentLengths => segmentLengths;
 
 

@@ -25,6 +25,16 @@ public class CurveDefinition
         curveSections = new List<CurveSection> { peak, valley };
     }
 
+    public float TotalLength()
+    {
+        float totalLength = 0;
+        foreach (var section in curveSections)
+        {
+            totalLength += section.length;
+        }
+        return totalLength;
+    }
+
     public void Log()
     {
         Debug.Log($"~~~Curve Definition~~~");

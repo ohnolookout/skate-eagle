@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+/*
 [CustomEditor(typeof(GroundSegment))]
 public class GroundSegmentEditor: Editor
 {
@@ -50,3 +51,4 @@ public class GroundSegmentEditor: Editor
     }
 
 }
+*/

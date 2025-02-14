@@ -26,9 +26,6 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Monobehaviors
-    private void Awake()
-    {
-    }
     private void Start()
     {
         finishSegment.OnActivate += OnFinishActivation;

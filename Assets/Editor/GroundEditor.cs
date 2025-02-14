@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Unity.VisualScripting;
 
+/*
 [CustomEditor(typeof(Ground))]
 public class GroundEditor : Editor
 {
@@ -39,3 +40,4 @@ public class GroundEditor : Editor
         DrawDefaultInspector();
     }
 }
+*/
