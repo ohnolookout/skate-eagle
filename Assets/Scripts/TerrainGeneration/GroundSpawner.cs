@@ -32,55 +32,6 @@ public class GroundSpawner : MonoBehaviour
 
     #endregion
 
-    #region Start/Finish
-    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
-    {
-        _startSegment = segment;
-        var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
-        OnStartPointSet?.Invoke(segment, startPoint);  
-    }
-
-    public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
-    {
-        //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
-        if (_finishSegment != null)
-        {
-            _finishSegment.IsFinish = false;
-            DestroyImmediate(_finishFlag);
-            DestroyImmediate(_backstop);
-        }
-
-        _finishSegment = segment;
-        segment.IsFinish = true;
-
-        //Add finish flag to designated point in GroundSegment.        
-        var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
-
-        _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);
-
-        //Add backstop to endpoint of GroundSegment
-        _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
-
-        //Announce new finishPoint
-        OnFinishPointSet?.Invoke(_finishSegment, finishPoint);
-
-    }
-
-    public CurveDefinition DefaultStart()
-    {
-        CurveSection firstSection = new(SectionType.Peak, 120, 0.5f, 0, 0);
-        CurveSection secondSection = new(SectionType.Valley, 45, 0.5f, 1.25f, -20);
-        return new(new List<CurveSection> { firstSection, secondSection });
-    }
-
-    public CurveDefinition DefaultFinish()
-    {
-        CurveSection firstSection = new(SectionType.Valley, 50, 0.5f, 0.5f, -25);
-        CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
-        return new(new List<CurveSection> { firstSection, secondSection });
-    }
-    #endregion
-
     #region Add/Remove Segments
     public Ground AddGround()
     {
@@ -314,10 +265,11 @@ public class GroundSpawner : MonoBehaviour
 
         for (int i = startIndex; i < ground.SegmentList.Count; i++)
         {
-            Vector3 endPosition = ground.SegmentList[i].PreviousSegment != null ? ground.SegmentList[i].PreviousSegment.EndPosition : Vector3.zero;
+            //Set position of segment to end of previous segment or leave at current start position if first segment
+            Vector3 startPosition = ground.SegmentList[i].PreviousSegment != null ? ground.SegmentList[i].PreviousSegment.EndPosition : ground.SegmentList[i].StartPosition;
 
             Undo.RegisterFullObjectHierarchyUndo(ground.SegmentList[i].gameObject, "Recalculate Segment");
-            ground.SegmentList[i].gameObject.transform.position = endPosition;
+            ground.SegmentList[i].gameObject.transform.position = startPosition;
             ground.SegmentList[i].gameObject.name = "Segment " + i;
 
             if (i == startIndex)
@@ -340,4 +292,54 @@ public class GroundSpawner : MonoBehaviour
 
 
     #endregion
+
+    #region Start/Finish
+    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
+    {
+        _startSegment = segment;
+        var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
+        OnStartPointSet?.Invoke(segment, startPoint);
+    }
+
+    public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
+    {
+        //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
+        if (_finishSegment != null)
+        {
+            _finishSegment.IsFinish = false;
+            DestroyImmediate(_finishFlag);
+            DestroyImmediate(_backstop);
+        }
+
+        _finishSegment = segment;
+        segment.IsFinish = true;
+
+        //Add finish flag to designated point in GroundSegment.        
+        var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
+
+        _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);
+
+        //Add backstop to endpoint of GroundSegment
+        _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
+
+        //Announce new finishPoint
+        OnFinishPointSet?.Invoke(_finishSegment, finishPoint);
+
+    }
+
+    public CurveDefinition DefaultStart()
+    {
+        CurveSection firstSection = new(SectionType.Peak, 120, 0.5f, 0, 0);
+        CurveSection secondSection = new(SectionType.Valley, 45, 0.5f, 1.25f, -20);
+        return new(new List<CurveSection> { firstSection, secondSection });
+    }
+
+    public CurveDefinition DefaultFinish()
+    {
+        CurveSection firstSection = new(SectionType.Valley, 50, 0.5f, 0.5f, -25);
+        CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
+        return new(new List<CurveSection> { firstSection, secondSection });
+    }
+    #endregion
+
 }
