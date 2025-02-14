@@ -23,18 +23,19 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public Curve Curve { get => curve; set => curve = value; }
     public Spline Spline { get => _masterSpline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
+    public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
+    public SpriteShapeController FillShapeController { get => _fillShapeController; }
     public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.ControlPoint);
     public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.ControlPoint);
-
     public Vector3 PrevTangent => _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.ControlPoint); set => transform.position = value; }
     public CurveType Type { get => curve.Type; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => isFinish; set => isFinish = value; }
-    public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
-    public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
-    public SpriteShapeController FillShapeController { get => _fillShapeController; }
+    public bool IsFirstSegment => parentGround.SegmentList[0] == this;
+    public bool IsLastSegment => parentGround.SegmentList[^1] == this;
+    public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
     #endregion
 
 
@@ -73,6 +74,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public bool ContainsX(float targetX)
     {
         return (targetX > curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < curve.EndPoint.ControlPoint.x + _containmentBuffer);
+    }
+
+    public Vector3 FirstColliderPoint()
+    {
+        if (_previousSegment == null)
+        {
+            return curve.StartPoint.ControlPoint;
+        }
+
+        var worldPoint = _previousSegment.transform.TransformPoint(_previousSegment.Collider.points[^1]);
+        return transform.InverseTransformPoint(worldPoint);
     }
 
 }

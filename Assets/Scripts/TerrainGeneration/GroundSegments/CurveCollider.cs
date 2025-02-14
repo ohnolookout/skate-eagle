@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Security.Cryptography;
 [ExecuteAlways]
 public static class CurveCollider
 {
@@ -32,6 +33,41 @@ public static class CurveCollider
             }
         }
         return collider;
+    }
+
+    public static void BuildSegmentCollider(GroundSegment segment, PhysicsMaterial2D material, float resolutionMult = 10)
+    {
+        segment.Collider.sharedMaterial = material;
+        var collider = segment.Collider;
+        Vector3? firstPoint = segment.FirstColliderPoint();
+        var curve = segment.Curve;
+
+        //Iterate through points that make up GroundSegment's curve.
+        for (int i = 0; i < curve.Count - 1; i++)
+        {
+            resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i] / 20, 15);
+            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
+            if (i == 0)
+            {
+                collider.points = newPoints;
+                firstPoint = null;
+            }
+            else
+            {
+                collider.points = CombineArrays(collider.points, newPoints);
+            }
+        }
+
+        if (segment.IsFirstSegment)
+        {
+            Vector2[] firstPointArray = new Vector2[1] { segment.Spline.GetPosition(0) };
+            collider.points = CombineArrays(firstPointArray, collider.points);
+        }
+        else if (segment.IsLastSegment)
+        {
+            Vector2[] lastPointArray = new Vector2[2] { segment.Curve.EndPoint.ControlPoint, segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
+            collider.points = CombineArrays(collider.points, lastPointArray);
+        }
     }
 
     private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint)

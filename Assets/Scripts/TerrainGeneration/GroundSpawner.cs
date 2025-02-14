@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
@@ -205,7 +206,17 @@ public class GroundSpawner : MonoBehaviour
 
         segment.Curve = new(curveDef, segment.PrevTangent);
 
+        //Remove last collider point from previous segment if new segment is now last segment
+        if (segment.IsLastSegment && previousSegment != null)
+        {
+            var prevCollider = previousSegment.Collider;
+            Undo.RecordObject(prevCollider, "Remove collider end points");
+            prevCollider.points = prevCollider.points.Take(prevCollider.pointCount - 2).ToArray();
+        }
+
         ApplyCurveToSegment(segment, segment.Curve);
+
+
     }
 #nullable disable
 
@@ -244,8 +255,11 @@ public class GroundSpawner : MonoBehaviour
     private EdgeCollider2D AddCollider(GroundSegment segment, float resolution = 10)
     {
         Undo.RegisterCompleteObjectUndo(segment.Collider, "Add Collider");
+        CurveCollider.BuildSegmentCollider(segment, segment.ColliderMaterial);
+        /*
         var firstPoint = GroundSegmentUtility.LastColliderPoint(segment);
         segment.Collider = CurveCollider.GenerateCollider(segment.Curve, segment.Collider, segment.ColliderMaterial, firstPoint, resolution);
+        */
         return segment.Collider;
     }
     #endregion
@@ -287,6 +301,7 @@ public class GroundSpawner : MonoBehaviour
         {
             return;
         }
+
         RecalculateSegments(ground, index + 1);
     }
 
