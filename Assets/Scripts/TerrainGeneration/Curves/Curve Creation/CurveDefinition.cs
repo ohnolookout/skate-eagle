@@ -35,6 +35,16 @@ public class CurveDefinition
         return totalLength;
     }
 
+    public float TotalClimb()
+    {
+        float totalClimb = 0;
+        foreach (var section in curveSections)
+        {
+            totalClimb += section.climb;
+        }
+        return totalClimb;
+    }
+
     public void Log()
     {
         Debug.Log($"~~~Curve Definition~~~");

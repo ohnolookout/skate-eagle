@@ -15,7 +15,8 @@ public class GroundBuilder : EditorWindow
         NoGroundSelected
     }
 
-    GroundSpawner _groundConstructor;
+    GroundSpawner _spawner;
+    GroundManager _manager;
     GroundBuilderState _selectionState;
     GameObject _selectedObject;
     SerializedObject _so;
@@ -33,7 +34,8 @@ public class GroundBuilder : EditorWindow
 
     private void OnEnable()
     {
-        _groundConstructor = FindAnyObjectByType<GroundSpawner>();
+        _spawner = FindAnyObjectByType<GroundSpawner>();
+        _manager = FindAnyObjectByType<GroundManager>();
 
         _selectedObject = Selection.activeGameObject;
         OnSelectionChanged();
@@ -43,14 +45,16 @@ public class GroundBuilder : EditorWindow
 
     private void OnDisable()
     {
-        _groundConstructor = null;
+        _spawner = null;
+        _manager = null;
+        _selectedObject = null;
         Selection.selectionChanged -= OnSelectionChanged;
     }
 
     #region GUI
     private void OnGUI()
     {
-        if(_groundConstructor == null)
+        if(_spawner == null)
         {
             EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
             return;
@@ -80,23 +84,33 @@ public class GroundBuilder : EditorWindow
 
         if (GUILayout.Button("Add Segment"))
         {
-            _groundConstructor.AddSegment(_ground);
+            _spawner.AddSegment(_ground);
         }
         if (GUILayout.Button("Add Segment to Front"))
         {
-            _groundConstructor.AddSegmentToFront(_ground);
+            _spawner.AddSegmentToFront(_ground);
         }
         if (GUILayout.Button("Remove Segment"))
         {
-            _groundConstructor.RemoveSegment(_ground);
+            _spawner.RemoveSegment(_ground);
         }
         if(GUILayout.Button("Recalculate Segments"))
         {
-            _groundConstructor.RecalculateSegments(_ground, 0);
+            _spawner.RecalculateSegments(_ground, 0);
         }
         if (GUILayout.Button("Delete Ground"))
         {
-            _groundConstructor.RemoveGround(_selectedObject.GetComponent<Ground>());
+            _spawner.RemoveGround(_selectedObject.GetComponent<Ground>());
+        }
+        if (GUILayout.Button("Add Start"))
+        {
+            var segment = _spawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _spawner.DefaultStart());
+            _manager.SetStartPoint(segment, 1);
+        }
+        if (GUILayout.Button("Add Finish"))
+        {
+            var segment = _spawner.AddSegment(_selectedObject.GetComponent<Ground>(), _spawner.DefaultFinish());
+            _manager.SetFinishPoint(segment, 1);
         }
     }
 
@@ -116,22 +130,22 @@ public class GroundBuilder : EditorWindow
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
-            _groundConstructor.RefreshCurve(_segment);
-            _groundConstructor.RecalculateSegments(_segment);
+            _spawner.RefreshCurve(_segment);
+            _spawner.RecalculateSegments(_segment);
         }
         if (GUILayout.Button("Duplicate"))
         {
-            _groundConstructor.DuplicateSegment(_segment);
+            _spawner.DuplicateSegment(_segment);
         }
 
         if (GUILayout.Button("Reset"))
         {
-            _groundConstructor.ResetSegment(_segment);
+            _spawner.ResetSegment(_segment);
         }
 
         if (GUILayout.Button("Delete"))
         {
-            _groundConstructor.RemoveSegment(_segment);
+            _spawner.RemoveSegment(_segment);
             if (_segment.PreviousSegment != null)
             {
                 Selection.activeGameObject = _segment.PreviousSegment.gameObject;
@@ -147,7 +161,7 @@ public class GroundBuilder : EditorWindow
     {
         if(GUILayout.Button("Add Ground"))
         {
-            Selection.activeGameObject = _groundConstructor.AddGround().gameObject;
+            Selection.activeGameObject = _spawner.AddGround().gameObject;
         }
     }
     #endregion

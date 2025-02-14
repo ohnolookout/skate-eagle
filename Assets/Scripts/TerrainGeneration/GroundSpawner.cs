@@ -65,6 +65,20 @@ public class GroundSpawner : MonoBehaviour
         OnFinishPointSet?.Invoke(_finishSegment, finishPoint);
 
     }
+
+    public CurveDefinition DefaultStart()
+    {
+        CurveSection firstSection = new(SectionType.Peak, 120, 0.5f, 0, 0);
+        CurveSection secondSection = new(SectionType.Valley, 45, 0.5f, 1.25f, -20);
+        return new(new List<CurveSection> { firstSection, secondSection });
+    }
+
+    public CurveDefinition DefaultFinish()
+    {
+        CurveSection firstSection = new(SectionType.Valley, 50, 0.5f, 0.5f, -25);
+        CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
+        return new(new List<CurveSection> { firstSection, secondSection });
+    }
     #endregion
 
     #region Add/Remove Segments
@@ -108,8 +122,9 @@ public class GroundSpawner : MonoBehaviour
             }
             //Offset ground by x delta of new segment
             var xDelta = curveDef.TotalLength();
-            startPoint = ground.SegmentList[0] == null ? new Vector2(0, 0) : ground.SegmentList[0].StartPosition;
-            startPoint -= new Vector2(xDelta, 0);
+            var yDelta = curveDef.TotalClimb();
+            startPoint = ground.SegmentList.Count == 0 ? new Vector2(0, 0) : ground.SegmentList[0].StartPosition;
+            startPoint -= new Vector2(xDelta, yDelta);
             ground.SegmentList.Insert(0, newSegment);
         }
 
@@ -134,9 +149,17 @@ public class GroundSpawner : MonoBehaviour
         return AddSegment(ground, new CurveDefinition());
     }
 
-    public GroundSegment AddSegmentToFront(Ground ground)
+    public GroundSegment AddSegmentToFront(Ground ground, CurveDefinition curveDef = null)
     {
-        return AddSegment(ground, new(), true);
+        if(curveDef == null)
+        {
+            curveDef = new();
+        }
+        var seg = AddSegment(ground, curveDef, true);
+
+        RecalculateSegments(ground, 1);
+
+        return seg;
     }
 
     public GroundSegment InsertSegment(Ground ground, CurveDefinition curveDef, int index)
