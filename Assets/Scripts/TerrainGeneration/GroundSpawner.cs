@@ -155,6 +155,11 @@ public class GroundSpawner : MonoBehaviour
         var copiedCurveDef = DeepCopy.CopyCurveDefinition(segment.Curve.curveDefinition);
         var segIndex =  ground.SegmentList.IndexOf(segment);
 
+        if(segIndex >= ground.SegmentList.Count - 1)
+        {
+            return AddSegment(ground, copiedCurveDef);
+        }
+
         return InsertSegment(ground, copiedCurveDef, segIndex);
     }
 

@@ -135,7 +135,7 @@ public class GroundBuilder : EditorWindow
         }
         if (GUILayout.Button("Duplicate"))
         {
-            _spawner.DuplicateSegment(_segment);
+            Selection.activeGameObject = _spawner.DuplicateSegment(_segment).gameObject;
         }
 
         if (GUILayout.Button("Reset"))
