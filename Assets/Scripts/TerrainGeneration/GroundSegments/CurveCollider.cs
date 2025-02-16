@@ -63,7 +63,7 @@ public static class CurveCollider
             Vector2[] firstPointArray = new Vector2[1] { segment.Spline.GetPosition(0) };
             collider.points = CombineArrays(firstPointArray, collider.points);
         }
-        else if (segment.IsLastSegment)
+        if (segment.IsLastSegment)
         {
             Vector2[] lastPointArray = new Vector2[2] { segment.Curve.EndPoint.ControlPoint, segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
             collider.points = CombineArrays(collider.points, lastPointArray);

@@ -54,7 +54,6 @@ public class GroundSpawner : MonoBehaviour
 
         //Create new segment, set start point to end of current segment, and add to _segmentList
         var newSegment = Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
-        newSegment.gameObject.name = "Segment " + ground.SegmentList.Count;
         Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
         
         GroundSegment? prevSegment = null;
@@ -63,6 +62,7 @@ public class GroundSpawner : MonoBehaviour
         {
             prevSegment = ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1];
             startPoint = prevSegment == null ? new Vector2(0, 0) : prevSegment.EndPosition;
+            newSegment.gameObject.name = "Segment " + ground.SegmentList.Count;
             ground.SegmentList.Add(newSegment);
 
         }
@@ -77,6 +77,7 @@ public class GroundSpawner : MonoBehaviour
             var yDelta = curveDef.TotalClimb();
             startPoint = ground.SegmentList.Count == 0 ? new Vector2(0, 0) : ground.SegmentList[0].StartPosition;
             startPoint -= new Vector2(xDelta, yDelta);
+            newSegment.gameObject.name = "Segment 0";
             ground.SegmentList.Insert(0, newSegment);
         }
 
@@ -323,12 +324,14 @@ public class GroundSpawner : MonoBehaviour
 
     public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
     {
+        Undo.RegisterFullObjectHierarchyUndo(segment, "Set Finish Point");
         //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
         if (_finishSegment != null)
         {
+            Undo.RegisterFullObjectHierarchyUndo(_finishSegment.gameObject, "Remove Finish");
             _finishSegment.IsFinish = false;
-            DestroyImmediate(_finishFlag);
-            DestroyImmediate(_backstop);
+            Undo.DestroyObjectImmediate(_finishFlag);
+            Undo.DestroyObjectImmediate(_backstop);
         }
 
         _finishSegment = segment;
@@ -338,9 +341,11 @@ public class GroundSpawner : MonoBehaviour
         var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
 
         _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);
+        Undo.RegisterCreatedObjectUndo(_finishFlag, "Add Flag");
 
         //Add backstop to endpoint of GroundSegment
         _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
+        Undo.RegisterCreatedObjectUndo(_backstop, "Add Backstop");
 
         //Announce new finishPoint
         OnFinishPointSet?.Invoke(_finishSegment, finishPoint);

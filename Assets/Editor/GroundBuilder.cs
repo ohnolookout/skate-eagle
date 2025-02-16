@@ -155,6 +155,16 @@ public class GroundBuilder : EditorWindow
             }
             return;
         }
+
+        if(GUILayout.Button("Set As Start"))
+        {
+            _manager.SetStartPoint(_segment, 1);
+        }
+
+        if(GUILayout.Button("Set As Finish"))
+        {
+            _manager.SetFinishPoint(_segment, 1);
+        }
     }
 
     private void OnNoGroundSelected()
