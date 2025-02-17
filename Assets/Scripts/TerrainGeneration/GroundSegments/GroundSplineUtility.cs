@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public static class GroundSegmentUtility
+public static class GroundSplineUtility
 {
 
 
@@ -13,6 +14,19 @@ public static class GroundSegmentUtility
         InsertCurveToSpline(spline, curve, 1);
         UpdateCorners(spline, floorHeight);
     }
+
+    public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
+    {
+        spline.Clear();
+        spline.isOpenEnded = isOpen;
+
+        foreach (var point in splinePoints)
+        {
+            InsertSplinePointToSpline(spline, point, spline.GetPointCount());
+        }
+    }
+
+
 
     public static void UpdateCorners(Spline spline, float lowerY)
     {
@@ -81,6 +95,14 @@ public static class GroundSegmentUtility
         spline.SetRightTangent(index, curvePoint.RightTangent);
     }
 
+    public static void InsertSplinePointToSpline(Spline spline, SplineControlPoint splineControlPoint, int index) //Inserts curvePoint at a given index
+    {
+        spline.InsertPointAt(index, splineControlPoint.position);
+        spline.SetTangentMode(index, splineControlPoint.mode);
+        spline.SetLeftTangent(index, splineControlPoint.leftTangent);
+        spline.SetRightTangent(index, splineControlPoint.rightTangent);
+    }
+
     public static void FormatSpline(Spline spline, bool isOpenEnded)
     {
         spline.isOpenEnded = isOpenEnded;
@@ -90,14 +112,5 @@ public static class GroundSegmentUtility
         }
         spline.SetPosition(0, new Vector3(-5, -5));
         spline.SetPosition(1, new Vector3(5, 5));
-    }
-    public static Vector3? LastColliderPoint(GroundSegment segment)
-    {
-        if (segment.PreviousSegment == null)
-        {
-            return null;
-        }
-        var worldPoint = segment.PreviousSegment.gameObject.transform.TransformPoint(segment.PreviousSegment.Collider.points[^1]);
-        return segment.gameObject.transform.InverseTransformPoint(worldPoint);
     }
 }

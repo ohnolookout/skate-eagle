@@ -5,30 +5,36 @@ using System;
 using System.Linq;
 using UnityEditor;
 
-public enum CurveType { Procedural, Fixed, StartLine, FinishLine };
 [Serializable]
 public class Curve
 {
-    private List<float> segmentLengths;
+    private List<float> _sectionLengths;
     //Can unserialize once switch to spawn model
     [SerializeField] private List<CurvePoint> _curvePoints;
     public CurveDefinition curveDefinition;
-    public CurveType curveType;
     private float length;
     private protected Vector3 _lowpoint, _highpoint;
     public Curve(CurveDefinition curveDef, Vector2 prevTang)
     {
         curveDefinition = curveDef;
         _curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
-        curveType = CurveType.Fixed;
         GenerateCurveStats();
     }
 
     public Curve(List<CurvePoint> curvePoints)
     {
         _curvePoints = curvePoints;
-        curveType = CurveType.Fixed;
         GenerateCurveStats();
+    }
+
+    public Curve(SerializedGroundSegment serializedSegment)
+    {
+        curveDefinition = serializedSegment.curveDefinition;
+        _curvePoints = serializedSegment.curvePoints;
+        _sectionLengths = serializedSegment.curveSectionLengths;
+        _highpoint = serializedSegment.highPoint;
+        _lowpoint = serializedSegment.lowPoint;
+
     }
 
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
@@ -102,12 +108,12 @@ public class Curve
     }
     private float GetCurveLength()
     {
-        segmentLengths = new();
+        _sectionLengths = new();
         float length = 0;
         for (int i = 0; i < _curvePoints.Count - 1; i++)
         {
-            segmentLengths.Add(BezierMath.Length(_curvePoints[i].ControlPoint, _curvePoints[i].RightTangent, _curvePoints[i + 1].LeftTangent, _curvePoints[i + 1].ControlPoint));
-            length += segmentLengths[^1];
+            _sectionLengths.Add(BezierMath.Length(_curvePoints[i].ControlPoint, _curvePoints[i].RightTangent, _curvePoints[i + 1].LeftTangent, _curvePoints[i + 1].ControlPoint));
+            length += _sectionLengths[^1];
         }
         return length;
     }
@@ -126,13 +132,12 @@ public class Curve
     }
 
     public int Count { get => _curvePoints.Count; }
-    public CurveType Type { get => curveType; }
     public Vector3 Lowpoint { get => _lowpoint; }
     public Vector3 Highpoint => _highpoint;
     public List<CurvePoint> CurvePoints => _curvePoints;
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
-    public List<float> SegmentLengths => segmentLengths;
+    public List<float> SectionLengths => _sectionLengths;
 
 
 }

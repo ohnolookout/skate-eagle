@@ -5,10 +5,10 @@ using UnityEditor;
 using Codice.Client.Common.GameUI;
 using static UnityEngine.Rendering.HableCurve;
 
-public class GroundBuilder : EditorWindow
+public class GroundDesigner : EditorWindow
 {
     #region Declarations
-    private enum GroundBuilderState
+    private enum GroundDesignerState
     {
         GroundSelected,
         GroundSegmentSelected,
@@ -17,7 +17,7 @@ public class GroundBuilder : EditorWindow
 
     GroundSpawner _spawner;
     GroundManager _manager;
-    GroundBuilderState _selectionState;
+    GroundDesignerState _selectionState;
     GameObject _selectedObject;
     SerializedObject _so;
     SerializedProperty _serializedCurve;
@@ -29,7 +29,7 @@ public class GroundBuilder : EditorWindow
     [MenuItem("Tools/GroundBuilder")]
     public static void ShowWindow()
     {
-        GetWindow<GroundBuilder>();
+        GetWindow<GroundDesigner>();
     }
 
     private void OnEnable()
@@ -62,13 +62,13 @@ public class GroundBuilder : EditorWindow
 
         switch(_selectionState)
         {
-            case GroundBuilderState.GroundSelected:
+            case GroundDesignerState.GroundSelected:
                 OnGroundSelected();
                 break;
-            case GroundBuilderState.GroundSegmentSelected:
+            case GroundDesignerState.GroundSegmentSelected:
                 OnGroundSegmentSelected();
                 break;
-            case GroundBuilderState.NoGroundSelected:
+            case GroundDesignerState.NoGroundSelected:
                 OnNoGroundSelected();
                 break;
         }
@@ -186,7 +186,7 @@ public class GroundBuilder : EditorWindow
 
         if (_selectedObject == null)
         {
-            _selectionState = GroundBuilderState.NoGroundSelected;
+            _selectionState = GroundDesignerState.NoGroundSelected;
         }
         else
         {
@@ -194,21 +194,21 @@ public class GroundBuilder : EditorWindow
 
             if (_selectedObject.GetComponent<Ground>() != null)
             {
-                _selectionState = GroundBuilderState.GroundSelected;
+                _selectionState = GroundDesignerState.GroundSelected;
                 _ground = _selectedObject.GetComponent<Ground>();
                 return;
             } 
             else if (_selectedObject.GetComponent<GroundSegment>() != null)
             {
                 _segment = _selectedObject.GetComponent<GroundSegment>();
-                _selectionState = GroundBuilderState.GroundSegmentSelected;
+                _selectionState = GroundDesignerState.GroundSegmentSelected;
                 _so = new(_segment);
                 _serializedCurve = _so.FindProperty("curve");
                 return;
             }
             else
             {
-                _selectionState = GroundBuilderState.NoGroundSelected;
+                _selectionState = GroundDesignerState.NoGroundSelected;
             }
 
         }

@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     private bool _isInitializing = false;
     public bool IsInitializing => _isInitializing;
     public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
-    public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.levelUID);
+    public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.UID);
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public PlayerRecord CurrentPlayerRecord => _sessionData.GetRecordByLevel(_currentLevel);
     public PlayFabManager PlayFabManager => _playFabManager;

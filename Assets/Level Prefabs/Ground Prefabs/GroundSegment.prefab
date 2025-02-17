@@ -42,7 +42,7 @@ EdgeCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -442,8 +442,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9b41a2ba9578840b40946b7c1420f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _curve:
-    curvePoints: []
+  curve:
+    _curvePoints: []
     curveDefinition:
       curveSections:
       - sectionType: 0
@@ -457,8 +457,12 @@ MonoBehaviour:
         pitch: 1.25
         climb: 0
       name: Default Curve
-    curveType: 0
   _fillShapeController: {fileID: 5424034415216100495}
   _edgeShapeController: {fileID: 1360708605129911030}
   _colliderMaterial: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
+  _collider: {fileID: 7359743252002306734}
+  floorHeight: 100
+  isStart: 0
   isFinish: 0
+  parentGround: {fileID: 0}
+  _previousSegment: {fileID: 0}

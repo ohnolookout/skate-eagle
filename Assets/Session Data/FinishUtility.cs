@@ -7,13 +7,13 @@ public static class FinishUtility
     public static FinishData GenerateFinishData(Level level, PlayerRecord playerRecord, float attemptTime)
     {
         FinishScreenType finishType = FindFinishType(level, playerRecord, attemptTime, out Medal displayMedal);
-        FinishData finishData = new(level.levelUID, finishType, attemptTime, playerRecord.bestTime, displayMedal);
+        FinishData finishData = new(level.UID, finishType, attemptTime, playerRecord.bestTime, displayMedal);
         return finishData;
     }
 
     public static FinishScreenType FindFinishType(Level level, PlayerRecord playerRecord, float attemptTime, out Medal displayMedal)
     {
-        Medal attemptMedal = level.MedalTimes.MedalFromTime(attemptTime);
+        Medal attemptMedal = level.medalTimes.MedalFromTime(attemptTime);
         if (playerRecord.bestTime <= attemptTime)
         {
             displayMedal = Medal.Participant;

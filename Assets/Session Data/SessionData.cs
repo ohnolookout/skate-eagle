@@ -77,13 +77,13 @@ public class SessionData
 
     public PlayerRecord AddLevelToRecords(Level level)
     {
-        _saveData.recordDict[level.levelUID] = new PlayerRecord(level);
-        return _saveData.recordDict[level.levelUID];
+        _saveData.recordDict[level.UID] = new PlayerRecord(level);
+        return _saveData.recordDict[level.UID];
     }
 
     public bool UpdateRecord(FinishData finishData, Level level)
     {
-        return GetRecordByUID(level.levelUID).Update(finishData, this);
+        return GetRecordByUID(level.UID).Update(finishData, this);
     }
 
     public void AdjustMedalCount(Medal medalToAdd, Medal medalToSubtract)
@@ -127,11 +127,11 @@ public class SessionData
 
     public bool NextLevelUnlocked(Level level)
     {
-        if (GetRecordByUID(level.levelUID).status != CompletionStatus.Complete || NextLevelNode(level.levelUID) == null)
+        if (GetRecordByUID(level.UID).status != CompletionStatus.Complete || NextLevelNode(level.UID) == null)
         {
             return false;
         }
-        PlayerRecord nextLevelRecord = NextLevelRecord(level.levelUID);
+        PlayerRecord nextLevelRecord = NextLevelRecord(level.UID);
         if (nextLevelRecord.status != CompletionStatus.Locked)
         {
             return true;
@@ -152,9 +152,9 @@ public class SessionData
 
     public PlayerRecord GetRecordByLevel(Level level)
     {
-        if (_saveData.recordDict.ContainsKey(level.levelUID))
+        if (_saveData.recordDict.ContainsKey(level.UID))
         {
-            return _saveData.recordDict[level.levelUID];
+            return _saveData.recordDict[level.UID];
         }
         return AddLevelToRecords(level);
     }

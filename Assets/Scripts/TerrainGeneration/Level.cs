@@ -9,20 +9,17 @@ using UnityEditor;
 [Serializable]
 public class Level : ScriptableObject
 {
-    public string _UID;
-    public string _name;
-    public MedalTimes _medalTimes;
-    //public List<LevelSection> _levelSections;
+    public string UID;
+    public string name;
+    public MedalTimes medalTimes;
+    public List<SerializedGround> grounds;
     public string leaderboardKey = "None";
-    public string Name => _name;
-    public string levelUID => _UID;
-    public MedalTimes MedalTimes => _medalTimes;
-    //public List<LevelSection> LevelSections => _levelSections;
+    public string Name => name;
 
     public Level()
     {
-        _name = "Default Level";
-        _medalTimes = new(60, 45, 30, 20, 10);
+        name = "Default Level";
+        medalTimes = new(60, 45, 30, 20, 10);
         /*
         _levelSections = new();
         _levelSections.Add(new LevelSection());
@@ -32,9 +29,9 @@ public class Level : ScriptableObject
     private void OnValidate()
     {
 #if UNITY_EDITOR
-        if (string.IsNullOrWhiteSpace(_UID))
+        if (string.IsNullOrWhiteSpace(UID))
         {
-            _UID = Guid.NewGuid().ToString();            
+            UID = Guid.NewGuid().ToString();            
             EditorUtility.SetDirty(this);
         }
 #endif

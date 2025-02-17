@@ -11,7 +11,7 @@ public class LevelNode
     public int goldRequired, order;
 
     public string Name => level.Name;
-    public string levelUID => level.levelUID;
+    public string levelUID => level.UID;
     public Level Level => level;
 
     public LevelNode(Level level, int goldRequired = 0)

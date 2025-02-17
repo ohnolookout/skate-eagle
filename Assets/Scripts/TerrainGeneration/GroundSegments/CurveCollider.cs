@@ -13,14 +13,14 @@ public static class CurveCollider
     public static EdgeCollider2D GenerateCollider(Curve curve, EdgeCollider2D collider, PhysicsMaterial2D material, Vector3? firstPoint, float resolutionMult = 10)
     {
         collider.sharedMaterial = material;
-        if (curve.Type == CurveType.StartLine || firstPoint == null)
+        if (firstPoint == null)
         {
             firstPoint = curve.GetPoint(0).ControlPoint;
         }
         //Iterate through points that make up GroundSegment's curve.
         for (int i = 0; i < curve.Count - 1; i++)
         {
-            resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i] / 20, 15);
+            resolution = Mathf.Max(resolutionMult * curve.SectionLengths[i] / 20, 15);
             Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
             if (i == 0)
             {
@@ -45,7 +45,7 @@ public static class CurveCollider
         //Iterate through points that make up GroundSegment's curve.
         for (int i = 0; i < curve.Count - 1; i++)
         {
-            resolution = Mathf.Max(resolutionMult * curve.SegmentLengths[i] / 20, 15);
+            resolution = Mathf.Max(resolutionMult * curve.SectionLengths[i] / 20, 15);
             Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
             if (i == 0)
             {

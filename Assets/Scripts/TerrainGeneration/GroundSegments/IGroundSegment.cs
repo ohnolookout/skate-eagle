@@ -9,7 +9,6 @@ public interface IGroundSegment : IDoublePosition, IPosition
 {
     Curve Curve { get; }
     Spline Spline { get; }
-    CurveType Type { get; }
     GameObject gameObject { get; }
     bool IsFinish { get; set; }
     Action<GroundSegment> OnActivate { get; set; }

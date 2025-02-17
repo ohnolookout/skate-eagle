@@ -24,7 +24,7 @@ public class LandingScreenLoader : MonoBehaviour
     public void GenerateLanding(Level level, PlayerRecord playerRecord)
     {
         levelName.text = playerRecord.levelName;
-        GenerateLevelTimes(level.MedalTimes);
+        GenerateLevelTimes(level.medalTimes);
         GeneratePlayerBadge(playerRecord);
         nextLevelButton.SetActive(GameManager.Instance.SessionData.NextLevelUnlocked(GameManager.Instance.CurrentLevel));
     }
@@ -33,7 +33,7 @@ public class LandingScreenLoader : MonoBehaviour
         var level = GameManager.Instance.CurrentLevel;
         var playerRecord = GameManager.Instance.CurrentPlayerRecord;
         levelName.text = playerRecord.levelName;
-        GenerateLevelTimes(level.MedalTimes);
+        GenerateLevelTimes(level.medalTimes);
         GeneratePlayerBadge(playerRecord);
         nextLevelButton.SetActive(GameManager.Instance.SessionData.NextLevelUnlocked(GameManager.Instance.CurrentLevel));
     }

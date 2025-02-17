@@ -17,7 +17,7 @@ public class PlayerRecord
 	public PlayerRecord(Level level)
 	{
 		levelName = level.Name;
-		levelUID = level.levelUID;
+		levelUID = level.UID;
 		leaderboardKey = level.leaderboardKey;
 		status = CompletionStatus.Locked;
 		medal = Medal.Participant;
