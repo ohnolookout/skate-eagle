@@ -18,7 +18,7 @@ public class PlayerRecord
 	{
 		levelName = level.Name;
 		levelUID = level.UID;
-		leaderboardKey = level.leaderboardKey;
+		leaderboardKey = level.LeaderboardKey;
 		status = CompletionStatus.Locked;
 		medal = Medal.Participant;
 		date = DateTime.Now;

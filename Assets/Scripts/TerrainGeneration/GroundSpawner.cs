@@ -36,8 +36,8 @@ public class GroundSpawner : MonoBehaviour
     #region Add/Remove Segments
     public Ground AddGround()
     {
-        var groundObj = Instantiate(_groundPrefab, _groundManager.transform);
-        groundObj.name = "Ground " + (_groundManager.transform.childCount - 2);
+        var groundObj = Instantiate(_groundPrefab, _groundManager.groundContainer.transform);
+        groundObj.name = "Ground " + (_groundManager.groundContainer.transform.childCount - 1);
         Undo.RegisterCreatedObjectUndo(groundObj, "Add Ground");
         return groundObj.GetComponent<Ground>();
     }
@@ -369,6 +369,14 @@ public class GroundSpawner : MonoBehaviour
     #endregion
 
     #region Deserialization
+    public void DeserializeLevel(Level level)
+    {
+        _groundManager.DeleteGround();
+        foreach (var serializedGround in level.SerializedGrounds)
+        {
+            DeserializeGround(serializedGround);
+        }
+    }
     public void DeserializeGround(SerializedGround serializedGround)
     {
         var ground = AddGround();

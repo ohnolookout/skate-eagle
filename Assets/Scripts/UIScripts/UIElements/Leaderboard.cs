@@ -59,7 +59,7 @@ public class Leaderboard : MonoBehaviour
         ValidateActivation();
         if (_activationStatus == LeaderboardActivation.Active)
         {
-            PopulateLeaderboard(GameManager.Instance.CurrentLevel.leaderboardKey);
+            PopulateLeaderboard(GameManager.Instance.CurrentLevel.LeaderboardKey);
         }
         else
         {

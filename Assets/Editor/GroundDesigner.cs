@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Codice.Client.Common.GameUI;
 using static UnityEngine.Rendering.HableCurve;
+using log4net.Core;
 
 public class GroundDesigner : EditorWindow
 {
@@ -15,18 +16,28 @@ public class GroundDesigner : EditorWindow
         NoGroundSelected
     }
 
-    GroundSpawner _spawner;
-    GroundManager _manager;
-    GroundDesignerState _selectionState;
-    GameObject _selectedObject;
-    SerializedObject _so;
-    SerializedProperty _serializedCurve;
-    GroundSegment _segment;
-    Ground _ground;
+    private GroundSpawner _groundSpawner;
+    private GroundManager _groundManager;
+    private GroundDesignerState _selectionState;
+    private GameObject _selectedObject;
+    private SerializedObject _so;
+    private SerializedProperty _serializedCurve;
+    private GroundSegment _segment;
+    private Ground _ground;
+    private EditorLoadWindow _loadWindow;
+    private Vector2 _scrollPosition;
+    private LevelDatabase _levelDB;
+
+    private string levelName = "New Level";
+    public float medalTimeRed = 0;
+    public float medalTimeBlue = 0;
+    public float medalTimeGold = 0;
+    public float medalTimeSilver = 0;
+    public float medalTimeBronze = 0;
 
 
     #endregion
-    [MenuItem("Tools/GroundBuilder")]
+    [MenuItem("Tools/GroundDesigner")]
     public static void ShowWindow()
     {
         GetWindow<GroundDesigner>();
@@ -34,19 +45,21 @@ public class GroundDesigner : EditorWindow
 
     private void OnEnable()
     {
-        _spawner = FindAnyObjectByType<GroundSpawner>();
-        _manager = FindAnyObjectByType<GroundManager>();
+        _groundSpawner = FindAnyObjectByType<GroundSpawner>();
+        _groundManager = FindAnyObjectByType<GroundManager>();
 
         _selectedObject = Selection.activeGameObject;
         OnSelectionChanged();
 
         Selection.selectionChanged += OnSelectionChanged;
+
+        LoadLevelDB();
     }
 
     private void OnDisable()
     {
-        _spawner = null;
-        _manager = null;
+        _groundSpawner = null;
+        _groundManager = null;
         _selectedObject = null;
         Selection.selectionChanged -= OnSelectionChanged;
     }
@@ -54,7 +67,7 @@ public class GroundDesigner : EditorWindow
     #region GUI
     private void OnGUI()
     {
-        if(_spawner == null)
+        if(_groundSpawner == null)
         {
             EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
             return;
@@ -82,35 +95,35 @@ public class GroundDesigner : EditorWindow
             return;
         }
 
-        if (GUILayout.Button("Add Segment"))
+        if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
-            _spawner.AddSegment(_ground);
+            _groundSpawner.AddSegment(_ground);
         }
-        if (GUILayout.Button("Add Segment to Front"))
+        if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
-            _spawner.AddSegmentToFront(_ground);
+            _groundSpawner.AddSegmentToFront(_ground);
         }
-        if (GUILayout.Button("Remove Segment"))
+        if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
-            _spawner.RemoveSegment(_ground);
+            _groundSpawner.RemoveSegment(_ground);
         }
-        if(GUILayout.Button("Recalculate Segments"))
+        if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
         {
-            _spawner.RecalculateSegments(_ground, 0);
+            _groundSpawner.RecalculateSegments(_ground, 0);
         }
-        if (GUILayout.Button("Delete Ground"))
+        if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
-            _spawner.RemoveGround(_selectedObject.GetComponent<Ground>());
+            _groundSpawner.RemoveGround(_selectedObject.GetComponent<Ground>());
         }
-        if (GUILayout.Button("Add Start"))
+        if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
-            var segment = _spawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _spawner.DefaultStart());
-            _manager.SetStartPoint(segment, 1);
+            var segment = _groundSpawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultStart());
+            _groundManager.SetStartPoint(segment, 1);
         }
-        if (GUILayout.Button("Add Finish"))
+        if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
-            var segment = _spawner.AddSegment(_selectedObject.GetComponent<Ground>(), _spawner.DefaultFinish());
-            _manager.SetFinishPoint(segment, 1);
+            var segment = _groundSpawner.AddSegment(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultFinish());
+            _groundManager.SetFinishPoint(segment, 1);
         }
     }
 
@@ -130,22 +143,22 @@ public class GroundDesigner : EditorWindow
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
-            _spawner.RefreshCurve(_segment);
-            _spawner.RecalculateSegments(_segment);
+            _groundSpawner.RefreshCurve(_segment);
+            _groundSpawner.RecalculateSegments(_segment);
         }
-        if (GUILayout.Button("Duplicate"))
+        if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _spawner.DuplicateSegment(_segment).gameObject;
-        }
-
-        if (GUILayout.Button("Reset"))
-        {
-            _spawner.ResetSegment(_segment);
+            Selection.activeGameObject = _groundSpawner.DuplicateSegment(_segment).gameObject;
         }
 
-        if (GUILayout.Button("Delete"))
+        if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
         {
-            _spawner.RemoveSegment(_segment);
+            _groundSpawner.ResetSegment(_segment);
+        }
+
+        if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
+        {
+            _groundSpawner.RemoveSegment(_segment);
             if (_segment.PreviousSegment != null)
             {
                 Selection.activeGameObject = _segment.PreviousSegment.gameObject;
@@ -156,22 +169,41 @@ public class GroundDesigner : EditorWindow
             return;
         }
 
-        if(GUILayout.Button("Set As Start"))
+        if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
         {
-            _manager.SetStartPoint(_segment, 1);
+            _groundManager.SetStartPoint(_segment, 1);
         }
 
-        if(GUILayout.Button("Set As Finish"))
+        if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
-            _manager.SetFinishPoint(_segment, 1);
+            _groundManager.SetFinishPoint(_segment, 1);
         }
     }
 
     private void OnNoGroundSelected()
     {
-        if(GUILayout.Button("Add Ground"))
+        GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
+        levelName = EditorGUILayout.TextField("Level Name", levelName);
+
+        GUILayout.Label("Medal Times");
+        medalTimeRed = EditorGUILayout.FloatField("Red", medalTimeRed, GUILayout.ExpandWidth(false));
+        medalTimeBlue = EditorGUILayout.FloatField("Blue", medalTimeBlue, GUILayout.ExpandWidth(false));
+        medalTimeGold = EditorGUILayout.FloatField("Gold", medalTimeGold, GUILayout.ExpandWidth(false));
+        medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
+        medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
+
+        if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _spawner.AddGround().gameObject;
+            Selection.activeGameObject = _groundSpawner.AddGround().gameObject;
+        }
+        if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
+        {
+            SaveLevel();
+        }
+        if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
+        {
+            _loadWindow = GetWindow<EditorLoadWindow>();
+            _loadWindow.Init(this, _levelDB);
         }
     }
     #endregion
@@ -214,5 +246,72 @@ public class GroundDesigner : EditorWindow
         }
         Repaint();
     }
+    #endregion
+
+    #region Level Save/Load
+    private void LoadLevelDB()
+    {
+        var path = "Assets/LevelDatabase/LevelDB.asset";
+        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath(path, typeof(LevelDatabase));
+        
+        if(_levelDB is null)
+        {
+            _levelDB = CreateInstance<LevelDatabase>();
+            AssetDatabase.CreateAsset(_levelDB, path);
+        }
+
+    }
+    private void SaveLevel()
+    {
+        if (!(_loadWindow is null))
+        {
+            _loadWindow.Close();
+        }
+
+        MedalTimes medalTimes = new(medalTimeRed, medalTimeBlue, medalTimeGold, medalTimeSilver, medalTimeBronze);
+        var levelToSave = new Level(levelName, medalTimes, GroundsArray());
+        var levelSaved = _levelDB.SaveLevel(levelToSave);
+
+        if (levelSaved)
+        {
+            Debug.Log($"Level {levelName} saved");
+        }
+        else
+        {
+            Debug.Log($"Level {levelName} failed to save");
+        }
+
+    }
+    public void LoadLevel(string levelName)
+    {
+        var loadedLevel = _levelDB.LoadLevel(levelName);
+
+        if (loadedLevel is null)
+        {
+            Debug.Log($"Level {levelName} failed to load");
+            return;
+        }
+
+        this.levelName = loadedLevel.Name;
+
+        LoadMedalTimes(loadedLevel.MedalTimes);
+
+        _groundSpawner.DeserializeLevel(loadedLevel);
+    }
+
+    private void LoadMedalTimes(MedalTimes medalTimes)
+    {
+        medalTimeRed = medalTimes.Red;
+        medalTimeBlue = medalTimes.Blue;
+        medalTimeGold = medalTimes.Gold;
+        medalTimeSilver = medalTimes.Silver;
+        medalTimeBronze = medalTimes.Bronze;
+    }
+
+    private Ground[] GroundsArray()
+    {
+        return _groundManager.groundContainer.GetComponentsInChildren<Ground>(); 
+    }
+
     #endregion
 }

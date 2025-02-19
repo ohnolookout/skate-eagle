@@ -1,125 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
-using System.Linq;
 using UnityEditor;
-
-[CreateAssetMenu(fileName = "New Level", menuName = "ScriptableObjects/LevelData")]
-[Serializable]
-public class Level : ScriptableObject
+using System;
+using UnityEngine;
+public class Level
 {
-    public string UID;
-    public string name;
-    public MedalTimes medalTimes;
-    public List<SerializedGround> grounds;
-    public string leaderboardKey = "None";
-    public string Name => name;
+    private string _UID;
+    private string _name;
+    private MedalTimes _medalTimes;
+    private List<SerializedGround> _serializedGrounds;
+    private string _leaderboardKey = "None";
+    public string UID { get => _UID; set => _UID = value; }
+    public string Name { get => _name; set => _name = value; }
+    public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
+    public List<SerializedGround> SerializedGrounds => _serializedGrounds;
+    public string LeaderboardKey { get => _leaderboardKey; set => _leaderboardKey = value; }
 
-    public Level()
-    {
-        name = "Default Level";
-        medalTimes = new(60, 45, 30, 20, 10);
-        /*
-        _levelSections = new();
-        _levelSections.Add(new LevelSection());
-        */
-    }
-
-    private void OnValidate()
-    {
-#if UNITY_EDITOR
-        if (string.IsNullOrWhiteSpace(UID))
-        {
-            UID = Guid.NewGuid().ToString();            
-            EditorUtility.SetDirty(this);
-        }
-#endif
-    }
-
-    /*
-    public void ManualReset()
-    {
-        List<LevelSection> defaultSections = new();
-        defaultSections.Add(new LevelSection());
-        ReassignValues("Default Level", new MedalTimes(60, 45, 30, 20, 10), defaultSections);
-    }
-
-    public void ReassignValues(string name, MedalTimes medalTimes, List<LevelSection> levelSections)
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds)
     {
         _name = name;
         _medalTimes = medalTimes;
-        _levelSections = DeepCopy.CopyLevelSections(levelSections);
-        MapSectionGradesToCurves();
-    }
+        _serializedGrounds = SerializeGrounds(grounds);
+        _leaderboardKey = _name + "_leaderboard";
 
-    public void ReassignValues(Level level)
+        if (string.IsNullOrWhiteSpace(_UID))
+        {
+            Debug.Log("GUI created");
+            _UID = Guid.NewGuid().ToString();
+        }
+    }
+    private List<SerializedGround> SerializeGrounds(Ground[] grounds)
     {
-        _name = level.Name;
-        _medalTimes = DeepCopy.CopyMedalTimes(level.MedalTimes);
-        _levelSections = DeepCopy.CopyLevelSections(level.LevelSections);
-        MapSectionGradesToCurves();
-    }
+        var serializedGrounds = new List<SerializedGround>();
+        
+        foreach (Ground ground in grounds)
+        {
+            serializedGrounds.Add(new SerializedGround(ground));
+        }
 
-    private void MapSectionGradesToCurves()
-    {
-        foreach (LevelSection section in _levelSections)
-        {
-            var grade = section.Grade;
-            foreach (ProceduralCurveDefinition curve in section.Curves)
-            {
-                curve.MapGradeToCurveDefs(grade);
-            }
-        }
+        return serializedGrounds;
     }
-
-
-    public Dictionary<Grade, Sequence> GenerateSequences()
-    {
-        Dictionary<Grade, Sequence> sequences = new();
-        foreach (LevelSection section in _levelSections)
-        {
-            sequences[section.Grade] = section.GenerateSequence();
-        }
-        return sequences;
-    }
-
-    public bool Validate()
-    {
-        if (_name == "" || _name is null)
-        {
-            //EditorUtility.DisplayDialog("Unnamed Level", "You can't save a level without a name!", "OK", "OK");
-            return false;
-        }
-        if (!ValidateSections())
-        {
-            //EditorUtility.DisplayDialog("Invalid Level Sections", "Levels must have at least one section, the first section must begin at 0, all sections must have at least one curve, and StartT values must be between 0 and 1", "OK", "I'm sorry");
-            return false;
-        }
-        if (!_medalTimes.Validate())
-        {
-            //EditorUtility.DisplayDialog("Invalid Medal Times", "Times must be in descending order and greater than zero.", "OK", "Oops");
-            return false;
-        }
-        return true;
-    }
-
-    public bool ValidateSections()
-    {
-        bool isValid = true;
-        if (_levelSections.Count < 1)
-        {
-            isValid = false;
-        }
-        for (int i = 0; i < _levelSections.Count; i++)
-        {
-            if (!_levelSections[i].Validate())
-            {
-                isValid = false;
-            }
-        }
-        return isValid;
-    }
-    */
 }
-

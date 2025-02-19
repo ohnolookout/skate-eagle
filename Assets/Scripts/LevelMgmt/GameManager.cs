@@ -69,11 +69,12 @@ public class GameManager : MonoBehaviour
         OnLoading += ActivateLoadingScreen;
 
 #if UNITY_EDITOR
+        /*
         if (SceneManager.GetActiveScene().name == "Level_Editor")
         {
             _currentLevel = Resources.Load<Level>("EditorLevel");
         }
-
+        */
         if (clearPlayerPrefs)
         {
             Debug.Log("Clearing player prefs...");

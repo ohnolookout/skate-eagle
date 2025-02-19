@@ -189,8 +189,8 @@ public class PlayFabTester : MonoBehaviour
         {
             new StatisticUpdate()
             {
-                StatisticName = level.leaderboardKey,
-                Value = UnityEngine.Random.Range((int)(level.medalTimes.Silver * 1000), (int)(level.medalTimes.Red * 1000)) * -1
+                StatisticName = level.LeaderboardKey,
+                Value = UnityEngine.Random.Range((int)(level.MedalTimes.Silver * 1000), (int)(level.MedalTimes.Red * 1000)) * -1
             }
         };
         PlayFabClientAPI.UpdatePlayerStatistics(

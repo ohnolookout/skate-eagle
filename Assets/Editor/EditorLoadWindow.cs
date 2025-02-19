@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-/*
+
 public class EditorLoadWindow : EditorWindow
 {
-    private LevelDesigner _levelDesigner;
+    private GroundDesigner _groundDesigner;
+    private LevelDatabase _levelDB;
     private Dictionary<string, string> _levelPathsByName = new();
     private string[] _levelNames;
     private int _nameIndex;
@@ -15,15 +16,12 @@ public class EditorLoadWindow : EditorWindow
         GetWindow<EditorLoadWindow>();
     }
 
-    private void OnEnable()
-    {
-        _levelPathsByName = LevelFileManagement.LevelPathsByName();
-        _levelNames = _levelPathsByName.Keys.ToArray();
-    }
 
-    public void Init(LevelDesigner levelDesigner)
+    public void Init(GroundDesigner groundDesigner, LevelDatabase levelDB)
     {
-        _levelDesigner = levelDesigner;
+        _groundDesigner = groundDesigner;
+        _levelDB = levelDB;
+        _levelNames = _levelDB.LevelNames();
     }
 
     private void OnGUI()
@@ -32,7 +30,7 @@ public class EditorLoadWindow : EditorWindow
         _nameIndex = EditorGUILayout.Popup("Level to load", _nameIndex, _levelNames);
         if (GUILayout.Button("Load Level"))
         {
-            _levelDesigner.LoadLevel(_levelPathsByName[_levelNames[_nameIndex]]);
+            _groundDesigner.LoadLevel(_levelNames[_nameIndex]);
             Close();
         }
         if (GUILayout.Button("Cancel"))
@@ -42,4 +40,4 @@ public class EditorLoadWindow : EditorWindow
     }
 
 }
-*/
+
