@@ -4,12 +4,15 @@ using UnityEngine;
 using System;
 using System.Linq;
 using UnityEditor;
+using RotaryHeart.Lib.SerializableDictionary;
+using Unity.VisualScripting;
 
 [CreateAssetMenu(fileName = "New Level", menuName = "ScriptableObjects/LevelDatabase")]
 [Serializable]
 public class LevelDatabase : ScriptableObject
 {
-    private Dictionary<string, Level> _levelDictionary;
+    [SerializeField] private SerializableDictionaryBase<string, Level> _levelDictionary;
+    public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
 
     public LevelDatabase()
     {
@@ -23,6 +26,11 @@ public class LevelDatabase : ScriptableObject
 
     public bool SaveLevel(Level level)
     {
+        if(level == null)
+        {
+            Debug.Log("Level is null");
+            return false;
+        }
         if (LevelNameExists(level.Name))
         {
             bool overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Are you sure you want to overwrite {level.Name}?", "Yes", "No");
@@ -35,6 +43,7 @@ public class LevelDatabase : ScriptableObject
 
         }
         _levelDictionary[level.Name] = level;
+        EditorUtility.SetDirty(this);
         return true;        
     }
 
@@ -42,8 +51,11 @@ public class LevelDatabase : ScriptableObject
     {
         if (LevelNameExists(name))
         {
+            Debug.Log($"Level {name} found.");
             return _levelDictionary[name];
         }
+
+        Debug.Log($"Level {name} does not exist");
         return null;
     }
 

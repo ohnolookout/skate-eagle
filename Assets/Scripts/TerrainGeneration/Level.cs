@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using System;
 using UnityEngine;
+
+[Serializable]
 public class Level
 {
-    private string _UID;
-    private string _name;
-    private MedalTimes _medalTimes;
-    private List<SerializedGround> _serializedGrounds;
-    private string _leaderboardKey = "None";
+    [SerializeField] private string _UID;
+    [SerializeField] private string _name;
+    [SerializeField] private MedalTimes _medalTimes;
+    [SerializeField] private List<SerializedGround> _serializedGrounds;
+    [SerializeField] private string _leaderboardKey = "None";
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }

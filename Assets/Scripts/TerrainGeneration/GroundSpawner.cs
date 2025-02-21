@@ -372,10 +372,12 @@ public class GroundSpawner : MonoBehaviour
     public void DeserializeLevel(Level level)
     {
         _groundManager.DeleteGround();
+        
         foreach (var serializedGround in level.SerializedGrounds)
         {
             DeserializeGround(serializedGround);
         }
+        
     }
     public void DeserializeGround(SerializedGround serializedGround)
     {
@@ -406,7 +408,7 @@ public class GroundSpawner : MonoBehaviour
 
         segment.parentGround = parent;
         segment.PreviousSegment = previousSegment;
-        segment.Curve = new(serializedSegment);
+        segment.Curve = serializedSegment.curve;
         segment.isFinish = serializedSegment.isFinish;
         segment.isFinish = serializedSegment.isStart;
 

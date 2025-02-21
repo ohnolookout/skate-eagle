@@ -18,53 +18,17 @@ public struct MedalTimes
         _redTime = redTime;
     }
 
-    public float Bronze
-    {
-        get
-        {
-            return _bronzeTime;
-        }
-    }
+    public float Bronze => _bronzeTime;
 
-    public float Silver
-    {
-        get
-        {
-            return _silverTime;
-        }
-    }
+    public float Silver => _silverTime;
 
-    public float Gold
-    {
-        get
-        {
-            return _goldTime;
-        }
-    }
+    public float Gold => _goldTime;
 
-    public float Blue
-    {
-        get
-        {
-            return _blueTime;
-        }
-    }
+    public float Blue => _blueTime;
 
-    public float Red
-    {
-        get
-        {
-            return _redTime;
-        }
-    }
+    public float Red => _redTime;
 
-    public float[] TimesArray
-    {
-        get
-        {
-            return new float[5] { _redTime, _blueTime, _goldTime, _silverTime, _bronzeTime}; 
-        }
-    }
+    public float[] TimesArray => new float[5] { _redTime, _blueTime, _goldTime, _silverTime, _bronzeTime };
 
     public bool Validate()
     {

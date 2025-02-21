@@ -256,8 +256,12 @@ public class GroundDesigner : EditorWindow
         
         if(_levelDB is null)
         {
+            Debug.Log("No level database found. Creating new database");
             _levelDB = CreateInstance<LevelDatabase>();
             AssetDatabase.CreateAsset(_levelDB, path);
+        } else
+        {
+            Debug.Log("Level Database loaded with " + _levelDB.LevelDictionary.Count + " levels.");
         }
 
     }
@@ -292,6 +296,7 @@ public class GroundDesigner : EditorWindow
             return;
         }
 
+        Debug.Log("Loading level " + loadedLevel.Name);
         this.levelName = loadedLevel.Name;
 
         LoadMedalTimes(loadedLevel.MedalTimes);

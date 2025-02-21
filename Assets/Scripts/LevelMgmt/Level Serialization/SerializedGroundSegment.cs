@@ -17,12 +17,14 @@ public class SerializedGroundSegment
     public bool isFinish;
 
     //Curve contents
+    public Curve curve;
+    /*
     public CurveDefinition curveDefinition;
     public List<CurvePoint> curvePoints;
     public List<float> curveSectionLengths;
     public Vector3 highPoint;
     public Vector3 lowPoint;
-
+    */
     //Spline contents
     public List<SplineControlPoint> fillSplinePoints;
     public bool fillSpineIsOpen;
@@ -43,10 +45,14 @@ public class SerializedGroundSegment
         isFinish = segment.IsFinish;
 
         //Curve
+        curve = segment.Curve;
+        /*
         curveDefinition = segment.Curve.curveDefinition;
         curveSectionLengths = segment.Curve.SectionLengths;
+        curvePoints = segment.Curve.CurvePoints;
         highPoint = segment.Curve.Highpoint;
         lowPoint = segment.Curve.Lowpoint;
+        */
 
 
         //Spline

@@ -9,11 +9,17 @@ using UnityEditor;
 public class Curve
 {
     private List<float> _sectionLengths;
-    //Can unserialize once switch to spawn model
     [SerializeField] private List<CurvePoint> _curvePoints;
     public CurveDefinition curveDefinition;
     private float length;
     private protected Vector3 _lowpoint, _highpoint;
+    public List<CurvePoint> CurvePoints { get => _curvePoints; set => _curvePoints = value; }
+    public int Count { get => _curvePoints.Count; }
+    public Vector3 Lowpoint { get => _lowpoint; }
+    public Vector3 Highpoint => _highpoint;
+    public CurvePoint StartPoint => _curvePoints[0];
+    public CurvePoint EndPoint => _curvePoints[^1];
+    public List<float> SectionLengths => _sectionLengths;
     public Curve(CurveDefinition curveDef, Vector2 prevTang)
     {
         curveDefinition = curveDef;
@@ -26,17 +32,17 @@ public class Curve
         _curvePoints = curvePoints;
         GenerateCurveStats();
     }
-
+    /*
     public Curve(SerializedGroundSegment serializedSegment)
     {
         curveDefinition = serializedSegment.curveDefinition;
-        _curvePoints = serializedSegment.curvePoints;
+        //_curvePoints = serializedSegment.curvePoints;
         _sectionLengths = serializedSegment.curveSectionLengths;
         _highpoint = serializedSegment.highPoint;
         _lowpoint = serializedSegment.lowPoint;
 
     }
-
+    */
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();
@@ -131,13 +137,6 @@ public class Curve
         }
     }
 
-    public int Count { get => _curvePoints.Count; }
-    public Vector3 Lowpoint { get => _lowpoint; }
-    public Vector3 Highpoint => _highpoint;
-    public List<CurvePoint> CurvePoints => _curvePoints;
-    public CurvePoint StartPoint => _curvePoints[0];
-    public CurvePoint EndPoint => _curvePoints[^1];
-    public List<float> SectionLengths => _sectionLengths;
 
 
 }
