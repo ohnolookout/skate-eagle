@@ -18,8 +18,6 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private GameObject _backstopPrefab;
     private GameObject _finishFlag;
     private GameObject _backstop;
-    private IGroundSegment _finishSegment;
-    private IGroundSegment _startSegment;
 
 
     public Action<IGroundSegment, Vector2> OnStartPointSet;
@@ -322,7 +320,7 @@ public class GroundSpawner : MonoBehaviour
     #region Start/Finish
     public void SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
-        _startSegment = segment;
+        _groundManager.startSegment = segment;
         segment.IsStart = true;
         var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
         OnStartPointSet?.Invoke(segment, startPoint);
@@ -332,15 +330,21 @@ public class GroundSpawner : MonoBehaviour
     {
         Undo.RegisterFullObjectHierarchyUndo(segment, "Set Finish Point");
         //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
-        if (_finishSegment != null)
+        if (_groundManager.finishSegment != null)
         {
-            Undo.RegisterFullObjectHierarchyUndo(_finishSegment.gameObject, "Remove Finish");
-            _finishSegment.IsFinish = false;
-            Undo.DestroyObjectImmediate(_finishFlag);
-            Undo.DestroyObjectImmediate(_backstop);
+            Undo.RegisterFullObjectHierarchyUndo(_groundManager.finishSegment.gameObject, "Remove Finish");
+            _groundManager.finishSegment.IsFinish = false;
+            if (_finishFlag != null)
+            {
+                Undo.DestroyObjectImmediate(_finishFlag);
+            }
+            if (_backstop != null)
+            {
+                Undo.DestroyObjectImmediate(_backstop);
+            }
         }
 
-        _finishSegment = segment;
+        _groundManager.finishSegment = segment;
         segment.IsFinish = true;
 
         //Add finish flag to designated point in GroundSegment.        
@@ -354,7 +358,7 @@ public class GroundSpawner : MonoBehaviour
         Undo.RegisterCreatedObjectUndo(_backstop, "Add Backstop");
 
         //Announce new finishPoint
-        OnFinishPointSet?.Invoke(_finishSegment, finishPoint);
+        OnFinishPointSet?.Invoke(_groundManager.finishSegment, finishPoint);
 
     }
 
@@ -370,6 +374,12 @@ public class GroundSpawner : MonoBehaviour
         CurveSection firstSection = new(SectionType.Valley, 50, 0.5f, 0.5f, -25);
         CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
         return new(new List<CurveSection> { firstSection, secondSection });
+    }
+
+    public void ClearStartFinishObjects()
+    {
+        _finishFlag = null;
+        _backstop = null;
     }
     #endregion
 

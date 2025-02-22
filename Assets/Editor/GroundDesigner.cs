@@ -118,12 +118,12 @@ public class GroundDesigner : EditorWindow
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundSpawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultStart());
-            _groundManager.SetStartPoint(segment, 1);
+            _groundSpawner.SetStartPoint(segment, 1);
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundSpawner.AddSegment(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultFinish());
-            _groundManager.SetFinishPoint(segment, 1);
+            _groundSpawner.SetFinishPoint(segment, 1);
         }
     }
 
@@ -171,12 +171,12 @@ public class GroundDesigner : EditorWindow
 
         if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
         {
-            _groundManager.SetStartPoint(_segment, 1);
+            _groundSpawner.SetStartPoint(_segment, 1);
         }
 
         if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
-            _groundManager.SetFinishPoint(_segment, 1);
+            _groundSpawner.SetFinishPoint(_segment, 1);
         }
     }
 

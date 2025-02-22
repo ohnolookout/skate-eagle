@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 
 public static class SerializeLevelUtility
 {
+    #region Serialization
     public static List<SerializedGround> SerializeGroundList(Ground[] grounds)
     {
         var serializedGrounds = new List<SerializedGround>();
@@ -87,6 +88,7 @@ public static class SerializeLevelUtility
         }
         return pointsList;
     }
+    #endregion
 
     #region Deserialization
     public static void DeserializeLevel(Level level, GroundManager groundManager)
@@ -130,7 +132,7 @@ public static class SerializeLevelUtility
         segment.PreviousSegment = previousSegment;
         segment.Curve = serializedSegment.curve;
         segment.isFinish = serializedSegment.isFinish;
-        segment.isFinish = serializedSegment.isStart;
+        segment.isStart = serializedSegment.isStart;
 
         GroundSplineUtility.GenerateSpline(segment.Spline, serializedSegment.fillSplinePoints, serializedSegment.fillSpineIsOpen);
         GroundSplineUtility.GenerateSpline(segment.EdgeSpline, serializedSegment.edgeSplinePoints, true);

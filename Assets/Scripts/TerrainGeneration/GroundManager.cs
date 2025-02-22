@@ -88,38 +88,14 @@ public class GroundManager : MonoBehaviour
     }
     public void ClearGround()
     {
+        finishSegment = null;
+        startSegment = null;
+        groundSpawner.ClearStartFinishObjects();
+
         while (groundContainer.transform.childCount > 0)
         {
             DestroyImmediate(groundContainer.transform.GetChild(0).gameObject);
         }
-    }
-
-    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
-    {
-        startSegment = segment;
-        _startPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
-    }
-
-    public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
-    {
-        //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
-        if (finishSegment != null)
-        {
-            finishSegment.IsFinish = false;
-            DestroyImmediate(_finishFlag);
-            DestroyImmediate(_backstop);
-        }
-
-        finishSegment = segment;
-        segment.IsFinish = true;
-
-        //Add finish flag to designated point in GroundSegment. Mark point as finishPoint.        
-        _finishPoint = segment.gameObject.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
-        _finishFlag = Instantiate(_finishFlagPrefab, _finishPoint, transform.rotation, segment.gameObject.transform);
-
-        //Add backstop to endpoint of GroundSegment
-        _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
-
     }
     #endregion
 
