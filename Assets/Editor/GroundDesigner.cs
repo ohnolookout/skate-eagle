@@ -272,7 +272,7 @@ public class GroundDesigner : EditorWindow
             _loadWindow.Close();
         }
 
-        MedalTimes medalTimes = new(medalTimeRed, medalTimeBlue, medalTimeGold, medalTimeSilver, medalTimeBronze);
+        MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var levelToSave = new Level(levelName, medalTimes, GroundsArray());
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
