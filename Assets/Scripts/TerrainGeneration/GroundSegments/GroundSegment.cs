@@ -10,7 +10,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     #region Declarations
     public Curve curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
-    [SerializeField] PhysicsMaterial2D _colliderMaterial;
+[SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private EdgeCollider2D _collider;
     public int floorHeight = 100;
     private int _containmentBuffer = 20;

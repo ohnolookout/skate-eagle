@@ -10,14 +10,10 @@ public class SerializedGround
     public string name;
     public List<SerializedGroundSegment> segmentList;
 
-    public SerializedGround(Ground ground)
+    public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList)
     {
-        name = ground.gameObject.name;
-        position = ground.transform.position;
-        segmentList = new List<SerializedGroundSegment>();
-        foreach (GroundSegment segment in ground.SegmentList)
-        {
-            segmentList.Add(new SerializedGroundSegment(segment));
-        }
+        this.name = name;
+        this.position = position;
+        this.segmentList = segmentList;
     }
 }

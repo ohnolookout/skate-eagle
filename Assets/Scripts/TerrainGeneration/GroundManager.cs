@@ -12,6 +12,7 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private GameObject _backstopPrefab;
     [SerializeField] private GameObject _finishFlag;
     [SerializeField] private GameObject _backstop;
+    public GroundSpawner groundSpawner;
     public GameObject groundContainer;
     public GroundSegment finishSegment;
     public GroundSegment startSegment;
@@ -46,7 +47,7 @@ public class GroundManager : MonoBehaviour
 
     private void OnDisable()
     {
-        DeleteGround();
+        ClearGround();
     }
 
     #endregion
@@ -56,7 +57,7 @@ public class GroundManager : MonoBehaviour
     {
         if (transform.childCount > 0)
         {
-            DeleteGround();
+            ClearGround();
         }
 
         InitializeTerrain(level);
@@ -85,7 +86,7 @@ public class GroundManager : MonoBehaviour
         segment.OnActivate -= OnFinishActivation;
         OnActivateFinish?.Invoke(_finishPoint);
     }
-    public void DeleteGround()
+    public void ClearGround()
     {
         while (groundContainer.transform.childCount > 0)
         {

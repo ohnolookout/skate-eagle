@@ -164,6 +164,11 @@ public class GroundSpawner : MonoBehaviour
         return InsertSegment(ground, copiedCurveDef, segIndex);
     }
 
+    public GroundSegment AddEmptySegment(Ground ground)
+    {
+        return Instantiate(_groundSegmentPrefab, ground.transform).GetComponent<GroundSegment>();
+    }
+
     public void RemoveSegment(Ground ground)
     {
         if (ground.SegmentList.Count == 0)
@@ -366,71 +371,6 @@ public class GroundSpawner : MonoBehaviour
         CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
         return new(new List<CurveSection> { firstSection, secondSection });
     }
-    #endregion
-
-    #region Deserialization
-    public void DeserializeLevel(Level level)
-    {
-        _groundManager.DeleteGround();
-        
-        foreach (var serializedGround in level.SerializedGrounds)
-        {
-            DeserializeGround(serializedGround);
-        }
-        
-    }
-    public void DeserializeGround(SerializedGround serializedGround)
-    {
-        var ground = AddGround();
-        ground.name = serializedGround.name;
-        ground.SegmentList = new();
-        foreach (var serializedSegment in serializedGround.segmentList)
-        {
-            var segment = Instantiate(_groundSegmentPrefab, ground.transform).GetComponent<GroundSegment>();
-            DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);
-            ground.SegmentList.Add(segment);
-            if (segment.IsStart)
-            {
-                SetStartPoint(segment, 1);
-            }
-            if (segment.IsFinish)
-            {
-                SetFinishPoint(segment, 1);
-            }
-        }
-    }
-
-    public void DeserializeSegment(SerializedGroundSegment serializedSegment, GroundSegment segment, Ground parent, GroundSegment? previousSegment)
-    {
-        segment.transform.position = serializedSegment.position;
-        segment.transform.rotation = serializedSegment.rotation;
-        segment.gameObject.name = serializedSegment.name;
-
-        segment.parentGround = parent;
-        segment.PreviousSegment = previousSegment;
-        segment.Curve = serializedSegment.curve;
-        segment.isFinish = serializedSegment.isFinish;
-        segment.isFinish = serializedSegment.isStart;
-
-        if (segment.IsFinish)
-        {
-            SetFinishPoint(segment, 1);
-        }
-
-        if(segment.IsStart)
-        {
-            SetStartPoint(segment, 1);
-        }
-
-        GroundSplineUtility.GenerateSpline(segment.Spline, serializedSegment.fillSplinePoints, serializedSegment.fillSpineIsOpen);
-        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, serializedSegment.edgeSplinePoints, true);
-
-        //Create collierPoints
-        segment.Collider.points = serializedSegment.colliderPoints.ToArray();
-        segment.Collider.sharedMaterial = parent.ColliderMaterial;
-
-    }
-
     #endregion
 
 }

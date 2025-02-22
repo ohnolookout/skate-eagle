@@ -22,7 +22,7 @@ public class Level
     {
         _name = name;
         _medalTimes = medalTimes;
-        _serializedGrounds = SerializeGrounds(grounds);
+        _serializedGrounds = SerializeLevelUtility.SerializeGroundList(grounds);
         _leaderboardKey = _name + "_leaderboard";
 
         if (string.IsNullOrWhiteSpace(_UID))
@@ -30,16 +30,5 @@ public class Level
             Debug.Log("GUI created");
             _UID = Guid.NewGuid().ToString();
         }
-    }
-    private List<SerializedGround> SerializeGrounds(Ground[] grounds)
-    {
-        var serializedGrounds = new List<SerializedGround>();
-        
-        foreach (Ground ground in grounds)
-        {
-            serializedGrounds.Add(new SerializedGround(ground));
-        }
-
-        return serializedGrounds;
     }
 }

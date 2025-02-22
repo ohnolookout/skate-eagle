@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 8423349151646038934}
   - component: {fileID: 1560943902924081631}
   m_Layer: 0
-  m_Name: Constructor
+  m_Name: GroundSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,6 +130,7 @@ MonoBehaviour:
   _backstopPrefab: {fileID: 8604669192707788244, guid: 3806a06a8635be3429cab4e2beadbd95, type: 3}
   _finishFlag: {fileID: 0}
   _backstop: {fileID: 0}
+  groundSpawner: {fileID: 1560943902924081631}
   groundContainer: {fileID: 142988458053501574}
   finishSegment: {fileID: 0}
   startSegment: {fileID: 0}

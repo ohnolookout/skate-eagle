@@ -8,10 +8,10 @@ using UnityEditor;
 [Serializable]
 public class Curve
 {
-    private List<float> _sectionLengths;
+    [SerializeField] private List<float> _sectionLengths;
     [SerializeField] private List<CurvePoint> _curvePoints;
     public CurveDefinition curveDefinition;
-    private float length;
+    [SerializeField] private float length;
     private protected Vector3 _lowpoint, _highpoint;
     public List<CurvePoint> CurvePoints { get => _curvePoints; set => _curvePoints = value; }
     public int Count { get => _curvePoints.Count; }
@@ -32,17 +32,6 @@ public class Curve
         _curvePoints = curvePoints;
         GenerateCurveStats();
     }
-    /*
-    public Curve(SerializedGroundSegment serializedSegment)
-    {
-        curveDefinition = serializedSegment.curveDefinition;
-        //_curvePoints = serializedSegment.curvePoints;
-        _sectionLengths = serializedSegment.curveSectionLengths;
-        _highpoint = serializedSegment.highPoint;
-        _lowpoint = serializedSegment.lowPoint;
-
-    }
-    */
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();

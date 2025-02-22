@@ -301,7 +301,7 @@ public class GroundDesigner : EditorWindow
 
         LoadMedalTimes(loadedLevel.MedalTimes);
 
-        _groundSpawner.DeserializeLevel(loadedLevel);
+        SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)

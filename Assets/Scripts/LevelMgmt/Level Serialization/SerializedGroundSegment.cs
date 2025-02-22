@@ -18,13 +18,6 @@ public class SerializedGroundSegment
 
     //Curve contents
     public Curve curve;
-    /*
-    public CurveDefinition curveDefinition;
-    public List<CurvePoint> curvePoints;
-    public List<float> curveSectionLengths;
-    public Vector3 highPoint;
-    public Vector3 lowPoint;
-    */
     //Spline contents
     public List<SplineControlPoint> fillSplinePoints;
     public bool fillSpineIsOpen;
@@ -33,61 +26,7 @@ public class SerializedGroundSegment
     //Collider contents
     public List<Vector2> colliderPoints;
 
-    public SerializedGroundSegment(GroundSegment segment)
+    public SerializedGroundSegment()
     {
-        //Transform
-        name = segment.gameObject.name;
-        position = segment.transform.position;
-        rotation = segment.transform.rotation;
-
-        //Segment
-        isStart = segment.IsStart;
-        isFinish = segment.IsFinish;
-
-        //Curve
-        curve = segment.Curve;
-        /*
-        curveDefinition = segment.Curve.curveDefinition;
-        curveSectionLengths = segment.Curve.SectionLengths;
-        curvePoints = segment.Curve.CurvePoints;
-        highPoint = segment.Curve.Highpoint;
-        lowPoint = segment.Curve.Lowpoint;
-        */
-
-
-        //Spline
-        fillSplinePoints = CopySplinePoints(segment.Spline);
-        fillSpineIsOpen = segment.Spline.isOpenEnded;
-        edgeSplinePoints = CopySplinePoints(segment.EdgeSpline);
-
-        //Collider
-        colliderPoints = CopyColliderPoints(segment.Collider);
-    }
-
-    private List<SplineControlPoint> CopySplinePoints(Spline splineToCopy)
-    {
-        var pointsList = new List<SplineControlPoint>();
-        for (int i = 0; i < splineToCopy.GetPointCount(); i++)
-        {
-            SplineControlPoint newPoint = new();
-            newPoint.position = splineToCopy.GetPosition(i);
-            newPoint.leftTangent = splineToCopy.GetLeftTangent(i);
-            newPoint.rightTangent = splineToCopy.GetRightTangent(i);
-            newPoint.mode = splineToCopy.GetTangentMode(i);
-            pointsList.Add(newPoint);
-        }
-
-        return pointsList;
-
-    }
-
-    private List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
-    {
-        var pointsList = new List<Vector2>();
-        for (int i = 0; i < colliderToCopy.points.Length; i++)
-        {
-            pointsList.Add(colliderToCopy.points[i]);
-        }
-        return pointsList;
     }
 }
