@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System;
+using System.IO;
+using UnityEditor;
 
 public class LevelManager : MonoBehaviour, ILevelManager
 {
@@ -12,6 +14,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
     private GameManager _gameManager;
+    private LevelDatabase _levelDB;
+    private string _currentLevelName;
     private bool _doTriggerLoadLevel = true;
     private static IPlayer _player;
     public static Action<ILevelManager> OnLanding { get; set; }
@@ -32,12 +36,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _groundManager != null; }
+    public string CurrentLevelName { get => _currentLevelName; set => _currentLevelName = value; }
     #endregion
 
     #region Monobehaviours
     void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
+        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
         AddSingletonManagers();
     }
 

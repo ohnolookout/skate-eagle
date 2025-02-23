@@ -20,6 +20,7 @@ public class GroundDesigner : EditorWindow
     private GroundSpawner _groundSpawner;
     private GroundManager _groundManager;
     private GroundDesignerState _selectionState;
+    private int _tabIndex = 0;
     private GameObject _selectedObject;
     private SerializedObject _so;
     private SerializedProperty _serializedCurve;
@@ -56,9 +57,9 @@ public class GroundDesigner : EditorWindow
         Selection.selectionChanged += OnSelectionChanged;
 
         LoadLevelDB();
-        if (_levelDB.currentLevelName != null && _levelDB.LevelNameExists(_levelDB.currentLevelName))
+        if (_levelDB.lastLevelLoaded != null && _levelDB.LevelNameExists(_levelDB.lastLevelLoaded))
         {
-            LoadLevel(_levelDB.currentLevelName);
+            LoadLevel(_levelDB.lastLevelLoaded);
         }
     }
 
@@ -82,42 +83,105 @@ public class GroundDesigner : EditorWindow
             EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
             return;
         }
-
-        switch(_selectionState)
+        _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground", "Segment" });
+        switch (_tabIndex)
         {
-            case GroundDesignerState.GroundSelected:
-                OnGroundSelected();
+            case 0:
+                LevelMenu();
                 break;
-            case GroundDesignerState.GroundSegmentSelected:
-                OnGroundSegmentSelected();
+            case 1:
+                GroundMenu();
                 break;
-            case GroundDesignerState.NoGroundSelected:
-                OnNoGroundSelected();
+            case 2:
+                SegmentMenu();
                 break;
         }
     }
+    private void LevelMenu()
+    {
+        EditorGUI.BeginChangeCheck();
 
-    private void OnGroundSelected()
+        GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
+        levelName = EditorGUILayout.TextField("Level Name", levelName);
+
+        GUILayout.Label("Medal Times");
+        medalTimeRed = EditorGUILayout.FloatField("Red", medalTimeRed, GUILayout.ExpandWidth(false));
+        medalTimeBlue = EditorGUILayout.FloatField("Blue", medalTimeBlue, GUILayout.ExpandWidth(false));
+        medalTimeGold = EditorGUILayout.FloatField("Gold", medalTimeGold, GUILayout.ExpandWidth(false));
+        medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
+        medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            _levelIsDirty = true;
+        }
+
+        if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeGameObject = _groundSpawner.AddGround().gameObject;
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
+        {
+            SaveLevel();
+        }
+        if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
+        {
+            if (!DoDiscardChanges())
+            {
+                return;
+            }
+            _loadWindow = GetWindow<LevelLoadWindow>();
+            _loadWindow.Init(this, _levelDB);
+        }
+        if (GUILayout.Button("New Level", GUILayout.ExpandWidth(false)))
+        {
+            if (!DoDiscardChanges())
+            {
+                return;
+            }
+            _groundManager.ClearGround();
+            levelName = "New Level";
+            ResetMedalTimes();
+            _levelIsDirty = false;
+        }
+    }
+    private void GroundMenu()
     {
         if (_ground == null)
         {
-            OnSelectionChanged();
-            return;
+            if(_groundManager.groundContainer.transform.childCount > 0)
+            {
+                _ground = _groundManager.groundContainer.transform.GetChild(0).GetComponent<Ground>();
+                Selection.activeGameObject = _ground.gameObject;
+                OnSelectionChanged();
+            }
+            else
+            {
+                GUILayout.TextArea("No ground selected");
+                return;
+            }
         }
 
         if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.AddSegment(_ground);
+            Selection.activeGameObject = _groundSpawner.AddSegment(_ground).gameObject;
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.AddSegmentToFront(_ground);
+            Selection.activeGameObject = _groundSpawner.AddSegmentToFront(_ground).gameObject;
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.RemoveSegment(_ground);
+
+            if(Selection.activeGameObject == null)
+            {
+                Selection.activeGameObject = _ground.gameObject;
+            }
+
             _levelIsDirty = true;
         }
         if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
@@ -128,6 +192,11 @@ public class GroundDesigner : EditorWindow
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.RemoveGround(_selectedObject.GetComponent<Ground>());
+            
+            if (Selection.activeGameObject == null)
+            {
+                Selection.activeGameObject = _groundManager.gameObject;
+            }
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
@@ -144,13 +213,16 @@ public class GroundDesigner : EditorWindow
         }
     }
 
-    private void OnGroundSegmentSelected()
+    private void SegmentMenu()
     {
         if(_segment == null)
         {
-            OnSelectionChanged();
+            GUILayout.TextArea("No segment selected");
             return;
         }
+
+        _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedCurve, true);
 
@@ -201,56 +273,10 @@ public class GroundDesigner : EditorWindow
             _groundSpawner.SetFinishPoint(_segment, 1);
             _levelIsDirty = true;
         }
+
+        EditorGUILayout.EndScrollView();
     }
 
-    private void OnNoGroundSelected()
-    {
-        EditorGUI.BeginChangeCheck();
-
-        GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
-        levelName = EditorGUILayout.TextField("Level Name", levelName);
-
-        GUILayout.Label("Medal Times");
-        medalTimeRed = EditorGUILayout.FloatField("Red", medalTimeRed, GUILayout.ExpandWidth(false));
-        medalTimeBlue = EditorGUILayout.FloatField("Blue", medalTimeBlue, GUILayout.ExpandWidth(false));
-        medalTimeGold = EditorGUILayout.FloatField("Gold", medalTimeGold, GUILayout.ExpandWidth(false));
-        medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
-        medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
-
-        if (EditorGUI.EndChangeCheck())
-        {
-            _levelIsDirty = true;
-        }
-
-        if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
-        {
-            Selection.activeGameObject = _groundSpawner.AddGround().gameObject;
-            _levelIsDirty = true;
-        }
-        if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
-        {
-            SaveLevel();
-        }
-        if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
-        {
-            if(!DoDiscardChanges())
-            {
-                return;
-            }
-            _loadWindow = GetWindow<LevelLoadWindow>();
-            _loadWindow.Init(this, _levelDB);
-        }
-        if (GUILayout.Button("New Level", GUILayout.ExpandWidth(false)))
-        {
-            if (!DoDiscardChanges())
-            {
-                return;
-            }
-            _groundManager.ClearGround();
-            levelName = "New Level";
-            _levelIsDirty = false;
-        }
-    }
     #endregion
 
     #region State Mgmt
@@ -263,33 +289,36 @@ public class GroundDesigner : EditorWindow
 
         if (_selectedObject == null)
         {
-            _selectionState = GroundDesignerState.NoGroundSelected;
+            return;
+        }
+
+        _so = new(_selectedObject);
+
+        if (_selectedObject.GetComponent<Ground>() != null)
+        {
+            _selectionState = GroundDesignerState.GroundSelected;
+            _ground = _selectedObject.GetComponent<Ground>();
+            _segment = _ground.SegmentList.Count > 0 ? _ground.SegmentList[^1] : null;
+            SelectSegment(_segment);
+            return;
+        } 
+        else if (_selectedObject.GetComponent<GroundSegment>() != null)
+        {
+            _segment = _selectedObject.GetComponent<GroundSegment>();
+            SelectSegment(_segment);
+            _ground = _segment.parentGround;
+            return;
         }
         else
         {
-            _so = new(_selectedObject);
-
-            if (_selectedObject.GetComponent<Ground>() != null)
-            {
-                _selectionState = GroundDesignerState.GroundSelected;
-                _ground = _selectedObject.GetComponent<Ground>();
-                return;
-            } 
-            else if (_selectedObject.GetComponent<GroundSegment>() != null)
-            {
-                _segment = _selectedObject.GetComponent<GroundSegment>();
-                _selectionState = GroundDesignerState.GroundSegmentSelected;
-                _so = new(_segment);
-                _serializedCurve = _so.FindProperty("curve");
-                return;
-            }
-            else
-            {
-                _selectionState = GroundDesignerState.NoGroundSelected;
-            }
-
+            _selectionState = GroundDesignerState.NoGroundSelected;
         }
-        //Repaint();
+    }
+
+    private void SelectSegment(GroundSegment segment)
+    {
+        _so = new(segment);
+        _serializedCurve = _so.FindProperty("curve");
     }
     #endregion
 
@@ -359,6 +388,15 @@ public class GroundDesigner : EditorWindow
         medalTimeGold = medalTimes.Gold;
         medalTimeSilver = medalTimes.Silver;
         medalTimeBronze = medalTimes.Bronze;
+    }
+
+    private void ResetMedalTimes()
+    {
+        medalTimeRed = 0;
+        medalTimeBlue = 0;
+        medalTimeGold = 0;
+        medalTimeSilver = 0;
+        medalTimeBronze = 0;
     }
 
     private Ground[] GroundsArray()

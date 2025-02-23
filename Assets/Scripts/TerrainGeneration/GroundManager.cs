@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
 public class GroundManager : MonoBehaviour
 {
     #region Declarations
@@ -28,10 +27,6 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Monobehaviors
-    private void Awake()
-    {
-        ClearGround();
-    }
     private void Start()
     {
         finishSegment.OnActivate += OnFinishActivation;

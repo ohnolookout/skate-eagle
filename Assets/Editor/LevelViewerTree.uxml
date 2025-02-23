@@ -1,3 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <uie:PropertyField name="LevelDictionary" binding-path="_levelDictionary" label="Level Dictionary" />
+    <ui:TextField label="LastLevelLoaded" placeholder-text="Null" name="TextField" binding-path="lastLevelLoaded" />
 </ui:UXML>

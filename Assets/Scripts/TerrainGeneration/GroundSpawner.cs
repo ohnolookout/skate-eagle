@@ -27,6 +27,20 @@ public class GroundSpawner : MonoBehaviour
     private void Awake()
     {
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
+
+        if (!Application.isPlaying)
+        {
+            var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
+            var level = levelDB.LoadLevel(levelDB.lastLevelLoaded);
+            if (level != null)
+            {
+                SerializeLevelUtility.DeserializeLevel(level, _groundManager);
+            }
+            else
+            {
+                _groundManager.ClearGround();
+            }
+        }
     }
 
     #endregion
