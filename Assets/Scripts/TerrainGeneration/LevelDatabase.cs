@@ -12,6 +12,7 @@ using Unity.VisualScripting;
 public class LevelDatabase : ScriptableObject
 {
     [SerializeField] private SerializableDictionaryBase<string, Level> _levelDictionary;
+    public string currentLevelName;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
 
     public LevelDatabase()
@@ -51,6 +52,7 @@ public class LevelDatabase : ScriptableObject
     {
         if (LevelNameExists(name))
         {
+            currentLevelName = name;
             Debug.Log($"Level {name} found.");
             return _levelDictionary[name];
         }
@@ -71,6 +73,10 @@ public class LevelDatabase : ScriptableObject
             }
 
             _levelDictionary.Remove(name);
+            if(currentLevelName == name)
+            {
+                currentLevelName = null;
+            }
             return true;
         }
         return false;

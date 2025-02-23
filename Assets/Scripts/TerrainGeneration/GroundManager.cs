@@ -28,6 +28,10 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Monobehaviors
+    private void Awake()
+    {
+        ClearGround();
+    }
     private void Start()
     {
         finishSegment.OnActivate += OnFinishActivation;

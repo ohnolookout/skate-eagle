@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System;
 
-public class EditorLoadWindow : EditorWindow
+public class LevelLoadWindow : EditorWindow
 {
     private GroundDesigner _groundDesigner;
     private LevelDatabase _levelDB;
@@ -13,7 +14,7 @@ public class EditorLoadWindow : EditorWindow
     private int _nameIndex;
     public static void ShowWindow()
     {
-        GetWindow<EditorLoadWindow>();
+        GetWindow<LevelLoadWindow>();
     }
 
 
@@ -22,12 +23,17 @@ public class EditorLoadWindow : EditorWindow
         _groundDesigner = groundDesigner;
         _levelDB = levelDB;
         _levelNames = _levelDB.LevelNames();
+        if (_levelDB.LevelNameExists(_levelDB.currentLevelName))
+        {
+            _nameIndex = Array.IndexOf(_levelNames, _levelDB.currentLevelName);
+        }
     }
 
     private void OnGUI()
     {
         GUILayout.Label("Select Level to Load", EditorStyles.boldLabel);
         _nameIndex = EditorGUILayout.Popup("Level to load", _nameIndex, _levelNames);
+
         if (GUILayout.Button("Load Level"))
         {
             _groundDesigner.LoadLevel(_levelNames[_nameIndex]);

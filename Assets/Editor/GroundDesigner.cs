@@ -5,6 +5,7 @@ using UnityEditor;
 using Codice.Client.Common.GameUI;
 using static UnityEngine.Rendering.HableCurve;
 using log4net.Core;
+using UnityEditor.Build;
 
 public class GroundDesigner : EditorWindow
 {
@@ -24,9 +25,10 @@ public class GroundDesigner : EditorWindow
     private SerializedProperty _serializedCurve;
     private GroundSegment _segment;
     private Ground _ground;
-    private EditorLoadWindow _loadWindow;
+    private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
+    private bool _levelIsDirty = false;
 
     private string levelName = "New Level";
     public float medalTimeRed = 0;
@@ -54,10 +56,18 @@ public class GroundDesigner : EditorWindow
         Selection.selectionChanged += OnSelectionChanged;
 
         LoadLevelDB();
+        if (_levelDB.currentLevelName != null && _levelDB.LevelNameExists(_levelDB.currentLevelName))
+        {
+            LoadLevel(_levelDB.currentLevelName);
+        }
     }
 
     private void OnDisable()
     {
+        if(!DoDiscardChanges())
+        {
+            SaveLevel();
+        }
         _groundSpawner = null;
         _groundManager = null;
         _selectedObject = null;
@@ -98,32 +108,39 @@ public class GroundDesigner : EditorWindow
         if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.AddSegment(_ground);
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.AddSegmentToFront(_ground);
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.RemoveSegment(_ground);
+            _levelIsDirty = true;
         }
         if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.RecalculateSegments(_ground, 0);
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.RemoveGround(_selectedObject.GetComponent<Ground>());
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundSpawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultStart());
             _groundSpawner.SetStartPoint(segment, 1);
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundSpawner.AddSegment(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultFinish());
             _groundSpawner.SetFinishPoint(segment, 1);
+            _levelIsDirty = true;
         }
     }
 
@@ -145,15 +162,18 @@ public class GroundDesigner : EditorWindow
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
             _groundSpawner.RefreshCurve(_segment);
             _groundSpawner.RecalculateSegments(_segment);
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundSpawner.DuplicateSegment(_segment).gameObject;
+            _levelIsDirty = true;
         }
 
         if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.ResetSegment(_segment);
+            _levelIsDirty = true;
         }
 
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
@@ -166,22 +186,27 @@ public class GroundDesigner : EditorWindow
             {
                 Selection.activeGameObject = _segment.parentGround.gameObject;
             }
+            _levelIsDirty = true;
             return;
         }
 
         if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.SetStartPoint(_segment, 1);
+            _levelIsDirty = true;
         }
 
         if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
             _groundSpawner.SetFinishPoint(_segment, 1);
+            _levelIsDirty = true;
         }
     }
 
     private void OnNoGroundSelected()
     {
+        EditorGUI.BeginChangeCheck();
+
         GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
         levelName = EditorGUILayout.TextField("Level Name", levelName);
 
@@ -192,9 +217,15 @@ public class GroundDesigner : EditorWindow
         medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
         medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
 
+        if (EditorGUI.EndChangeCheck())
+        {
+            _levelIsDirty = true;
+        }
+
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundSpawner.AddGround().gameObject;
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
@@ -202,8 +233,22 @@ public class GroundDesigner : EditorWindow
         }
         if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
         {
-            _loadWindow = GetWindow<EditorLoadWindow>();
+            if(!DoDiscardChanges())
+            {
+                return;
+            }
+            _loadWindow = GetWindow<LevelLoadWindow>();
             _loadWindow.Init(this, _levelDB);
+        }
+        if (GUILayout.Button("New Level", GUILayout.ExpandWidth(false)))
+        {
+            if (!DoDiscardChanges())
+            {
+                return;
+            }
+            _groundManager.ClearGround();
+            levelName = "New Level";
+            _levelIsDirty = false;
         }
     }
     #endregion
@@ -244,7 +289,7 @@ public class GroundDesigner : EditorWindow
             }
 
         }
-        Repaint();
+        //Repaint();
     }
     #endregion
 
@@ -279,6 +324,7 @@ public class GroundDesigner : EditorWindow
         if (levelSaved)
         {
             Debug.Log($"Level {levelName} saved");
+            _levelIsDirty = false;
         }
         else
         {
@@ -302,6 +348,8 @@ public class GroundDesigner : EditorWindow
         LoadMedalTimes(loadedLevel.MedalTimes);
 
         SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
+
+        _levelIsDirty = false;
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)
@@ -316,6 +364,19 @@ public class GroundDesigner : EditorWindow
     private Ground[] GroundsArray()
     {
         return _groundManager.groundContainer.GetComponentsInChildren<Ground>(); 
+    }
+
+    private bool DoDiscardChanges()
+    {
+        if (_levelIsDirty)
+        {
+            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
+            if (!discardChanges)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     #endregion
