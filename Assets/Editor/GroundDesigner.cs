@@ -10,16 +10,9 @@ using UnityEditor.Build;
 public class GroundDesigner : EditorWindow
 {
     #region Declarations
-    private enum GroundDesignerState
-    {
-        GroundSelected,
-        GroundSegmentSelected,
-        NoGroundSelected
-    }
 
-    private GroundSpawner _groundSpawner;
+    private GroundEditManager _groundEditor;
     private GroundManager _groundManager;
-    private GroundDesignerState _selectionState;
     private int _tabIndex = 0;
     private GameObject _selectedObject;
     private SerializedObject _so;
@@ -48,7 +41,7 @@ public class GroundDesigner : EditorWindow
 
     private void OnEnable()
     {
-        _groundSpawner = FindAnyObjectByType<GroundSpawner>();
+        _groundEditor = FindAnyObjectByType<GroundEditManager>();
         _groundManager = FindAnyObjectByType<GroundManager>();
 
         _selectedObject = Selection.activeGameObject;
@@ -69,7 +62,7 @@ public class GroundDesigner : EditorWindow
         {
             SaveLevel();
         }
-        _groundSpawner = null;
+        _groundEditor = null;
         _groundManager = null;
         _selectedObject = null;
         Selection.selectionChanged -= OnSelectionChanged;
@@ -78,7 +71,7 @@ public class GroundDesigner : EditorWindow
     #region GUI
     private void OnGUI()
     {
-        if(_groundSpawner == null)
+        if(_groundEditor == null)
         {
             EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
             return;
@@ -118,7 +111,7 @@ public class GroundDesigner : EditorWindow
 
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _groundSpawner.AddGround().gameObject;
+            Selection.activeGameObject = _groundEditor.AddGround().gameObject;
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
@@ -150,32 +143,23 @@ public class GroundDesigner : EditorWindow
     {
         if (_ground == null)
         {
-            if(_groundManager.groundContainer.transform.childCount > 0)
-            {
-                _ground = _groundManager.groundContainer.transform.GetChild(0).GetComponent<Ground>();
-                Selection.activeGameObject = _ground.gameObject;
-                OnSelectionChanged();
-            }
-            else
-            {
-                GUILayout.TextArea("No ground selected");
-                return;
-            }
+            GUILayout.TextArea("No ground selected");
+            return;
         }
 
         if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _groundSpawner.AddSegment(_ground).gameObject;
+            Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _groundSpawner.AddSegmentToFront(_ground).gameObject;
+            Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground).gameObject;
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.RemoveSegment(_ground);
+            _groundEditor.RemoveSegment(_ground);
 
             if(Selection.activeGameObject == null)
             {
@@ -186,12 +170,12 @@ public class GroundDesigner : EditorWindow
         }
         if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.RecalculateSegments(_ground, 0);
+            _groundEditor.RecalculateSegments(_ground, 0);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.RemoveGround(_selectedObject.GetComponent<Ground>());
+            _groundEditor.RemoveGround(_selectedObject.GetComponent<Ground>());
             
             if (Selection.activeGameObject == null)
             {
@@ -201,14 +185,14 @@ public class GroundDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundSpawner.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultStart());
-            _groundSpawner.SetStartPoint(segment, 1);
+            var segment = _groundEditor.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundEditor.DefaultStart());
+            _groundEditor.SetStartPoint(segment, 1);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundSpawner.AddSegment(_selectedObject.GetComponent<Ground>(), _groundSpawner.DefaultFinish());
-            _groundSpawner.SetFinishPoint(segment, 1);
+            var segment = _groundEditor.AddSegment(_selectedObject.GetComponent<Ground>(), _groundEditor.DefaultFinish());
+            _groundEditor.SetFinishPoint(segment, 1);
             _levelIsDirty = true;
         }
     }
@@ -232,25 +216,25 @@ public class GroundDesigner : EditorWindow
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
-            _groundSpawner.RefreshCurve(_segment);
-            _groundSpawner.RecalculateSegments(_segment);
+            _groundEditor.RefreshCurve(_segment);
+            _groundEditor.RecalculateSegments(_segment);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _groundSpawner.DuplicateSegment(_segment).gameObject;
+            Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
             _levelIsDirty = true;
         }
 
         if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.ResetSegment(_segment);
+            _groundEditor.ResetSegment(_segment);
             _levelIsDirty = true;
         }
 
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.RemoveSegment(_segment);
+            _groundEditor.RemoveSegment(_segment);
             if (_segment.PreviousSegment != null)
             {
                 Selection.activeGameObject = _segment.PreviousSegment.gameObject;
@@ -264,13 +248,13 @@ public class GroundDesigner : EditorWindow
 
         if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.SetStartPoint(_segment, 1);
+            _groundEditor.SetStartPoint(_segment, 1);
             _levelIsDirty = true;
         }
 
         if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
-            _groundSpawner.SetFinishPoint(_segment, 1);
+            _groundEditor.SetFinishPoint(_segment, 1);
             _levelIsDirty = true;
         }
 
@@ -289,6 +273,7 @@ public class GroundDesigner : EditorWindow
 
         if (_selectedObject == null)
         {
+            AssignFirstGround();
             return;
         }
 
@@ -296,7 +281,6 @@ public class GroundDesigner : EditorWindow
 
         if (_selectedObject.GetComponent<Ground>() != null)
         {
-            _selectionState = GroundDesignerState.GroundSelected;
             _ground = _selectedObject.GetComponent<Ground>();
             _segment = _ground.SegmentList.Count > 0 ? _ground.SegmentList[^1] : null;
             SelectSegment(_segment);
@@ -311,7 +295,21 @@ public class GroundDesigner : EditorWindow
         }
         else
         {
-            _selectionState = GroundDesignerState.NoGroundSelected;
+            AssignFirstGround();
+        }
+    }
+
+    private void AssignFirstGround()
+    {
+        if (_groundManager.groundContainer.transform.childCount > 0)
+        {
+            Debug.Log("Selecting first ground in groundcontainer...");
+            _ground = _groundManager.groundContainer.transform.GetChild(0).GetComponent<Ground>();
+            if (_segment == null && _ground.SegmentList.Count > 0)
+            {
+                _segment = _ground.SegmentList[^1];
+                SelectSegment(_segment);
+            }
         }
     }
 

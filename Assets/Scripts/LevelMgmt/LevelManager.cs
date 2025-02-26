@@ -15,7 +15,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private CameraOperator _cameraOperator;
     private GameManager _gameManager;
     private LevelDatabase _levelDB;
-    private string _currentLevelName;
     private bool _doTriggerLoadLevel = true;
     private static IPlayer _player;
     public static Action<ILevelManager> OnLanding { get; set; }
@@ -36,7 +35,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _groundManager != null; }
-    public string CurrentLevelName { get => _currentLevelName; set => _currentLevelName = value; }
     #endregion
 
     #region Monobehaviours
@@ -49,7 +47,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void Start()
     {
-        ActivateTerrainManager();
+        ActivateGroundManager();
         SetPlayerPosition(_groundManager.StartPoint);
         SubscribeToPlayerEvents();
         Timer.OnStopTimer += OnStopTimer;
@@ -96,7 +94,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 #endregion
 
     #region Start/End Functions
-    private void ActivateTerrainManager()
+    private void ActivateGroundManager()
     {
 
 #if UNITY_EDITOR

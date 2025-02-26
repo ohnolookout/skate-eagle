@@ -64,17 +64,9 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        //_playFabManager = gameObject.AddComponent<PlayFabManager>();
-        //_playFabManager = new();
         OnLoading += ActivateLoadingScreen;
 
 #if UNITY_EDITOR
-        /*
-        if (SceneManager.GetActiveScene().name == "Level_Editor")
-        {
-            _currentLevel = Resources.Load<Level>("EditorLevel");
-        }
-        */
         if (clearPlayerPrefs)
         {
             Debug.Log("Clearing player prefs...");
