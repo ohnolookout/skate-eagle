@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using System.Linq;
 using UnityEngine.Events;
+using UnityEditor;
 
 public class PlayFabTester : MonoBehaviour
 {
@@ -109,17 +110,17 @@ public class PlayFabTester : MonoBehaviour
     private bool _isAwaitingLogin = false;
     private bool _isAwaitingLeaderboard = false;
     private const int playFabWaitTime = 4;
-    private static LevelNode[] levelNodes;
 
 
     void Start()
     {
+        var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));        
         SeedLeaderboardsButton.onClick.AddListener(
-                () => StartCoroutine(SeedLevelLeaderboardsRoutine(Resources.Load<LevelList>("Level List").levelNodes))
+                () => StartCoroutine(SeedLevelLeaderboardsRoutine(levelDB))
             );
     }
 
-    private IEnumerator SeedLevelLeaderboardsRoutine(LevelNode[] levelNodes)
+    private IEnumerator SeedLevelLeaderboardsRoutine(LevelDatabase levelDB)
     {
         GameManager.Instance.OnLoading?.Invoke(true);
         foreach (var testPlayer in _testPlayers)
@@ -128,12 +129,13 @@ public class PlayFabTester : MonoBehaviour
             CreateAccountAndUserName(testPlayer);
             yield return new WaitWhile(() => _isAwaitingLogin);
             yield return new WaitForSeconds(playFabWaitTime/2);
-            foreach (var node in levelNodes)
+            foreach (var name in levelDB.LevelOrder)
             {
+                var level = levelDB.GetLevelByName(name);
                 _isAwaitingLeaderboard = true;
-                AddLeaderboardRecord(node.Level);
+                AddLeaderboardRecord(level);
                 yield return new WaitWhile(() => _isAwaitingLeaderboard);
-                Debug.Log("Record created in level " + node.Level.Name + " for player " + testPlayer.Name);
+                Debug.Log("Record created in level " + level.Name + " for player " + testPlayer.Name);
                 yield return new WaitForSeconds(playFabWaitTime/2);
             }
             Debug.Log($"Leaderboard seeding complete for " + testPlayer.Name);

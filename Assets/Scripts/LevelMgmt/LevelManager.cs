@@ -9,13 +9,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
 {
     #region Declarations
     public Vector3 startPosition = new();
-    [SerializeField] private Level _currentLevel;
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
     private GameManager _gameManager;
-    private LevelDatabase _levelDB;
-    private bool _doTriggerLoadLevel = true;
     private static IPlayer _player;
     public static Action<ILevelManager> OnLanding { get; set; }
     public static Action<ILevelManager> OnGameOver { get; set; }
@@ -31,7 +28,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
 
     public static IPlayer GetPlayer { get => _player; }
-    public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _groundManager != null; }
@@ -41,24 +37,24 @@ public class LevelManager : MonoBehaviour, ILevelManager
     void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
-        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
-        AddSingletonManagers();
+        _gameManager = GameManager.Instance;
+        OnFinish += _gameManager.UpdateRecord;
+        _groundManager.OnActivateFinish += ActivateFinishLine;
+        _groundManager.groundSpawner.OnSetStartPoint += SetPlayerPosition;
     }
 
     private void Start()
     {
-        ActivateGroundManager();
-        SetPlayerPosition(_groundManager.StartPoint);
         SubscribeToPlayerEvents();
         Timer.OnStopTimer += OnStopTimer;
 
 #if UNITY_EDITOR
-        StartCoroutine(CheckGameManagerInitializationRoutine());
+        StartCoroutine(WaitForGameManagerInitializationRoutine());
         return;
 #endif        
         OnLanding?.Invoke(this);
         _inputEvents.OnRestart += GoToStandby;
-        
+        SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
     }
 
     private void OnEnable()
@@ -72,65 +68,19 @@ public class LevelManager : MonoBehaviour, ILevelManager
         ResetStaticEvents();
     }
 #if UNITY_EDITOR
-    private IEnumerator CheckGameManagerInitializationRoutine()
+    private IEnumerator WaitForGameManagerInitializationRoutine()
     {
+        Debug.Log("Waiting for game manager to initialize...");
         yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
+        Debug.Log("Game manager initialized. Starting level...");
         OnLanding?.Invoke(this);
-        if (_currentLevel.Name == "EditorLevel")
-        {
-            Debug.LogWarning("No overlay found by level manager. Going to standby.");
-            GoToStandby();
-        }
-        else
-        {
-            _inputEvents.OnRestart += GoToStandby;
-        }
-        if (_doTriggerLoadLevel)
-        {
-            _gameManager.OnLevelLoaded?.Invoke(_currentLevel);
-        }
+        _inputEvents.OnRestart += GoToStandby;
+        SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
     }
 #endif
 #endregion
 
     #region Start/End Functions
-    private void ActivateGroundManager()
-    {
-
-#if UNITY_EDITOR
-        if (_gameManager.CurrentLevel == null)
-        {
-            Debug.LogWarning("No level found. Skipping terrain creation.");
-            return;
-        }
-        if (!HasTerrainManager)
-        {
-            Debug.LogWarning("No terrain manager found. Skipping terrain creation.");
-            return;
-        }
-#endif
-
-        _groundManager.GenerateGround(_gameManager.CurrentLevel);
-        _groundManager.OnActivateFinish += ActivateFinishLine;
-    }
-
-    private void AddSingletonManagers()
-    {
-        _gameManager = GameManager.Instance;
-        if (_gameManager.CurrentLevel != null)
-        {
-            CurrentLevel = _gameManager.CurrentLevel;
-        }
-        else
-        {
-            Debug.Log("No level loaded in game manager. Adding default level from level manager.");
-            _gameManager.CurrentLevel = CurrentLevel;
-        }
-        _gameManager.OnLevelLoaded += _ => _doTriggerLoadLevel = false;
-        OnFinish += _gameManager.UpdateRecord;
-        
-    }
-
     private void SubscribeToPlayerEvents()
     {
         if (!HasPlayer)
@@ -143,19 +93,16 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
     }
 
-    private void SetPlayerPosition(Vector3 position)
+    private void SetPlayerPosition(GroundSegment _, Vector2 position)
     {
         if (HasPlayer)
         {
+            Debug.Log("Setting palayer position to " + position);
             float halfPlayerHeight = 4.25f;
             var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
             _player.Transform.position = startPosition;
             _player.NormalBody.position = startPosition;
         } 
-    }
-    public void SetLevel(Level level)
-    {
-        CurrentLevel = level;
     }
 
     private void ResetStaticEvents()
@@ -171,6 +118,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnActivateFinishLine = null;
     }
 
+
     #endregion
 
     #region Event Invokers
@@ -180,7 +128,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         Debug.Log("Restarting...");
         _inputEvents.OnRestart -= RestartGame;
         OnRestart?.Invoke();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SetPlayerPosition(null, _groundManager.StartPoint);
     }
 
     public void Submit()

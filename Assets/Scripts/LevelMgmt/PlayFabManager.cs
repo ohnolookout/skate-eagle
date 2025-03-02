@@ -482,7 +482,7 @@ public class PlayFabManager : MonoBehaviour
         foreach (string levelUID in dirtyUIDs)
         {
             _isAwaitingDirtyRecord = true;
-            Debug.Log("Uploading dirty record for level " + _gameManager.SessionData.NodeDict[levelUID].Level.Name);
+            Debug.Log("Uploading dirty record for level " + _gameManager.LevelDB.GetName(levelUID));
             OnLeadboardUpdateComplete += OnSubmitDirtyRecordComplete;
             UpdateLeaderboardRecord(_gameManager.SessionData.SaveData.dirtyRecords[levelUID]);
             yield return new WaitWhile(() => _isAwaitingDirtyRecord);

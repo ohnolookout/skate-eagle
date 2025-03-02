@@ -175,7 +175,7 @@ public class GroundDesigner : EditorWindow
         }
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
-            _groundEditor.RemoveGround(_selectedObject.GetComponent<Ground>());
+            _groundEditor.RemoveGround(_ground);
             
             if (Selection.activeGameObject == null)
             {
@@ -185,13 +185,13 @@ public class GroundDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegmentToFront(_selectedObject.GetComponent<Ground>(), _groundEditor.DefaultStart());
+            var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());
             _groundEditor.SetStartPoint(segment, 1);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegment(_selectedObject.GetComponent<Ground>(), _groundEditor.DefaultFinish());
+            var segment = _groundEditor.AddSegment(_ground, _groundEditor.DefaultFinish());
             _groundEditor.SetFinishPoint(segment, 1);
             _levelIsDirty = true;
         }
@@ -283,7 +283,12 @@ public class GroundDesigner : EditorWindow
         {
             _ground = _selectedObject.GetComponent<Ground>();
             _segment = _ground.SegmentList.Count > 0 ? _ground.SegmentList[^1] : null;
-            SelectSegment(_segment);
+
+            if(_segment != null)
+            {
+                SelectSegment(_segment);
+            }
+            
             return;
         } 
         else if (_selectedObject.GetComponent<GroundSegment>() != null)
@@ -361,7 +366,7 @@ public class GroundDesigner : EditorWindow
     }
     public void LoadLevel(string levelName)
     {
-        var loadedLevel = _levelDB.LoadLevel(levelName);
+        var loadedLevel = _levelDB.GetLevelByName(levelName);
 
         if (loadedLevel is null)
         {

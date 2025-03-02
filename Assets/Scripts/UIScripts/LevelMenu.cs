@@ -10,7 +10,7 @@ public class LevelMenu : MonoBehaviour
 {
     //public LevelPanelGenerator levelPanel;
     public MedalCounts medalCounts;
-    private NodeContainer[] _nodeContainers;
+    private LevelMenuButton[] _levelButtons;
     private SessionData _sessionData;
     private EventSystem _eventSystem;
     private int _selectIndex = 0;
@@ -20,17 +20,17 @@ public class LevelMenu : MonoBehaviour
     public Image medalImage;
     public Sprite[] medalSprites;
     //public MainMenu menu;
-    public Level SelectedLevel;
+    public Level selectedLevel;
 
     #region Monobehaviours/Setup
     public void Start()
     {
         _sessionData = GameManager.Instance.SessionData;
-        PlayLevelButton.onClick.AddListener(() => GameManager.Instance.LoadLevel(SelectedLevel));
+        PlayLevelButton.onClick.AddListener(() => GameManager.Instance.LoadLevel(selectedLevel));
 
         _eventSystem = EventSystem.current;
         PopulateMedalCounts();
-        ActivateNodeContainers();
+        ActivateButtons();
     }
 
     void Update()
@@ -39,7 +39,7 @@ public class LevelMenu : MonoBehaviour
         {
             if (_eventSystem.currentSelectedGameObject == null || _eventSystem.currentSelectedGameObject.transform.tag != "MapNode")
             {
-                SelectNode(_nodeContainers[_selectIndex]);
+                SelectButton(_levelButtons[_selectIndex]);
             }
         }    
     }
@@ -56,35 +56,34 @@ public class LevelMenu : MonoBehaviour
     #endregion
 
     #region Node Management
-    private void ActivateNodeContainers()
+    private void ActivateButtons()
     {
-        _nodeContainers = GetComponentsInChildren<NodeContainer>();
-        List<LevelNode> nodes = new(_sessionData.NodeDict.Values);
-        _selectIndex = _nodeContainers.Length - 1;
-        for (int i = 0; i < _nodeContainers.Length; i++)
+        _levelButtons = GetComponentsInChildren<LevelMenuButton>();
+        _selectIndex = _levelButtons.Length - 1;
+        for (int i = 0; i < _levelButtons.Length; i++)
         {
-            if(i >= nodes.Count) 
+            if(i >= _sessionData.LevelDB.LevelOrder.Count) 
             {
                 break;
             }
 
-            var isLastUnlockedNode = SetUpNodeContainer(_nodeContainers[i], nodes[i], i);
+            var isLastUnlockedNode = SetUpButton(_levelButtons[i], _sessionData.LevelDB.GetLevelByIndex(i), i);
             if (isLastUnlockedNode)
             {
                 _selectIndex = i;
             }
         }
-        SelectNode(_nodeContainers[_selectIndex]);
+        SelectButton(_levelButtons[_selectIndex]);
     }
 
     //returns true if node is last unlocked node
-    private bool SetUpNodeContainer(NodeContainer container, LevelNode node, int index)
+    private bool SetUpButton(LevelMenuButton container, Level level, int index)
     {
-        container.Node = node;
+        container.Level = level;
         container.containerIndex = index;
-        PlayerRecord record = _sessionData.GetRecordByUID(node.levelUID);
+        PlayerRecord record = _sessionData.GetRecordByUID(level.UID);
         container.Setup(record.status);
-        container.Button.onClick.AddListener(() => SelectNode(container));
+        container.Button.onClick.AddListener(() => SelectButton(container));
 
         if (record.status == CompletionStatus.Incomplete ||
             (record.status == CompletionStatus.Locked
@@ -96,27 +95,27 @@ public class LevelMenu : MonoBehaviour
         return false;
     }
 
-    private void SelectNode(NodeContainer nodeContainer)
+    private void SelectButton(LevelMenuButton levelButton)
     {
-        nodeContainer.Button.Select();
+        levelButton.Button.Select();
 
-        var levelUID = nodeContainer.Node.levelUID;
+        var levelUID = levelButton.Level.UID;
         PlayerRecord record = _sessionData.GetRecordByUID(levelUID);
-        GenerateLevelPanel(nodeContainer.Node, record, _sessionData.PreviousLevelRecord(levelUID));
-        _selectIndex = nodeContainer.containerIndex;
+        GenerateLevelPanel(levelButton.Level, record, _sessionData.PreviousLevelRecord(levelUID));
+        _selectIndex = levelButton.containerIndex;
     }
     #endregion
 
     #region Level Selection Panel
-    public void GenerateLevelPanel(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
+    public void GenerateLevelPanel(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {
-        SelectedLevel = node.level;
-        levelName.text = SelectedLevel.Name;
+        selectedLevel = level;
+        levelName.text = selectedLevel.Name;
         ActivateLevelPanelObjects(record.status);
         if (record.status == CompletionStatus.Locked)
         {
             PlayLevelButton.gameObject.SetActive(false);
-            lockedText.text = GetLockedLevelMessage(node, record, previousRecord);
+            lockedText.text = GetLockedLevelMessage(level, record, previousRecord);
             return;
         }
         PlayLevelButton.gameObject.SetActive(true);
@@ -124,13 +123,13 @@ public class LevelMenu : MonoBehaviour
         medalImage.sprite = medalSprites[(int)record.medal];
     }
 
-    private string GetLockedLevelMessage(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
+    private string GetLockedLevelMessage(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {
         if (previousRecord.status == CompletionStatus.Locked)
         {
             return "Locked";
         }
-        int goldRequired = node.goldRequired - GameManager.Instance.SessionData.GoldPlusCount;
+        int goldRequired = level.GoldRequired - GameManager.Instance.SessionData.GoldPlusCount;
         if (goldRequired < 1)
         {
             return "Complete previous level to unlock.";
@@ -171,12 +170,5 @@ public class LevelMenu : MonoBehaviour
         incompleteBlock.SetActive(false);
         medalImage.gameObject.SetActive(true);
     }
-
-    /*
-    public void PlayLevel()
-    {
-        menu.LoadLevel(SelectedLevel);
-    }
-    */
     #endregion
 }

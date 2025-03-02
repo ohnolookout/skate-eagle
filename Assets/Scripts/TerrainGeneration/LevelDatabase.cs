@@ -12,22 +12,20 @@ using Unity.VisualScripting;
 public class LevelDatabase : ScriptableObject
 {
     [SerializeField] private SerializableDictionaryBase<string, Level> _levelDictionary;
+    [SerializeField] private SerializableDictionaryBase<string, string> _nameToUIDDictionary;
+    [SerializeField] private SerializableDictionaryBase<string, string> _uidToNameDictionary;
+    [SerializeField] private List<string> _levelOrder;
     public string lastLevelLoaded;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
+    public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
+    public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
+    public List<string> LevelOrder => _levelOrder;
 
     public LevelDatabase()
     {
         _levelDictionary = new();
     }
 
-    public bool LevelNameExists(string name)
-    {
-        if(name == null)
-        {
-            return false;
-        }
-        return _levelDictionary.ContainsKey(name);
-    }
 
     public bool SaveLevel(Level level)
     {
@@ -44,32 +42,133 @@ public class LevelDatabase : ScriptableObject
                 return false;
             }
 
-            level.UID = _levelDictionary[level.Name].UID;
+            level.UID = _nameToUIDDictionary[level.Name];
 
+        } else
+        {
+            level.UID = Guid.NewGuid().ToString();
         }
-        _levelDictionary[level.Name] = level;
-        lastLevelLoaded = level.Name;
+        UpdateDictionaries(level);
+        lastLevelLoaded = level.UID;
         EditorUtility.SetDirty(this);
         return true;        
     }
 
-    public Level LoadLevel(string name)
+    private void UpdateDictionaries(Level level)
     {
-        if(name == null)
+        _levelDictionary[level.UID] = level;
+        _nameToUIDDictionary[level.Name] = level.UID;
+        _uidToNameDictionary[level.UID] = level.Name;
+
+        if(level.DoPublish && !_levelOrder.Contains(level.Name))
         {
-            Debug.Log("Name is null");
+            _levelOrder.Add(level.Name);
+        }
+        else if (!level.DoPublish && _levelOrder.Contains(level.Name))
+        {
+            _levelOrder.Remove(level.Name);
+        }
+    }
+
+    public void ChangeLevelName(Level level, string newName)
+    {
+        var uid = level.UID;
+        var oldName = level.Name;
+        level.Name = newName;
+
+        _nameToUIDDictionary.Remove(oldName);
+        _nameToUIDDictionary[newName] = uid;
+        _uidToNameDictionary[uid] = newName;
+        _levelDictionary[uid] = level;
+    }
+
+    public Level GetLevelByName(string name)
+    {
+        if(name == null || !LevelNameExists(name))
+        {
             return null;
         }
-        if (LevelNameExists(name))
+
+        var uid = _nameToUIDDictionary[name];
+        lastLevelLoaded = uid;
+        EditorUtility.SetDirty(this);
+        return _levelDictionary[uid];
+    }
+
+    public Level GetLevelByUID(string uid)
+    {
+        if (uid == null || !UIDExists(uid))
         {
-            lastLevelLoaded = name;
-            Debug.Log($"Level {name} found.");
-            EditorUtility.SetDirty(this);
-            return _levelDictionary[name];
+            return null;
+        }
+        return _levelDictionary[uid];
+    }
+
+    public Level GetLevelByIndex(int index)
+    {
+        if (index < 0 || index >= _levelOrder.Count)
+        {
+            return null;
+        }
+        return GetLevelByName(_levelOrder[index]);
+    }
+
+    public int GetLevelIndex(string name)
+    {
+        if (name == null || !LevelNameExists(name) || !_levelOrder.Contains(name))
+        {
+            return -1;
         }
 
-        Debug.Log($"Level {name} does not exist");
-        return null;
+        return _levelOrder.IndexOf(name);
+    }
+
+    public int GetLevelIndex(Level level)
+    {
+        return GetLevelIndex(level.Name);
+    }
+
+    public Level GetNextLevel(Level currentLevel)
+    {
+        return GetNextLevel(currentLevel.Name);
+    }
+
+    public Level GetNextLevel(string name)
+    {
+        if (name == null || !LevelNameExists(name))
+        {
+            return null;
+        }
+        var index = GetLevelIndex(name);
+
+        if (index == -1 || index == _levelOrder.Count - 1)
+        {
+            return null;
+        }
+
+        return GetLevelByIndex(index + 1);
+    }
+
+    public Level GetPreviousLevel(Level currentLevel)
+    {
+        return GetPreviousLevel(currentLevel.Name);
+    }
+
+    public Level GetPreviousLevel(string name)
+    {
+        if (name == null || !LevelNameExists(name))
+        {
+            return null;
+        }
+
+        var index = GetLevelIndex(name);
+
+        if (index == -1 || index == 0)
+        {
+            return null;
+        }
+
+        return GetLevelByIndex(index - 1);
     }
 
     public bool DeleteLevel(string name)
@@ -86,18 +185,58 @@ public class LevelDatabase : ScriptableObject
         {
             return false;
         }
+        var uid = _nameToUIDDictionary[name];
 
         _levelDictionary.Remove(name);
-        if(lastLevelLoaded == name)
+        _nameToUIDDictionary.Remove(name);
+        _uidToNameDictionary.Remove(uid);
+
+        if (lastLevelLoaded == uid)
         {
             lastLevelLoaded = null;
         }
         return true;        
     }
 
+    public string GetUID(string name)
+    {
+        if (name == null || !LevelNameExists(name))
+        {
+            return null;
+        }
+        return _nameToUIDDictionary[name];
+    }
+
+    public string GetName(string uid)
+    {
+        if (uid == null || !UIDExists(uid))
+        {
+            return null;
+        }
+        return _uidToNameDictionary[uid];
+    }
+
     public string[] LevelNames()
     {
-        return _levelDictionary.Keys.ToArray();
+        return _nameToUIDDictionary.Keys.ToArray();
+    }
+
+    public bool LevelNameExists(string name)
+    {
+        if (name == null)
+        {
+            return false;
+        }
+        return _nameToUIDDictionary.ContainsKey(name);
+    }
+
+    public bool UIDExists(string uid)
+    {
+        if (uid == null)
+        {
+            return false;
+        }
+        return _uidToNameDictionary.ContainsKey(uid);
     }
 }
 

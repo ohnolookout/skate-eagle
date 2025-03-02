@@ -12,6 +12,7 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private GameObject _finishFlag;
     [SerializeField] private GameObject _backstop;
     public GroundSpawner groundSpawner;
+    private List<Ground> _grounds;
     public GameObject groundContainer;
     public GroundSegment finishSegment;
     public GroundSegment startSegment;
@@ -27,21 +28,15 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Monobehaviors
-    private void Start()
+    private void Awake()
     {
-        finishSegment.OnActivate += OnFinishActivation;
-        if (_ground == null)
-        {
-            Debug.LogWarning("No terrain found by terrain manager. Destroying terrain manager.");
-            DestroyImmediate(gameObject);
-            return;
-        }
-        
+        groundSpawner.OnSetFinishPoint += OnSetFinishPoint;
+        groundSpawner.OnSetStartPoint += OnSetStartPoint;
     }
 
     void Update()
     {
-        _positionalSegmentList.Update();
+        //_positionalSegmentList.Update();
     }
 
     private void OnDisable()
@@ -59,9 +54,9 @@ public class GroundManager : MonoBehaviour
             ClearGround();
         }
 
-        InitializeTerrain(level);
+        //InitializeTerrain(level);
 
-        InitializePositionalList(_ground, _cameraBuffer, _cameraBuffer);
+        //InitializePositionalList(_ground, _cameraBuffer, _cameraBuffer);
         
         return _finishPoint;
     }
@@ -73,13 +68,27 @@ public class GroundManager : MonoBehaviour
         AssignPositionalEvents(_positionalSegmentList);
     }
 
+    private void OnSetFinishPoint(GroundSegment segment, Vector2 point)
+    {
+        _finishPoint = point;
+        finishSegment = segment;     
+        segment.OnActivate += OnFinishActivation;
+    }
+
+    private void OnSetStartPoint(GroundSegment segment, Vector2 point)
+    {
+        Debug.Log("Setting start point to " + point);
+        _startPoint = point;
+        startSegment = segment;        
+    }
+    /*
     private void InitializeTerrain(Level level)
     {
         _ground = Instantiate(_terrainPrefab, transform).GetComponent<Ground>();
 
         //GroundGenerator.GenerateLevel(level, this, _ground);
     }
-
+    */
     private void OnFinishActivation(GroundSegment segment)
     {
         segment.OnActivate -= OnFinishActivation;

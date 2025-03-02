@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 
 
-
+/*
 public class LevelPanelGenerator : MonoBehaviour
 {
     public GameObject bestBlock, incompleteText, medal, lockedBlock, playButton;
@@ -16,15 +16,15 @@ public class LevelPanelGenerator : MonoBehaviour
     public Level selectedLevel;
 
 
-    public void Generate(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
+    public void Generate(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {
-        selectedLevel = node.level;
+        selectedLevel = level;
         levelName.text = selectedLevel.Name;
         ActivateObjects(record.status);
         if (record.status == CompletionStatus.Locked)
         {
             playButton.SetActive(false);
-            lockedText.text = LockedMessage(node, record, previousRecord);
+            lockedText.text = LockedMessage(level, record, previousRecord);
             return;
         }
         playButton.SetActive(true);
@@ -36,13 +36,13 @@ public class LevelPanelGenerator : MonoBehaviour
 
     }
 
-    private string LockedMessage(LevelNode node, PlayerRecord record, PlayerRecord previousRecord)
+    private string LockedMessage(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {        
         if(previousRecord.status == CompletionStatus.Locked)
         {
             return "Locked";
         }
-        int goldRequired = node.goldRequired - GameManager.Instance.SessionData.GoldPlusCount;
+        int goldRequired = level.GoldRequired - GameManager.Instance.SessionData.GoldPlusCount;
         if (goldRequired < 1)
         {
             return "Complete previous level to unlock.";
@@ -84,10 +84,5 @@ public class LevelPanelGenerator : MonoBehaviour
         medal.SetActive(true);
     }
 
-    /*
-    public void PlayLevel()
-    {
-        menu.LoadLevel(selectedLevel);
-    }
-    */
 }
+*/

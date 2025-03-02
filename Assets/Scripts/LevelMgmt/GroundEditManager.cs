@@ -17,11 +17,12 @@ public class GroundEditManager : MonoBehaviour
         {
             Destroy(this);
         }
+
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
 
         var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
-        var level = levelDB.LoadLevel(levelDB.lastLevelLoaded);
+        var level = levelDB.GetLevelByUID(levelDB.lastLevelLoaded);
         if (level != null)
         {
             SerializeLevelUtility.DeserializeLevel(level, _groundManager);

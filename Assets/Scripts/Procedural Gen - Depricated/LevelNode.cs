@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
 [Serializable]
 public class LevelNode
 {
@@ -31,3 +32,4 @@ public class LevelNode
 
 
 }
+*/

@@ -17,8 +17,8 @@ public class GroundSpawner : MonoBehaviour
     private GameObject _backstop;
 
 
-    public Action<IGroundSegment, Vector2> OnStartPointSet;
-    public Action<IGroundSegment, Vector2> OnFinishPointSet;
+    public Action<GroundSegment, Vector2> OnSetStartPoint;
+    public Action<GroundSegment, Vector2> OnSetFinishPoint;
 
     #region Add/Remove Segments
     public Ground AddGround()
@@ -166,7 +166,7 @@ public class GroundSpawner : MonoBehaviour
         _groundManager.startSegment = segment;
         segment.IsStart = true;
         var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
-        OnStartPointSet?.Invoke(segment, startPoint);
+        OnSetStartPoint?.Invoke(segment, startPoint);
     }
 
     public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
@@ -209,7 +209,7 @@ public class GroundSpawner : MonoBehaviour
 #endif
 
         //Announce new finishPoint
-        OnFinishPointSet?.Invoke(_groundManager.finishSegment, finishPoint);
+        OnSetFinishPoint?.Invoke(_groundManager.finishSegment, finishPoint);
 
     }
 

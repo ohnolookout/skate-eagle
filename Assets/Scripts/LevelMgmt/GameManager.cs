@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     private SessionData _sessionData;
     private Level _currentLevel = null;
+    private LevelDatabase _levelDB;
     [SerializeField] private PlayFabManager _playFabManager;
     private bool _isAwaitingPlayFab = false;
     private SaveLoadUtility _saveLoadUtility = SaveLoadUtility.Instance;
@@ -26,7 +28,6 @@ public class GameManager : MonoBehaviour
     private bool _isInitializing = false;
     public bool IsInitializing => _isInitializing;
     public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
-    public LevelNode CurrentLevelNode => _sessionData.Node(_currentLevel.UID);
     public Level CurrentLevel { get => _currentLevel; set => _currentLevel = value; }
     public PlayerRecord CurrentPlayerRecord => _sessionData.GetRecordByLevel(_currentLevel);
     public PlayFabManager PlayFabManager => _playFabManager;
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     public Action<bool> OnMenuLoaded { get => _onMenuLoaded; set => _onMenuLoaded = value; } //bool true if load level menue;
     public Action<bool> OnLoading { get => _onLoading; set => _onLoading = value; }
     public Action OnAccountReset { get => _onAccountReset; set => _onAccountReset = value; }
+    public LevelDatabase LevelDB => _levelDB;
     public static GameManager Instance
     {
         get
@@ -64,6 +66,9 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
+        _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoaded);
+        
         OnLoading += ActivateLoadingScreen;
 
 #if UNITY_EDITOR
@@ -193,11 +198,12 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        if (CurrentLevelNode.next == null)
+        var nextLevel = _levelDB.GetNextLevel(CurrentLevel);
+        if (nextLevel == null)
         {
             return;
         }
-        LoadLevel(CurrentLevelNode.next.level);
+        LoadLevel(nextLevel);
     }
     public void BackToLevelMenu()
     {

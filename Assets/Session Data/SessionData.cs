@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEditor;
 //Single instance accessed by GameManager that maintains all data for players' current session
 //Combines player records from SaveData with level list from ScriptableObject into single dictionary
 public class SessionData
 {
     private SaveData _saveData;
+    private LevelDatabase _levelDB;
     private Dictionary<Medal, int> _medalCount = new()
     {
         { Medal.Red, 0 },
@@ -15,50 +17,53 @@ public class SessionData
         { Medal.Bronze, 0 },
         { Medal.Participant, 0}
     };
-    private Dictionary<string, LevelNode> nodeDict = new();
+    //private Dictionary<string, LevelNode> nodeDict = new();
     public int GoldPlusCount => _medalCount[Medal.Gold] + _medalCount[Medal.Blue] + _medalCount[Medal.Red];
     public Dictionary<Medal, int> MedalCount => _medalCount;
-    public Dictionary<string, LevelNode> NodeDict => nodeDict;
-    public SaveData SaveData => _saveData;
+    public SaveData SaveData => _saveData;    
+    public LevelDatabase LevelDB => _levelDB;
 
     public SessionData(SaveData loadedGame)
     {
         _saveData = loadedGame;
-        LevelList levelList = Resources.Load<LevelList>("Level List");
-        levelList.Build();
-        nodeDict = levelList.levelNodeDict;
-        BuildRecordsAndMedals(loadedGame, levelList.levelNodes[0]);
+        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase)); ;
+        //nodeDict = levelList.levelNodeDict;
+        BuildRecordsAndMedals(loadedGame);
     }
 
     //Adds records to dictionary for any nodes that don't currently exist in recordDict
     //Builds medal count for each record
     //Ignores records that don't have nodes, which means they are editor levels
-    public void BuildRecordsAndMedals(SaveData loadedGame, LevelNode firstNode)
+    public void BuildRecordsAndMedals(SaveData loadedGame)
     {
-        LevelNode currentNode = firstNode;
+        Level currentLevel = _levelDB.GetLevelByIndex(0);
+        if(currentLevel == null)
+        {
+            return;
+        }
 
         //Set first node to incomplete if it's currently locked (only happens at new game).
-        if(!_saveData.recordDict.ContainsKey(firstNode.levelUID))
+        if (!_saveData.recordDict.ContainsKey(currentLevel.UID))
         {
-            AddLevelToRecords(currentNode.level);
-            GetRecordByUID(currentNode.levelUID).status = CompletionStatus.Incomplete;
-            currentNode = currentNode.next;
+            AddLevelToRecords(currentLevel);
+            GetRecordByUID(currentLevel.UID).status = CompletionStatus.Incomplete;
+            currentLevel = _levelDB.GetNextLevel(currentLevel);
         }
         CompletionStatus lastRecordStatus = CompletionStatus.Complete;
 
         //Advance through nodes using next
-        while(currentNode != null)
+        while(currentLevel != null)
         {
             PlayerRecord record;
 
             //Access record if it exists, create new record if not.
-            if (_saveData.recordDict.ContainsKey(currentNode.levelUID))
+            if (_saveData.recordDict.ContainsKey(currentLevel.UID))
             {
-                record = GetRecordByUID(currentNode.levelUID);
+                record = GetRecordByUID(currentLevel.UID);
             }
             else
             {
-                record = AddLevelToRecords(currentNode.Level);
+                record = AddLevelToRecords(currentLevel);
             }
             //Update record status only if last record is complete.
             if (lastRecordStatus == CompletionStatus.Complete && record.status == CompletionStatus.Locked)
@@ -71,7 +76,7 @@ public class SessionData
                 _medalCount[record.medal]++;
             }
             lastRecordStatus = record.status;
-            currentNode = currentNode.next;
+            currentLevel = _levelDB.GetNextLevel(currentLevel);
         }
     }
 
@@ -103,18 +108,31 @@ public class SessionData
 
     public CompletionStatus RefreshRecordStatus(PlayerRecord record)
     {
+        //Set status to complete if medal is higher than participant
         if (record.medal != Medal.Participant)
         {
             record.status = CompletionStatus.Complete;
             return record.status;
         }
-        if (PreviousLevelNode(record.levelUID) == null)
+
+        //If there is no previous level, set to incomplete
+        var previousLevel = _levelDB.GetPreviousLevel(record.levelName);
+        if (previousLevel == null)
         {
             record.status = CompletionStatus.Incomplete;
             return record.status;
         }
-        if (PreviousLevelRecord(record.levelUID).status == CompletionStatus.Complete
-            && Node(record.levelUID).goldRequired <= GoldPlusCount)
+
+        var previousRecord = GetRecordByUID(previousLevel.UID);
+        if(previousRecord == null)
+        {
+            record.status = CompletionStatus.Incomplete;
+            return record.status;
+        }
+
+        //If previous level is complete and player has enough gold, set to incomplete. Otherwise, set locked.
+        if (previousRecord.status == CompletionStatus.Complete
+            && _levelDB.GetLevelByName(record.levelUID).GoldRequired <= GoldPlusCount)
         {
             record.status = CompletionStatus.Incomplete;
         } else
@@ -127,15 +145,23 @@ public class SessionData
 
     public bool NextLevelUnlocked(Level level)
     {
-        if (GetRecordByUID(level.UID).status != CompletionStatus.Complete || NextLevelNode(level.UID) == null)
+        var nextLevel = _levelDB.GetNextLevel(level);
+        if (GetRecordByUID(level.UID).status != CompletionStatus.Complete || nextLevel == null)
         {
             return false;
         }
-        PlayerRecord nextLevelRecord = NextLevelRecord(level.UID);
+
+        PlayerRecord nextLevelRecord = GetRecordByUID(nextLevel.UID);
+        if (nextLevelRecord == null)
+        {
+            return false;
+        }
+
         if (nextLevelRecord.status != CompletionStatus.Locked)
         {
             return true;
         }
+
         RefreshRecordStatus(nextLevelRecord);
         return nextLevelRecord.status != CompletionStatus.Locked;
     }
@@ -159,51 +185,11 @@ public class SessionData
         return AddLevelToRecords(level);
     }
 
-    public LevelNode Node(string UID)
-    {
-        if (nodeDict.ContainsKey(UID))
-        {
-            return nodeDict[UID];
-        }
-        return null;
-    }
-
     public PlayerRecord PreviousLevelRecord(string UID)
     {
-        LevelNode previousNode = PreviousLevelNode(UID);
-        return previousNode != null ? GetRecordByUID(previousNode.levelUID) : null;
+        var currentLevel = _levelDB.GetLevelByName(UID);
+        var previouslevel = _levelDB.GetPreviousLevel(currentLevel);
+        return previouslevel != null ? GetRecordByUID(previouslevel.UID) : null;
     }
 
-    public PlayerRecord NextLevelRecord(string UID)
-    {
-        LevelNode nextNode = NextLevelNode(UID);
-        return nextNode != null ? GetRecordByUID(nextNode.levelUID) : null;
-    }
-
-    public LevelNode PreviousLevelNode(string UID)
-    {
-        LevelNode node = Node(UID);
-        return node != null ? node.previous : null;
-    }
-
-    public LevelNode NextLevelNode(string UID)
-    {
-        LevelNode node = Node(UID);
-        return node != null ? node.next : null;
-    }
-
-    public void PrintDictionaries()
-    {
-        Debug.Log("recordDict:");
-        foreach(var record in _saveData.recordDict)
-        {
-            Debug.Log($"Key: {record.Key} Value: {record.Value}");
-        }
-
-        Debug.Log("nodeDict:");
-        foreach (var node in nodeDict)
-        {
-            Debug.Log($"Key: {node.Key} Value: {node.Value}");
-        }
-    }
 }
