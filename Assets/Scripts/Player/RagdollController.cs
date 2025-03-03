@@ -18,7 +18,8 @@ public class RagdollController : MonoBehaviour
     [SerializeField] private SpringJoint2D _backwingSpringJoint, _lowerwingSpringJoint;
     public Rigidbody2D spine;
     private IPlayer _player;
-    public bool turnOnRagdoll = false, ragdoll = false;
+    public bool turnOnRagdoll = false;
+    public bool ragdoll = false;
     #endregion
 
     #region Monobehaviors

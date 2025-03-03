@@ -19,7 +19,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
-    public Action<GroundSegment> OnActivate { get; set; }
+    public static Action<GroundSegment> OnActivateFinish { get; set; }
     public Curve Curve { get => curve; set => curve = value; }
     public Spline Spline { get => _fillShapeController.spline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
@@ -48,7 +48,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     {
         if (isFinish)
         {
-            OnActivate?.Invoke(this);
+            OnActivateFinish?.Invoke(this);
         }
     }
 

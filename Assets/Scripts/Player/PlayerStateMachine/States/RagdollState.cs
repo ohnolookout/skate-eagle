@@ -12,6 +12,7 @@
         _player.Trail.emitting = false;
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Die);
     }
+
     public override void UpdateState()
     {
         DirectionCheck();

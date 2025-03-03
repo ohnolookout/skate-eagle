@@ -76,6 +76,23 @@ public class InputEventController
         }
     }
 
+    public void EnableInputs()
+    {
+        if (_inputType == InputType.Player)
+        {
+            InitializePlayerInputs();
+        }
+        else if (_inputType == InputType.UI)
+        {
+            InitializeUIInputs();
+        }
+        else
+        {
+            InitializePlayerInputs();
+            InitializeUIInputs();
+        }
+    }
+
     public void DoRotateCanceled(InputAction.CallbackContext obj)
     {
         _rotateValue = new(0, 0);

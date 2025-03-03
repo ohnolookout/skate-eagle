@@ -31,8 +31,11 @@ public class GroundDesigner : EditorWindow
     public float medalTimeSilver = 0;
     public float medalTimeBronze = 0;
 
+    private Vector2 _startPoint = new();
+    private Vector2 _finishPoint = new(500, 0);
 
     #endregion
+
     [MenuItem("Tools/GroundDesigner")]
     public static void ShowWindow()
     {
@@ -186,13 +189,13 @@ public class GroundDesigner : EditorWindow
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());
-            _groundEditor.SetStartPoint(segment, 1);
+            _startPoint = _groundEditor.SetStartPoint(segment, 1);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundEditor.AddSegment(_ground, _groundEditor.DefaultFinish());
-            _groundEditor.SetFinishPoint(segment, 1);
+            _finishPoint = _groundEditor.SetFinishPoint(segment, 1);
             _levelIsDirty = true;
         }
     }
@@ -350,7 +353,7 @@ public class GroundDesigner : EditorWindow
         }
 
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
-        var levelToSave = new Level(levelName, medalTimes, GroundsArray());
+        var levelToSave = new Level(levelName, medalTimes, GroundsArray(), _startPoint, _finishPoint);
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
@@ -378,6 +381,9 @@ public class GroundDesigner : EditorWindow
         this.levelName = loadedLevel.Name;
 
         LoadMedalTimes(loadedLevel.MedalTimes);
+
+        _startPoint = loadedLevel.StartPoint;
+        _finishPoint = loadedLevel.FinishPoint;
 
         SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
 

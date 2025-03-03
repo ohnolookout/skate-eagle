@@ -16,10 +16,6 @@ public class GroundSpawner : MonoBehaviour
     private GameObject _finishFlag;
     private GameObject _backstop;
 
-
-    public Action<GroundSegment, Vector2> OnSetStartPoint;
-    public Action<GroundSegment, Vector2> OnSetFinishPoint;
-
     #region Add/Remove Segments
     public Ground AddGround()
     {
@@ -161,35 +157,28 @@ public class GroundSpawner : MonoBehaviour
     #endregion
 
     #region Start/Finish
-    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
+    public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
-        _groundManager.startSegment = segment;
         segment.IsStart = true;
         var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
-        OnSetStartPoint?.Invoke(segment, startPoint);
+        return startPoint;
     }
 
-    public void SetFinishPoint(GroundSegment segment, int finishPointIndex)
+    public Vector2 SetFinishPoint(GroundSegment segment, int finishPointIndex)
     {
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Set Finish Point");
         //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
-        if (_groundManager.finishSegment != null)
+        if (_finishFlag != null)
         {
-            Undo.RegisterFullObjectHierarchyUndo(_groundManager.finishSegment.gameObject, "Remove Finish");
-            _groundManager.finishSegment.IsFinish = false;
-            if (_finishFlag != null)
-            {
-                Undo.DestroyObjectImmediate(_finishFlag);
-            }
-            if (_backstop != null)
-            {
-                Undo.DestroyObjectImmediate(_backstop);
-            }
+            Undo.DestroyObjectImmediate(_finishFlag);
+        }
+        if (_backstop != null)
+        {
+            Undo.DestroyObjectImmediate(_backstop);
         }
 #endif
 
-        _groundManager.finishSegment = segment;
         segment.IsFinish = true;
 
         //Add finish flag to designated point in GroundSegment.        
@@ -208,9 +197,7 @@ public class GroundSpawner : MonoBehaviour
         Undo.RegisterCreatedObjectUndo(_backstop, "Add Backstop");
 #endif
 
-        //Announce new finishPoint
-        OnSetFinishPoint?.Invoke(_groundManager.finishSegment, finishPoint);
-
+        return finishPoint;
     }
 
     public void ClearStartFinishObjects()

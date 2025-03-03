@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Threading;
+using TMPro;
 
 public class Player : MonoBehaviour, IPlayer
 {
@@ -45,6 +46,7 @@ public class Player : MonoBehaviour, IPlayer
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        LevelManager.OnRestart += OnLevelRestart;
         _params = new(_initialStompCharge);
         _stateMachine = new(this);
         _jumpManager = new(this);
@@ -55,13 +57,12 @@ public class Player : MonoBehaviour, IPlayer
         _boostToken = _boostTokenSource.Token;
         _freezeTokenSource = new();
         _freezeToken = _freezeTokenSource.Token;
-        _body.bodyType = RigidbodyType2D.Kinematic;
-        _body.centerOfMass = new Vector2(0, -2f);
-        LevelManager.OnRestart += () => _boostTokenSource.Cancel();
     }
 
     private void Start()
     {
+        _body.bodyType = RigidbodyType2D.Kinematic;
+        _body.centerOfMass = new Vector2(0, -2f);
         _stateMachine.InitializeState(PlayerStateType.Standby);
         _animator.SetBool("Airborne", false);
     }
@@ -120,6 +121,24 @@ public class Player : MonoBehaviour, IPlayer
         _animator.SetBool("FacingForward", _facingForward);
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
+    }
+
+    private void OnLevelRestart()
+    {
+        _boostTokenSource.Cancel();
+
+        transform.rotation = Quaternion.identity;
+        _body.velocity = Vector2.zero;
+        _body.angularVelocity = 0;
+        _body.inertia = 0;
+        _ragdollBody.velocity = Vector2.zero;
+        _ragdollBody.angularVelocity = 0;
+        _ragdollBody.inertia = 0;
+        _ragdollBoard.velocity = Vector2.zero;
+        _ragdollBoard.angularVelocity = 0;
+        _ragdollBoard.inertia = 0;
+
+        Start();
     }
     #endregion
 }

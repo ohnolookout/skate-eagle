@@ -39,8 +39,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
         _gameManager = GameManager.Instance;
         OnFinish += _gameManager.UpdateRecord;
-        _groundManager.OnActivateFinish += ActivateFinishLine;
-        _groundManager.groundSpawner.OnSetStartPoint += SetPlayerPosition;
+        GroundSegment.OnActivateFinish += ActivateFinishLine;
     }
 
     private void Start()
@@ -102,6 +101,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
             var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
             _player.Transform.position = startPosition;
             _player.NormalBody.position = startPosition;
+            _player.RagdollBody.position = startPosition;
+            _player.RagdollBoard.position = startPosition;
         } 
     }
 
@@ -159,9 +160,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnStandby?.Invoke();
     }
 
-    public void ActivateFinishLine(Vector2 finishPoint)
+    public void ActivateFinishLine(IGroundSegment segment)
     {
-        OnActivateFinishLine?.Invoke(finishPoint);
+        OnActivateFinishLine?.Invoke(_groundManager.FinishPoint);
     }
     public void Finish(IPlayer _ = null)
     {

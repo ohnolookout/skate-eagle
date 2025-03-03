@@ -11,7 +11,7 @@ public interface IGroundSegment : IDoublePosition, IPosition
     Spline Spline { get; }
     GameObject gameObject { get; }
     bool IsFinish { get; set; }
-    Action<GroundSegment> OnActivate { get; set; }
+    static Action<GroundSegment> OnActivateFinish { get; set; }
     EdgeCollider2D Collider { get; set; }
 
     bool ContainsX(float targetX);

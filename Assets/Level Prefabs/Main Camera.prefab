@@ -216,6 +216,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scaleRatio: 0.8
   scaleChange: 0
+  _bgPanelPoolCount: 6
+  _bgPanelSequenceCount: 6
 --- !u!1 &705782867413506896
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +588,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxMagnitude: 0.9
-  container: {fileID: 9190871117090238484}
 --- !u!1 &6576770770109524128
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +600,6 @@ GameObject:
   - component: {fileID: 6576770770109524141}
   - component: {fileID: 6576770770109524142}
   - component: {fileID: 2154577717214287977}
-  - component: {fileID: 4330421248061992943}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -728,20 +728,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &4330421248061992943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6576770770109524128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0b3b46f10933314d92d179cfa181780, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _offset: {x: 27, y: 23, z: 0}
-  _lowPointXOffset: 10
 --- !u!1 &6635687811533614456
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,7 +948,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxMagnitude: 0.8
-  container: {fileID: 9190871117090238484}
 --- !u!1 &9217633597576886166
 GameObject:
   m_ObjectHideFlags: 0

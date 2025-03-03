@@ -14,25 +14,19 @@ public class GroundManager : MonoBehaviour
     public GroundSpawner groundSpawner;
     private List<Ground> _grounds;
     public GameObject groundContainer;
-    public GroundSegment finishSegment;
-    public GroundSegment startSegment;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     private Vector2 _startPoint = new(400f, -150f);
     private Vector2 _finishPoint = new(0, 0);
     const float _cameraBuffer = 25;
-    public Action<Vector2> OnActivateFinish;
+    private Action<Vector2> _onActivateFinish;
     private DoublePositionalList<GroundSegment> _positionalSegmentList;
     public Ground Ground { get => _ground; }
     public Vector2 StartPoint { get => _startPoint; set => _startPoint = value; }
-    public Vector2 FinishPont { get => _finishPoint; set => _finishPoint = value; }
+    public Vector2 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
+    public Action<Vector2> OnActivateFinish;
     #endregion
 
     #region Monobehaviors
-    private void Awake()
-    {
-        groundSpawner.OnSetFinishPoint += OnSetFinishPoint;
-        groundSpawner.OnSetStartPoint += OnSetStartPoint;
-    }
 
     void Update()
     {
@@ -67,20 +61,6 @@ public class GroundManager : MonoBehaviour
         ActivateInitialSegments(_positionalSegmentList);
         AssignPositionalEvents(_positionalSegmentList);
     }
-
-    private void OnSetFinishPoint(GroundSegment segment, Vector2 point)
-    {
-        _finishPoint = point;
-        finishSegment = segment;     
-        segment.OnActivate += OnFinishActivation;
-    }
-
-    private void OnSetStartPoint(GroundSegment segment, Vector2 point)
-    {
-        Debug.Log("Setting start point to " + point);
-        _startPoint = point;
-        startSegment = segment;        
-    }
     /*
     private void InitializeTerrain(Level level)
     {
@@ -88,16 +68,14 @@ public class GroundManager : MonoBehaviour
 
         //GroundGenerator.GenerateLevel(level, this, _ground);
     }
-    */
     private void OnFinishActivation(GroundSegment segment)
     {
-        segment.OnActivate -= OnFinishActivation;
-        OnActivateFinish?.Invoke(_finishPoint);
+        segment.OnActivateFinish -= OnFinishActivation;
+        _onActivateFinish?.Invoke(_finishPoint);
     }
+    */
     public void ClearGround()
     {
-        finishSegment = null;
-        startSegment = null;
         groundSpawner.ClearStartFinishObjects();
 
         while (groundContainer.transform.childCount > 0)

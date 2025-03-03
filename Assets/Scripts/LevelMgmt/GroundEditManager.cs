@@ -228,14 +228,14 @@ public class GroundEditManager : MonoBehaviour
     #endregion
 
     #region Start/Finish
-    public void SetStartPoint(GroundSegment segment, int curvePointIndex)
+    public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
-        _groundSpawner.SetStartPoint(segment, curvePointIndex);
+        return _groundSpawner.SetStartPoint(segment, curvePointIndex);
     }
 
-    public void SetFinishPoint(GroundSegment segment, int curvePointIndex)
+    public Vector2 SetFinishPoint(GroundSegment segment, int curvePointIndex)
     {
-        _groundSpawner.SetFinishPoint(segment, curvePointIndex);
+        return _groundSpawner.SetFinishPoint(segment, curvePointIndex);
     }
 
     public CurveDefinition DefaultStart()

@@ -94,6 +94,8 @@ public static class SerializeLevelUtility
     public static void DeserializeLevel(Level level, GroundManager groundManager)
     {
         groundManager.ClearGround();
+        groundManager.StartPoint = level.StartPoint;
+        groundManager.FinishPoint = level.FinishPoint;
 
         foreach (var serializedGround in level.SerializedGrounds)
         {
