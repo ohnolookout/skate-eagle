@@ -27,7 +27,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void Awake()
     {
-        _player = LevelManager.GetPlayer;
+        _player = transform.parent.GetComponent<IPlayer>();
         _sounds = _oneShotDict.Values.ToList();
         _sounds.AddRange(_loopDict.Values.ToList());
         _audioManager = AudioManager.Instance;
@@ -42,7 +42,10 @@ public class PlayerAudio : MonoBehaviour
 
     private void Start()
     {
-        _audioManager.InitializeModifiers(_player, _cameraOperator, _sounds);
+        if(_player != null)
+        {
+            _audioManager.InitializeModifiers(_player, Camera.main, _sounds);
+        }
         SubscribeToPlayerEvents();
     }
     void FixedUpdate()

@@ -25,7 +25,7 @@ public class RagdollController : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        _player = LevelManager.GetPlayer;
+        _player = transform.parent.GetComponent<IPlayer>();
 
     }
 

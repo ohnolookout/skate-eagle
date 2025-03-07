@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour
     private SoundModifierManager _modifierManager;
     private int _soundModFrameRate = 6, _zoomModFrameRate = 10;
     private IPlayer _player;
-    private ICameraOperator _camera;
+    private Camera _camera;
 
     public float ZoomModifier { get => _modifierManager.ZoomModifier; }
 
@@ -65,9 +65,9 @@ public class AudioManager : MonoBehaviour
         }
         if (_updateZoomModifier)
         {
-            _modifierManager.UpdateZoomModifier(_camera, zoomLimit, _zoomModFrameRate);
+            _modifierManager.UpdateZoomModifier(zoomLimit, _zoomModFrameRate);
         }
-        _modifierManager.UpdateLocalizedModifiers(_player.IsRagdoll, _camera, maxSoundDistance, intensityDenominator, _soundModFrameRate);
+        _modifierManager.UpdateLocalizedModifiers(_player.IsRagdoll, maxSoundDistance, intensityDenominator, _soundModFrameRate);
         ApplyModifiersToLoops();
     }
 
@@ -77,8 +77,11 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
+        //NEED TO HANDLE WITH NEW ZOOM METHODS
+        /*
         _camera.OnZoomOut -= _updateZoom;
         _camera.OnFinishZoomIn -= _stopUpdateZoom;
+        */
     }
 
     #endregion
@@ -118,8 +121,12 @@ public class AudioManager : MonoBehaviour
                 _modifierManager.ResetZoomModifier();
                 _updateZoomModifier = false;
             };
+            
+        //NEED TO HANDLE WITH NEW ZOOM METHODS
+        /*
             _camera.OnZoomOut += _updateZoom;
             _camera.OnFinishZoomIn += _stopUpdateZoom;
+        */
         }
     }
 
@@ -127,11 +134,11 @@ public class AudioManager : MonoBehaviour
 
     #region Modifier Management
 
-    public void InitializeModifiers(IPlayer player, ICameraOperator camera, List<Sound> sounds)
+    public void InitializeModifiers(IPlayer player, Camera camera, List<Sound> sounds)
     {
         _player = player;
         _camera = camera;
-        _modifierManager = new(_player, GetBodiesFromSounds(sounds));
+        _modifierManager = new(_player, GetBodiesFromSounds(sounds), camera);
         SubscribeToCameraEvents();
     }
 

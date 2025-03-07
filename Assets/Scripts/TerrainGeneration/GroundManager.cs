@@ -5,7 +5,6 @@ using System;
 public class GroundManager : MonoBehaviour
 {
     #region Declarations
-    private Ground _ground;
     [SerializeField] private GameObject _terrainPrefab;
     [SerializeField] private GameObject _finishFlagPrefab;
     [SerializeField] private GameObject _backstopPrefab;
@@ -15,15 +14,9 @@ public class GroundManager : MonoBehaviour
     private List<Ground> _grounds;
     public GameObject groundContainer;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
-    private Vector2 _startPoint = new(400f, -150f);
-    private Vector2 _finishPoint = new(0, 0);
     const float _cameraBuffer = 25;
-    private Action<Vector2> _onActivateFinish;
     private DoublePositionalList<GroundSegment> _positionalSegmentList;
-    public Ground Ground { get => _ground; }
-    public Vector2 StartPoint { get => _startPoint; set => _startPoint = value; }
-    public Vector2 FinishPoint { get => _finishPoint; set => _finishPoint = value; }
-    public Action<Vector2> OnActivateFinish;
+    public List<Ground> Grounds { get => _grounds; set => _grounds = value; }
     #endregion
 
     #region Monobehaviors
@@ -41,19 +34,6 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Initialization
-    public Vector2 GenerateGround(Level level)
-    {
-        if (transform.childCount > 0)
-        {
-            ClearGround();
-        }
-
-        //InitializeTerrain(level);
-
-        //InitializePositionalList(_ground, _cameraBuffer, _cameraBuffer);
-        
-        return _finishPoint;
-    }
 
     private void InitializePositionalList(Ground terrain, float trailingBuffer, float leadingBuffer)
     {
@@ -77,6 +57,7 @@ public class GroundManager : MonoBehaviour
     public void ClearGround()
     {
         groundSpawner.ClearStartFinishObjects();
+        _grounds = new();
 
         while (groundContainer.transform.childCount > 0)
         {

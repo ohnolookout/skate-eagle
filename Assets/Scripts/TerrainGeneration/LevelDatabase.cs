@@ -15,7 +15,7 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private SerializableDictionaryBase<string, string> _nameToUIDDictionary;
     [SerializeField] private SerializableDictionaryBase<string, string> _uidToNameDictionary;
     [SerializeField] private List<string> _levelOrder;
-    public string lastLevelLoaded;
+    public string lastLevelLoadedUID;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
@@ -49,7 +49,7 @@ public class LevelDatabase : ScriptableObject
             level.UID = Guid.NewGuid().ToString();
         }
         UpdateDictionaries(level);
-        lastLevelLoaded = level.UID;
+        lastLevelLoadedUID = level.UID;
         EditorUtility.SetDirty(this);
         return true;        
     }
@@ -90,7 +90,7 @@ public class LevelDatabase : ScriptableObject
         }
 
         var uid = _nameToUIDDictionary[name];
-        lastLevelLoaded = uid;
+        lastLevelLoadedUID = uid;
         EditorUtility.SetDirty(this);
         return _levelDictionary[uid];
     }
@@ -101,6 +101,7 @@ public class LevelDatabase : ScriptableObject
         {
             return null;
         }
+        lastLevelLoadedUID = uid;
         return _levelDictionary[uid];
     }
 
@@ -191,9 +192,9 @@ public class LevelDatabase : ScriptableObject
         _nameToUIDDictionary.Remove(name);
         _uidToNameDictionary.Remove(uid);
 
-        if (lastLevelLoaded == uid)
+        if (lastLevelLoadedUID == uid)
         {
-            lastLevelLoaded = null;
+            lastLevelLoadedUID = null;
         }
         return true;        
     }

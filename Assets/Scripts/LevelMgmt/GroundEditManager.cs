@@ -22,7 +22,7 @@ public class GroundEditManager : MonoBehaviour
         _groundSpawner = _groundManager.groundSpawner;
 
         var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
-        var level = levelDB.GetLevelByUID(levelDB.lastLevelLoaded);
+        var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
         if (level != null)
         {
             SerializeLevelUtility.DeserializeLevel(level, _groundManager);

@@ -23,9 +23,9 @@ public class LevelLoadWindow : EditorWindow
         _groundDesigner = groundDesigner;
         _levelDB = levelDB;
         _levelNames = _levelDB.LevelNames();
-        if (_levelDB.LevelNameExists(_levelDB.lastLevelLoaded))
+        if (_levelDB.UIDExists(_levelDB.lastLevelLoadedUID))
         {
-            _nameIndex = Array.IndexOf(_levelNames, _levelDB.lastLevelLoaded);
+            _nameIndex = Array.IndexOf(_levelNames, _levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
         }
     }
 

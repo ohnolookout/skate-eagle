@@ -6,7 +6,9 @@ public class SoundModifierManager
 {
     #region Declarations
     private Dictionary<Rigidbody2D, SoundModifiers> _modifiers = new();
+    private Camera _camera;
     private float _zoomModifier = 1, _lastZoomModifier = 1, _targetZoomModifier = 1;
+    private float _initialCameraSize = 34;
     private float _distanceBuffer = 15;
     private Rigidbody2D _playerBody;
     public Dictionary<Rigidbody2D, SoundModifiers> Modifiers { get => _modifiers; }
@@ -14,11 +16,14 @@ public class SoundModifierManager
     #endregion
 
     #region Initialization
-    public SoundModifierManager(IPlayer player, Rigidbody2D[] trackedBodies)
+    public SoundModifierManager(IPlayer player, Rigidbody2D[] trackedBodies, Camera camera)
     {
 
         _playerBody = player.NormalBody;
         player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, (_) => _playerBody = player.RagdollBody);
+
+        _camera = camera;
+        _initialCameraSize = camera.orthographicSize;
 
         _modifiers = new();
         BuildModifierDict(_modifiers, trackedBodies);
@@ -37,7 +42,7 @@ public class SoundModifierManager
     #endregion
 
     #region Update Modifiers
-    public void UpdateLocalizedModifiers(bool playerIsRagdoll, ICameraOperator camera, float maxSoundDistance, float intensityDenominator, int everyXFrames)
+    public void UpdateLocalizedModifiers(bool playerIsRagdoll, float maxSoundDistance, float intensityDenominator, int everyXFrames)
     {
         float frameCount = Time.frameCount % everyXFrames;
         foreach (var body in _modifiers.Keys.ToList())
@@ -45,7 +50,7 @@ public class SoundModifierManager
             if (frameCount == 0)
             {
                 //Recalculate modifiers based on current positions every X frames
-                RecalculateModifier(body, playerIsRagdoll, camera, maxSoundDistance, intensityDenominator);
+                RecalculateModifier(body, playerIsRagdoll, maxSoundDistance, intensityDenominator);
                 continue;
             }
             //Lerp modifiers based on values predicted by last positions
@@ -53,7 +58,7 @@ public class SoundModifierManager
         }
     }
 
-    private void RecalculateModifier(Rigidbody2D body, bool playerIsRagdoll, ICameraOperator camera, float maxSoundDistance, float intensityDenominator)
+    private void RecalculateModifier(Rigidbody2D body, bool playerIsRagdoll, float maxSoundDistance, float intensityDenominator)
     {
         //If body is null, track intensity of playerBody, pulled from runManager so it updates to lowSpine if ragdoll
         if (body == null || !playerIsRagdoll)
@@ -67,7 +72,7 @@ public class SoundModifierManager
             float intensity = Intensity(body, intensityDenominator);
             float soundDistance = Mathf.Max(Mathf.Abs(body.position.x - _playerBody.position.x) - _distanceBuffer, 0);
             float distance = (maxSoundDistance - soundDistance) / maxSoundDistance;
-            float pan = Pan(_playerBody, body, camera);
+            float pan = Pan(_playerBody, body);
             _modifiers[body].SetNewTargets(intensity, distance, pan);
         }
     }
@@ -84,12 +89,12 @@ public class SoundModifierManager
         }
     }
 
-    public void UpdateZoomModifier(ICameraOperator camera, float zoomLimit, int everyXFrames)
+    public void UpdateZoomModifier(float zoomLimit, int everyXFrames)
     {
         float frameCount = Time.frameCount % everyXFrames;
         if (frameCount == 0)
         {
-            _zoomModifier = AudioManagerUtility.InterpolateValue(camera.DefaultSize, zoomLimit, camera.Camera.orthographicSize, 1, 0.1f);
+            _zoomModifier = AudioManagerUtility.InterpolateValue(_initialCameraSize, zoomLimit, _camera.orthographicSize, 1, 0.1f);
             _targetZoomModifier = _zoomModifier + (_zoomModifier - _lastZoomModifier);
             _lastZoomModifier = _zoomModifier;
         }
@@ -141,9 +146,9 @@ public class SoundModifierManager
     {
         return -1 + Mathf.Clamp(trackingBody.velocity.magnitude / denominator, 0, 2);
     }
-    private static float Pan(Rigidbody2D playerBody, Rigidbody2D panBody, ICameraOperator camera)
+    private float Pan(Rigidbody2D playerBody, Rigidbody2D panBody)
     {
-        float halfCamWidth = camera.LeadingCorner.x - camera.Camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)).x;
+        float halfCamWidth = _camera.ViewportToWorldPoint(new Vector3(1, 1, 0)).x - _camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0)).x;
         float distanceFromCenter = panBody.position.x - playerBody.position.x;
         return distanceFromCenter / (halfCamWidth * 1.5f);
     }

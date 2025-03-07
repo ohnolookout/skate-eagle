@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
         _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
-        _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoaded);
+        _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoadedUID);
         
         OnLoading += ActivateLoadingScreen;
 

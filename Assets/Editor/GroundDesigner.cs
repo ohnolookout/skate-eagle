@@ -53,9 +53,10 @@ public class GroundDesigner : EditorWindow
         Selection.selectionChanged += OnSelectionChanged;
 
         LoadLevelDB();
-        if (_levelDB.lastLevelLoaded != null && _levelDB.LevelNameExists(_levelDB.lastLevelLoaded))
+        if (_levelDB.lastLevelLoadedUID != null && _levelDB.UIDExists(_levelDB.lastLevelLoadedUID))
         {
-            LoadLevel(_levelDB.lastLevelLoaded);
+            Debug.Log("Loading level with UID " + _levelDB.lastLevelLoadedUID + "and name " + _levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
+            LoadLevel(_levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
         }
     }
 

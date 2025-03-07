@@ -94,16 +94,15 @@ public static class SerializeLevelUtility
     public static void DeserializeLevel(Level level, GroundManager groundManager)
     {
         groundManager.ClearGround();
-        groundManager.StartPoint = level.StartPoint;
-        groundManager.FinishPoint = level.FinishPoint;
 
         foreach (var serializedGround in level.SerializedGrounds)
         {
-            DeserializeGround(serializedGround, groundManager.groundSpawner);
+            var newGround = DeserializeGround(serializedGround, groundManager.groundSpawner);
+            groundManager.Grounds.Add(newGround);
         }
 
     }
-    public static void DeserializeGround(SerializedGround serializedGround, GroundSpawner groundSpawner)
+    public static Ground DeserializeGround(SerializedGround serializedGround, GroundSpawner groundSpawner)
     {
         var ground = groundSpawner.AddGround();
         ground.name = serializedGround.name;
@@ -122,6 +121,8 @@ public static class SerializeLevelUtility
                 groundSpawner.SetFinishPoint(segment, 1);
             }
         }
+
+        return ground;
     }
 
     public static void DeserializeSegment(SerializedGroundSegment serializedSegment, GroundSegment segment, Ground parent, GroundSegment? previousSegment)

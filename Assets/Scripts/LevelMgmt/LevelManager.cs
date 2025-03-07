@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using System.IO;
 using UnityEditor;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public class LevelManager : MonoBehaviour, ILevelManager
 {
@@ -12,8 +13,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
+    private ProCamera2D _camera;
+    [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
-    private static IPlayer _player;
+    private static Player _player;
     public static Action<ILevelManager> OnLanding { get; set; }
     public static Action<ILevelManager> OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
@@ -36,8 +39,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Monobehaviours
     void Awake()
     {
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<IPlayer>();
         _gameManager = GameManager.Instance;
+        _camera = ProCamera2D.Instance;
+        InstantiatePlayer();
         OnFinish += _gameManager.UpdateRecord;
         GroundSegment.OnActivateFinish += ActivateFinishLine;
     }
@@ -75,6 +79,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnLanding?.Invoke(this);
         _inputEvents.OnRestart += GoToStandby;
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
+        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
+        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
     }
 #endif
 #endregion
@@ -92,7 +98,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
     }
 
-    private void SetPlayerPosition(GroundSegment _, Vector2 position)
+    private void SetPlayerPosition(Vector2 position)
     {
         if (HasPlayer)
         {
@@ -119,17 +125,33 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnActivateFinishLine = null;
     }
 
+    private void InstantiatePlayer()
+    {
+
+        _player = Instantiate(_playerPrefab).GetComponent<Player>();
+        SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
+        _camera.AddCameraTarget(_player.Transform, 1, 1, 0, new(-0.13f, 0));
+        _camera.Reset();
+    }
 
     #endregion
 
-    #region Event Invokers
+        #region Event Invokers
 
     public void RestartGame()
     {
         Debug.Log("Restarting...");
         _inputEvents.OnRestart -= RestartGame;
+
+        if (_player != null)
+        {
+            _camera.RemoveAllCameraTargets();
+            Destroy(_player.gameObject);
+        }
+
         OnRestart?.Invoke();
-        SetPlayerPosition(null, _groundManager.StartPoint);
+        InstantiatePlayer();
+        Start();
     }
 
     public void Submit()
@@ -162,7 +184,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void ActivateFinishLine(IGroundSegment segment)
     {
-        OnActivateFinishLine?.Invoke(_groundManager.FinishPoint);
+        OnActivateFinishLine?.Invoke(_gameManager.CurrentLevel.FinishPoint);
     }
     public void Finish(IPlayer _ = null)
     {
