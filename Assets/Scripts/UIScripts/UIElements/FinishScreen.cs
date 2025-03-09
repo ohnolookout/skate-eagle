@@ -7,7 +7,7 @@ using System;
 
 public enum FinishScreenType { NewMedal, NewBestTime, Participant}
 
-public class FinishScreenLoader : MonoBehaviour
+public class FinishScreen : MonoBehaviour
 {
     [SerializeField] private GameObject display, medal, newMedal, newBest, previousBlock;
     [SerializeField] private TMP_Text previousTime, playerTime;

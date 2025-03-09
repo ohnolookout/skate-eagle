@@ -107,9 +107,25 @@ public class Player : MonoBehaviour, IPlayer
     
     public void InvokeEvent(PlayerEvent eventType)
     {
+        Debug.Log("Invoking event: " + eventType);
         _eventAnnouncer.InvokeAction(eventType);
     }
     
+    public void InvokeDismount()
+    {
+        _eventAnnouncer.InvokeAction(PlayerEvent.Dismount);
+    }
+
+    public void InvokeBodySound()
+    {
+        _eventAnnouncer.InvokeAction(PlayerEvent.BodySound);
+    }
+
+    public void InvokeLandSound()
+    {
+        _eventAnnouncer.InvokeAction(PlayerEvent.LandSound);
+    }
+
     public void CancelAsyncTokens()
     {
         _boostTokenSource.Cancel();

@@ -67,10 +67,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void CheckFinish()
     {
-        Debug.Log("Checking finish...");
         if (_player.Transform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
         {
-            Debug.Log("Finish crossed!");
             OnCrossFinish?.Invoke();
             _finishIsActive = false;
         }
@@ -120,7 +118,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         if (HasPlayer)
         {
-            Debug.Log("Setting palayer position to " + position);
             float halfPlayerHeight = 4.25f;
             var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
             _player.Transform.position = startPosition;

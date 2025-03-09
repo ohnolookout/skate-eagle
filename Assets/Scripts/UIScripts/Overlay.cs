@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 public class Overlay : MonoBehaviour
 {
-    [SerializeField] private GameObject _gameOverObject, _finishObject, _standbyObject, _mobileControlsObject, _hudObject;
+    [SerializeField] private GameObject _gameOverObject, _standbyObject, _mobileControlsObject, _hudObject;
     [SerializeField] private LandingScreen _landingScreen;
-    [SerializeField] private FinishScreenLoader _finishLoader;
+    [SerializeField] private FinishScreen _finishScreen;
     [SerializeField] private StompBar _stompBar;
     [SerializeField] private Timer _timer;
     [SerializeField] private Button _playButton;
@@ -42,7 +42,7 @@ public class Overlay : MonoBehaviour
     public void ActivateStartScreen()
     {
         _landingScreen.gameObject.SetActive(true);
-        _finishObject.SetActive(false);
+        _finishScreen.gameObject.SetActive(false);
         _gameOverObject.SetActive(false);
         _standbyObject.SetActive(false);
         _hudObject.SetActive(false);
@@ -71,13 +71,14 @@ public class Overlay : MonoBehaviour
     public void LoadResultsScreen(FinishData finishData)
     {
         ActivateControls(false);
-        _finishLoader.GenerateFinishScreen(finishData);
+        _finishScreen.gameObject.SetActive(true);
+        _finishScreen.DeactivateDisplay();
+        _finishScreen.GenerateFinishScreen(finishData);
     }
     public void ActivateResultsScreen()
     {
         _hudObject.SetActive(false);
-        ActivateControls(false);
-        _finishLoader.ActivateDisplay();
+        _finishScreen.ActivateDisplay();
     }
 
     public void ActivateControls(bool activate)

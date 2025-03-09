@@ -230,7 +230,6 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLoops()
     {
-        Debug.Log("Clearing audio loops");
         if (_audioSources == null) return;
         for (int i = 2; i < _audioSources.Length; i++)
         {
