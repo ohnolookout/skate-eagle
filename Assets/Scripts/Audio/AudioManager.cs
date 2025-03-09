@@ -50,8 +50,15 @@ public class AudioManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
         GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
         GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
+        LevelManager.OnRestart += ClearLoops;
+        LevelManager.OnGameOver += _ => ClearLoops();
+        LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
+        LevelManager.OnFinish += _ => SetModifierFramerate(1);
+        LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
+        LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
     }
 
     private void Start()
@@ -102,13 +109,6 @@ public class AudioManager : MonoBehaviour
         }
 
         //SubscribeToCameraEvents();
-
-        LevelManager.OnRestart += ClearLoops;
-        LevelManager.OnGameOver += _ => ClearLoops();
-        LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
-        LevelManager.OnFinish += _ => SetModifierFramerate(1);
-        LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
-        LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
     }
 
     private void SubscribeToCameraEvents()
@@ -230,6 +230,7 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLoops()
     {
+        Debug.Log("Clearing audio loops");
         if (_audioSources == null) return;
         for (int i = 2; i < _audioSources.Length; i++)
         {

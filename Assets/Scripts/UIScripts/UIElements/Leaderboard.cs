@@ -45,7 +45,6 @@ public class Leaderboard : MonoBehaviour
     void Awake()
     {
         _displayCount = _leaderboardRows.Length;
-        LevelManager.OnLanding += _ => Initialize();
 
         FirstPageButton.onClick.AddListener(GoToFirstPage);
         PreviousPageButton.onClick.AddListener(PreviousPage);
@@ -54,12 +53,12 @@ public class Leaderboard : MonoBehaviour
 
     }
 
-    private void Initialize()
+    public void Initialize(Level level)
     {
         ValidateActivation();
         if (_activationStatus == LeaderboardActivation.Active)
         {
-            PopulateLeaderboard(GameManager.Instance.CurrentLevel.LeaderboardKey);
+            PopulateLeaderboard(level.LeaderboardKey);
         }
         else
         {

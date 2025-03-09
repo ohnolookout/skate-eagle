@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 
 public class Overlay : MonoBehaviour
 {
-    [SerializeField] private GameObject _gameOverObject, _finishObject, _standbyObject, _mobileControlsObject, _hudObject, _landingObject;
-    [SerializeField] private LandingScreenLoader _landingLoader;
+    [SerializeField] private GameObject _gameOverObject, _finishObject, _standbyObject, _mobileControlsObject, _hudObject;
+    [SerializeField] private LandingScreen _landingScreen;
     [SerializeField] private FinishScreenLoader _finishLoader;
     [SerializeField] private StompBar _stompBar;
     [SerializeField] private Timer _timer;
@@ -29,17 +30,19 @@ public class Overlay : MonoBehaviour
         LevelManager.OnStandby += ActivateStandbyScreen;
         LevelManager.OnFinish += LoadResultsScreen;
         LevelManager.OnRestart += ActivateStartScreen;
+        LevelManager.OnLanding += ActivateLandingScreen;
 
         _playButton.onClick.AddListener(_levelManager.GoToStandby);
         _nextLevelButton.onClick.AddListener(GameManager.Instance.LoadNextLevel);
         _menuButton.onClick.AddListener(GameManager.Instance.BackToLevelMenu);
-        _restartButton.onClick.AddListener(_levelManager.RestartGame);
-        _continueButton.onClick.AddListener(_levelManager.RestartGame);
+        _restartButton.onClick.AddListener(_levelManager.RestartLevel);
+        _continueButton.onClick.AddListener(_levelManager.RestartLevel);
     }
 
     public void ActivateStartScreen()
     {
-        _landingObject.SetActive(true);
+        _landingScreen.gameObject.SetActive(true);
+        _finishObject.SetActive(false);
         _gameOverObject.SetActive(false);
         _standbyObject.SetActive(false);
         _hudObject.SetActive(false);
@@ -48,7 +51,7 @@ public class Overlay : MonoBehaviour
 
     public void ActivateStandbyScreen()
     {
-        _landingObject.SetActive(false);
+        _landingScreen.gameObject.SetActive(false);
         _standbyObject.SetActive(true);
         _hudObject.SetActive(true);
         ActivateControls(true);
@@ -84,6 +87,12 @@ public class Overlay : MonoBehaviour
             return;
         }
         _mobileControlsObject.SetActive(activate);
+    }
+
+    public void ActivateLandingScreen(Level level, PlayerRecord playerRecord)
+    {
+        _landingScreen.GenerateLanding(level, playerRecord);
+        _landingScreen.gameObject.SetActive(true);
     }
     
 }

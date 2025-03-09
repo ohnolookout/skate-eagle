@@ -4,17 +4,12 @@ public class ActiveState : PlayerState
 {
     public bool doRotate = false;
     private Vector2 _rotationInput = new(0,0);
-    private Vector2 _finishPoint;
     public bool crouched = false;
-    private Transform _playerTransform;
     private Rigidbody2D _playerBody;
-    private bool _checkFinish = false;
 
     public ActiveState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
-        _playerTransform = _player.NormalBody.transform;
         _playerBody = _player.NormalBody;
-        LevelManager.OnActivateFinishLine += DoActivateFinish;
         LevelManager.OnFall += () => ChangeState(_stateFactory.GetState(PlayerStateType.Fallen));
         _isRootState = true;
     }
@@ -29,6 +24,7 @@ public class ActiveState : PlayerState
         _player.InputEvents.OnRotateRelease += StopRotate;
         _player.InputEvents.OnRagdoll += Die;
         _collisionManager.OnCollide += CheckForBodyCollision;
+        LevelManager.OnCrossFinish += CrossFinish;
         InitializeSubstate(_stateFactory.GetState(PlayerStateType.Pushing));
     }
     public override void ExitState()
@@ -38,15 +34,17 @@ public class ActiveState : PlayerState
         _player.InputEvents.OnRotate -= StartRotate;
         _player.InputEvents.OnRotateRelease -= StopRotate;
         _collisionManager.OnCollide -= CheckForBodyCollision;
+        LevelManager.OnCrossFinish -= CrossFinish;
     }
 
     public override void UpdateState()
     {
         DirectionCheck();
+        /*
         if (_checkFinish)
         {
             FinishCheck();
-        }
+        }*/
         if (_substate != null)
         {
             _substate.UpdateStates();
@@ -101,16 +99,14 @@ public class ActiveState : PlayerState
             _player.SwitchDirection();
         }
     }
-    private void FinishCheck()
+
+    private void CrossFinish()
     {
-        if (_playerTransform.position.x >= _finishPoint.x && _player.CollisionManager.BothWheelsCollided)
+        if (crouched)
         {
-            if (crouched)
-            {
-                StopCrouch();
-            }
-            ChangeState(_stateFactory.GetState(PlayerStateType.Braking), false);
+            StopCrouch();
         }
+        ChangeState(_stateFactory.GetState(PlayerStateType.Braking), false);
     }
 
     private void CheckForBodyCollision(ColliderCategory colliderCategory, float _)
@@ -125,12 +121,5 @@ public class ActiveState : PlayerState
     {
         _player.EventAnnouncer.InvokeAction(PlayerEvent.PreDie);
         ChangeState(_stateFactory.GetState(PlayerStateType.Ragdoll), false);
-    }
-
-    public void DoActivateFinish(Vector2 finishPoint)
-    {
-        _finishPoint = finishPoint;
-        _checkFinish = true;
-        LevelManager.OnActivateFinishLine -= DoActivateFinish;
     }
 }

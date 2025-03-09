@@ -4,84 +4,71 @@ using System.Collections;
 
 public class FlipText : MonoBehaviour
 {
-    private float fadeOutTimer = 2;
-    private GameObject bird;
+    private float _fadeOutTimer = 2;
     private Vector3 textVelocity;
-    public float velocityMultiplier = 250;
-    private Rigidbody2D birdBody;
-    private Text displayText;
-    private bool canceled = false;
-    private Color defaultColor;
-    private FontStyle defaultFontStyle;
-    private IEnumerator activeFadeOut;
+    [SerializeField] private float _velocityMultiplier = 250;
+    [SerializeField] private Text _displayText;
+    private bool _canceled = false;
+    private Color _defaultColor;
+    private FontStyle _defaultFontStyle;
+    private IEnumerator _activeFadeOut;
 
     public void StartLifecycle()
     {
-        if (canceled)
+        if (_canceled)
         {
-            canceled = false;
-            SetDefaultFont();
+            _canceled = false;
+            SetToDefaultFont();
         }
         gameObject.SetActive(true);
-        StopCoroutine(activeFadeOut);
-        activeFadeOut = FadeOut(fadeOutTimer);
-        StartCoroutine(activeFadeOut);
+        StopCoroutine(_activeFadeOut);
+        _activeFadeOut = FadeOut(_fadeOutTimer);
+        StartCoroutine(_activeFadeOut);
     }
 
     private void Awake()
     {
-        displayText = GetComponent<Text>();
-        defaultColor = displayText.color;
-        defaultFontStyle = displayText.fontStyle;
-        activeFadeOut = FadeOut(fadeOutTimer);
-    }
-    void Start()
-    {
-        bird = GameObject.FindWithTag("Player");
-        birdBody = bird.GetComponent<Rigidbody2D>();
-        gameObject.SetActive(false);
+        _displayText = GetComponent<Text>();
+        _defaultColor = _displayText.color;
+        _defaultFontStyle = _displayText.fontStyle;
+        _activeFadeOut = FadeOut(_fadeOutTimer);
     }
 
-    public void SetText(string text)
+    public void SetText(string text, Vector2 playerVelocity)
     {
-        displayText.text = text;
-        if (birdBody.velocity.x >= 0)
+        Debug.Log("Setting flip text...");
+        _displayText.text = text;
+        if (playerVelocity.x >= 0)
         {
-            textVelocity = new Vector3(-velocityMultiplier, velocityMultiplier / 6);
+            textVelocity = new Vector3(-_velocityMultiplier, _velocityMultiplier / 6);
         }
         else
         {
-            textVelocity = new Vector3(velocityMultiplier, velocityMultiplier / 6);
+            textVelocity = new Vector3(_velocityMultiplier, _velocityMultiplier / 6);
         }
     }
 
     public void CancelText()
     {
         SetCanceledFont();
-        displayText.text = "Bummer!";
-        canceled = true;
+        _displayText.text = "Bummer!";
+        _canceled = true;
     }
 
 
-    public bool Canceled
-    {
-        get
-        {
-            return canceled;
-        }
-    }
+    public bool Canceled => _canceled;
 
     private IEnumerator FadeOut(float timeLimit)
     {
         bool faded = false;
-        displayText.CrossFadeAlpha(1, 0, false);
+        _displayText.CrossFadeAlpha(1, 0, false);
         float timer = 0;
         while (timer < timeLimit)
         {
             if (timer > timeLimit * 0.4f && !faded)
             {
                 faded = true;
-                displayText.CrossFadeAlpha(0, 1, false);
+                _displayText.CrossFadeAlpha(0, 1, false);
             }
             transform.position += textVelocity * Time.deltaTime;
             textVelocity -= (textVelocity) * 1.75f * Time.deltaTime;
@@ -93,13 +80,13 @@ public class FlipText : MonoBehaviour
 
     private void SetCanceledFont()
     {
-        displayText.fontStyle = FontStyle.BoldAndItalic;
-        displayText.color = Color.gray;
+        _displayText.fontStyle = FontStyle.BoldAndItalic;
+        _displayText.color = Color.gray;
     }
 
-    private void SetDefaultFont()
+    private void SetToDefaultFont()
     {
-        displayText.fontStyle = defaultFontStyle;
-        displayText.color = defaultColor;
+        _displayText.fontStyle = _defaultFontStyle;
+        _displayText.color = _defaultColor;
     }
 }

@@ -75,6 +75,7 @@ public class AirborneState : PlayerState
         _downPressCount++;
         if (_downPressCount > 1)
         {
+            Debug.Log("Triggering stomp from down press");
             ChangeState(_stateFactory.GetState(PlayerStateType.Stomping));
         }
         else

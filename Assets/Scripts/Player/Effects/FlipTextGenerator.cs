@@ -12,13 +12,21 @@ public class FlipTextGenerator : MonoBehaviour
     private IPlayer _player;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
-
+    private void Awake()
+    {
+        flipText.gameObject.SetActive(false);
+    }
     private void Start()
     {
         _player = LevelManager.GetPlayer;
         SubscribeToEvents();
     }
 
+    private void OnDestroy()
+    {
+        LevelManager.OnGameOver -= CancelText;
+        _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Flip, NewFlipText);
+    }
     private void SubscribeToEvents()
     {
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Flip, NewFlipText);
@@ -33,7 +41,7 @@ public class FlipTextGenerator : MonoBehaviour
         flipText.transform.position = finalPosition; 
         float randomZ = UnityEngine.Random.Range(-45, 45);
         flipText.transform.eulerAngles = new Vector3(0, 0, randomZ);
-        flipText.SetText(GenerateText());
+        flipText.SetText(GenerateText(), _player.NormalBody.velocity);
         flipText.StartLifecycle();
     }
 

@@ -86,6 +86,7 @@ public class PlayerAnimationManager
 
     public void Stomp(IPlayer player)
     {
+        Debug.Log("Doing stomp");
         _stomping = true;
         _animator.SetTrigger("Stomp");
     }

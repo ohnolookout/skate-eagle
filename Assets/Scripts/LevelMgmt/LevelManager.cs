@@ -13,11 +13,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
     [SerializeField] private CameraOperator _cameraOperator;
+    private bool _finishIsActive = false;
     private ProCamera2D _camera;
     [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
     private static Player _player;
-    public static Action<ILevelManager> OnLanding { get; set; }
+    public static Action<Level, PlayerRecord> OnLanding { get; set; }
     public static Action<ILevelManager> OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
     public static Action OnAttempt { get; set; }
@@ -27,7 +28,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnLevelExit { get; set; }
     public static Action OnFall { get; set; }
     public static Action OnCrossFinish { get; set; }
-    public static Action<Vector2> OnActivateFinishLine { get; set; }
 
 
     public static IPlayer GetPlayer { get => _player; }
@@ -42,8 +42,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _gameManager = GameManager.Instance;
         _camera = ProCamera2D.Instance;
         InstantiatePlayer();
-        OnFinish += _gameManager.UpdateRecord;
-        GroundSegment.OnActivateFinish += ActivateFinishLine;
+        GroundSegment.OnActivateFinish += _ => _finishIsActive = true;
     }
 
     private void Start()
@@ -55,9 +54,35 @@ public class LevelManager : MonoBehaviour, ILevelManager
         StartCoroutine(WaitForGameManagerInitializationRoutine());
         return;
 #endif        
-        OnLanding?.Invoke(this);
-        _inputEvents.OnRestart += GoToStandby;
+        InitializeLevel();
+    }
+
+    void Update()
+    {
+        if (_finishIsActive)
+        {
+            CheckFinish();
+        }
+    }
+
+    private void CheckFinish()
+    {
+        Debug.Log("Checking finish...");
+        if (_player.Transform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
+        {
+            Debug.Log("Finish crossed!");
+            OnCrossFinish?.Invoke();
+            _finishIsActive = false;
+        }
+    }
+    private void InitializeLevel()
+    {
+        _finishIsActive = true;
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
+        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
+        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
+        _inputEvents.OnRestart += GoToStandby;
     }
 
     private void OnEnable()
@@ -73,14 +98,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 #if UNITY_EDITOR
     private IEnumerator WaitForGameManagerInitializationRoutine()
     {
-        Debug.Log("Waiting for game manager to initialize...");
         yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
-        Debug.Log("Game manager initialized. Starting level...");
-        OnLanding?.Invoke(this);
-        _inputEvents.OnRestart += GoToStandby;
-        SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
-        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
-        _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
+        InitializeLevel();
     }
 #endif
 #endregion
@@ -92,7 +111,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             return;
         }
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Finish);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
@@ -106,9 +124,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
             float halfPlayerHeight = 4.25f;
             var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
             _player.Transform.position = startPosition;
-            _player.NormalBody.position = startPosition;
-            _player.RagdollBody.position = startPosition;
-            _player.RagdollBoard.position = startPosition;
         } 
     }
 
@@ -122,7 +137,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnResultsScreen = null;
         OnStandby = null;
         OnRestart = null;
-        OnActivateFinishLine = null;
     }
 
     private void InstantiatePlayer()
@@ -136,12 +150,23 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     #endregion
 
-        #region Event Invokers
+    #region Event Invokers
+    public void GoToStandby()
+    {
+        _inputEvents.OnRestart -= GoToStandby;
+        OnStandby?.Invoke();
+    }
 
-    public void RestartGame()
+    public void StartAttempt(IPlayer _ = null)
+    {
+        Debug.Log("Starting attempt...");
+        _inputEvents.OnRestart += RestartLevel;
+        OnAttempt?.Invoke();
+    }
+    public void RestartLevel()
     {
         Debug.Log("Restarting...");
-        _inputEvents.OnRestart -= RestartGame;
+        _inputEvents.OnRestart -= RestartLevel;
 
         if (_player != null)
         {
@@ -164,29 +189,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnGameOver?.Invoke(this);
     }
 
-    public void StartAttempt(IPlayer _ = null)
-    {
-        Debug.Log("Starting attempt...");
-        _inputEvents.OnRestart += RestartGame;
-        OnAttempt?.Invoke();
-    }
-
     public void ActivateResultsScreen(IPlayer _ = null)
     {
         OnResultsScreen?.Invoke();
     }
 
-    public void GoToStandby()
-    {
-        _inputEvents.OnRestart -= GoToStandby;
-        OnStandby?.Invoke();
-    }
-
-    public void ActivateFinishLine(IGroundSegment segment)
-    {
-        OnActivateFinishLine?.Invoke(_gameManager.CurrentLevel.FinishPoint);
-    }
-    public void Finish(IPlayer _ = null)
+    public void CrossFinish(IPlayer _ = null)
     {
         OnCrossFinish?.Invoke();        
     }

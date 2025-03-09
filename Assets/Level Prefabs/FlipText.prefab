@@ -32,7 +32,6 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -80,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Rad!
+  m_Text: 
 --- !u!114 &7945809380813926414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,4 +92,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c8c6f5a3479f44491a4f1ec6739f40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocityMultiplier: 250
+  _velocityMultiplier: 250
+  _displayText: {fileID: 8449300137982297091}

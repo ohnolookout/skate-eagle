@@ -26,7 +26,6 @@ public interface IPlayer
     CancellationTokenSource FreezeTokenSource { get; }
 
     void SwitchDirection();
-    void InvokeEvent(PlayerEvent eventType);
     void TriggerBoost(float boostValue, float boostMultiplier);
     void CancelAsyncTokens();
     

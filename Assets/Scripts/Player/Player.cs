@@ -46,7 +46,6 @@ public class Player : MonoBehaviour, IPlayer
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        LevelManager.OnRestart += OnLevelRestart;
         _params = new(_initialStompCharge);
         _stateMachine = new(this);
         _jumpManager = new(this);
@@ -105,11 +104,12 @@ public class Player : MonoBehaviour, IPlayer
         PlayerAsyncUtility.AddBoost(_boostToken, _body, boostValue, boostMultiplier);
         PlayerAsyncUtility.BoostTrail(_boostToken, _trail, _facingForward);
     }
+    
     public void InvokeEvent(PlayerEvent eventType)
     {
         _eventAnnouncer.InvokeAction(eventType);
     }
-
+    
     public void CancelAsyncTokens()
     {
         _boostTokenSource.Cancel();
@@ -123,22 +123,5 @@ public class Player : MonoBehaviour, IPlayer
         _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
     }
 
-    private void OnLevelRestart()
-    {
-        _boostTokenSource.Cancel();
-
-        transform.rotation = Quaternion.identity;
-        _body.velocity = Vector2.zero;
-        _body.angularVelocity = 0;
-        _body.inertia = 0;
-        _ragdollBody.velocity = Vector2.zero;
-        _ragdollBody.angularVelocity = 0;
-        _ragdollBody.inertia = 0;
-        _ragdollBoard.velocity = Vector2.zero;
-        _ragdollBoard.angularVelocity = 0;
-        _ragdollBoard.inertia = 0;
-
-        Start();
-    }
     #endregion
 }

@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
         _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoadedUID);
         
         OnLoading += ActivateLoadingScreen;
+        LevelManager.OnFinish += UpdateRecord;
 
 #if UNITY_EDITOR
         if (clearPlayerPrefs)

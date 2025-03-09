@@ -24,6 +24,7 @@ public class BrakingState : PlayerState
         CheckForDismount();
         if (Mathf.Abs(_playerBody.velocity.x) < 1)
         {
+            Debug.Log("Exiting brake state");
             _playerBody.velocity = new Vector2(0, 0);
             ChangeState(_stateFactory.GetState(PlayerStateType.Finished));
             return;
@@ -36,6 +37,7 @@ public class BrakingState : PlayerState
     {
         if (_playerBody.velocity.x < 10f && _onBoard)
         {
+            Debug.Log("Dismounting...");
             _onBoard = false;
             _player.AnimationManager.SetOnBoard(false);
         }
