@@ -6,8 +6,7 @@ public class BackgroundContainer : MonoBehaviour
 {
     private Vector3 startPosition, startScale;
     private Camera mainCam;
-    private ICameraOperator camScript;
-    private float camSize;
+    private float initialCamSize;
     public float scaleRatio, scaleChange;
     public static List<int> BgPanelSequence;
     [SerializeField] private int _bgPanelPoolCount = 6;
@@ -22,17 +21,17 @@ public class BackgroundContainer : MonoBehaviour
         startPosition = transform.localPosition;
         startScale = transform.localScale;
         mainCam = Camera.main;
-        camScript = mainCam.GetComponent<ICameraOperator>();
-        camSize = mainCam.orthographicSize;
+        initialCamSize = mainCam.orthographicSize;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float camSizeChange = mainCam.orthographicSize - camSize;
-        scaleChange = (camSizeChange / camSize) * scaleRatio;
+        Debug.Log("Updating bg container...");
+        float camSizeChange = mainCam.orthographicSize - initialCamSize;
+        scaleChange = (camSizeChange / initialCamSize) * scaleRatio;
         transform.localScale = startScale * (1 + scaleChange);
-        transform.localPosition = startPosition - new Vector3(0, camScript.Zoom.ZoomYDelta/2, 0);
+        transform.localPosition = startPosition - new Vector3(0, camSizeChange/ 2, 0);
     }
 
     public static List<int> RandomIndexOrder(int poolSize, int listSize)

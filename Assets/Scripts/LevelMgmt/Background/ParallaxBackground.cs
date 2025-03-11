@@ -9,7 +9,6 @@ public class ParallaxBackground : MonoBehaviour
     private Transform[] panels = new Transform[3];
     private Vector3 startPosition;
     private Camera cam;
-    private ICameraOperator camScript;
     private SpriteRenderer[] spriteRenderers = new SpriteRenderer[3];
     public float parallaxMagnitude;
     private int currentCenterPanel = 1;
@@ -24,7 +23,6 @@ public class ParallaxBackground : MonoBehaviour
         defaultPanelLength = spriteRenderers[1].bounds.size.x;
         defaultHalfLayerWidth = defaultPanelLength * 1.5f;
         cam = Camera.main;
-        camScript = cam.GetComponent<ICameraOperator>();
         //transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, transform.position.z);
         startPosition = transform.localPosition;
     }
@@ -38,10 +36,10 @@ public class ParallaxBackground : MonoBehaviour
         float currentPercentWidthFromCamera = camLayerDelta / currentHalfLayerWidth;
         float lengthDifference = (expectedPercentWidthFromCamera - currentPercentWidthFromCamera) * currentHalfLayerWidth;
         transform.position = new Vector3(startPosition.x + xDelta - lengthDifference, transform.position.y, transform.position.z);
-        if (spriteRenderers[LeadingPanel()].bounds.max.x <= camScript.LeadingCorner.x)
+        if (spriteRenderers[LeadingPanel()].bounds.max.x <= cam.ViewportToWorldPoint(new Vector3(1, 0, 0)).x)
         {
             ShiftPanelRight();
-        } else if(spriteRenderers[TrailingPanel()].bounds.min.x >= camScript.TrailingCorner.x)
+        } else if(spriteRenderers[TrailingPanel()].bounds.min.x >= cam.ViewportToWorldPoint(new Vector3(0, 0, 0)).x)
         {
             ShiftPanelLeft();
         }

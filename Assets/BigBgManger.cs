@@ -11,13 +11,15 @@ public class BigBgManger : MonoBehaviour
     [SerializeField] private int _panelOrder;
     [SerializeField] private Transform _leftAnchor;
     [SerializeField] private Transform _rightAnchor;
+    private Camera _cam;
+    private Transform _camTransform;
     public bool HasSharedObjectPool = false;
 
     private List<BgPanel> _orderedBgPanels = new();
     private List<CitySprite> _orderedSpriteObjects = new();
     private DoublePositionalList<CitySprite> _spriteObjectPositionalList;
     private DoublePositionalList<BgPanel> _panelPositionalList;
-    private ICameraOperator _cameraOperator;
+    //private ICameraOperator _cameraOperator;
     private Vector2 _startPosition;
     public float ParallaxRatio = 0.8f;
     private float _panelWidth;
@@ -31,8 +33,8 @@ public class BigBgManger : MonoBehaviour
 
     private float _trailingObjectX => _panelPositionalList.AllObjects[0].Position.x;
     private float _leadingObjectX => _panelPositionalList.AllObjects[^1].Position.x;
-    private float _trailingBoundX => _cameraOperator.gameObject.transform.position.x - _currentHalfWidth - CameraBuffer;
-    private float _leadingBoundX => _cameraOperator.gameObject.transform.position.x + _currentHalfWidth + CameraBuffer;
+    private float _trailingBoundX => Camera.main.transform.position.x - _currentHalfWidth - CameraBuffer;
+    private float _leadingBoundX => _camTransform.position.x + _currentHalfWidth + CameraBuffer;
     #endregion
 
     #region Monobehaviours
@@ -42,6 +44,8 @@ public class BigBgManger : MonoBehaviour
         _panelWidth = _bgPanelPool[0].XWidth;
         _totalWidth = _panelWidth * _panelCount;
         _positionCoefficient = (-_panelCount / 2) + 0.5f;
+        _cam = Camera.main;
+        _camTransform = _cam.transform;
 
         _leftAnchor.transform.position = new(-_totalWidth / 2, 0);
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
@@ -62,8 +66,8 @@ public class BigBgManger : MonoBehaviour
         }
 
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
-        float xDelta = _cameraOperator.gameObject.transform.position.x * ParallaxRatio;
-        float camLayerDelta = _cameraOperator.gameObject.transform.position.x * (1 - ParallaxRatio);
+        float xDelta = _camTransform.position.x * ParallaxRatio;
+        float camLayerDelta = _camTransform.position.x * (1 - ParallaxRatio);
         float expectedPercentWidthFromCamera = camLayerDelta / _panelWidth/2;
         float currentPercentWidthFromCamera = camLayerDelta / _currentHalfWidth;
         float lengthDifference = (expectedPercentWidthFromCamera - currentPercentWidthFromCamera) * _currentHalfWidth;
@@ -125,11 +129,10 @@ public class BigBgManger : MonoBehaviour
 
     private void BuildPositionalLists()
     {
-        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
 
-        _panelPositionalList = DoublePositionalListFactory<BgPanel>.CameraOperatorTracker(
+        _panelPositionalList = DoublePositionalListFactory<BgPanel>.CameraTracker(
             _orderedBgPanels,
-            _cameraOperator,
+            _cam,
             CameraBuffer * 1.5f,
             CameraBuffer * 1.5f,
             OnPanelAdded,
@@ -138,9 +141,9 @@ public class BigBgManger : MonoBehaviour
 
         if (_hasIndividualSprites)
         {
-            _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraOperatorTracker(
+            _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraTracker(
                 _orderedSpriteObjects,
-                _cameraOperator,
+                _cam,
                 CameraBuffer,
                 CameraBuffer,
                 OnSpriteAdded,

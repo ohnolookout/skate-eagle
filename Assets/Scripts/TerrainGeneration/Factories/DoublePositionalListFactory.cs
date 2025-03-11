@@ -13,11 +13,11 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
         return positionalList;
     }
 
-    public static DoublePositionalList<T> CameraTracker(List<T> allObjects, Camera camera, float trailingBuffer, float leadingBuffer)
+    public static DoublePositionalList<T> CameraTracker(List<T> allObjects, Camera camera, float trailingBuffer, float leadingBuffer, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
         Func<float> updateTrailing = () => camera.ViewportToWorldPoint(new Vector3(0, 1, 0)).x - trailingBuffer;
         Func<float> updateLeading = () => camera.ViewportToWorldPoint(new Vector3(1, 1, 0)).x + leadingBuffer;
-        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
+        DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved);
         return positionalList;
     }
     public static DoublePositionalList<T> BodyTracker(List<T> allObjects, Rigidbody2D body, float trailingBuffer, float leadingBuffer)
