@@ -42,7 +42,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _gameManager = GameManager.Instance;
         _camera = ProCamera2D.Instance;
         InstantiatePlayer();
-        GroundSegment.OnActivateFinish += _ => _finishIsActive = true;
     }
 
     private void Start()
@@ -73,6 +72,11 @@ public class LevelManager : MonoBehaviour, ILevelManager
             _finishIsActive = false;
         }
     }
+
+    private void ActivateFinishCheck(GroundSegment _)
+    {
+        _finishIsActive = true;
+    }
     private void InitializeLevel()
     {
         _finishIsActive = true;
@@ -87,12 +91,15 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _inputEvents = new(InputType.UI);
         _inputEvents.OnSubmit += Submit;
+        GroundSegment.OnActivateFinish += ActivateFinishCheck;
     }
     private void OnDisable()
     {
         OnLevelExit?.Invoke();
         ResetStaticEvents();
+        GroundSegment.OnActivateFinish -= ActivateFinishCheck;
     }
+
 #if UNITY_EDITOR
     private IEnumerator WaitForGameManagerInitializationRoutine()
     {

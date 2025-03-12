@@ -138,6 +138,7 @@ public class GroundSpawner : MonoBehaviour
         GroundSplineUtility.InsertCurveToOpenSpline(segment.EdgeSpline, curve);
 
         AddCollider(segment);
+        segment.UpdateHighLowTransforms();
 
     }
     private EdgeCollider2D AddCollider(GroundSegment segment, float resolution = 10)

@@ -65,21 +65,21 @@ public static class PositionalListFactory<T> where T : IPosition
         {
             var currentCurve = segments[i].Curve;
 
-            var currentLowpoint = segments[i].gameObject.transform.TransformPoint(currentCurve.Lowpoint);
+            var currentLowpoint = segments[i].gameObject.transform.TransformPoint(currentCurve.LowPoint);
 
             sortableLowPoints.Add(new SortablePositionObject<Vector3>(currentLowpoint, currentLowpoint, currentLowpoint.y));
 
             Vector3 leadingLowPoint;
             if (i < segments.Count - 1)
             {
-                leadingLowPoint = segments[i + 1].gameObject.transform.TransformPoint(segments[i + 1].Curve.Lowpoint);
+                leadingLowPoint = segments[i + 1].gameObject.transform.TransformPoint(segments[i + 1].Curve.LowPoint);
             }
             else
             {
                 leadingLowPoint = currentLowpoint;
             }
 
-            HighPoint newHighPoint = new(segments[i].gameObject.transform.TransformPoint(currentCurve.Highpoint), currentLowpoint, leadingLowPoint);
+            HighPoint newHighPoint = new(segments[i].gameObject.transform.TransformPoint(currentCurve.HighPoint), currentLowpoint, leadingLowPoint);
             sortableHighPoints.Add(new SortablePositionObject<HighPoint>(newHighPoint, newHighPoint.High, newHighPoint.Distance));
         }
     }

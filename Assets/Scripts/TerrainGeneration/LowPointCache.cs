@@ -24,7 +24,7 @@ public class LowpointCache
         _points = new();
         foreach(var curve in curves)
         {
-            _points.Add(curve.Lowpoint);
+            _points.Add(curve.LowPoint);
         }
         _lowestPoint = FindLowestPoint(_points);
     }

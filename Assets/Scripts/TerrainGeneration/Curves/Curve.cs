@@ -12,11 +12,11 @@ public class Curve
     [SerializeField] private List<CurvePoint> _curvePoints;
     public CurveDefinition curveDefinition;
     [SerializeField] private float length;
-    private protected Vector3 _lowpoint, _highpoint;
+    [SerializeField] private protected Vector3 _lowPoint, _highPoint;
     public List<CurvePoint> CurvePoints { get => _curvePoints; set => _curvePoints = value; }
     public int Count { get => _curvePoints.Count; }
-    public Vector3 Lowpoint { get => _lowpoint; }
-    public Vector3 Highpoint => _highpoint;
+    public Vector3 LowPoint => _lowPoint;
+    public Vector3 HighPoint => _highPoint;
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
     public List<float> SectionLengths => _sectionLengths;
@@ -24,6 +24,7 @@ public class Curve
     {
         curveDefinition = curveDef;
         _curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
+        Debug.Log($"Curve created with high point: {_highPoint} and low point: {_lowPoint}");
         GenerateCurveStats();
     }
 
@@ -45,8 +46,8 @@ public class Curve
             if (curvePoints.Count == 0)
             {
                 curvePoints = CalculateCurvePointPair(sectionParams, startPoint);
-                _highpoint = curvePoints[0].ControlPoint;
-                _lowpoint = _highpoint;
+                _highPoint = curvePoints[0].ControlPoint;
+                _lowPoint = _highPoint;
                 EvaluateHighLow(BezierMath.GetMidpoint(curvePoints[0], curvePoints[1]));
             }
             else
@@ -88,13 +89,13 @@ public class Curve
 
     public void EvaluateHighLow(Vector3 newPoint)
     {
-        if (newPoint.y >= _highpoint.y)
+        if (newPoint.y >= _highPoint.y)
         {
-            _highpoint = newPoint;
+            _highPoint = newPoint;
         }
-        else if (newPoint.y <= _lowpoint.y)
+        else if (newPoint.y <= _lowPoint.y)
         {
-            _lowpoint = newPoint;
+            _lowPoint = newPoint;
         }
     }
     public void GenerateCurveStats()

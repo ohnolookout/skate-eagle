@@ -75,6 +75,37 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!1 &6827530638482868012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3243528010552149271}
+  m_Layer: 0
+  m_Name: HighPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3243528010552149271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6827530638482868012}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1667208778683555131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7386550993232820964
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,6 +290,8 @@ Transform:
   m_Children:
   - {fileID: 4185817891366673309}
   - {fileID: 3791618563265128526}
+  - {fileID: 3243528010552149271}
+  - {fileID: 5288257499446572976}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1971053207 &7541906201271644579
@@ -443,6 +476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curve:
+    _sectionLengths: []
     _curvePoints: []
     curveDefinition:
       curveSections:
@@ -457,12 +491,48 @@ MonoBehaviour:
         pitch: 1.25
         climb: 0
       name: Default Curve
+    length: 0
+    _lowpoint: {x: 0, y: 0, z: 0}
+    _highpoint: {x: 0, y: 0, z: 0}
   _fillShapeController: {fileID: 5424034415216100495}
   _edgeShapeController: {fileID: 1360708605129911030}
   _colliderMaterial: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
   _collider: {fileID: 7359743252002306734}
+  _highPoint: {fileID: 6827530638482868012}
+  _lowPoint: {fileID: 8388335674635242691}
   floorHeight: 100
   isStart: 0
   isFinish: 0
   parentGround: {fileID: 0}
   _previousSegment: {fileID: 0}
+--- !u!1 &8388335674635242691
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5288257499446572976}
+  m_Layer: 0
+  m_Name: LowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5288257499446572976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388335674635242691}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1667208778683555131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

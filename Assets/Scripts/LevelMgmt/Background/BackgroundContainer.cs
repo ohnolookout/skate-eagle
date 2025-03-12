@@ -27,7 +27,6 @@ public class BackgroundContainer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Updating bg container...");
         float camSizeChange = mainCam.orthographicSize - initialCamSize;
         scaleChange = (camSizeChange / initialCamSize) * scaleRatio;
         transform.localScale = startScale * (1 + scaleChange);

@@ -12,6 +12,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
 [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private EdgeCollider2D _collider;
+    [SerializeField] private GameObject _highPoint;
+    [SerializeField] private GameObject _lowPoint;
     public int floorHeight = 100;
     private int _containmentBuffer = 20;
     public bool isStart = false;
@@ -20,6 +22,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     [SerializeField] private GroundSegment _previousSegment;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public static Action<GroundSegment> OnActivateFinish { get; set; }
+    public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
+    public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Curve Curve { get => curve; set => curve = value; }
     public Spline Spline { get => _fillShapeController.spline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
@@ -36,6 +40,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public bool IsFirstSegment => parentGround.SegmentList[0] == this;
     public bool IsLastSegment => parentGround.SegmentList[^1] == this;
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
+    public Transform HighPoint => _highPoint.transform;
+    public Transform LowPoint => _lowPoint.transform;
     #endregion
 
 
@@ -46,19 +52,20 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 
     void OnEnable()
     {
-        if (isFinish)
-        {
-            OnActivateFinish?.Invoke(this);
-        }
     }
 
     void OnBecameVisible()
     {
-
+        if (isFinish)
+        {
+            OnActivateFinish?.Invoke(this);
+        }
+        OnSegmentBecomeVisible?.Invoke(this);
     }
 
     void OnBecameInvisible()
     {
+        OnSegmentBecomeInvisible?.Invoke(this);
     }
 
 #if UNITY_EDITOR
@@ -93,6 +100,12 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 
         var worldPoint = _previousSegment.transform.TransformPoint(_previousSegment.Collider.points[^1]);
         return transform.InverseTransformPoint(worldPoint);
+    }
+
+    public void UpdateHighLowTransforms()
+    {
+        _highPoint.transform.position = curve.HighPoint;
+        _lowPoint.transform.position = curve.LowPoint;
     }
 
 }

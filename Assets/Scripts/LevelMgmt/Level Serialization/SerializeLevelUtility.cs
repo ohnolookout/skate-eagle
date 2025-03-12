@@ -136,6 +136,7 @@ public static class SerializeLevelUtility
         segment.Curve = serializedSegment.curve;
         segment.isFinish = serializedSegment.isFinish;
         segment.isStart = serializedSegment.isStart;
+        segment.UpdateHighLowTransforms();
 
         GroundSplineUtility.GenerateSpline(segment.Spline, serializedSegment.fillSplinePoints, serializedSegment.fillSpineIsOpen);
         GroundSplineUtility.GenerateSpline(segment.EdgeSpline, serializedSegment.edgeSplinePoints, true);
