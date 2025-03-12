@@ -52,6 +52,15 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
         }
     }
 
+    void OnBecameVisible()
+    {
+
+    }
+
+    void OnBecameInvisible()
+    {
+    }
+
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
