@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Com.LuisPedroFonseca.ProCamera2D;
 public class GroundManager : MonoBehaviour
 {
     #region Declarations
@@ -45,11 +46,13 @@ public class GroundManager : MonoBehaviour
 
     public void OnSegmentBecomeVisible(GroundSegment segment)
     {
-
+        ProCamera2D.Instance.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(-0.13f, 0.13f));
+        ProCamera2D.Instance.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(-0.13f, 0));
     }
     public void OnSegmentBecomeInvisible(GroundSegment segment)
     {
-
+        ProCamera2D.Instance.RemoveCameraTarget(segment.HighPoint);
+        ProCamera2D.Instance.RemoveCameraTarget(segment.LowPoint);
     }
     #endregion
 }

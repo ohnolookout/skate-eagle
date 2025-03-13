@@ -148,7 +148,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
         SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
-        _camera.AddCameraTarget(_player.Transform, 1, 1, 0, new(-0.13f, 0));
+        _camera.AddCameraTarget(_player.Transform, 1, 0.75f, 0, new(-0.13f, 0));
         _camera.Reset();
     }
 

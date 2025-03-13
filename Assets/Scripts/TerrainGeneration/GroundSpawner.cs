@@ -71,16 +71,6 @@ public class GroundSpawner : MonoBehaviour
         newSegment.transform.position = startPoint;
         GenerateSegment(newSegment, ground, curveDef, prevSegment);
 
-        //Deactivate segment. Reactivate if in editor mode.
-        newSegment.gameObject.SetActive(false);
-#if UNITY_EDITOR
-        //Set all segments active if in editor mode to show generated level.
-        if (!Application.isPlaying)
-        {
-            newSegment.gameObject.SetActive(true);
-        }
-#endif
-
         return newSegment;
     }
     #endregion
@@ -111,6 +101,7 @@ public class GroundSpawner : MonoBehaviour
         }
 
         ApplyCurveToSegment(segment, segment.Curve);
+        segment.UpdateHighLowTransforms();
     }
 
 
@@ -138,7 +129,6 @@ public class GroundSpawner : MonoBehaviour
         GroundSplineUtility.InsertCurveToOpenSpline(segment.EdgeSpline, curve);
 
         AddCollider(segment);
-        segment.UpdateHighLowTransforms();
 
     }
     private EdgeCollider2D AddCollider(GroundSegment segment, float resolution = 10)
@@ -184,6 +174,7 @@ public class GroundSpawner : MonoBehaviour
 
         //Add finish flag to designated point in GroundSegment.        
         var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
+        finishPoint += new Vector3(50, 0, 0);
 
         _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);
 

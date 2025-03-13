@@ -189,13 +189,17 @@ public class GroundDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());
+            var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());            
+            Selection.activeGameObject = segment.gameObject;
+            segment.SetLowPoint(2);
             _startPoint = _groundEditor.SetStartPoint(segment, 1);
             _levelIsDirty = true;
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundEditor.AddSegment(_ground, _groundEditor.DefaultFinish());
+            segment.SetLowPoint(1);
+            Selection.activeGameObject = segment.gameObject;
             _finishPoint = _groundEditor.SetFinishPoint(segment, 1);
             _levelIsDirty = true;
         }
@@ -259,6 +263,7 @@ public class GroundDesigner : EditorWindow
         if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.SetFinishPoint(_segment, 1);
+            _segment.SetLowPoint(1);
             _levelIsDirty = true;
         }
 

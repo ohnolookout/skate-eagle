@@ -104,8 +104,25 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
 
     public void UpdateHighLowTransforms()
     {
-        _highPoint.transform.position = curve.HighPoint;
-        _lowPoint.transform.position = curve.LowPoint;
+        _highPoint.transform.position = curve.HighPoint + transform.position;
+        _lowPoint.transform.position = curve.LowPoint + transform.position;
+    }
+
+    public void SetLowPoint(int index)
+    {
+        curve.LowPoint = curve.CurvePoints[index].ControlPoint;
+        _lowPoint.transform.position = curve.LowPoint + transform.position;
+    }
+
+    public void SetHighPoint(int index)
+    {
+        if(index >= curve.CurvePoints.Count)
+        {
+            index = curve.CurvePoints.Count - 1;
+        }
+
+        curve.HighPoint = curve.CurvePoints[index].ControlPoint;
+        _highPoint.transform.position = curve.HighPoint + transform.position;
     }
 
 }

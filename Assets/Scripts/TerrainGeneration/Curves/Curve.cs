@@ -15,8 +15,8 @@ public class Curve
     [SerializeField] private protected Vector3 _lowPoint, _highPoint;
     public List<CurvePoint> CurvePoints { get => _curvePoints; set => _curvePoints = value; }
     public int Count { get => _curvePoints.Count; }
-    public Vector3 LowPoint => _lowPoint;
-    public Vector3 HighPoint => _highPoint;
+    public Vector3 LowPoint { get => _lowPoint; set => _lowPoint = value; }
+    public Vector3 HighPoint { get => _highPoint; set => _highPoint = value; }
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
     public List<float> SectionLengths => _sectionLengths;
@@ -89,11 +89,11 @@ public class Curve
 
     public void EvaluateHighLow(Vector3 newPoint)
     {
-        if (newPoint.y >= _highPoint.y)
+        if (newPoint.y > _highPoint.y)
         {
             _highPoint = newPoint;
         }
-        else if (newPoint.y <= _lowPoint.y)
+        else if (newPoint.y < _lowPoint.y)
         {
             _lowPoint = newPoint;
         }
