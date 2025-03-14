@@ -46,8 +46,8 @@ public class GroundManager : MonoBehaviour
 
     public void OnSegmentBecomeVisible(GroundSegment segment)
     {
-        ProCamera2D.Instance.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(-0.13f, 0.13f));
-        ProCamera2D.Instance.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(-0.13f, 0));
+        ProCamera2D.Instance.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(0, -12));
+        ProCamera2D.Instance.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(0, 12));
     }
     public void OnSegmentBecomeInvisible(GroundSegment segment)
     {

@@ -7,7 +7,6 @@ public interface ILevelManager
     bool HasTerrainManager { get ; }
 
     void Fall();
-    void CrossFinish(IPlayer player);
     void GameOver(IPlayer player);
     void GoToStandby();
     void RestartLevel();

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Threading;
 using TMPro;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public class Player : MonoBehaviour, IPlayer
 {
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour, IPlayer
     private InputEventController _inputEvents;
     private PlayerEventAnnouncer _eventAnnouncer;
     private PlayerAnimationManager _animationManager;
+    private ProCamera2DCameraWindow _cameraWindow;
 
     public MomentumTracker MomentumTracker { get; set; }
     public ICollisionManager CollisionManager { get => _collisionManager; }
@@ -64,6 +66,7 @@ public class Player : MonoBehaviour, IPlayer
         _body.centerOfMass = new Vector2(0, -2f);
         _stateMachine.InitializeState(PlayerStateType.Standby);
         _animator.SetBool("Airborne", false);
+        _cameraWindow = ProCamera2D.Instance.GetComponent<ProCamera2DCameraWindow>();
     }
 
     void Update()
@@ -137,6 +140,7 @@ public class Player : MonoBehaviour, IPlayer
         _animator.SetBool("FacingForward", _facingForward);
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
+        //_cameraWindow.CameraWindowRect.Set(_cameraWindow.CameraWindowRect.x * -1, _cameraWindow.CameraWindowRect.y, _cameraWindow.CameraWindowRect.width, _cameraWindow.CameraWindowRect.height);
     }
 
     #endregion

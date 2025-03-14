@@ -40,11 +40,6 @@ public class ActiveState : PlayerState
     public override void UpdateState()
     {
         DirectionCheck();
-        /*
-        if (_checkFinish)
-        {
-            FinishCheck();
-        }*/
         if (_substate != null)
         {
             _substate.UpdateStates();

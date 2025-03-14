@@ -46,6 +46,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void Start()
     {
+        _camera.enabled = true;
         SubscribeToPlayerEvents();
         Timer.OnStopTimer += OnStopTimer;
 
@@ -68,6 +69,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         if (_player.Transform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
         {
+            _camera.RemoveAllCameraTargets();
+            _camera.enabled = false;
             OnCrossFinish?.Invoke();
             _finishIsActive = false;
         }
@@ -148,8 +151,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
         SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
-        _camera.AddCameraTarget(_player.Transform, 1, 0.75f, 0, new(-0.13f, 0));
-        _camera.Reset();
+        _camera.AddCameraTarget(_player.Transform, 1, 0.75f, 0, new(10, 12));
+        _camera.CenterOnTargets();
     }
 
     #endregion
@@ -174,9 +177,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
         if (_player != null)
         {
-            _camera.RemoveAllCameraTargets();
             Destroy(_player.gameObject);
         }
+        _camera.RemoveAllCameraTargets();
 
         OnRestart?.Invoke();
         InstantiatePlayer();
@@ -196,11 +199,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public void ActivateResultsScreen(IPlayer _ = null)
     {
         OnResultsScreen?.Invoke();
-    }
-
-    public void CrossFinish(IPlayer _ = null)
-    {
-        OnCrossFinish?.Invoke();        
     }
 
     private void OnStopTimer(float finishTime)
