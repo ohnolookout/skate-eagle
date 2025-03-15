@@ -28,6 +28,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnLevelExit { get; set; }
     public static Action OnFall { get; set; }
     public static Action OnCrossFinish { get; set; }
+    public static Action OnDisableCamera { get; set; }
 
 
     public static IPlayer GetPlayer { get => _player; }
@@ -41,14 +42,15 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _gameManager = GameManager.Instance;
         _camera = ProCamera2D.Instance;
+        _camera.RemoveAllCameraTargets();
+        DisableCamera();
         InstantiatePlayer();
+        Timer.OnStopTimer += OnStopTimer;
     }
 
     private void Start()
     {
-        _camera.enabled = true;
-        SubscribeToPlayerEvents();
-        Timer.OnStopTimer += OnStopTimer;
+        _camera.MoveCameraInstantlyToPosition(new(-45, 20));
 
 #if UNITY_EDITOR
         StartCoroutine(WaitForGameManagerInitializationRoutine());
@@ -69,25 +71,22 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         if (_player.Transform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
         {
-            _camera.RemoveAllCameraTargets();
-            _camera.enabled = false;
-            OnCrossFinish?.Invoke();
-            _finishIsActive = false;
+            CrossFinish();
         }
     }
 
-    private void ActivateFinishCheck(GroundSegment _)
+    private void ActivateFinishCheck(bool doActivate)
     {
-        _finishIsActive = true;
+        _finishIsActive = doActivate;
     }
     private void InitializeLevel()
     {
-        _finishIsActive = true;
         OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
         _inputEvents.OnRestart += GoToStandby;
+        _camera.MoveCameraInstantlyToPosition(new(-45, 20));
     }
 
     private void OnEnable()
@@ -101,6 +100,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnLevelExit?.Invoke();
         ResetStaticEvents();
         GroundSegment.OnActivateFinish -= ActivateFinishCheck;
+        Timer.OnStopTimer -= OnStopTimer;
     }
 
 #if UNITY_EDITOR
@@ -151,7 +151,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
         SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
-        _camera.AddCameraTarget(_player.Transform, 1, 0.75f, 0, new(10, 12));
+        _camera.AddCameraTarget(_player.Transform, 1, 0.75f, 0, new(0, 12));
+        SubscribeToPlayerEvents();
         _camera.CenterOnTargets();
     }
 
@@ -160,30 +161,37 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Event Invokers
     public void GoToStandby()
     {
+        EnableCamera();
         _inputEvents.OnRestart -= GoToStandby;
         OnStandby?.Invoke();
     }
 
     public void StartAttempt(IPlayer _ = null)
     {
-        Debug.Log("Starting attempt...");
         _inputEvents.OnRestart += RestartLevel;
         OnAttempt?.Invoke();
     }
     public void RestartLevel()
     {
-        Debug.Log("Restarting...");
+        DisableCamera();
         _inputEvents.OnRestart -= RestartLevel;
 
         if (_player != null)
         {
             Destroy(_player.gameObject);
         }
-        _camera.RemoveAllCameraTargets();
 
         OnRestart?.Invoke();
         InstantiatePlayer();
         Start();
+    }
+
+    public void CrossFinish()
+    {
+        DisableCamera();
+        OnCrossFinish?.Invoke();
+        _finishIsActive = false;
+        _inputEvents.OnRestart -= RestartLevel;
     }
 
     public void Submit()
@@ -193,6 +201,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void GameOver(IPlayer _ = null)
     {
+        DisableCamera();
         OnGameOver?.Invoke(this);
     }
 
@@ -203,13 +212,31 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void OnStopTimer(float finishTime)
     {
+        _finishIsActive = false;
         FinishData finishData;
         finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, finishTime);
         OnFinish?.Invoke(finishData);
     }
     public void Fall()
     {
+        DisableCamera();
         OnFall?.Invoke();
+    }
+
+    private void DisableCamera()
+    {
+        OnDisableCamera?.Invoke();
+        _camera.RemoveAllCameraTargets();
+        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = 0f;
+        _camera.FollowHorizontal = false;
+        _camera.FollowVertical = false;
+    }
+
+    private void EnableCamera()
+    {
+        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = 0.4f;
+        _camera.FollowHorizontal = true;
+        _camera.FollowVertical = true;
     }
     #endregion
 }

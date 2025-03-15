@@ -11,16 +11,12 @@ public class Timer : MonoBehaviour
     private bool running = false;
     public static Action<float> OnStopTimer { get; set; }
 
-    private void OnEnable()
+    private void Awake()
     {
         LevelManager.OnAttempt += StartTimer;
-        LevelManager.OnGameOver += _ => StopTimer(false);
-        LevelManager.OnCrossFinish += () => StopTimer(true);
-    }
-
-    private void OnDisable()
-    {
-        OnStopTimer = null;
+        LevelManager.OnGameOver += GameOver;
+        LevelManager.OnCrossFinish += FinishLevel;
+        LevelManager.OnRestart += Restart;
     }
 
     void Update()
@@ -36,12 +32,46 @@ public class Timer : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        OnStopTimer = null;
+        LevelManager.OnAttempt -= StartTimer;
+        LevelManager.OnGameOver -= GameOver;
+        LevelManager.OnCrossFinish -= FinishLevel;
+        LevelManager.OnRestart -= Restart;
+    }
+
     public void StartTimer()
     {
         running = true;
     }
 
-    public float StopTimer(bool doTriggerEvent)
+    public void FinishLevel()
+    {
+        if (!running)
+        {
+            return;
+        }
+        StopTimer(true);
+    }
+
+    public void GameOver(ILevelManager _)
+    {
+        StopTimer(false);
+    }
+
+    public void Restart()
+    {
+        StopTimer(false);
+    }
+
+    public void ResetTimer()
+    {
+        timeElapsed = 0;
+        UpdateTimeDisplay(timeElapsed);
+    }
+
+    public void StopTimer(bool doTriggerEvent)
     {
         running = false;
 
@@ -49,8 +79,6 @@ public class Timer : MonoBehaviour
         {
             OnStopTimer?.Invoke(timeElapsed);
         }
-
-        return timeElapsed;
     }
     private void UpdateTimeDisplay(float time)
     {

@@ -14,7 +14,10 @@ public class BrakingState : PlayerState
     {
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Brake);
         _player.InputEvents.DisableInputs();
-        _player.Trail.emitting = false;
+        if (_player.Trail != null)
+        {
+            _player.Trail.emitting = false;
+        }
 
     }
 

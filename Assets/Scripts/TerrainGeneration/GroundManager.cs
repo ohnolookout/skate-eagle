@@ -11,6 +11,7 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private GameObject _backstopPrefab;
     [SerializeField] private GameObject _finishFlag;
     [SerializeField] private GameObject _backstop;
+    private ProCamera2D _camera;
     public GroundSpawner groundSpawner;
     private List<Ground> _grounds;
     public GameObject groundContainer;
@@ -19,18 +20,21 @@ public class GroundManager : MonoBehaviour
     #endregion
 
     #region Monobehaviors
-
-    void OnEnable()
+    private void Awake()
     {
-        GroundSegment.OnSegmentBecomeVisible += OnSegmentBecomeVisible;
-        GroundSegment.OnSegmentBecomeInvisible += OnSegmentBecomeInvisible;
+        SubscribeToSegmentEvents();
+        _camera = ProCamera2D.Instance;
     }
 
-    private void OnDisable()
+    private void Start()
+    {
+    }
+
+
+    private void OnDestroy()
     {
         ClearGround();
-        GroundSegment.OnSegmentBecomeVisible -= OnSegmentBecomeVisible;
-        GroundSegment.OnSegmentBecomeInvisible -= OnSegmentBecomeInvisible;
+        UnsubscribeToSegmentEvents();
     }
 
     public void ClearGround()
@@ -44,15 +48,28 @@ public class GroundManager : MonoBehaviour
         }
     }
 
-    public void OnSegmentBecomeVisible(GroundSegment segment)
+    private void SubscribeToSegmentEvents()
     {
-        ProCamera2D.Instance.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(0, -12));
-        ProCamera2D.Instance.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(0, 12));
+        Debug.Log("Subscribing to segment events");
+        GroundSegment.OnSegmentBecomeVisible += OnSegmentBecomeVisible;
+        GroundSegment.OnSegmentBecomeInvisible += OnSegmentBecomeInvisible;
     }
-    public void OnSegmentBecomeInvisible(GroundSegment segment)
+
+    private void UnsubscribeToSegmentEvents()
     {
-        ProCamera2D.Instance.RemoveCameraTarget(segment.HighPoint);
-        ProCamera2D.Instance.RemoveCameraTarget(segment.LowPoint);
+        GroundSegment.OnSegmentBecomeVisible -= OnSegmentBecomeVisible;
+        GroundSegment.OnSegmentBecomeInvisible -= OnSegmentBecomeInvisible;
+    }
+
+    private void OnSegmentBecomeVisible(GroundSegment segment)
+    {
+        _camera.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(0, -12));
+        _camera.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(0, 12));
+    }
+    private void OnSegmentBecomeInvisible(GroundSegment segment)
+    {
+        _camera.RemoveCameraTarget(segment.HighPoint);
+        _camera.RemoveCameraTarget(segment.LowPoint);
     }
     #endregion
 }

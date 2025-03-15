@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 
 
 public class Overlay : MonoBehaviour
@@ -54,6 +55,7 @@ public class Overlay : MonoBehaviour
         _landingScreen.gameObject.SetActive(false);
         _standbyObject.SetActive(true);
         _hudObject.SetActive(true);
+        _timer.ResetTimer();
         ActivateControls(true);
     }
 

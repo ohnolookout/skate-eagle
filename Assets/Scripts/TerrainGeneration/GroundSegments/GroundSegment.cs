@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.U2D;
 using System;
 using UnityEditor;
+using UnityEditor.Build;
 
 [ExecuteAlways]
 [Serializable]
@@ -21,7 +22,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
-    public static Action<GroundSegment> OnActivateFinish { get; set; }
+    public static Action<bool> OnActivateFinish { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Curve Curve { get => curve; set => curve = value; }
@@ -58,13 +59,17 @@ public class GroundSegment : MonoBehaviour, IGroundSegment
     {
         if (isFinish)
         {
-            OnActivateFinish?.Invoke(this);
+            OnActivateFinish?.Invoke(true);
         }
         OnSegmentBecomeVisible?.Invoke(this);
     }
 
     void OnBecameInvisible()
     {
+        if (isFinish)
+        {
+            OnActivateFinish?.Invoke(false);
+        }
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 

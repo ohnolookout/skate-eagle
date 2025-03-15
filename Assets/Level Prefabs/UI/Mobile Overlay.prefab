@@ -567,13 +567,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameOverObject: {fileID: 2096088165163887148}
-  _finishObject: {fileID: 3483181932998039388}
   _standbyObject: {fileID: 4186414681259974777}
   _mobileControlsObject: {fileID: 1237277397001383237}
   _hudObject: {fileID: 7834068834945381072}
-  _landingObject: {fileID: 5874581007111261179}
-  _landingLoader: {fileID: 2428020003488715169}
-  _finishLoader: {fileID: 2271899999339043594}
+  _landingScreen: {fileID: 0}
+  _finishScreen: {fileID: 0}
   _stompBar: {fileID: 2915044706362031507}
   _timer: {fileID: 6864226877923220310}
   _playButton: {fileID: 2756100558978377294}
@@ -2004,6 +2002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c3031f13e2cb6948a09cd7d92480acf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _leaderboard: {fileID: 0}
   levelName: {fileID: 4921982425102583638}
   playerTime: {fileID: 7801057667651405957}
   blueTime: {fileID: 1438171646745608558}
@@ -3599,7 +3598,8 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3104205418496710391, guid: 46cb9b4a8b42876429552aee6ba75737, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
