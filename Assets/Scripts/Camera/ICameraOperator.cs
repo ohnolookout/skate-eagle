@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-
+/*
 public interface ICameraOperator
 {
     GameObject gameObject { get; }
@@ -15,3 +15,4 @@ public interface ICameraOperator
     float CurrentHighLowX { get; }
     float ReverseHighLowX { get; }
 }
+*/

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class BgObjectManager : MonoBehaviour
 {
     public List<BgObject> BgObjectPool;
@@ -137,3 +137,4 @@ public class BgObjectManager : MonoBehaviour
     }
 
 }
+*/

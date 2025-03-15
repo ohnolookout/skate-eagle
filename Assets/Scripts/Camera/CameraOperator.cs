@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 [RequireComponent(typeof(Camera))]
 public class CameraOperator : MonoBehaviour, ICameraOperator
 {
@@ -91,6 +91,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         UpdatePosition();
         _isZooming = _zoom.UpdateZoom();
     }
+*/
     /*
     void OnDrawGizmos()
     {
@@ -128,6 +129,7 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
         
     }
     */
+    /*
     #endregion
 
     #region Position
@@ -163,3 +165,4 @@ public class CameraOperator : MonoBehaviour, ICameraOperator
     }
     #endregion
 }
+*/

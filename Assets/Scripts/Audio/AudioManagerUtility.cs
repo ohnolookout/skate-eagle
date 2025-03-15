@@ -62,7 +62,7 @@ public static class AudioManagerUtility
         source.Stop();
         AudioManager.Instance.RemovePlayingSound(source, true);
     }
-
+    /*
     public static IEnumerator TimedInZoomOut(AudioManager audioManager, AudioSource source, ICameraOperator camera, float maxVolume, float initialDelay, float fadeInTime, float cameraSizeThreshold)
     {
         source.volume = 0;
@@ -105,6 +105,7 @@ public static class AudioManagerUtility
 
         audioManager.StopLoop(source);
     }
+    */
 
     #endregion
 

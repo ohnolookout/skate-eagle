@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
 using System;
-
+/*
 public class PositionalMinMaxTest
 {
     #region Variables
@@ -74,3 +74,4 @@ public class PositionalMinMaxTest
     #endregion
 
 }
+*/

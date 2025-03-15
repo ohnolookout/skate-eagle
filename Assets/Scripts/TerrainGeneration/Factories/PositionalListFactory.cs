@@ -29,7 +29,7 @@ public static class PositionalListFactory<T> where T : IPosition
         SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
     }
-
+    /*
     public static SinglePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
         Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
@@ -37,8 +37,9 @@ public static class PositionalListFactory<T> where T : IPosition
         SinglePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved);
         return positionalList;
     }
+    */
     #endregion
-
+    /*
     #region HighLowManager Positional List
     public static void HighLowPositional(CameraHighLowManager highLowManager, ICameraOperator cameraOperator, Ground terrain,
         out PositionalMinMax<SortablePositionObject<Vector3>> lowPointCache, out PositionalMinMax<SortablePositionObject<HighPoint>> highPointCache)
@@ -102,4 +103,5 @@ public static class PositionalListFactory<T> where T : IPosition
         return new(allObjects, updateTrailing, updateLeading);
     }
     #endregion
+    */
 }

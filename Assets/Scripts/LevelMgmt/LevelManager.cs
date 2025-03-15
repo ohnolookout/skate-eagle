@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public Vector3 startPosition = new();
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
-    [SerializeField] private CameraOperator _cameraOperator;
+    //[SerializeField] private CameraOperator _cameraOperator;
     private bool _finishIsActive = false;
     private ProCamera2D _camera;
     [SerializeField] private GameObject _playerPrefab;

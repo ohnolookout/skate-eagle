@@ -27,7 +27,7 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
         DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading);
         return positionalList;
     }
-
+    /*
     public static DoublePositionalList<T> CameraOperatorTracker(List<T> allObjects, ICameraOperator cameraOperator, float trailingBuffer, float leadingBuffer, Action<T, ListSection> onObjectAdded = null, Action<T, ListSection> onObjectRemoved = null)
     {
         Func<float> updateTrailing = () => cameraOperator.TrailingCorner.x - trailingBuffer;
@@ -35,4 +35,5 @@ public static class DoublePositionalListFactory<T> where T : IDoublePosition, IP
         DoublePositionalList<T> positionalList = new(allObjects, updateTrailing, updateLeading, onObjectAdded, onObjectRemoved);
         return positionalList;
     }
+    */
 }

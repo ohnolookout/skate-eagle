@@ -20,7 +20,7 @@ public class PlayerAudio : MonoBehaviour
     private float _wheelTimer = -1;
     private const float _wheelTimeLimit = 0.2f, _wheelFadeCoefficient = 0.01f;
     private AudioManager _audioManager;
-    private ICameraOperator _cameraOperator;
+    //private ICameraOperator _cameraOperator;
     #endregion
 
     #region Monobehaviours
@@ -55,13 +55,14 @@ public class PlayerAudio : MonoBehaviour
 
     private void OnEnable()
     {
-
+        /*
         _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
         if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut += StartWind;
             _cameraOperator.OnFinishZoomIn += StopWind;
         }
+        */
     }
     private void OnDisable()
     {
@@ -69,11 +70,13 @@ public class PlayerAudio : MonoBehaviour
         {
             return;
         }
+        /*
         if (_cameraOperator != null)
         {
             _cameraOperator.OnZoomOut -= StartWind;
             _cameraOperator.OnFinishZoomIn -= StopWind;
         }
+        */
     }
     #endregion
 
@@ -289,7 +292,7 @@ public class PlayerAudio : MonoBehaviour
         _audioManager.StartLoop(_loopDict[LoopFX.Board]);
 
     }
-
+    /*
     private void StartWind(ICameraOperator camera)
     {
         if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Wind]))
@@ -297,7 +300,7 @@ public class PlayerAudio : MonoBehaviour
             _audioManager.TimedFadeInZoomFadeOut(_loopDict[LoopFX.Wind], camera, 0.5f, 3f, _cameraOperator.DefaultSize * 2f);
         }
     }
-
+    */
     private void StopWind()
     {
         _audioManager.StopLoop(_loopDict[LoopFX.Wind]);

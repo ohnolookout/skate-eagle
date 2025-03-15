@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class PositionalMinMax<T> where T : IPosition, ISortable
 {
     private PositionalList<T> _positionalList;
@@ -54,3 +54,4 @@ public class PositionalMinMax<T> where T : IPosition, ISortable
         }
     }
 }
+*/

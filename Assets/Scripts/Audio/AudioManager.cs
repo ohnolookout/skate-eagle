@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     public Dictionary<AudioSource, IEnumerator> fadingSources = new();
     public float intensityDenominator = 300, maxSoundDistance = 160, zoomLimit = 110;
     private bool _updateZoomModifier = false, _updateLocalModifiers = false;
-    private Action<ICameraOperator> _updateZoom;
+    //private Action<ICameraOperator> _updateZoom;
     private Action _stopUpdateZoom;
     private SoundModifierManager _modifierManager;
     private int _soundModFrameRate = 6, _zoomModFrameRate = 10;
@@ -115,7 +115,7 @@ public class AudioManager : MonoBehaviour
     {
         if (_camera != null)
         {
-            _updateZoom += _ => _updateZoomModifier = true;
+            //_updateZoom += _ => _updateZoomModifier = true;
             _stopUpdateZoom += () =>
             {
                 _modifierManager.ResetZoomModifier();
@@ -262,7 +262,7 @@ public class AudioManager : MonoBehaviour
             fadingSources.Remove(source);
         }
     }
-
+    /*
     public void TimedFadeInZoomFadeOut(Sound sound, ICameraOperator camera, float initialDelay, float fadeInTime, float cameraSizeThreshold)
     {
         AudioSource source = AudioManagerUtility.FirstAvailableSource(_audioSources);
@@ -271,7 +271,7 @@ public class AudioManager : MonoBehaviour
         AddPlayingSound(source, sound, thisFade);
         StartCoroutine(thisFade);
     }
-
+    */
     //Plays soundtrack on audioSources[0]
     private void PlaySoundtrack(Soundtrack soundtrack)
     {
