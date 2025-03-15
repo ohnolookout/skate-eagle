@@ -6,7 +6,7 @@ using System;
 public class CameraZoom
 {
     #region Declarations
-    private Camera _cam;
+    private ProCamera2D _cam;
     private ICameraOperator _cameraOperator;
     private bool _doPlayerZoom = false,_doTransitionTargetSize = false;
     private float _finalTargetSize, _currentTargetSize, _zoomYDelta = 0;
