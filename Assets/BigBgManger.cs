@@ -16,8 +16,8 @@ public class BigBgManger : MonoBehaviour
     public bool HasSharedObjectPool = false;
 
     private List<BgPanel> _orderedBgPanels = new();
-    private List<CitySprite> _orderedSpriteObjects = new();
-    private DoublePositionalList<CitySprite> _spriteObjectPositionalList;
+    //private List<CitySprite> _orderedSpriteObjects = new();
+    //private DoublePositionalList<CitySprite> _spriteObjectPositionalList;
     private DoublePositionalList<BgPanel> _panelPositionalList;
     //private ICameraOperator _cameraOperator;
     private Vector2 _startPosition;
@@ -60,11 +60,12 @@ public class BigBgManger : MonoBehaviour
     {
         _panelPositionalList.Update();
 
+        /*
         if (_hasIndividualSprites)
         {
             _spriteObjectPositionalList.Update();
         }
-
+        */
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
         float xDelta = _camTransform.position.x * ParallaxRatio;
         float camLayerDelta = _camTransform.position.x * (1 - ParallaxRatio);
@@ -113,7 +114,7 @@ public class BigBgManger : MonoBehaviour
             AddPanelToBg(_bgPanelPool[index]);
         }
 
-        _hasIndividualSprites = _orderedSpriteObjects.Count > 0;
+        //_hasIndividualSprites = _orderedSpriteObjects.Count > 0;
     }
 
     private void AddPanelToBg(BgPanel panel)
@@ -121,12 +122,14 @@ public class BigBgManger : MonoBehaviour
         panel.gameObject.SetActive(true);
         panel.transform.localPosition = new((_positionCoefficient + _orderedBgPanels.Count) * _panelWidth, panel.transform.localPosition.y);
         _orderedBgPanels.Add(panel);
+        /*
         if (panel.SpriteObjects.Count > 0)
         {
             _orderedSpriteObjects.AddRange(panel.SpriteObjects);
         }
+        */
     }
-
+    
     private void BuildPositionalLists()
     {
 
@@ -138,7 +141,7 @@ public class BigBgManger : MonoBehaviour
             OnPanelAdded,
             OnPanelRemoved
         );
-
+        /*
         if (_hasIndividualSprites)
         {
             _spriteObjectPositionalList = DoublePositionalListFactory<CitySprite>.CameraTracker(
@@ -150,8 +153,9 @@ public class BigBgManger : MonoBehaviour
                 OnSpriteRemoved
             );
         }
+        */
     }
-
+    
     #endregion
 
     #region Add/Remove
@@ -171,7 +175,7 @@ public class BigBgManger : MonoBehaviour
             MoveLeadingPanelToTrailing(removedPanel);
         }
     }
-
+    /*
     private void OnSpriteAdded(CitySprite addedObj, ListSection section)
     {
         addedObj.gameObject.SetActive(true);
@@ -181,26 +185,30 @@ public class BigBgManger : MonoBehaviour
     {
         removedObj.gameObject.SetActive(false);
     }
-
+    */
     #endregion
 
     #region MovePanels
     private void MoveTrailingPanelToLeading(BgPanel removedPanel)
     {
         _panelPositionalList.MoveTrailingToLeading(new(_leadingObjectX + _currentPanelWidth, removedPanel.Position.y));
+        /*
         if (_hasIndividualSprites)
         {
             _spriteObjectPositionalList.OrderTrailingToLeading(removedPanel.SpriteObjects.Count);
         }
+        */
     }
 
     private void MoveLeadingPanelToTrailing(BgPanel removedPanel)
     {
         _panelPositionalList.MoveLeadingToTrailing(new(_trailingObjectX - _currentPanelWidth, removedPanel.Position.y));
+        /*
         if (_hasIndividualSprites)
         {
             _spriteObjectPositionalList.OrderLeadingToTrailing(removedPanel.SpriteObjects.Count);
         }
+        */
     }
 
     #endregion

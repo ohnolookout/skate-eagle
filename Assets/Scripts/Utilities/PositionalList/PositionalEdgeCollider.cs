@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class PositionalEdgeCollider : IDoublePosition, IPosition
 {
     Vector3 _startPosition, _endPosition;
@@ -30,3 +30,4 @@ public class PositionalEdgeCollider : IDoublePosition, IPosition
 
     public EdgeCollider2D Collider => _collider;
 }
+*/
