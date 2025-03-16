@@ -7,9 +7,9 @@ using System;
 
 public enum FinishScreenType { NewMedal, NewBestTime, Participant}
 
-public class FinishScreen : MonoBehaviour
+public class FinishScreen : MonoBehaviour, IOverlayScreen
 {
-    [SerializeField] private GameObject display, medal, newMedal, newBest, previousBlock;
+    [SerializeField] private GameObject _display, medal, newMedal, newBest, previousBlock;
     [SerializeField] private TMP_Text previousTime, playerTime;
     [SerializeField] private Sprite[] medalSprites;
     [SerializeField] private GameObject[] statusTexts;
@@ -41,13 +41,9 @@ public class FinishScreen : MonoBehaviour
 
     }
 
-    public void ActivateDisplay()
+    public void ActivateDisplay(bool doActivate)
     {
-        display.SetActive(true);
-    }
-    public void DeactivateDisplay()
-    {
-        display.SetActive(false);
+        _display.SetActive(doActivate);
     }
 }
 

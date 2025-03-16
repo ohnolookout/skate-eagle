@@ -36,7 +36,6 @@ public class FlipText : MonoBehaviour
 
     public void SetText(string text, Vector2 playerVelocity)
     {
-        Debug.Log("Setting flip text...");
         _displayText.text = text;
         if (playerVelocity.x >= 0)
         {

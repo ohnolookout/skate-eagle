@@ -9,7 +9,7 @@ public class FlipTextGenerator : MonoBehaviour
     public GameObject popText;
     public float wordSpread = 10;
     [SerializeField] private FlipText flipText;
-    private IPlayer _player;
+    [SerializeField] private Player _player;
     private List<string> affirmations = new List<string> { "Rad!", "Woah.", "No way!", "Cool flip!", "Really?!", "Settle down...", "Dang!", "So hot!", "Wow, neat.", "Luv it." };
 
     private void Awake()
@@ -18,7 +18,6 @@ public class FlipTextGenerator : MonoBehaviour
     }
     private void Start()
     {
-        _player = LevelManager.GetPlayer;
         SubscribeToEvents();
     }
 

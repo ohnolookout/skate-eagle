@@ -15,11 +15,7 @@ public class StompBar : MonoBehaviour
 
     private void OnEnable()
     {
-        IPlayer player = LevelManager.GetPlayer;
-        if(player == null)
-        {
-            return;
-        }
+        Player player = FindFirstObjectByType<Player>();
         player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartWithStomp, (player) => Fill((float)player.Params.StompCharge / (float)player.Params.StompThreshold));
         player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Flip, (player) => Fill((float)player.Params.StompCharge / (float)player.Params.StompThreshold));
         player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Stomp, (_) => Fill(0));
@@ -62,4 +58,5 @@ public class StompBar : MonoBehaviour
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
     }
+
 }

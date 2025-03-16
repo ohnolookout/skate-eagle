@@ -4,11 +4,12 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class Timer : MonoBehaviour
+public class Timer : MonoBehaviour, IOverlayScreen
 {
     public TMP_Text timeText;
     private float timeElapsed = 0;
     private bool running = false;
+    [SerializeField] private GameObject _display;
     public static Action<float> OnStopTimer { get; set; }
 
     private void Awake()
@@ -102,5 +103,10 @@ public class Timer : MonoBehaviour
         array[5] = (char)(48 + milliseconds / 100);
         array[6] = (char)(48 + (milliseconds % 100) / 10);
         array[7] = (char)(48 + milliseconds % 10);
+    }
+
+    public void ActivateDisplay(bool doActivate)
+    {
+        _display.SetActive(doActivate);
     }
 }

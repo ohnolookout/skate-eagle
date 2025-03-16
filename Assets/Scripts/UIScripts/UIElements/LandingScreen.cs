@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class LandingScreen : MonoBehaviour
+public class LandingScreen : MonoBehaviour, IOverlayScreen
 {
     [SerializeField] private Leaderboard _leaderboard;
     public TMP_Text levelName, playerTime, blueTime, goldTime, silverTime;
@@ -13,6 +13,7 @@ public class LandingScreen : MonoBehaviour
     public Sprite[] medalSprites;
     [SerializeField] private GameObject display, globalLeaderGrid, friendLeaderGrid, nextLevelButton, bestTimeBadge, bestTimeBadgeGrayOut;
     public GameObject[] levelTimeGrays, strikeThroughs;
+    [SerializeField] private GameObject _display;
     public bool nextLevelUnlocked = false;
     public Leaderboard Leaderboard => _leaderboard;
 
@@ -62,5 +63,10 @@ public class LandingScreen : MonoBehaviour
     private void DeactivatePlayerBadge()
     {
         bestTimeBadgeGrayOut.SetActive(true);
+    }
+
+    public void ActivateDisplay(bool doActivate)
+    {
+        _display.SetActive(doActivate);
     }
 }

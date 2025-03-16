@@ -2,36 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-/*
-public class CameraZoom
+using Com.LuisPedroFonseca.ProCamera2D;
+
+
+public class CameraZoom : MonoBehaviour
 {
     #region Declarations
-    private ProCamera2D _cam;
-    private ICameraOperator _cameraOperator;
+    private ProCamera2D _camera;
+    private Transform _camContainer;
+    private IPlayer _player;
     private bool _doPlayerZoom = false,_doTransitionTargetSize = false;
-    private float _finalTargetSize, _currentTargetSize, _zoomYDelta = 0;
-    public Action<ICameraOperator> OnZoomOut;
+    private float _targetSize, _transitionTargetSize, _defaultSize, _zoomYDelta = 0;
+    private float _defaultYOffset;
+    public Action<ProCamera2D> OnZoomOut;
     public Action OnFinishZoomIn;
     public float ZoomYDelta => _zoomYDelta;
     public bool DoPlayerZoom { get => _doPlayerZoom; set => _doPlayerZoom = value; }
-    public float TargetSize => _finalTargetSize;
+    public float TargetSize => _targetSize;
     #endregion
 
     #region Construct and Update
-    public CameraZoom(ICameraOperator cameraOperator)
+    private void Awake()
     {
-        _cameraOperator = cameraOperator;
-        _cam = cameraOperator.Camera;
-        _finalTargetSize = cameraOperator.DefaultSize;
-        _currentTargetSize = _finalTargetSize;
-    }
+        _camera = ProCamera2D.Instance;
+        _camContainer = _camera.transform.parent;
+        _defaultSize = _camera.GameCamera.orthographicSize;
+        _targetSize = _defaultSize;
+        _transitionTargetSize = _defaultSize;
+        _defaultYOffset = _camera.GetOffsetY();
 
-    public void SubscribeToPlayerLanding(IPlayer player)
-    {
-        player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Land, (_) => _doPlayerZoom = false);
+        LevelManager.OnPlayerCreated += OnPlayerCreated;
     }
-
-    public bool UpdateZoom()
+    void Update()
     {
         if (_doTransitionTargetSize)
         {
@@ -41,83 +43,92 @@ public class CameraZoom
         {
             PlayerZoom();
         }
-        else if (!PlayerInsideYBuffer(0.8f) && _cameraOperator.PlayerBody.velocityY >= 0)
+        else if (!PlayerInsideYBuffer(0.8f) && _player.NormalBody.velocityY >= 0)
         {
             _doPlayerZoom = true;
-            OnZoomOut?.Invoke(_cameraOperator);
+            OnZoomOut?.Invoke(_camera);
             PlayerZoom();
-        } else if (_cam.orthographicSize != _finalTargetSize)
+        }
+        _camContainer.position = new(0, _zoomYDelta);
+        /*
+        else if (_camera.GameCamera.orthographicSize != _targetSize)
         {
             HighLowZoom();
-        }
-        else
-        {
-            return false;
-        }
-        return true;
+        }*/
     }
+
+    public void SubscribeToPlayerLanding(IPlayer player)
+    {
+        player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Land, EndZoomOut);
+    }
+
     #endregion
 
     #region PlayerZoom
+
+    private void EndZoomOut(IPlayer _)
+    {
+        _doPlayerZoom = false;
+    }
     private void PlayerZoom()
     {
         float change = PlayerZoomChange();
 
-        _cam.orthographicSize += change;
+        _camera.GameCamera.orthographicSize += change;
         _zoomYDelta += change;
         _doPlayerZoom = !EndPlayerZoom();
     }
 
     private float PlayerZoomChange()
     {
-        float camBottomY = _cam.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
-        float change = (_cameraOperator.PlayerBody.position.y - camBottomY) / 1.8f;
-        return change - _cam.orthographicSize;
+        float camBottomY = _camera.GameCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
+        float change = (_player.NormalBody.position.y - camBottomY) / 1.8f;
+        return change - _camera.GameCamera.orthographicSize;
     }
 
     private bool EndPlayerZoom()
     {
-        return _cam.orthographicSize < _currentTargetSize * 1.05f;
+        return _camera.GameCamera.orthographicSize < _transitionTargetSize * 1.05f;
     }
     private bool PlayerInsideYBuffer(float buffer)
     {
-
-        float camBufferY = _cam.transform.position.y + _cam.orthographicSize * buffer;
-        return _cameraOperator.PlayerBody.position.y < camBufferY;
+        float camBufferY = _camera.transform.position.y + _camera.GameCamera.orthographicSize * buffer;
+        return _player.NormalBody.position.y < camBufferY;
     }
     #endregion
 
     #region HighLowZoom
     //Use adjacent lowpoints for highLowDistance rather than current lowpoint
+    /*
     public void UpdateHighLowZoom(CameraHighLowManager highLowManager)
     {
-        _currentTargetSize = _finalTargetSize;
-        if (highLowManager.TargetHighPoint.Distance > _cameraOperator.DefaultSize * 1.4f)
+        _transitionTargetSize = _targetSize;
+        if (highLowManager.TargetHighPoint.Distance > _defaultSize * 1.4f)
         {
-            _finalTargetSize = highLowManager.TargetHighPoint.Distance * 0.72f;
+            _targetSize = highLowManager.TargetHighPoint.Distance * 0.72f;
         }
         else
         {
-            _finalTargetSize = _cameraOperator.DefaultSize;
+            _targetSize = _defaultSize;
         }
         _doTransitionTargetSize = true;
     }
-
+    */
     //Base this on greater of time or distance to ensure smooth transition
     private void HighLowZoom()
     {
-        float sizeChange = HighLowChange(_cam.orthographicSize);
+        float sizeChange = HighLowChange(_camera.GameCamera.orthographicSize);
         _zoomYDelta += sizeChange;
-        _cam.orthographicSize += sizeChange;
-        _currentTargetSize = _cam.orthographicSize;
+        _camera.GameCamera.orthographicSize += sizeChange;
+        _transitionTargetSize = _camera.GameCamera.orthographicSize;
 
     }
 
     private const float _minZoom = 0.2f;
     private float HighLowChange(float currentSize)
     {
-        float totalDifference = _finalTargetSize - currentSize;
-        if (_finalTargetSize > currentSize)
+        float totalDifference = _targetSize - currentSize;
+        if (_targetSize > currentSize)
         {
             return Mathf.Min(((totalDifference) / 60) * _minZoom + _minZoom, totalDifference);
         }
@@ -126,9 +137,9 @@ public class CameraZoom
 
     private void TransitionTargetSize()
     {
-        if(_currentTargetSize != _finalTargetSize)
+        if(_transitionTargetSize != _targetSize)
         {
-            _currentTargetSize += HighLowChange(_currentTargetSize);
+            _transitionTargetSize += HighLowChange(_transitionTargetSize);
         }
         else
         {
@@ -137,5 +148,9 @@ public class CameraZoom
     }
     #endregion
 
+    private void OnPlayerCreated(IPlayer player)
+    {
+        _player = player;
+    }
+
 }
-*/

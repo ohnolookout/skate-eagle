@@ -63,8 +63,8 @@ public class GroundManager : MonoBehaviour
 
     private void OnSegmentBecomeVisible(GroundSegment segment)
     {
-        _camera.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0, new(0, -12));
-        _camera.AddCameraTarget(segment.LowPoint, 0, 0.75f, 0, new(0, 12));
+        _camera.AddCameraTarget(segment.HighPoint, 0, 0.15f, 0.25f, new(0, -12));
+        _camera.AddCameraTarget(segment.LowPoint, 0, 1f, 0.25f, new(0, 12));
     }
     private void OnSegmentBecomeInvisible(GroundSegment segment)
     {
