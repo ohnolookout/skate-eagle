@@ -8,6 +8,7 @@ public interface IPlayer
     bool FacingForward { get; set; }
     bool IsRagdoll { get; set; }
     bool DoLanding { get; set; }
+    float KillPlaneY { get; set; }
     ICollisionManager CollisionManager { get; }
     Rigidbody2D RagdollBoard { get; }
     Rigidbody2D RagdollBody { get; }
@@ -28,5 +29,7 @@ public interface IPlayer
     void SwitchDirection();
     void TriggerBoost(float boostValue, float boostMultiplier);
     void CancelAsyncTokens();
+    void InvokeBodySound();
+    void InvokeLandSound();
     
 }

@@ -12,12 +12,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public Vector3 startPosition = new();
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
-    //[SerializeField] private CameraOperator _cameraOperator;
     private bool _finishIsActive = false;
     private ProCamera2D _camera;
     [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
     private Player _player;
+    private Transform _playerTransform;
     public static Action<Level, PlayerRecord> OnLanding { get; set; }
     public static Action<ILevelManager> OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
@@ -68,7 +68,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void CheckFinish()
     {
-        if (_player.Transform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
+        if (_playerTransform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
         {
             CrossFinish();
         }
@@ -123,6 +123,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Fall, GameOver);
     }
 
     private void SetPlayerPosition(Vector2 position)
@@ -131,7 +132,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         {
             float halfPlayerHeight = 4.25f;
             var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
-            _player.Transform.position = startPosition;
+            _playerTransform.position = startPosition;
         } 
     }
 
@@ -153,8 +154,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void InstantiatePlayer()
     {
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
+        _playerTransform = _player.Transform;
+        _player.KillPlaneY = _gameManager.CurrentLevel.KillPlaneY;
         SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
-        _camera.AddCameraTarget(_player.Transform, 1, 0.25f, 0, new(10, 10));
+        _camera.AddCameraTarget(_playerTransform, 1, 0.25f, 0, new(10, 10));
         SubscribeToPlayerEvents();
         _camera.CenterOnTargets();
         OnPlayerCreated?.Invoke(_player);

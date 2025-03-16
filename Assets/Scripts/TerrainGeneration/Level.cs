@@ -16,6 +16,7 @@ public class Level
     [SerializeField] private string _leaderboardKey = "None";
     [SerializeField] private Vector2 _startPoint;
     [SerializeField] private Vector2 _finishPoint;
+    [SerializeField] private float _killPlaneY;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
@@ -25,8 +26,9 @@ public class Level
     public int GoldRequired => _goldRequired;
     public Vector2 StartPoint => _startPoint;
     public Vector2 FinishPoint => _finishPoint;
+    public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
 
-    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 finishPoint = new())
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 finishPoint = new(), float killPlaneY = -100)
     {
         _name = name;
         _medalTimes = medalTimes;
@@ -34,6 +36,7 @@ public class Level
         _leaderboardKey = _name + "_leaderboard";
         _startPoint = startPoint;
         _finishPoint = finishPoint;
+        _killPlaneY = killPlaneY;
 
     }
 }

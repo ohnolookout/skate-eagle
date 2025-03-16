@@ -1,27 +1,42 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
+using Codice.Client.Common.GameUI;
+using static UnityEngine.Rendering.HableCurve;
+using log4net.Core;
+using UnityEditor.Build;
 
-/*
 public class LevelDesigner : EditorWindow
 {
-    public string _name;
-    public MedalTimes _medalTimes = new();
-    public List<LevelSection> _levelSections = new();
-    private GroundManager _groundManager;
-    private LevelManager _levelManager;
-    private bool isLevelEditor;
-    ScriptableObject _target;
-    SerializedObject _so;
-    SerializedProperty _serializedMedalTimes, _serializedLevelSections;
-    Vector2 _scrollPosition;
-    Level _currentLevel;
-    EditorLoadWindow _loadWindow;
+    #region Declarations
 
-    [MenuItem("Tools/LevelDesigner")]
+    private GroundEditManager _groundEditor;
+    private GroundManager _groundManager;
+    private int _tabIndex = 0;
+    private GameObject _selectedObject;
+    private SerializedObject _so;
+    private SerializedProperty _serializedCurve;
+    private GroundSegment _segment;
+    private Ground _ground;
+    private LevelLoadWindow _loadWindow;
+    private Vector2 _scrollPosition;
+    private LevelDatabase _levelDB;
+    private bool _levelIsDirty = false;
+
+    private string levelName = "New Level";
+    public float medalTimeRed = 0;
+    public float medalTimeBlue = 0;
+    public float medalTimeGold = 0;
+    public float medalTimeSilver = 0;
+    public float medalTimeBronze = 0;
+
+    private Vector2 _startPoint = new();
+    private Vector2 _finishPoint = new(500, 0);
+
+    #endregion
+
+    [MenuItem("Tools/GroundDesigner")]
     public static void ShowWindow()
     {
         GetWindow<LevelDesigner>();
@@ -29,51 +44,79 @@ public class LevelDesigner : EditorWindow
 
     private void OnEnable()
     {
-        isLevelEditor = SceneManager.GetActiveScene().name == "Level_Designer";
-        if (isLevelEditor)
-        {
-            AddTerrainGeneration();
-        }
-        _target = this;
-        _so = new(_target);
-        _currentLevel = Resources.Load<Level>("EditorLevel");
-        UpdateFields();
-        _serializedMedalTimes = _so.FindProperty("_medalTimes");
-        _serializedLevelSections = _so.FindProperty("_levelSections");
+        _groundEditor = FindAnyObjectByType<GroundEditManager>();
+        _groundManager = FindAnyObjectByType<GroundManager>();
 
+        _selectedObject = Selection.activeGameObject;
+        OnSelectionChanged();
+
+        Selection.selectionChanged += OnSelectionChanged;
+
+        LoadLevelDB();
+        if (_levelDB.lastLevelLoadedUID != null && _levelDB.UIDExists(_levelDB.lastLevelLoadedUID))
+        {
+            Debug.Log("Loading level with UID " + _levelDB.lastLevelLoadedUID + "and name " + _levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
+            LoadLevel(_levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
+        }
     }
 
+    private void OnDisable()
+    {
+        if(!DoDiscardChanges())
+        {
+            SaveLevel();
+        }
+        _groundEditor = null;
+        _groundManager = null;
+        _selectedObject = null;
+        Selection.selectionChanged -= OnSelectionChanged;
+    }
 
+    #region GUI
     private void OnGUI()
     {
-        if ((SceneManager.GetActiveScene().name == "Level_Designer") != isLevelEditor)
+        if(_groundEditor == null)
         {
-            isLevelEditor = !isLevelEditor;
-            if (isLevelEditor)
-            {
-                AddTerrainGeneration();
-            }
+            EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
+            return;
         }
-        PopulateEditorFields();
-        if (isLevelEditor)
+        _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground", "Segment" });
+        switch (_tabIndex)
         {
-            if (GUILayout.Button("Generate", GUILayout.ExpandWidth(false)))
-            {
-                GenerateLevel();
-            }
-            if (GUILayout.Button("Clear Level", GUILayout.ExpandWidth(false)))
-            {
-                AddTerrainGeneration();
-                _groundManager.DeleteChildren();
-            }
+            case 0:
+                LevelMenu();
+                break;
+            case 1:
+                GroundMenu();
+                break;
+            case 2:
+                SegmentMenu();
+                break;
         }
-        else
+    }
+    private void LevelMenu()
+    {
+        EditorGUI.BeginChangeCheck();
+
+        GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
+        levelName = EditorGUILayout.TextField("Level Name", levelName);
+
+        GUILayout.Label("Medal Times");
+        medalTimeRed = EditorGUILayout.FloatField("Red", medalTimeRed, GUILayout.ExpandWidth(false));
+        medalTimeBlue = EditorGUILayout.FloatField("Blue", medalTimeBlue, GUILayout.ExpandWidth(false));
+        medalTimeGold = EditorGUILayout.FloatField("Gold", medalTimeGold, GUILayout.ExpandWidth(false));
+        medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
+        medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
+
+        if (EditorGUI.EndChangeCheck())
         {
-            GUILayout.Label("Must be in Level Designer to generate levels.");
-            if (GUILayout.Button("Load Level Designer Scene", GUILayout.ExpandWidth(false)))
-            {
-                EditorSceneManager.OpenScene("Assets/Scenes/Level_Designer.unity");
-            }
+            _levelIsDirty = true;
+        }
+
+        if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeGameObject = _groundEditor.AddGround().gameObject;
+            _levelIsDirty = true;
         }
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
@@ -81,98 +124,335 @@ public class LevelDesigner : EditorWindow
         }
         if (GUILayout.Button("Load", GUILayout.ExpandWidth(false)))
         {
-            _loadWindow = GetWindow<EditorLoadWindow>();
-            _loadWindow.Init(this);
+            if (!DoDiscardChanges())
+            {
+                return;
+            }
+            _loadWindow = GetWindow<LevelLoadWindow>();
+            _loadWindow.Init(this, _levelDB);
         }
-        if (GUILayout.Button("Reset to Default", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("New Level", GUILayout.ExpandWidth(false)))
         {
-            _currentLevel.ManualReset();
-            UpdateFields();
+            if (!DoDiscardChanges())
+            {
+                return;
+            }
+            _groundManager.ClearGround();
+            levelName = "New Level";
+            ResetMedalTimes();
+            _levelIsDirty = false;
+        }
+    }
+    private void GroundMenu()
+    {
+        if (_ground == null)
+        {
+            GUILayout.TextArea("No ground selected");
+            return;
+        }
+
+        if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground).gameObject;
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.RemoveSegment(_ground);
+
+            if(Selection.activeGameObject == null)
+            {
+                Selection.activeGameObject = _ground.gameObject;
+            }
+
+            _levelIsDirty = true;
+        }
+        if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.RecalculateSegments(_ground, 0);
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.RemoveGround(_ground);
+            
+            if (Selection.activeGameObject == null)
+            {
+                Selection.activeGameObject = _groundManager.gameObject;
+            }
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
+        {
+            var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());            
+            Selection.activeGameObject = segment.gameObject;
+            segment.SetLowPoint(2);
+            _startPoint = _groundEditor.SetStartPoint(segment, 1);
+            _levelIsDirty = true;
+        }
+        if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
+        {
+            var segment = _groundEditor.AddSegment(_ground, _groundEditor.DefaultFinish());
+            segment.SetLowPoint(1);
+            Selection.activeGameObject = segment.gameObject;
+            _finishPoint = _groundEditor.SetFinishPoint(segment, 1);
+            _levelIsDirty = true;
         }
     }
 
-    private void PopulateEditorFields()
+    private void SegmentMenu()
     {
-        GUILayout.Label("Level Designer", EditorStyles.boldLabel);
+        if(_segment == null)
+        {
+            GUILayout.TextArea("No segment selected");
+            return;
+        }
 
-        EditorGUI.BeginChangeCheck();
-
-        _name = EditorGUILayout.TextField("Level Name", _name);
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
-        EditorGUILayout.PropertyField(_serializedMedalTimes, true);
-        EditorGUILayout.PropertyField(_serializedLevelSections, true);
-        EditorGUILayout.EndScrollView();
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(_serializedCurve, true);
+
         _so.ApplyModifiedProperties();
         _so.Update();
 
         if (EditorGUI.EndChangeCheck())
         {
-            UpdateLevel();
-            _currentLevel.ValidateSections();
+            Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
+            _groundEditor.RefreshCurve(_segment);
+            _groundEditor.RecalculateSegments(_segment);
+            _levelIsDirty = true;
         }
-    }
-
-    private void GenerateLevel()
-    {
-        AddTerrainGeneration();
-        if (!_currentLevel.Validate())
+        if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
+            Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
+            _levelIsDirty = true;
+        }
+
+        if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.ResetSegment(_segment);
+            _levelIsDirty = true;
+        }
+
+        if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.RemoveSegment(_segment);
+            if (_segment.PreviousSegment != null)
+            {
+                Selection.activeGameObject = _segment.PreviousSegment.gameObject;
+            } else
+            {
+                Selection.activeGameObject = _segment.parentGround.gameObject;
+            }
+            _levelIsDirty = true;
             return;
         }
-        UpdateLevel();
-        _levelManager.SetLevel(_currentLevel);
-        _groundManager.GenerateGround(_currentLevel);
+
+        if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.SetStartPoint(_segment, 1);
+            _levelIsDirty = true;
+        }
+
+        if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
+        {
+            _groundEditor.SetFinishPoint(_segment, 1);
+            _segment.SetLowPoint(1);
+            _levelIsDirty = true;
+        }
+
+        EditorGUILayout.EndScrollView();
     }
 
+    #endregion
+
+    #region State Mgmt
+
+    private void OnSelectionChanged()
+    {
+        _selectedObject = Selection.activeGameObject;
+        _segment = null;
+        _ground = null;
+
+        if (_selectedObject == null)
+        {
+            AssignFirstGround();
+            return;
+        }
+
+        _so = new(_selectedObject);
+
+        if (_selectedObject.GetComponent<Ground>() != null)
+        {
+            _ground = _selectedObject.GetComponent<Ground>();
+            _segment = _ground.SegmentList.Count > 0 ? _ground.SegmentList[^1] : null;
+
+            if(_segment != null)
+            {
+                SelectSegment(_segment);
+            }
+            
+            return;
+        } 
+        else if (_selectedObject.GetComponent<GroundSegment>() != null)
+        {
+            _segment = _selectedObject.GetComponent<GroundSegment>();
+            SelectSegment(_segment);
+            _ground = _segment.parentGround;
+            return;
+        }
+        else
+        {
+            AssignFirstGround();
+        }
+    }
+
+    private void AssignFirstGround()
+    {
+        if (_groundManager.groundContainer.transform.childCount > 0)
+        {
+            Debug.Log("Selecting first ground in groundcontainer...");
+            _ground = _groundManager.groundContainer.transform.GetChild(0).GetComponent<Ground>();
+            if (_segment == null && _ground.SegmentList.Count > 0)
+            {
+                _segment = _ground.SegmentList[^1];
+                SelectSegment(_segment);
+            }
+        }
+    }
+
+    private void SelectSegment(GroundSegment segment)
+    {
+        _so = new(segment);
+        _serializedCurve = _so.FindProperty("curve");
+    }
+    #endregion
+
+    #region Level Save/Load
+    private void LoadLevelDB()
+    {
+        var path = "Assets/LevelDatabase/LevelDB.asset";
+        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath(path, typeof(LevelDatabase));
+        
+        if(_levelDB is null)
+        {
+            Debug.Log("No level database found. Creating new database");
+            _levelDB = CreateInstance<LevelDatabase>();
+            AssetDatabase.CreateAsset(_levelDB, path);
+        } else
+        {
+            Debug.Log("Level Database loaded with " + _levelDB.LevelDictionary.Count + " levels.");
+        }
+
+    }
     private void SaveLevel()
     {
         if (!(_loadWindow is null))
         {
             _loadWindow.Close();
         }
-        if (!_currentLevel.Validate())
+
+        MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
+        var groundsArray = GroundsArray();
+        var killPlaneY = GetKillPlaneY(groundsArray);
+        var levelToSave = new Level(levelName, medalTimes, groundsArray, _startPoint, _finishPoint, killPlaneY);
+        var levelSaved = _levelDB.SaveLevel(levelToSave);
+
+        if (levelSaved)
         {
+            Debug.Log($"Level {levelName} saved");
+            _levelIsDirty = false;
+        }
+        else
+        {
+            Debug.Log($"Level {levelName} failed to save");
+        }
+
+    }
+    public void LoadLevel(string levelName)
+    {
+        var loadedLevel = _levelDB.GetLevelByName(levelName);
+
+        if (loadedLevel is null)
+        {
+            Debug.Log($"Level {levelName} failed to load");
             return;
         }
-        if (LevelFileManagement.LevelNames().Contains($"{_name}.asset"))
+
+        Debug.Log("Loading level " + loadedLevel.Name);
+        this.levelName = loadedLevel.Name;
+
+        LoadMedalTimes(loadedLevel.MedalTimes);
+
+        _startPoint = loadedLevel.StartPoint;
+        _finishPoint = loadedLevel.FinishPoint;
+
+        SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
+
+        _levelIsDirty = false;
+    }
+
+    private void LoadMedalTimes(MedalTimes medalTimes)
+    {
+        medalTimeRed = medalTimes.Red;
+        medalTimeBlue = medalTimes.Blue;
+        medalTimeGold = medalTimes.Gold;
+        medalTimeSilver = medalTimes.Silver;
+        medalTimeBronze = medalTimes.Bronze;
+    }
+
+    private void ResetMedalTimes()
+    {
+        medalTimeRed = 0;
+        medalTimeBlue = 0;
+        medalTimeGold = 0;
+        medalTimeSilver = 0;
+        medalTimeBronze = 0;
+    }
+
+
+    private bool DoDiscardChanges()
+    {
+        if (_levelIsDirty)
         {
-            bool overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Are you sure you want to overwrite {_name}?", "Yes", "No");
-            if (!overwrite)
+            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
+            if (!discardChanges)
             {
-                return;
+                return false;
             }
         }
-        UpdateLevel();
-        string path = $"Assets/Levels/{_name}.asset";
-        AssetDatabase.CreateAsset(DeepCopy.CopyLevel(_currentLevel), path);
+        return true;
     }
+    #endregion
+    #region Build Utilities
 
-
-    public void LoadLevel(string path)
+    private float GetKillPlaneY(Ground[] groundsArray)
     {
-        Level levelToLoad = (Level)AssetDatabase.LoadAssetAtPath(path, typeof(Level));
-        _currentLevel.ReassignValues(levelToLoad);
-        UpdateFields();
-    }
+        float lowY = float.PositiveInfinity;
+        foreach (var ground in groundsArray)
+        {
+            foreach (var segment in ground.SegmentList)
+            {
+                if (segment.LowPoint.position.y < lowY)
+                {
+                    lowY = segment.LowPoint.position.y;
+                }
+            }
+        }
 
-    public void UpdateFields()
+        return lowY - 10;
+
+    }
+    private Ground[] GroundsArray()
     {
-        _levelSections = _currentLevel.LevelSections;
-        _medalTimes = _currentLevel.MedalTimes;
-        _name = _currentLevel.Name;
+        return _groundManager.groundContainer.GetComponentsInChildren<Ground>();
     }
 
-    public void UpdateLevel()
-    {
-        _currentLevel.ReassignValues(_name, _medalTimes, _levelSections);
-    }
-    private void AddTerrainGeneration()
-    {
-        _levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-        _groundManager = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<GroundManager>();
-
-    }
-
+    #endregion
 }
-*/

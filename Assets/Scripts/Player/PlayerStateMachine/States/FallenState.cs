@@ -8,6 +8,7 @@ public class FallenState : PlayerState
     public override void EnterState()
     {
         PlayerAsyncUtility.DelayedFreeze(_player, 0.5f);
+        _player.EventAnnouncer.InvokeAction(PlayerEvent.Fall);
     }
 
 

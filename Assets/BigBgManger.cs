@@ -40,7 +40,6 @@ public class BigBgManger : MonoBehaviour
     #region Monobehaviours
     private void Awake()
     {
-        _startPosition = transform.position;
         _panelWidth = _bgPanelPool[0].XWidth;
         _totalWidth = _panelWidth * _panelCount;
         _positionCoefficient = (-_panelCount / 2) + 0.5f;
@@ -49,7 +48,8 @@ public class BigBgManger : MonoBehaviour
         LevelManager.OnRestart += Restart;
     }
     void Start()
-    {   
+    {
+        _startPosition = transform.position;
         _leftAnchor.transform.position = new(-_totalWidth / 2, 0);
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
@@ -75,7 +75,6 @@ public class BigBgManger : MonoBehaviour
 
     private void Restart()
     {
-        transform.position = _startPosition;
         Start();
     }
     /*

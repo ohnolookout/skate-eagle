@@ -44,6 +44,10 @@ public class ActiveState : PlayerState
         {
             _substate.UpdateStates();
         }
+        if(_player.Transform.position.y < _player.KillPlaneY)
+        {
+            Fall();
+        }
     }
 
     public override void FixedUpdateState()
@@ -116,5 +120,10 @@ public class ActiveState : PlayerState
     {
         _player.EventAnnouncer.InvokeAction(PlayerEvent.PreDie);
         ChangeState(_stateFactory.GetState(PlayerStateType.Ragdoll), false);
+    }
+
+    private void Fall()
+    {
+        ChangeState(_stateFactory.GetState(PlayerStateType.Fallen), false);
     }
 }

@@ -82,6 +82,7 @@ public static class PlayerAsyncUtility
         player.InputEvents.DisableInputs();
         player.CancelAsyncTokens();
         player.Trail.emitting = false;
+        player.InvokeBodySound();
         player.EventAnnouncer.InvokeAction(PlayerEvent.Die);
     }
 

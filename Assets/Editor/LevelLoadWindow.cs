@@ -7,7 +7,7 @@ using System;
 
 public class LevelLoadWindow : EditorWindow
 {
-    private GroundDesigner _groundDesigner;
+    private LevelDesigner _groundDesigner;
     private LevelDatabase _levelDB;
     private Dictionary<string, string> _levelPathsByName = new();
     private string[] _levelNames;
@@ -18,7 +18,7 @@ public class LevelLoadWindow : EditorWindow
     }
 
 
-    public void Init(GroundDesigner groundDesigner, LevelDatabase levelDB)
+    public void Init(LevelDesigner groundDesigner, LevelDatabase levelDB)
     {
         _groundDesigner = groundDesigner;
         _levelDB = levelDB;

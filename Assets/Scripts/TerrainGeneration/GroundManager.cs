@@ -50,7 +50,6 @@ public class GroundManager : MonoBehaviour
 
     private void SubscribeToSegmentEvents()
     {
-        Debug.Log("Subscribing to segment events");
         GroundSegment.OnSegmentBecomeVisible += OnSegmentBecomeVisible;
         GroundSegment.OnSegmentBecomeInvisible += OnSegmentBecomeInvisible;
     }

@@ -20,7 +20,7 @@ public class Player : MonoBehaviour, IPlayer
     private InputEventController _inputEvents;
     private PlayerEventAnnouncer _eventAnnouncer;
     private PlayerAnimationManager _animationManager;
-    private ProCamera2DCameraWindow _cameraWindow;
+    private float _killPlaneY = -100;
 
     public MomentumTracker MomentumTracker { get; set; }
     public ICollisionManager CollisionManager { get => _collisionManager; }
@@ -32,6 +32,7 @@ public class Player : MonoBehaviour, IPlayer
     public bool Collided { get => _collisionManager.Collided; }
     public bool Stomping { get => _stomping; set => _stomping = value; }
     public bool IsRagdoll { get => _isRagdoll; set => _isRagdoll = value; }
+    public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public InputEventController InputEvents { get => _inputEvents; set => _inputEvents = value; }
     public bool DoLanding { get => _doLanding; set => _doLanding = value; }
     public JumpManager JumpManager { get => _jumpManager; set => _jumpManager = value; }
@@ -66,7 +67,6 @@ public class Player : MonoBehaviour, IPlayer
         _body.centerOfMass = new Vector2(0, -2f);
         _stateMachine.InitializeState(PlayerStateType.Standby);
         _animator.SetBool("Airborne", false);
-        _cameraWindow = ProCamera2D.Instance.GetComponent<ProCamera2DCameraWindow>();
     }
 
     void Update()
@@ -110,7 +110,6 @@ public class Player : MonoBehaviour, IPlayer
     
     public void InvokeEvent(PlayerEvent eventType)
     {
-        Debug.Log("Invoking event: " + eventType);
         _eventAnnouncer.InvokeAction(eventType);
     }
     
@@ -140,7 +139,6 @@ public class Player : MonoBehaviour, IPlayer
         _animator.SetBool("FacingForward", _facingForward);
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         _eventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);
-        //_cameraWindow.CameraWindowRect.Set(_cameraWindow.CameraWindowRect.x * -1, _cameraWindow.CameraWindowRect.y, _cameraWindow.CameraWindowRect.width, _cameraWindow.CameraWindowRect.height);
     }
 
     #endregion
