@@ -16,7 +16,8 @@ public class BackgroundContainer : MonoBehaviour
 
     private void Awake()
     {
-        BgPanelSequence = RandomIndexOrder(_bgPanelPoolCount, _bgPanelSequenceCount);
+        LevelManager.OnRestart += GenerateSequence;
+        GenerateSequence();
     }
     void Start()
     {
@@ -55,6 +56,11 @@ public class BackgroundContainer : MonoBehaviour
         }
 
         return returnSequence;
+    }
+
+    public void GenerateSequence()
+    {
+        BgPanelSequence = RandomIndexOrder(_bgPanelPoolCount, _bgPanelSequenceCount);
     }
 
 }

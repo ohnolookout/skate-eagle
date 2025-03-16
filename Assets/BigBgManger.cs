@@ -46,10 +46,10 @@ public class BigBgManger : MonoBehaviour
         _cam = Camera.main;
         _camTransform = _cam.transform;
         LevelManager.OnRestart += Restart;
+        _startPosition = transform.position;
     }
     void Start()
     {
-        _startPosition = transform.position;
         _leftAnchor.transform.position = new(-_totalWidth / 2, 0);
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
