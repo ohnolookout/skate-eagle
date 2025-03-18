@@ -340,6 +340,22 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             return newCameraTarget;
         }
 
+        /// <summary>Add a cameratarget with duration.</summary>
+        /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
+        public CameraTarget AddCameraTarget(CameraTarget cameraTarget, float duration = 0f)
+        {
+            CameraTargets.Add(cameraTarget);
+            var influenceH = cameraTarget.TargetInfluenceH;
+            var influenceV = cameraTarget.TargetInfluenceV;
+            if (duration > 0f)
+            {
+                cameraTarget.TargetInfluence = 0f;
+                StartCoroutine(AdjustTargetInfluenceRoutine(cameraTarget, influenceH, influenceV, duration));
+            }
+
+            return cameraTarget;
+        }
+
         /// <summary>Add multiple targets for the camera to follow.</summary>
         /// <param name="targetsTransforms">An array or list with the new targets</param>
         /// <param name="targetsInfluenceH">The influence the targets horizontal position should have when calculating the average position of all the targets</param>

@@ -35,6 +35,10 @@ public class CameraZoom : MonoBehaviour
     }
     void Update()
     {
+        if (_player == null)
+        {
+            return;
+        }
         if (_doTransitionTargetSize)
         {
             TransitionTargetSize();
@@ -50,11 +54,6 @@ public class CameraZoom : MonoBehaviour
             PlayerZoom();
         }
         _camContainer.position = new(0, _zoomYDelta);
-        /*
-        else if (_camera.GameCamera.orthographicSize != _targetSize)
-        {
-            HighLowZoom();
-        }*/
     }
 
     public void SubscribeToPlayerLanding(IPlayer player)
@@ -151,6 +150,14 @@ public class CameraZoom : MonoBehaviour
     private void OnPlayerCreated(IPlayer player)
     {
         _player = player;
+    }
+
+    public void ResetZoom()
+    {
+        _camera.GameCamera.orthographicSize = _defaultSize;
+        _zoomYDelta = 0;
+        _doTransitionTargetSize = false;
+        _doPlayerZoom = false;
     }
 
 }

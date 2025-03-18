@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 //Handles all editor-specific functions for ground construction and destruction
-[ExecuteAlways]
+[ExecuteInEditMode]
 public class GroundEditManager : MonoBehaviour
 {
     private GroundManager _groundManager;
@@ -13,11 +13,6 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        if(!Application.isEditor)
-        {
-            Destroy(this);
-        }
-
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
 
@@ -31,6 +26,7 @@ public class GroundEditManager : MonoBehaviour
         {
             _groundManager.ClearGround();
         }
+
     }
     #endregion
 

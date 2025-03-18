@@ -6,7 +6,6 @@ using Codice.Client.Common.GameUI;
 using static UnityEngine.Rendering.HableCurve;
 using log4net.Core;
 using UnityEditor.Build;
-
 public class LevelDesigner : EditorWindow
 {
     #region Declarations
@@ -17,12 +16,14 @@ public class LevelDesigner : EditorWindow
     private GameObject _selectedObject;
     private SerializedObject _so;
     private SerializedProperty _serializedCurve;
+    private SerializedProperty _doCameraTarget;
     private GroundSegment _segment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
     private bool _levelIsDirty = false;
+    private bool _groundEditorNotFound = false;
 
     private string levelName = "New Level";
     public float medalTimeRed = 0;
@@ -31,12 +32,14 @@ public class LevelDesigner : EditorWindow
     public float medalTimeSilver = 0;
     public float medalTimeBronze = 0;
 
+    public Vector2 cameraStartPosition = new(-35, 15);
+
     private Vector2 _startPoint = new();
     private Vector2 _finishPoint = new(500, 0);
 
     #endregion
 
-    [MenuItem("Tools/GroundDesigner")]
+    [MenuItem("Tools/LevelDesigner")]
     public static void ShowWindow()
     {
         GetWindow<LevelDesigner>();
@@ -62,7 +65,7 @@ public class LevelDesigner : EditorWindow
 
     private void OnDisable()
     {
-        if(!DoDiscardChanges())
+        if (!DoDiscardChanges())
         {
             SaveLevel();
         }
@@ -75,10 +78,26 @@ public class LevelDesigner : EditorWindow
     #region GUI
     private void OnGUI()
     {
-        if(_groundEditor == null)
+        if(Application.isPlaying)
         {
-            EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Level Designer is not available in play mode.", MessageType.Warning);
             return;
+        }
+        if (_groundEditor == null)
+        {
+            if (_groundEditorNotFound)
+            {
+                EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
+                return;
+            }
+
+            OnEnable();
+
+            if(_groundEditor == null)
+            {
+                _groundEditorNotFound = true;
+                return;
+            }
         }
         _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground", "Segment" });
         switch (_tabIndex)
@@ -101,12 +120,15 @@ public class LevelDesigner : EditorWindow
         GUILayout.Label("Level: " + levelName, EditorStyles.boldLabel);
         levelName = EditorGUILayout.TextField("Level Name", levelName);
 
-        GUILayout.Label("Medal Times");
+        GUILayout.Label("Medal Times", EditorStyles.boldLabel);
         medalTimeRed = EditorGUILayout.FloatField("Red", medalTimeRed, GUILayout.ExpandWidth(false));
         medalTimeBlue = EditorGUILayout.FloatField("Blue", medalTimeBlue, GUILayout.ExpandWidth(false));
         medalTimeGold = EditorGUILayout.FloatField("Gold", medalTimeGold, GUILayout.ExpandWidth(false));
         medalTimeSilver = EditorGUILayout.FloatField("Silver", medalTimeSilver, GUILayout.ExpandWidth(false));
         medalTimeBronze = EditorGUILayout.FloatField("Bronze", medalTimeBronze, GUILayout.ExpandWidth(false));
+
+        GUILayout.Label("Camera Start Point", EditorStyles.boldLabel);
+        cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", cameraStartPosition);
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -217,6 +239,7 @@ public class LevelDesigner : EditorWindow
 
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedCurve, true);
+        EditorGUILayout.PropertyField(_doCameraTarget, false);
 
         _so.ApplyModifiedProperties();
         _so.Update();
@@ -264,6 +287,12 @@ public class LevelDesigner : EditorWindow
         {
             _groundEditor.SetFinishPoint(_segment, 1);
             _segment.SetLowPoint(1);
+            _levelIsDirty = true;
+        }
+
+        if(GUILayout.Button("Reset High/Low Points", GUILayout.ExpandWidth(false)))
+        {
+            _segment.RecalculateDefaultHighLowPoints();
             _levelIsDirty = true;
         }
 
@@ -330,7 +359,8 @@ public class LevelDesigner : EditorWindow
     private void SelectSegment(GroundSegment segment)
     {
         _so = new(segment);
-        _serializedCurve = _so.FindProperty("curve");
+        _serializedCurve = _so.FindProperty(nameof(GroundSegment.curve));
+        _doCameraTarget = _so.FindProperty(nameof(GroundSegment.doTarget));
     }
     #endregion
 
@@ -351,6 +381,7 @@ public class LevelDesigner : EditorWindow
         }
 
     }
+
     private void SaveLevel()
     {
         if (!(_loadWindow is null))
@@ -361,7 +392,7 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
-        var levelToSave = new Level(levelName, medalTimes, groundsArray, _startPoint, _finishPoint, killPlaneY);
+        var levelToSave = new Level(levelName, medalTimes, groundsArray, _startPoint, _finishPoint, cameraStartPosition, killPlaneY);
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
@@ -392,6 +423,7 @@ public class LevelDesigner : EditorWindow
 
         _startPoint = loadedLevel.StartPoint;
         _finishPoint = loadedLevel.FinishPoint;
+        cameraStartPosition = loadedLevel.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
 
@@ -406,7 +438,9 @@ public class LevelDesigner : EditorWindow
         medalTimeSilver = medalTimes.Silver;
         medalTimeBronze = medalTimes.Bronze;
     }
+    #endregion
 
+    #region Reset
     private void ResetMedalTimes()
     {
         medalTimeRed = 0;
@@ -430,6 +464,7 @@ public class LevelDesigner : EditorWindow
         return true;
     }
     #endregion
+
     #region Build Utilities
 
     private float GetKillPlaneY(Ground[] groundsArray)
@@ -439,9 +474,10 @@ public class LevelDesigner : EditorWindow
         {
             foreach (var segment in ground.SegmentList)
             {
-                if (segment.LowPoint.position.y < lowY)
+                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
+                if (newY < lowY)
                 {
-                    lowY = segment.LowPoint.position.y;
+                    lowY = newY;
                 }
             }
         }

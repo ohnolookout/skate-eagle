@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
 using System.Threading;
+using Com.LuisPedroFonseca.ProCamera2D;
+using System.Collections.Generic;
 
 public interface IPlayer
 {
@@ -25,6 +27,8 @@ public interface IPlayer
     CancellationToken FreezeToken { get; }
     CancellationTokenSource BoostTokenSource { get; }
     CancellationTokenSource FreezeTokenSource { get; }
+    List<CameraTarget> CameraTargets { get; }
+    CameraTarget CameraTarget { get; }
 
     void SwitchDirection();
     void TriggerBoost(float boostValue, float boostMultiplier);

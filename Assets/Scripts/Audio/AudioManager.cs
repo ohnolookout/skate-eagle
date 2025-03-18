@@ -54,7 +54,7 @@ public class AudioManager : MonoBehaviour
         GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
         GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
         LevelManager.OnRestart += ClearLoops;
-        LevelManager.OnGameOver += _ => ClearLoops();
+        LevelManager.OnGameOver += ClearLoops;
         LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
         LevelManager.OnFinish += _ => SetModifierFramerate(1);
         LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);

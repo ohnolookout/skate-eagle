@@ -8,11 +8,12 @@ using UnityEditor;
 [Serializable]
 public class Curve
 {
-    [SerializeField] private List<float> _sectionLengths;
-    [SerializeField] private List<CurvePoint> _curvePoints;
+    #region Declarations
     public CurveDefinition curveDefinition;
-    [SerializeField] private float length;
-    [SerializeField] private protected Vector3 _lowPoint, _highPoint;
+    [SerializeField][HideInInspector] private List<float> _sectionLengths;
+    [SerializeField][HideInInspector] private List<CurvePoint> _curvePoints;
+    [SerializeField][HideInInspector] private float length;
+    [SerializeField][HideInInspector] private protected Vector3 _lowPoint, _highPoint;
     public List<CurvePoint> CurvePoints { get => _curvePoints; set => _curvePoints = value; }
     public int Count { get => _curvePoints.Count; }
     public Vector3 LowPoint { get => _lowPoint; set => _lowPoint = value; }
@@ -20,11 +21,13 @@ public class Curve
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
     public List<float> SectionLengths => _sectionLengths;
+    #endregion
+
+    #region Construction
     public Curve(CurveDefinition curveDef, Vector2 prevTang)
     {
         curveDefinition = curveDef;
         _curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
-        Debug.Log($"Curve created with high point: {_highPoint} and low point: {_lowPoint}");
         GenerateCurveStats();
     }
 
@@ -86,8 +89,11 @@ public class Curve
 
         return curvePoints;
     }
+    #endregion
 
-    public void EvaluateHighLow(Vector3 newPoint)
+    #region Curve Stats
+
+    private void EvaluateHighLow(Vector3 newPoint)
     {
         if (newPoint.y > _highPoint.y)
         {
@@ -98,7 +104,7 @@ public class Curve
             _lowPoint = newPoint;
         }
     }
-    public void GenerateCurveStats()
+    private void GenerateCurveStats()
     {
         length = GetCurveLength();
     }
@@ -127,6 +133,17 @@ public class Curve
         }
     }
 
+    public void RecalculateDefaultHighLowPoints()
+    {
+        _highPoint = _curvePoints[0].ControlPoint;
+        _lowPoint = _highPoint;
+
+        for ( int i = 0; i < _curvePoints.Count - 1; i++)
+        {
+            EvaluateHighLow(BezierMath.GetMidpoint(_curvePoints[i], _curvePoints[i + 1]));
+        }
+    }
+    #endregion
 
 
 }

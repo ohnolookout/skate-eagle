@@ -45,7 +45,7 @@ public class FlipTextGenerator : MonoBehaviour
     }
 
 
-    public void CancelText(ILevelManager _ = null)
+    public void CancelText()
     {
         if(!flipText.Canceled)
         {

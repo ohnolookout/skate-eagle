@@ -14,9 +14,9 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
 
     void OnEnable()
     {
-        LevelManager.OnGameOver += _ => RemoveNonragdollColliders();
+        LevelManager.OnGameOver += RemoveNonragdollColliders;
         //Increase uncollide timer on gameOver to reduce number of incidental sound hits.
-        LevelManager.OnGameOver += _ => IncreaseCollisionTimer(CollisionType.Ground, 1.5f);
+        LevelManager.OnGameOver += () => IncreaseCollisionTimer(CollisionType.Ground, 1.5f);
         LevelManager.OnAttempt += () => _checkForExits = true;
         LevelManager.OnResultsScreen += () => _checkForExits = false;
     }

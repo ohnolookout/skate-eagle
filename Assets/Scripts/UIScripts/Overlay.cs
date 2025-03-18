@@ -68,7 +68,7 @@ public class Overlay : MonoBehaviour
         _gameplayRestartButton.onClick.AddListener(_levelManager.RestartLevel);
     }
 
-    public void ActivateGameOverScreen(ILevelManager _)
+    public void ActivateGameOverScreen()
     {
         _gameOverObject.SetActive(true);
         _mobileControls.ActivateDisplay(false);

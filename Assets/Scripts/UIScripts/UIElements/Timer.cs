@@ -56,7 +56,7 @@ public class Timer : MonoBehaviour, IOverlayScreen
         StopTimer(true);
     }
 
-    public void GameOver(ILevelManager _)
+    public void GameOver()
     {
         StopTimer(false);
     }

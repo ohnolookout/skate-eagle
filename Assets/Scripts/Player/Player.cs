@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Threading;
 using TMPro;
 using Com.LuisPedroFonseca.ProCamera2D;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour, IPlayer
 {
@@ -21,6 +22,8 @@ public class Player : MonoBehaviour, IPlayer
     private PlayerEventAnnouncer _eventAnnouncer;
     private PlayerAnimationManager _animationManager;
     private float _killPlaneY = -100;
+    private const float HalfPlayerHeight = 4.25f;
+    private List<CameraTarget> _cameraTargets = new();
 
     public MomentumTracker MomentumTracker { get; set; }
     public ICollisionManager CollisionManager { get => _collisionManager; }
@@ -43,6 +46,8 @@ public class Player : MonoBehaviour, IPlayer
     public CancellationToken FreezeToken { get => _freezeToken; }
     public CancellationTokenSource BoostTokenSource { get => _boostTokenSource; }
     public CancellationTokenSource FreezeTokenSource { get => _freezeTokenSource; }
+    public List<CameraTarget> CameraTargets { get => _cameraTargets; }
+    public CameraTarget CameraTarget => _cameraTargets[0];
     #endregion
 
     #region Monobehaviours
@@ -59,6 +64,14 @@ public class Player : MonoBehaviour, IPlayer
         _boostToken = _boostTokenSource.Token;
         _freezeTokenSource = new();
         _freezeToken = _freezeTokenSource.Token;
+
+        if (GameManager.Instance != null)
+        {
+            _killPlaneY = GameManager.Instance.CurrentLevel.KillPlaneY;
+            transform.position = GameManager.Instance.CurrentLevel.StartPoint + new Vector2(0, HalfPlayerHeight + 1.2f);
+        }
+
+        _cameraTargets.Add(CameraTargetUtility.GetTarget(CameraTargetType.Player, transform));
     }
 
     private void Start()

@@ -13,13 +13,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
     private bool _finishIsActive = false;
-    private ProCamera2D _camera;
     [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
     private Player _player;
     private Transform _playerTransform;
     public static Action<Level, PlayerRecord> OnLanding { get; set; }
-    public static Action<ILevelManager> OnGameOver { get; set; }
+    public static Action OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
     public static Action OnAttempt { get; set; }
     public static Action OnStandby { get; set; }
@@ -28,7 +27,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnLevelExit { get; set; }
     public static Action OnFall { get; set; }
     public static Action OnCrossFinish { get; set; }
-    public static Action OnDisableCamera { get; set; }
     public static Action<IPlayer> OnPlayerCreated { get; set; }
 
     public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
@@ -40,16 +38,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
     void Awake()
     {
         _gameManager = GameManager.Instance;
-        _camera = ProCamera2D.Instance;
-        _camera.RemoveAllCameraTargets();
-        DisableCamera();
         Timer.OnStopTimer += OnStopTimer;
     }
 
     private void Start()
     {
         InstantiatePlayer();
-        _camera.MoveCameraInstantlyToPosition(new(-35, 15));
 
 #if UNITY_EDITOR
         StartCoroutine(WaitForGameManagerInitializationRoutine());
@@ -80,14 +74,13 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     private void InitializeLevel()
     {
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
-        
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
+
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
         
         _inputEvents.OnRestart += GoToStandby;
-        _camera.MoveCameraInstantlyToPosition(new(-35, 15));
     }
 
     private void OnEnable()
@@ -114,27 +107,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 #endregion
 
     #region Start/End Functions
-    private void SubscribeToPlayerEvents()
-    {
-        if (!HasPlayer)
-        {
-            return;
-        }
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Fall, GameOver);
-    }
 
-    private void SetPlayerPosition(Vector2 position)
-    {
-        if (HasPlayer)
-        {
-            float halfPlayerHeight = 4.25f;
-            var startPosition = new Vector2(position.x, position.y + halfPlayerHeight + 1.2f);
-            _playerTransform.position = startPosition;
-        } 
-    }
 
     private void ResetStaticEvents()
     {
@@ -147,19 +120,19 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnStandby = null;
         OnRestart = null;
         OnFall = null;
-        OnDisableCamera = null;
         OnPlayerCreated = null;
+        GroundSegment.OnSegmentBecomeVisible = null;
+        GroundSegment.OnSegmentBecomeInvisible = null;
     }
 
     private void InstantiatePlayer()
     {
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
         _playerTransform = _player.Transform;
-        _player.KillPlaneY = _gameManager.CurrentLevel.KillPlaneY;
-        SetPlayerPosition(_gameManager.CurrentLevel.StartPoint);
-        _camera.AddCameraTarget(_playerTransform, 1, 0.25f, 0, new(10, 10));
-        SubscribeToPlayerEvents();
-        _camera.CenterOnTargets();
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Fall, GameOver);
         OnPlayerCreated?.Invoke(_player);
     }
 
@@ -168,7 +141,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     #region Event Invokers
     public void GoToStandby()
     {
-        EnableCamera();
         _inputEvents.OnRestart -= GoToStandby;
         OnStandby?.Invoke();
     }
@@ -181,7 +153,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     public void RestartLevel()
     {
-        DisableCamera();
         _inputEvents.OnRestart -= RestartLevel;
 
         if (_player != null)
@@ -195,7 +166,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void CrossFinish()
     {
-        DisableCamera();
         OnCrossFinish?.Invoke();
         _finishIsActive = false;
         _inputEvents.OnRestart -= RestartLevel;
@@ -208,8 +178,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void GameOver(IPlayer _ = null)
     {
-        DisableCamera();
-        OnGameOver?.Invoke(this);
+        OnGameOver?.Invoke();
     }
 
     public void ActivateResultsScreen(IPlayer _ = null)
@@ -227,24 +196,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     public void Fall()
     {
-        DisableCamera();
+        Debug.Log("Falling");
         OnFall?.Invoke();
     }
 
-    private void DisableCamera()
-    {
-        OnDisableCamera?.Invoke();
-        _camera.RemoveAllCameraTargets();
-        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = 0f;
-        _camera.FollowHorizontal = false;
-        _camera.FollowVertical = false;
-    }
-
-    private void EnableCamera()
-    {
-        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = 0.4f;
-        _camera.FollowHorizontal = true;
-        _camera.FollowVertical = true;
-    }
     #endregion
 }
