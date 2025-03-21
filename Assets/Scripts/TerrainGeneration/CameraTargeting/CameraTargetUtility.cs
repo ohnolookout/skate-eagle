@@ -14,19 +14,19 @@ public enum CameraTargetType
 public static class CameraTargetUtility
 {
     //GroundSegmentLowPoint
-    public static Vector2 GroundSegmentLowPointInfluence => new Vector2(0, 1);
-    public static float GroundSegmentLowpointDuration = 0.5f;
+    public static Vector2 GroundSegmentLowPointInfluence => new Vector2(0, 1f);
+    public static float GroundSegmentLowpointDuration = 0.75f;
     public static Vector2 GroundSegmentLowPointOffset = new Vector2(0, 10);
 
     //GroundSegmentHighPoint
     public static Vector2 GroundSegmentHighPointInfluence => new Vector2(0, 0.15f);
-    public static float GroundSegmentHighpointDuration = 0.1f;
+    public static float GroundSegmentHighpointDuration = 0.75f;
     public static Vector2 GroundSegmentHighPointOffset = new Vector2(0, -12);
 
     //Player
     public static Vector2 PlayerInfluence => new Vector2(1, 0.25f);
     public static float PlayerDuration = 0;
-    public static Vector2 PlayerOffset = new Vector2(10, 10);
+    public static Vector2 PlayerOffset = new Vector2(10, 0);
 
 
     private static Dictionary<CameraTargetType, Vector2> InfluenceDict = new()

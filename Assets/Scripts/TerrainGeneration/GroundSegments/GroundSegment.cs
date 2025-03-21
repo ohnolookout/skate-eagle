@@ -62,7 +62,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         _cameraTargets = new List<CameraTarget> { lowPointTarget, highPointTarget };
     }
 
-    void OnEnable()
+    void Start()
     {
     }
 
@@ -84,13 +84,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 
-#if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawSphere(_curve.Lowpoint, 1);
-    }
-#endif
     #endregion
 
     #region Positional List Utilities
