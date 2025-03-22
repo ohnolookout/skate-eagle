@@ -11,7 +11,7 @@ public static class GroundSplineUtility
 
     public static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
     {
-        spline.Clear();
+        //spline.Clear();
         InsertCurveToSpline(spline, curve, 1);
         UpdateCorners(spline, floorHeight);
     }

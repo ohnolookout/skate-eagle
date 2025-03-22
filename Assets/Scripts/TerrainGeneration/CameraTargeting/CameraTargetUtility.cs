@@ -24,9 +24,9 @@ public static class CameraTargetUtility
     public static Vector2 GroundSegmentHighPointOffset = new Vector2(0, -12);
 
     //Player
-    public static Vector2 PlayerInfluence => new Vector2(1, 0.25f);
+    public static Vector2 PlayerInfluence => new Vector2(1, 1f);
     public static float PlayerDuration = 0;
-    public static Vector2 PlayerOffset = new Vector2(10, 0);
+    public static Vector2 PlayerOffset = new Vector2(10, -10);
 
 
     private static Dictionary<CameraTargetType, Vector2> InfluenceDict = new()
