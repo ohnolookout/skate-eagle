@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -9,6 +10,8 @@ public class GroundEditManager : MonoBehaviour
 {
     private GroundManager _groundManager;
     private GroundSpawner _groundSpawner;
+    public GameObject startPoint;
+    public GameObject finishPoint;
 
     #region Monobehaviors
     private void Awake()
@@ -27,6 +30,20 @@ public class GroundEditManager : MonoBehaviour
             _groundManager.ClearGround();
         }
 
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (startPoint != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(startPoint.transform.position, 2f);
+        }
+        if (finishPoint != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(finishPoint.transform.position, 2f);
+        }
     }
     #endregion
 
@@ -213,6 +230,8 @@ public class GroundEditManager : MonoBehaviour
 
         _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
 
+        segment.UpdateShadow();
+
     }
 
     public void ResetSegment(GroundSegment segment)
@@ -226,12 +245,14 @@ public class GroundEditManager : MonoBehaviour
     #region Start/Finish
     public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
-        return _groundSpawner.SetStartPoint(segment, curvePointIndex);
+        startPoint.transform.position = _groundSpawner.SetStartPoint(segment, curvePointIndex);
+        return startPoint.transform.position;
     }
 
     public Vector2 SetFinishPoint(GroundSegment segment, int curvePointIndex)
     {
-        return _groundSpawner.SetFinishPoint(segment, curvePointIndex);
+        finishPoint.transform.position = _groundSpawner.SetFinishPoint(segment, curvePointIndex);
+        return finishPoint.transform.position;
     }
 
     public CurveDefinition DefaultStart()

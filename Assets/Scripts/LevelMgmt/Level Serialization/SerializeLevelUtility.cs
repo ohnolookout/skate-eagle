@@ -46,6 +46,8 @@ public static class SerializeLevelUtility
         //Segment
         serializedSegment.isStart = segment.IsStart;
         serializedSegment.isFinish = segment.IsFinish;
+        serializedSegment.isFloating = segment.IsFloating;
+        serializedSegment.hasShadow = segment.HasShadow;
 
         //Curve
         segment.Curve.LowPoint = segment.LowPoint.position - segment.transform.position;
@@ -138,6 +140,10 @@ public static class SerializeLevelUtility
         segment.Curve = serializedSegment.curve;
         segment.IsFinish = serializedSegment.isFinish;
         segment.IsStart = serializedSegment.isStart;
+        segment.IsFloating = serializedSegment.isFloating;
+        segment.HasShadow = serializedSegment.hasShadow;
+        segment.UpdateShadow();
+
         segment.UpdateHighLowTransforms();
 
         GroundSplineUtility.GenerateSpline(segment.Spline, serializedSegment.fillSplinePoints, serializedSegment.fillSpineIsOpen);

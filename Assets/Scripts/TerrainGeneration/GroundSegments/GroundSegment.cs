@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections.Generic;
+using UnityEngine.Rendering.Universal;
 
 //[ExecuteAlways]
 [Serializable]
@@ -13,6 +14,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region Declarations
     public Curve curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
+    [SerializeField] private ShadowCaster2D _shadowCaster;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private EdgeCollider2D _collider;
     [SerializeField] private GameObject _highPoint;
@@ -20,9 +22,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private List<CameraTarget> _cameraTargets;
     public int floorHeight = 100;
     private int _containmentBuffer = 20;
-    private bool _isStart = false;
-    private bool _isFinish = false;
-    public bool doTarget = true;
+    [SerializeField] private bool _isStart = false;
+    [SerializeField] private bool _isFinish = false;
+    [SerializeField] private bool _isFloating = false;
+    [SerializeField] private bool _hasShadow = true;
+    [SerializeField] private bool _doTarget = true;
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
@@ -42,9 +46,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsStart { get => _isStart; set => _isStart = value; }
-    public bool DoTarget { get => doTarget; }
+    public bool DoTarget { get => _doTarget; set => _doTarget = value; }
     public bool IsFirstSegment => parentGround.SegmentList[0] == this;
     public bool IsLastSegment => parentGround.SegmentList[^1] == this;
+    public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
     public Transform HighPoint => _highPoint.transform;
     public Transform LowPoint => _lowPoint.transform;
@@ -64,6 +70,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 
     void Start()
     {
+        UpdateShadow();
     }
 
     void OnBecameVisible()
@@ -82,6 +89,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
             OnActivateFinish?.Invoke(false);
         }
         OnSegmentBecomeInvisible?.Invoke(this);
+    }
+
+    public void UpdateShadow()
+    {
+        _shadowCaster.enabled = _hasShadow;
     }
 
     #endregion

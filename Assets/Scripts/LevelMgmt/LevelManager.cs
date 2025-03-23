@@ -60,6 +60,18 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
     }
 
+    void OnDrawGizmosSelected()
+    {
+        if (_gameManager != null && _gameManager.CurrentLevel != null)
+        {         
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(_gameManager.CurrentLevel.StartPoint, 1);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_gameManager.CurrentLevel.FinishPoint, 1);
+        }
+    }
+
     private void CheckFinish()
     {
         if (_playerTransform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)

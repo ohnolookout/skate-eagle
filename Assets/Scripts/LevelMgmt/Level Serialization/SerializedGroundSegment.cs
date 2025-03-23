@@ -15,6 +15,8 @@ public class SerializedGroundSegment
     //Segment contents
     public bool isStart;
     public bool isFinish;
+    public bool isFloating;
+    public bool hasShadow;
 
     //Curve contents
     public Curve curve;

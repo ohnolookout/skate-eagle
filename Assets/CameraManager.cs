@@ -21,8 +21,8 @@ public class CameraManager : MonoBehaviour
         LevelManager.OnPlayerCreated += AddPlayerTarget;
         LevelManager.OnLanding += GoToStartPosition;
         LevelManager.OnAttempt += TurnOnDuration;
-        GroundSegment.OnSegmentBecomeVisible += AddSegmentTargets;
-        GroundSegment.OnSegmentBecomeInvisible += RemoveSegmentTargets;
+        //GroundSegment.OnSegmentBecomeVisible += AddSegmentTargets;
+        //GroundSegment.OnSegmentBecomeInvisible += RemoveSegmentTargets;
 
 
         //Freeze events

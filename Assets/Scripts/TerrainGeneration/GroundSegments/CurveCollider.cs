@@ -58,6 +58,12 @@ public static class CurveCollider
             }
         }
 
+        //Don't do edge collision if segment is floating;
+        if (segment.IsFloating)
+        {
+            return;
+        }
+
         if (segment.IsFirstSegment)
         {
             Vector2[] firstPointArray = new Vector2[1] { segment.Spline.GetPosition(0) };

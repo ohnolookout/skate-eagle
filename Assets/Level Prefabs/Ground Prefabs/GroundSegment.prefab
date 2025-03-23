@@ -476,8 +476,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curve:
-    _sectionLengths: []
-    _curvePoints: []
     curveDefinition:
       curveSections:
       - sectionType: 0
@@ -491,18 +489,25 @@ MonoBehaviour:
         pitch: 1.25
         climb: 0
       name: Default Curve
+    _sectionLengths: []
+    _curvePoints: []
     length: 0
-    _lowpoint: {x: 0, y: 0, z: 0}
-    _highpoint: {x: 0, y: 0, z: 0}
+    _lowPoint: {x: 0, y: 0, z: 0}
+    _highPoint: {x: 0, y: 0, z: 0}
   _fillShapeController: {fileID: 5424034415216100495}
   _edgeShapeController: {fileID: 1360708605129911030}
+  _shadowCaster: {fileID: 3786771108790229277}
   _colliderMaterial: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
   _collider: {fileID: 7359743252002306734}
   _highPoint: {fileID: 6827530638482868012}
   _lowPoint: {fileID: 8388335674635242691}
+  _cameraTargets: []
   floorHeight: 100
-  isStart: 0
-  isFinish: 0
+  _isStart: 0
+  _isFinish: 0
+  _isFloating: 0
+  _hasShadow: 1
+  _doTarget: 1
   parentGround: {fileID: 0}
   _previousSegment: {fileID: 0}
 --- !u!1 &8388335674635242691

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 //Builds ground, ground segments, and start/finish objects at runtime
 public class GroundSpawner : MonoBehaviour
@@ -102,13 +103,18 @@ public class GroundSpawner : MonoBehaviour
 
         ApplyCurveToSegment(segment, segment.Curve);
         segment.UpdateHighLowTransforms();
+
+        if (!segment.HasShadow)
+        {
+            segment.GetComponent<ShadowCaster2D>().enabled = false;
+        }
     }
 
 
     public void ApplyCurveToSegment(GroundSegment segment, Curve curve)
     {
         //Set splines to default formatting
-        GroundSplineUtility.FormatSpline(segment.Spline, false);
+        GroundSplineUtility.FormatSpline(segment.Spline, segment.IsFloating);
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
@@ -119,8 +125,14 @@ public class GroundSpawner : MonoBehaviour
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Generating segment");
 #endif
-
-        GroundSplineUtility.GenerateSpline(segment.Spline, curve, segment.floorHeight);
+        if (segment.IsFloating)
+        {
+            GroundSplineUtility.InsertCurveToOpenSpline(segment.Spline, curve);
+        }
+        else
+        {
+            GroundSplineUtility.GenerateSpline(segment.Spline, curve, segment.floorHeight);
+        }
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
