@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public Slider loadingBar;
 
     public bool clearPlayerPrefs = false;
+    public bool doLoadEditorLevel = false;
     private bool _isInitializing = false;
     public bool IsInitializing => _isInitializing;
     public SessionData SessionData { get => _sessionData; set => _sessionData = value; }
@@ -67,7 +68,15 @@ public class GameManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
         _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
-        _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoadedUID);
+        if (doLoadEditorLevel)
+        {
+            _currentLevel = _levelDB.EditorLevel;
+            Debug.Log("Setting current level to EditorLevel");
+        }
+        else
+        {
+            _currentLevel = _levelDB.GetLevelByUID(_levelDB.lastLevelLoadedUID);
+        }
         
         OnLoading += ActivateLoadingScreen;
         LevelManager.OnFinish += UpdateRecord;

@@ -22,7 +22,6 @@ public class LevelDesigner : EditorWindow
     private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
-    private bool _levelIsDirty = false;
     private bool _groundEditorNotFound = false;
 
     private string levelName = "New Level";
@@ -53,11 +52,7 @@ public class LevelDesigner : EditorWindow
         Selection.selectionChanged += OnSelectionChanged;
 
         LoadLevelDB();
-        if (_levelDB.lastLevelLoadedUID != null && _levelDB.UIDExists(_levelDB.lastLevelLoadedUID))
-        {
-            Debug.Log("Loading level with UID " + _levelDB.lastLevelLoadedUID + "and name " + _levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
-            LoadLevel(_levelDB.UIDToNameDictionary[_levelDB.lastLevelLoadedUID]);
-        }
+        LoadLevel(_levelDB.EditorLevel);
     }
 
     private void OnDisable()
@@ -70,6 +65,15 @@ public class LevelDesigner : EditorWindow
         _groundManager = null;
         _selectedObject = null;
         Selection.selectionChanged -= OnSelectionChanged;
+    }
+
+    void Update()
+    {
+        if (_selectedObject != null && _selectedObject.transform.hasChanged)
+        {
+            _selectedObject.transform.hasChanged = false;
+            SetLevelDirty();
+        }
     }
 
     #region GUI
@@ -129,13 +133,13 @@ public class LevelDesigner : EditorWindow
 
         if (EditorGUI.EndChangeCheck())
         {
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.AddGround().gameObject;
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
         {
@@ -159,7 +163,8 @@ public class LevelDesigner : EditorWindow
             _groundManager.ClearGround();
             levelName = "New Level";
             ResetMedalTimes();
-            _levelIsDirty = false;
+            _levelDB.EditorLevel = CreateLevel();
+            _levelDB.LevelIsDirty = false;
         }
     }
     private void GroundMenu()
@@ -173,12 +178,12 @@ public class LevelDesigner : EditorWindow
         if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground).gameObject;
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
@@ -189,12 +194,12 @@ public class LevelDesigner : EditorWindow
                 Selection.activeGameObject = _ground.gameObject;
             }
 
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.RecalculateSegments(_ground, 0);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
@@ -204,7 +209,7 @@ public class LevelDesigner : EditorWindow
             {
                 Selection.activeGameObject = _groundManager.gameObject;
             }
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
@@ -212,7 +217,7 @@ public class LevelDesigner : EditorWindow
             Selection.activeGameObject = segment.gameObject;
             segment.SetLowPoint(2);
             _groundEditor.SetStartPoint(segment, 1);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
@@ -220,7 +225,7 @@ public class LevelDesigner : EditorWindow
             segment.SetLowPoint(1);
             Selection.activeGameObject = segment.gameObject;
             _groundEditor.SetFinishPoint(segment, 1);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
     }
 
@@ -248,18 +253,18 @@ public class LevelDesigner : EditorWindow
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
             _groundEditor.RefreshCurve(_segment);
             _groundEditor.RecalculateSegments(_segment);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
         if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.ResetSegment(_segment);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
@@ -272,27 +277,27 @@ public class LevelDesigner : EditorWindow
             {
                 Selection.activeGameObject = _segment.parentGround.gameObject;
             }
-            _levelIsDirty = true;
+            SetLevelDirty();
             return;
         }
 
         if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.SetStartPoint(_segment, 1);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.SetFinishPoint(_segment, 1);
             _segment.SetLowPoint(1);
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         if(GUILayout.Button("Reset High/Low Points", GUILayout.ExpandWidth(false)))
         {
             _segment.RecalculateDefaultHighLowPoints();
-            _levelIsDirty = true;
+            SetLevelDirty();
         }
 
         EditorGUILayout.EndScrollView();
@@ -386,6 +391,12 @@ public class LevelDesigner : EditorWindow
 
     }
 
+    private void SetLevelDirty()
+    {
+        _levelDB.LevelIsDirty = true;
+        _levelDB.EditorLevel = CreateLevel();
+    }
+
     private void SaveLevel()
     {
         if (!(_loadWindow is null))
@@ -393,16 +404,15 @@ public class LevelDesigner : EditorWindow
             _loadWindow.Close();
         }
 
-        MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
-        var groundsArray = GroundsArray();
-        var killPlaneY = GetKillPlaneY(groundsArray);
-        var levelToSave = new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, _groundEditor.finishPoint.transform.position, cameraStartPosition, killPlaneY);
+        var levelToSave = CreateLevel();
+        _levelDB.EditorLevel = levelToSave;
+
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
         {
             Debug.Log($"Level {levelName} saved");
-            _levelIsDirty = false;
+            _levelDB.LevelIsDirty = false;
         }
         else
         {
@@ -410,28 +420,43 @@ public class LevelDesigner : EditorWindow
         }
 
     }
-    public void LoadLevel(string levelName)
-    {
-        var loadedLevel = _levelDB.GetLevelByName(levelName);
 
-        if (loadedLevel is null)
+    private Level CreateLevel()
+    {
+        MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
+        var groundsArray = GroundsArray();
+        var killPlaneY = GetKillPlaneY(groundsArray);
+        return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
+            _groundEditor.finishPoint.transform.position, cameraStartPosition, killPlaneY);
+    }
+    public void LoadLevelByName(string levelName)
+    {
+        var levelToLoad = _levelDB.GetLevelByName(levelName);
+
+        if (levelToLoad is null)
         {
             Debug.Log($"Level {levelName} failed to load");
             return;
         }
+        _levelDB.LevelIsDirty = false;
 
-        Debug.Log("Loading level " + loadedLevel.Name);
-        this.levelName = loadedLevel.Name;
+        LoadLevel(levelToLoad);
+    }
 
-        LoadMedalTimes(loadedLevel.MedalTimes);
+    private void LoadLevel(Level levelToLoad)
+    {
+        Debug.Log("Loading level " + levelToLoad.Name);
+        _levelDB.EditorLevel = levelToLoad;
+        levelName = levelToLoad.Name;
 
-        _groundEditor.startPoint.transform.position = loadedLevel.StartPoint;
-        _groundEditor.finishPoint.transform.position = loadedLevel.FinishPoint;
-        cameraStartPosition = loadedLevel.CameraStartPosition;
+        LoadMedalTimes(levelToLoad.MedalTimes);
 
-        SerializeLevelUtility.DeserializeLevel(loadedLevel, _groundManager);
+        _groundEditor.startPoint.transform.position = levelToLoad.StartPoint;
+        _groundEditor.finishPoint.transform.position = levelToLoad.FinishPoint;
+        cameraStartPosition = levelToLoad.CameraStartPosition;
 
-        _levelIsDirty = false;
+        SerializeLevelUtility.DeserializeLevel(levelToLoad, _groundManager);
+
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)
@@ -457,7 +482,7 @@ public class LevelDesigner : EditorWindow
 
     private bool DoDiscardChanges()
     {
-        if (_levelIsDirty)
+        if (_levelDB.LevelIsDirty)
         {
             var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
             if (!discardChanges)

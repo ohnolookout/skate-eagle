@@ -15,15 +15,20 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private SerializableDictionaryBase<string, string> _nameToUIDDictionary;
     [SerializeField] private SerializableDictionaryBase<string, string> _uidToNameDictionary;
     [SerializeField] private List<string> _levelOrder;
+    [SerializeField] private Level _editorLevel;
+    [SerializeField] private bool _levelIsDirty = false;
     public string lastLevelLoadedUID;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
     public List<string> LevelOrder => _levelOrder;
+    public Level EditorLevel {get => _editorLevel; set => _editorLevel = value; }
+    public bool LevelIsDirty { get => _levelIsDirty; set => _levelIsDirty = value; }
 
     public LevelDatabase()
     {
         _levelDictionary = new();
+        _editorLevel = new("Editor Level", new(), new Ground[0]);
     }
 
 

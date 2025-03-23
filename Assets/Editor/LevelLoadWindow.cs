@@ -36,7 +36,7 @@ public class LevelLoadWindow : EditorWindow
 
         if (GUILayout.Button("Load Level"))
         {
-            _groundDesigner.LoadLevel(_levelNames[_nameIndex]);
+            _groundDesigner.LoadLevelByName(_levelNames[_nameIndex]);
             Close();
         }
         if(GUILayout.Button("Delete Level"))
