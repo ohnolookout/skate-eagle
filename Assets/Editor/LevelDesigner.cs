@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Codice.Client.Common.GameUI;
-using static UnityEngine.Rendering.HableCurve;
-using log4net.Core;
-using UnityEditor.Build;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 public class LevelDesigner : EditorWindow
 {
     #region Declarations
@@ -23,6 +21,7 @@ public class LevelDesigner : EditorWindow
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
     private bool _groundEditorNotFound = false;
+    private Vector3 _lastTransformPosition;
 
     private string levelName = "New Level";
     public float medalTimeRed = 0;
@@ -69,9 +68,9 @@ public class LevelDesigner : EditorWindow
 
     void Update()
     {
-        if (_selectedObject != null && _selectedObject.transform.hasChanged)
+        if (_selectedObject != null && _selectedObject.transform.position != _lastTransformPosition)
         {
-            _selectedObject.transform.hasChanged = false;
+            _lastTransformPosition = _selectedObject.transform.position;
             SetLevelDirty();
         }
     }
@@ -319,6 +318,11 @@ public class LevelDesigner : EditorWindow
             return;
         }
 
+        if(_selectedObject.transform != null)
+        {
+            _lastTransformPosition = _selectedObject.transform.position;
+        }
+
         _so = new(_selectedObject);
 
         if (_selectedObject.GetComponent<Ground>() != null)
@@ -393,6 +397,7 @@ public class LevelDesigner : EditorWindow
 
     private void SetLevelDirty()
     {
+        Debug.Log("Level is dirty");
         _levelDB.LevelIsDirty = true;
         _levelDB.EditorLevel = CreateLevel();
     }
@@ -418,6 +423,8 @@ public class LevelDesigner : EditorWindow
         {
             Debug.Log($"Level {levelName} failed to save");
         }
+
+        EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
 
     }
 
@@ -457,6 +464,7 @@ public class LevelDesigner : EditorWindow
 
         SerializeLevelUtility.DeserializeLevel(levelToLoad, _groundManager);
 
+        EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)
@@ -482,14 +490,18 @@ public class LevelDesigner : EditorWindow
 
     private bool DoDiscardChanges()
     {
-        if (_levelDB.LevelIsDirty)
+        if (_levelDB.LevelIsDirty || SceneManager.GetActiveScene().isDirty)
         {
             var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
             if (!discardChanges)
             {
+                EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
                 return false;
             }
+            _levelDB.LevelIsDirty = false;
         }
+
+        EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
         return true;
     }
     #endregion

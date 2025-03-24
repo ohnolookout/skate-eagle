@@ -63,7 +63,7 @@ MonoBehaviour:
           isStart: 1
           isFinish: 0
           isFloating: 0
-          hasShadow: 0
+          hasShadow: 1
           curve:
             curveDefinition:
               curveSections:
@@ -243,22 +243,25 @@ MonoBehaviour:
           - {x: 160.76257, y: -14.554752}
           - {x: 162.04276, y: -15.805367}
           - {x: 163.41933, y: -17.07964}
-          - {x: 164.92223, y: -18.38329}
-          - {x: 165.75279, y: -19.065495}
         - name: Segment 1
           position: {x: -0.000015258789, y: -0.00000071525574, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 0
           isFloating: 0
-          hasShadow: 0
+          hasShadow: 1
           curve:
             curveDefinition:
               curveSections:
               - sectionType: 0
-                length: 95.09
-                shape: 0.76
-                pitch: 0.99
+                length: 45
+                shape: 0.5
+                pitch: 1.25
+                climb: 0
+              - sectionType: 1
+                length: 45
+                shape: 0.5
+                pitch: 1.25
                 climb: 0
               name: Default Curve
             _sectionLengths:
@@ -345,7 +348,7 @@ MonoBehaviour:
             corner: 0
             m_CornerMode: 0
           colliderPoints:
-          - {x: 0.75279236, y: 0.93450546}
+          - {x: -1.5806732, y: 2.9203606}
           - {x: 2.5997128, y: -0.47283107}
           - {x: 4.5188694, y: -1.7747557}
           - {x: 6.4772544, y: -2.9509265}
@@ -401,12 +404,12 @@ MonoBehaviour:
         name: Ground 1
         segmentList:
         - name: Segment 0
-          position: {x: 119.22743, y: -27.558027, z: 0}
+          position: {x: 125.600006, y: -27.558027, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 0
           isFloating: 0
-          hasShadow: 0
+          hasShadow: 1
           curve:
             curveDefinition:
               curveSections:
@@ -558,12 +561,12 @@ MonoBehaviour:
           - {x: 89.80187, y: 2.1022758}
           - {x: 90.93704, y: 0.74963415}
         - name: Segment 1
-          position: {x: 209.22743, y: -27.558027, z: 0}
+          position: {x: 215.6, y: -27.558027, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 1
           isFloating: 0
-          hasShadow: 0
+          hasShadow: 1
           curve:
             curveDefinition:
               curveSections:
@@ -592,7 +595,7 @@ MonoBehaviour:
               leftTangent: {x: -0, y: 0, z: 0}
               rightTangent: {x: 1, y: -0, z: 0}
             length: 352.79718
-            _lowPoint: {x: 49.999985, y: -25.000002, z: 0}
+            _lowPoint: {x: 49.99997, y: -25.000002, z: 0}
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplinePoints:
           - position: {x: 0, y: -100, z: 0}
@@ -842,102 +845,6 @@ MonoBehaviour:
           - {x: 350, y: -23.8}
           - {x: 350, y: -25}
           - {x: 350, y: -125}
-      - position: {x: 239.8, y: -1.058028}
-        name: Ground 2
-        segmentList:
-        - name: Segment 0
-          position: {x: 64.01773, y: 46.516064, z: 0}
-          rotation: {x: -0, y: -0, z: -0, w: 1}
-          isStart: 0
-          isFinish: 0
-          isFloating: 1
-          hasShadow: 0
-          curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 1
-                length: 55.89
-                shape: 0.5
-                pitch: 0.72
-                climb: 0
-              name: Default Curve
-            _sectionLengths:
-            - 54.388783
-            _curvePoints:
-            - controlPoint: {x: 0, y: 0, z: 0}
-              leftTangent: {x: -0, y: -0, z: 0}
-              rightTangent: {x: -0, y: -0, z: -0}
-            - controlPoint: {x: 55.89, y: 0, z: 0}
-              leftTangent: {x: -24.94616, y: 17.961235, z: 0}
-              rightTangent: {x: 1, y: -0.72, z: 0}
-            length: 54.388783
-            _lowPoint: {x: 16.702042, y: -7.2474365, z: 0}
-            _highPoint: {x: 67.499985, y: 11.6015625, z: 0}
-          fillSplinePoints:
-          - position: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-            mode: 1
-            height: 1
-            spriteIndex: 0
-            corner: 0
-            m_CornerMode: 0
-          - position: {x: 55.89, y: 0, z: 0}
-            leftTangent: {x: -24.94616, y: 17.961235, z: 0}
-            rightTangent: {x: 1, y: -0.72, z: 0}
-            mode: 1
-            height: 1
-            spriteIndex: 0
-            corner: 0
-            m_CornerMode: 0
-          fillSpineIsOpen: 1
-          edgeSplinePoints:
-          - position: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-            mode: 1
-            height: 1
-            spriteIndex: 0
-            corner: 0
-            m_CornerMode: 0
-          - position: {x: 55.89, y: 0, z: 0}
-            leftTangent: {x: -24.94616, y: 17.961235, z: 0}
-            rightTangent: {x: 1, y: -0.72, z: 0}
-            mode: 1
-            height: 1
-            spriteIndex: 0
-            corner: 0
-            m_CornerMode: 0
-          colliderPoints:
-          - {x: 0, y: 0}
-          - {x: -0.45412928, y: 1.1219071}
-          - {x: -0.07349509, y: 1.3308526}
-          - {x: 0.53765166, y: 1.6537871}
-          - {x: 1.3682964, y: 2.0745502}
-          - {x: 2.407532, y: 2.5770266}
-          - {x: 3.6444902, y: 3.1451044}
-          - {x: 5.068329, y: 3.7626607}
-          - {x: 6.6682262, y: 4.413558}
-          - {x: 8.433384, y: 5.0816383}
-          - {x: 10.35303, y: 5.750717}
-          - {x: 12.4164, y: 6.4045706}
-          - {x: 14.6127615, y: 7.0269394}
-          - {x: 16.931383, y: 7.6015053}
-          - {x: 19.361551, y: 8.111893}
-          - {x: 21.89252, y: 8.541648}
-          - {x: 24.513548, y: 8.874237}
-          - {x: 27.2138, y: 9.09303}
-          - {x: 29.98238, y: 9.181308}
-          - {x: 32.808247, y: 9.122266}
-          - {x: 35.680176, y: 8.8990345}
-          - {x: 38.586716, y: 8.494725}
-          - {x: 41.516155, y: 7.8924894}
-          - {x: 44.456482, y: 7.075603}
-          - {x: 47.395416, y: 6.0275564}
-          - {x: 50.32047, y: 4.73215}
-          - {x: 53.219036, y: 3.1735616}
-          - {x: 56.047886, y: 1.358819}
-          - {x: 56.591164, y: 0.97384125}
       _leaderboardKey: Gap test_leaderboard
       _startPoint: {x: -45.000015, y: 20}
       _finishPoint: {x: 309.22742, y: -52.55803}
@@ -1284,7 +1191,7 @@ MonoBehaviour:
         name: Ground 1
         segmentList:
         - name: Segment 0
-          position: {x: 345.77258, y: -36.741974, z: 0}
+          position: {x: 383.5177, y: -36.741974, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 1
@@ -1572,7 +1479,7 @@ MonoBehaviour:
         name: Ground 2
         segmentList:
         - name: Segment 0
-          position: {x: 121.96286, y: 45.032124, z: 0}
+          position: {x: 121.96286, y: 43.148182, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 0
@@ -1671,7 +1578,7 @@ MonoBehaviour:
         name: Ground 3
         segmentList:
         - name: Segment 0
-          position: {x: 187.74515, y: -7.983944, z: 0}
+          position: {x: 199.29028, y: -16.225916, z: 0}
           rotation: {x: -0, y: -0, z: -0, w: 1}
           isStart: 0
           isFinish: 0
@@ -1840,7 +1747,7 @@ MonoBehaviour:
     - Zigzag Test
   _levelOrder: []
   _editorLevel:
-    _UID: 
+    _UID: 56a1b481-efb2-487e-aea6-3b5863fba2e2
     _name: Zigzag Test
     _doPublish: 0
     _goldRequired: 0
@@ -2181,7 +2088,7 @@ MonoBehaviour:
       name: Ground 1
       segmentList:
       - name: Segment 0
-        position: {x: 345.77258, y: -36.741974, z: 0}
+        position: {x: 383.5177, y: -36.741974, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
         isStart: 0
         isFinish: 1
@@ -2469,7 +2376,7 @@ MonoBehaviour:
       name: Ground 2
       segmentList:
       - name: Segment 0
-        position: {x: 121.96286, y: 45.032124, z: 0}
+        position: {x: 121.96286, y: 43.148182, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
         isStart: 0
         isFinish: 0
@@ -2568,7 +2475,7 @@ MonoBehaviour:
       name: Ground 3
       segmentList:
       - name: Segment 0
-        position: {x: 187.74515, y: -7.983944, z: 0}
+        position: {x: 199.29028, y: -16.225916, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
         isStart: 0
         isFinish: 0
@@ -2669,5 +2576,5 @@ MonoBehaviour:
     _finishPoint: {x: 445.77258, y: -61.741974}
     _killPlaneY: -108.48395
     _cameraStartPosition: {x: -35, y: 15}
-  _levelIsDirty: 1
+  _levelIsDirty: 0
   lastLevelLoadedUID: 56a1b481-efb2-487e-aea6-3b5863fba2e2
