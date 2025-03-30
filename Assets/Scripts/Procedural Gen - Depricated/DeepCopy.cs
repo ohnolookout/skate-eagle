@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class DeepCopy
 {
+    /*
     public static CurveDefinition CopyCurveDefinition(CurveDefinition defToCopy)
     {
         List<CurveSection> copiedSections = new();
@@ -13,6 +14,37 @@ public static class DeepCopy
         }
 
         return new CurveDefinition(copiedSections);
+    }
+    */
+
+    public static List<ICurveSection> CopyCurveSectionList(List<ICurveSection> sectionsToCopy)
+    {
+        List<ICurveSection> copiedSections = new();
+        foreach (ICurveSection sectionToCopy in sectionsToCopy)
+        {
+            copiedSections.Add(CopyCurveSection(sectionToCopy));
+        }
+        return copiedSections;
+    }
+
+    public static ICurveSection CopyCurveSection(ICurveSection sectionToCopy)
+    {
+        switch (sectionToCopy.CurveType)
+        {
+            case CurveSectionType.Straight:
+                return new StraightCurveSection();
+            case CurveSectionType.Custom:
+                return new CustomCurveSection();
+            case CurveSectionType.Standard:
+                return CopyStandardCurveSection(sectionToCopy as StandardCurveSection);
+            default:
+                return new StandardCurveSection();
+        }
+    }
+
+    private static StandardCurveSection CopyStandardCurveSection(StandardCurveSection sectionToCopy)
+    {
+        return new(sectionToCopy.XYDelta, sectionToCopy.Height, sectionToCopy.Skew, sectionToCopy.Shape);
     }
 
     public static CurveSection CopyCurveSection(CurveSection sectionToCopy)

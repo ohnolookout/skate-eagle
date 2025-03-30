@@ -4,41 +4,16 @@ using UnityEngine;
 
 public static class CurveFactory
 {
-    /*
-    public static Curve FinishLine(CurvePoint startPoint)
+    public static Curve DefaultCurve(Vector2 prevTang)
     {
-        return new FinishLineCurve(startPoint);
-    }
-    public static Curve CurveFromDefinition(CurveDefinition definition, CurvePoint startPoint)
-    {
-        if (definition.GetType() == typeof(ProceduralCurveDefinition))
-        {
-            return CurveFromProceduralDefinition((ProceduralCurveDefinition)definition, startPoint);
-        }
-        else
-        {
-            return CurveFromFixedDefinition((FixedCurveDefinition)definition, startPoint);
-        }
-    }
-    */
-    public static Curve DefaultFixedCurve(CurvePoint startPoint)
-    {
-        return new Curve(new(), -startPoint.LeftTangent);
-    }
-    /*
-    public static Curve DefaultProceduralCurve(CurvePoint startPoint)
-    {
-        return new ProceduralCurve(new(), startPoint);
-    }
+        var peakSection = new StandardCurveSection();
+        var valleySection = new StandardCurveSection();
+        valleySection.Height = -valleySection.Height;
+        valleySection.SetStartTangents(prevTang);
 
-    public static Curve CurveFromProceduralDefinition(ProceduralCurveDefinition definition, CurvePoint startPoint)
-    {
-        return new ProceduralCurve(definition, startPoint);
-    }
-    */
-    public static Curve CurveFromDefinition(CurveDefinition definition, Vector2 prevTang)
-    {
-        return new Curve(definition, prevTang);
+        List<ICurveSection> curveSections = new() { valleySection, peakSection };
+
+        return new(curveSections);
     }
 
     public static Curve DefaultStartLine()

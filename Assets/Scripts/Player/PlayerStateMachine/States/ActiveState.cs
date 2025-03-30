@@ -65,6 +65,7 @@ public class ActiveState : PlayerState
         {
             _substate.FixedUpdateStates();
         }
+
     }
 
     private void StartRotate(Vector2 rotation)
@@ -77,6 +78,19 @@ public class ActiveState : PlayerState
     {
         doRotate = false;
         _rotationInput = new(0, 0);
+    }
+
+    private float GetRotationMult(Vector2 rotation)
+    {
+        if(rotation.x > 0 && _playerBody.angularVelocity < 0 || rotation.x < 0 && _playerBody.angularVelocity > 0)
+        {
+            return 1;
+        }
+
+        var mult = 1 + Mathf.Abs(_playerBody.angularVelocity) / 100;
+        Debug.Log("Rotation mult: " + mult);
+
+        return mult;
     }
 
     private void StartCrouch()

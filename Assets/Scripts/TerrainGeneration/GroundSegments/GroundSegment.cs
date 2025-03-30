@@ -28,8 +28,10 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private bool _doTarget = true;
     public Ground parentGround;
-    [SerializeField] private GroundSegment _previousSegment;
+    [SerializeField] private GroundSegment _previousSegment = null;
+    [SerializeField] private GroundSegment _nextSegment = null;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
+    public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
     public static Action<bool> OnActivateFinish { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
@@ -40,7 +42,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public SpriteShapeController FillShapeController { get => _fillShapeController; }
     public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.ControlPoint);
     public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.ControlPoint);
-    public Vector3 PrevTangent => _previousSegment != null ? -_previousSegment.Curve.EndPoint.LeftTangent : Vector3.zero;
+    public Vector3 PrevTangent => _previousSegment != null ? _previousSegment.Curve.EndPoint.LeftTangent : new(1, 1);
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.ControlPoint); set => transform.position = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public new GameObject gameObject { get => transform.gameObject; }

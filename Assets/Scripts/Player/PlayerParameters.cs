@@ -14,7 +14,7 @@
     public int StompCharge = 0;
     public int JumpCount = 0;
     public int FlipBoost = 70;
-    public float RotationAccel = 1400;
+    public float RotationAccel = 1500;
 
     public PlayerParameters(int startingStompCharge = 0)
     {

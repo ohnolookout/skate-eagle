@@ -17,6 +17,7 @@ public class Ground : MonoBehaviour
     public CurvePoint StartPoint => _segmentList[0].Curve.StartPoint;
     public CurvePoint EndPoint => _segmentList[^1].Curve.EndPoint;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     #endregion
 
 }

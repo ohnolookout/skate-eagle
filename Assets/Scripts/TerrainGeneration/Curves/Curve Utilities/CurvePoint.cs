@@ -31,6 +31,12 @@ public struct CurvePoint
         rightTangent = new Vector3(velocity, velocity * slope);
     }
 
+    public void SetTangents(Vector3 tangent)
+    {
+        leftTangent = -tangent;
+        rightTangent = tangent;
+    }
+
     public void Log()
     {
         Debug.Log("~~~Curve Point~~~");

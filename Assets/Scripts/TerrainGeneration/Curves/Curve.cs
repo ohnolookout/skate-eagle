@@ -4,12 +4,13 @@ using UnityEngine;
 using System;
 using System.Linq;
 using UnityEditor;
+using Com.LuisPedroFonseca.ProCamera2D.TopDownShooter;
 
 [Serializable]
 public class Curve
 {
     #region Declarations
-    public CurveDefinition curveDefinition;
+    public List<ICurveSection> curveSections;
     [SerializeField][HideInInspector] private List<float> _sectionLengths;
     [SerializeField][HideInInspector] private List<CurvePoint> _curvePoints;
     [SerializeField][HideInInspector] private float length;
@@ -20,14 +21,22 @@ public class Curve
     public Vector3 HighPoint { get => _highPoint; set => _highPoint = value; }
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
+    public Vector3 XYDelta => new Vector3(EndPoint.ControlPoint.x - StartPoint.ControlPoint.x, EndPoint.ControlPoint.y - StartPoint.ControlPoint.y);
     public List<float> SectionLengths => _sectionLengths;
+    public List<ICurveSection> CurveSections { get => curveSections; set => curveSections = value; }
     #endregion
 
     #region Construction
-    public Curve(CurveDefinition curveDef, Vector2 prevTang)
+    public Curve()
     {
-        curveDefinition = curveDef;
-        _curvePoints = CurvePointsFromDefinition(curveDefinition, prevTang);
+        curveSections = new();
+        _curvePoints = new();
+    }
+
+    public Curve(List<ICurveSection> curveSections)
+    {
+        this.curveSections = curveSections;
+        _curvePoints = GetCurvePoints();
         GenerateCurveStats();
     }
 
@@ -36,6 +45,19 @@ public class Curve
         _curvePoints = curvePoints;
         GenerateCurveStats();
     }
+    public List<CurvePoint> GetCurvePoints()
+    {
+        List<CurvePoint> allPoints = curveSections[0].GetCurvePoints();
+        for(int i = 1; i < curveSections.Count; i++)
+        {
+            var newPoints = curveSections[i].GetCurvePoints();
+            newPoints.RemoveAt(0);
+            allPoints.AddRange(newPoints);
+        }
+
+        return allPoints;
+    }
+    /*
     public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
     {
         List<CurvePoint> curvePoints = new();
@@ -66,8 +88,8 @@ public class Curve
 
         return curvePoints;
     }
-
-    public List<CurvePoint> CalculateCurvePointPair(CurveSectionParameters sectionParams, CurvePoint startPoint)
+    
+    private List<CurvePoint> CalculateCurvePointPair(CurveSectionParameters sectionParams, CurvePoint startPoint)
     {
         List<CurvePoint> curvePoints = new();
 
@@ -89,6 +111,7 @@ public class Curve
 
         return curvePoints;
     }
+    */
     #endregion
 
     #region Curve Stats

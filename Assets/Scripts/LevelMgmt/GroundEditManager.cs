@@ -52,29 +52,19 @@ public class GroundEditManager : MonoBehaviour
     {
         return _groundSpawner.AddGround();
     }
-    public GroundSegment AddSegment(Ground ground, CurveDefinition curveDef, bool addToFront = false)
-    {
-        return _groundSpawner.AddSegment(ground, curveDef, addToFront);
-    }
     public GroundSegment AddSegment(Ground ground)
     {
-        return _groundSpawner.AddSegment(ground, new CurveDefinition());
+        var prevTang = -ground.LastSegment?.Curve.EndPoint.LeftTangent ?? new Vector2(1,1);
+        return _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
     }
 
-    public GroundSegment AddSegmentToFront(Ground ground, CurveDefinition curveDef = null)
+    public GroundSegment AddSegmentToFront(Ground ground, Curve curve)
     {
-        if (curveDef == null)
-        {
-            curveDef = new();
-        }
-        var seg = _groundSpawner.AddSegment(ground, curveDef, true);
-
-        RecalculateSegments(ground, 1);
-
-        return seg;
+        ground.transform.position -= curve.XYDelta;
+        return InsertSegment(ground, 0, curve);
     }
 
-    public GroundSegment InsertSegment(Ground ground, CurveDefinition curveDef, int index)
+    public GroundSegment InsertSegment(Ground ground, int index, Curve curve)
     {
 #if UNITY_EDITOR
         if (index < 0 || index >= ground.SegmentList.Count)
@@ -89,12 +79,13 @@ public class GroundEditManager : MonoBehaviour
         ground.SegmentList.RemoveRange(index, ground.SegmentList.Count - index);
 
         //Add segment using curveDef
-        var newSegment = _groundSpawner.AddSegment(ground, curveDef);
+        var newSegment = _groundSpawner.AddSegment(ground, curve);
 
         //Update previous segment of first segment in tempList
         if (tempList.Count > 0)
         {
             tempList[0].PreviousSegment = newSegment;
+            newSegment.NextSegment = tempList[0];
         }
         ground.SegmentList.AddRange(tempList);
 
@@ -114,15 +105,16 @@ public class GroundEditManager : MonoBehaviour
         }
 
         //Copy curve definition so that original def is not modified
-        var copiedCurveDef = DeepCopy.CopyCurveDefinition(segment.Curve.curveDefinition);
+        List<ICurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
+        Curve newCurve = new(curveSections);
         var segIndex = ground.SegmentList.IndexOf(segment);
 
         if (segIndex >= ground.SegmentList.Count - 1)
         {
-            return _groundSpawner.AddSegment(ground, copiedCurveDef);
+            return _groundSpawner.AddSegment(ground, newCurve);
         }
 
-        return InsertSegment(ground, copiedCurveDef, segIndex);
+        return InsertSegment(ground, segIndex, newCurve);
     }
 
     #endregion
@@ -226,8 +218,6 @@ public class GroundEditManager : MonoBehaviour
         Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
 #endif
 
-        segment.Curve = new(segment.Curve.curveDefinition, segment.PrevTangent);
-
         _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
 
         segment.UpdateShadow();
@@ -236,7 +226,7 @@ public class GroundEditManager : MonoBehaviour
 
     public void ResetSegment(GroundSegment segment)
     {
-        segment.Curve.curveDefinition = new CurveDefinition();
+        segment.Curve = CurveFactory.DefaultCurve(segment.PrevTangent);
         RefreshCurve(segment);
         RecalculateSegments(segment);
     }
@@ -253,20 +243,6 @@ public class GroundEditManager : MonoBehaviour
     {
         finishPoint.transform.position = _groundSpawner.SetFinishPoint(segment, curvePointIndex);
         return finishPoint.transform.position;
-    }
-
-    public CurveDefinition DefaultStart()
-    {
-        CurveSection firstSection = new(SectionType.Peak, 120, 0.5f, 0, 0);
-        CurveSection secondSection = new(SectionType.Valley, 45, 0.5f, 1.25f, -20);
-        return new(new List<CurveSection> { firstSection, secondSection });
-    }
-
-    public CurveDefinition DefaultFinish()
-    {
-        CurveSection firstSection = new(SectionType.Valley, 50, 0.5f, 0.5f, -25);
-        CurveSection secondSection = new(SectionType.Valley, 300, 0, 0, 0);
-        return new(new List<CurveSection> { firstSection, secondSection });
     }
     #endregion
 }
