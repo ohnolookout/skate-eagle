@@ -31,6 +31,7 @@ public class LevelDesigner : EditorWindow
     public float medalTimeBronze = 0;
 
     public Vector2 cameraStartPosition = new(-35, 15);
+    private Vector2 _defaultTang = new(-1, 1);
 
     #endregion
 
@@ -181,7 +182,7 @@ public class LevelDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground).gameObject;
+            Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultCurve(_defaultTang)).gameObject;
             SetLevelDirty();
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
@@ -212,7 +213,7 @@ public class LevelDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegmentToFront(_ground, _groundEditor.DefaultStart());            
+            var segment = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultStartLine());            
             Selection.activeGameObject = segment.gameObject;
             segment.SetLowPoint(2);
             _groundEditor.SetStartPoint(segment, 1);
@@ -220,7 +221,7 @@ public class LevelDesigner : EditorWindow
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegment(_ground, _groundEditor.DefaultFinish());
+            var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(_ground.LastSegment.Curve.EndPoint));
             segment.SetLowPoint(1);
             Selection.activeGameObject = segment.gameObject;
             _groundEditor.SetFinishPoint(segment, 1);

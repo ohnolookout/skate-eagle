@@ -12,6 +12,7 @@ public class GroundEditManager : MonoBehaviour
     private GroundSpawner _groundSpawner;
     public GameObject startPoint;
     public GameObject finishPoint;
+    private Vector2 _defaultStartTang = new(1, -1);
 
     #region Monobehaviors
     private void Awake()
@@ -54,8 +55,13 @@ public class GroundEditManager : MonoBehaviour
     }
     public GroundSegment AddSegment(Ground ground)
     {
-        var prevTang = -ground.LastSegment?.Curve.EndPoint.LeftTangent ?? new Vector2(1,1);
+        var prevTang = -ground.LastSegment?.Curve.EndPoint.LeftTangent ?? _defaultStartTang;
         return _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
+    }
+
+    public GroundSegment AddSegment(Ground ground, Curve curve)
+    {
+        return _groundSpawner.AddSegment(ground, curve);
     }
 
     public GroundSegment AddSegmentToFront(Ground ground, Curve curve)

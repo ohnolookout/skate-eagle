@@ -6,8 +6,8 @@ public static class CurveFactory
 {
     public static Curve DefaultCurve(Vector2 prevTang)
     {
-        var peakSection = new StandardCurveSection();
-        var valleySection = new StandardCurveSection();
+        var peakSection = new StandardCurveSection(CurveDirection.Peak);
+        var valleySection = new StandardCurveSection(CurveDirection.Valley);
         valleySection.Height = -valleySection.Height;
         valleySection.SetStartTangents(prevTang);
 
@@ -25,7 +25,7 @@ public static class CurveFactory
         const float thirdPointXSlope = -1.1f;
         Vector3 leftTangent = new(-thirdPointXVelocity, -thirdPointXVelocity * thirdPointXSlope);
         Vector3 rightTangent = new(thirdPointXVelocity, thirdPointXVelocity * thirdPointXSlope);
-        var thirdPoint = new CurvePoint(secondPoint.ControlPoint + new Vector3(30, -12), leftTangent, rightTangent);
+        var thirdPoint = new CurvePoint(secondPoint.Position + new Vector3(30, -12), leftTangent, rightTangent);
 
         var curvePoints = new List<CurvePoint> { firstPoint, secondPoint, thirdPoint };
         return new Curve(curvePoints);
@@ -42,7 +42,7 @@ public static class CurveFactory
         var secondPoint = new CurvePoint(secondLocation, new Vector3(-6, 0), new Vector3(6, 0));
 
         //Generate third point
-        var thirdLocation = new Vector3(secondPoint.ControlPoint.x + 500, secondPoint.ControlPoint.y);
+        var thirdLocation = new Vector3(secondPoint.Position.x + 500, secondPoint.Position.y);
         var thirdPoint = new CurvePoint(thirdLocation, new Vector3(-6, 0), new Vector3(6, 0));
 
         var curvePoints = new List<CurvePoint> { firstPoint, secondPoint, thirdPoint };

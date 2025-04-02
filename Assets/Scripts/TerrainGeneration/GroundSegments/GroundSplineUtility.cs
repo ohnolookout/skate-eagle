@@ -82,7 +82,7 @@ public static class GroundSplineUtility
     }
     public static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
-        spline.InsertPointAt(index, curvePoint.ControlPoint);
+        spline.InsertPointAt(index, curvePoint.Position);
         spline.SetTangentMode(index, ShapeTangentMode.Continuous);
         spline.SetLeftTangent(index, curvePoint.LeftTangent);
         spline.SetRightTangent(index, curvePoint.RightTangent);
@@ -90,7 +90,7 @@ public static class GroundSplineUtility
 
     public static void CopyCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
-        spline.SetPosition(index, curvePoint.ControlPoint);
+        spline.SetPosition(index, curvePoint.Position);
         spline.SetTangentMode(index, ShapeTangentMode.Continuous);
         spline.SetLeftTangent(index, curvePoint.LeftTangent);
         spline.SetRightTangent(index, curvePoint.RightTangent);

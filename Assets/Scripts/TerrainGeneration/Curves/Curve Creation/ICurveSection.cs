@@ -10,5 +10,5 @@ public enum CurveSectionType
 public interface ICurveSection
 {
     CurveSectionType CurveType { get; }
-    public abstract List<CurvePoint> GetCurvePoints();
+    public abstract List<CurvePoint> GetCurvePoints(CurvePoint startPoint);
 }

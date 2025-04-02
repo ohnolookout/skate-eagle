@@ -40,10 +40,10 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
     public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
     public SpriteShapeController FillShapeController { get => _fillShapeController; }
-    public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.ControlPoint);
-    public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.ControlPoint);
+    public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.Position);
+    public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.Position);
     public Vector3 PrevTangent => _previousSegment != null ? _previousSegment.Curve.EndPoint.LeftTangent : new(1, 1);
-    public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.ControlPoint); set => transform.position = value; }
+    public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
@@ -93,6 +93,35 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(curve.StartPoint.Position, 2f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(curve.EndPoint.Position, 2f);
+
+        Gizmos.color = Color.blue;
+        for(int i = 1; i < curve.CurvePoints.Count - 1; i++)
+        {
+            Gizmos.DrawSphere(curve.CurvePoints[i].Position, 2f);
+        }
+
+        Gizmos.color = Color.yellow;
+        foreach(var point in curve.CurvePoints)
+        {
+            Gizmos.DrawSphere(point.LeftTangentPosition, 1f);
+            Gizmos.DrawSphere(point.RightTangentPosition, 1f);
+        }
+
+        Gizmos.color = Color.white;
+        foreach (var point in curve.CurvePoints)
+        {
+            Gizmos.DrawLine(point.Position, point.LeftTangentPosition);
+            Gizmos.DrawLine(point.Position, point.RightTangentPosition);
+        }
+    }
+
     public void UpdateShadow()
     {
         _shadowCaster.enabled = _hasShadow;
@@ -103,16 +132,16 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region Positional List Utilities
     public bool StartsAfterX(float startX)
     {
-        return curve.StartPoint.ControlPoint.x >= startX;
+        return curve.StartPoint.Position.x >= startX;
     }
 
     public bool EndsBeforeX(float endX)
     {
-        return curve.EndPoint.ControlPoint.x <= endX;
+        return curve.EndPoint.Position.x <= endX;
     }
     public bool ContainsX(float targetX)
     {
-        return (targetX > curve.StartPoint.ControlPoint.x - _containmentBuffer && targetX < curve.EndPoint.ControlPoint.x + _containmentBuffer);
+        return (targetX > curve.StartPoint.Position.x - _containmentBuffer && targetX < curve.EndPoint.Position.x + _containmentBuffer);
     }
     #endregion
 
@@ -121,7 +150,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     {
         if (_previousSegment == null)
         {
-            return curve.StartPoint.ControlPoint;
+            return curve.StartPoint.Position;
         }
 
         var worldPoint = _previousSegment.transform.TransformPoint(_previousSegment.Collider.points[^1]);
@@ -138,7 +167,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 
     public void SetLowPoint(int index)
     {
-        curve.LowPoint = curve.CurvePoints[index].ControlPoint;
+        curve.LowPoint = curve.CurvePoints[index].Position;
         _lowPoint.transform.position = curve.LowPoint + transform.position;
     }
 
@@ -149,7 +178,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
             index = curve.CurvePoints.Count - 1;
         }
 
-        curve.HighPoint = curve.CurvePoints[index].ControlPoint;
+        curve.HighPoint = curve.CurvePoints[index].Position;
         _highPoint.transform.position = curve.HighPoint + transform.position;
     }
 

@@ -39,9 +39,11 @@ MonoBehaviour:
     _keyValues:
     - 53317577-4c49-4a12-94af-103691c85686
     - 56a1b481-efb2-487e-aea6-3b5863fba2e2
+    - 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
     _keys:
     - 53317577-4c49-4a12-94af-103691c85686
     - 56a1b481-efb2-487e-aea6-3b5863fba2e2
+    - 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
     _values:
     - _UID: 53317577-4c49-4a12-94af-103691c85686
       _name: Gap test
@@ -65,19 +67,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 120
-                shape: 0.5
-                pitch: 0
-                climb: 0
-              - sectionType: 1
-                length: 45
-                shape: 0.5
-                pitch: 1.25
-                climb: -20
-              name: Default Curve
             _sectionLengths:
             - 110.19528
             - 49.028217
@@ -251,19 +240,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 45
-                shape: 0.5
-                pitch: 1.25
-                climb: 0
-              - sectionType: 1
-                length: 45
-                shape: 0.5
-                pitch: 1.25
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 47.519287
             - 49.46148
@@ -411,19 +387,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 45
-                shape: 0.75
-                pitch: 1.25
-                climb: 0
-              - sectionType: 1
-                length: 45
-                shape: 0.5
-                pitch: 1.25
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 48.347824
             - 49.46148
@@ -568,19 +531,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 1
-                length: 50
-                shape: 0.5
-                pitch: 0.5
-                climb: -25
-              - sectionType: 1
-                length: 300
-                shape: 0
-                pitch: 0
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 54.91339
             - 297.8838
@@ -872,19 +822,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 120
-                shape: 0.5
-                pitch: 0
-                climb: 0
-              - sectionType: 1
-                length: 45
-                shape: 0.5
-                pitch: 1.25
-                climb: -20
-              name: Default Curve
             _sectionLengths:
             - 110.19528
             - 49.028217
@@ -1060,14 +997,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 95.09
-                shape: 0.8
-                pitch: 0.99
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 103.43421
             _curvePoints:
@@ -1198,19 +1127,6 @@ MonoBehaviour:
           isFloating: 0
           hasShadow: 1
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 1
-                length: 50
-                shape: 0.5
-                pitch: 0.5
-                climb: -25
-              - sectionType: 1
-                length: 300
-                shape: 0
-                pitch: 0
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 53.14667
             - 297.93454
@@ -1486,14 +1402,6 @@ MonoBehaviour:
           isFloating: 1
           hasShadow: 0
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 1
-                length: 55.89
-                shape: 0.78
-                pitch: 1.37
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 61.26367
             _curvePoints:
@@ -1585,14 +1493,6 @@ MonoBehaviour:
           isFloating: 1
           hasShadow: 0
           curve:
-            curveDefinition:
-              curveSections:
-              - sectionType: 0
-                length: 55
-                shape: 0.9
-                pitch: 1.43
-                climb: 0
-              name: Default Curve
             _sectionLengths:
             - 62.99199
             _curvePoints:
@@ -1679,6 +1579,221 @@ MonoBehaviour:
       _finishPoint: {x: 545.9629, y: -61.741974}
       _killPlaneY: -108.48395
       _cameraStartPosition: {x: -35, y: 15}
+    - _UID: 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
+      _name: New Level
+      _doPublish: 0
+      _goldRequired: 0
+      _medalTimes:
+        _bronzeTime: 0
+        _silverTime: 0
+        _goldTime: 0
+        _blueTime: 0
+        _redTime: 0
+      _serializedGrounds:
+      - position: {x: 251.62743, y: -1.058028}
+        name: Ground 0
+        segmentList:
+        - name: GroundSegment(Clone)
+          position: {x: 0, y: 0, z: 0}
+          rotation: {x: -0, y: -0, z: -0, w: 1}
+          isStart: 0
+          isFinish: 0
+          isFloating: 0
+          hasShadow: 1
+          curve:
+            _sectionLengths:
+            - NaN
+            - NaN
+            - NaN
+            - NaN
+            _curvePoints:
+            - controlPoint: {x: 0, y: 0, z: 0}
+              leftTangent: {x: -1, y: 1, z: -0}
+              rightTangent: {x: 1, y: -1, z: 0}
+            - controlPoint: {x: 5, y: Infinity, z: 0}
+              leftTangent: {x: -4.5, y: -0, z: -0}
+              rightTangent: {x: 4.5, y: 0, z: 0}
+            - controlPoint: {x: 20, y: 0, z: 0}
+              leftTangent: {x: -1, y: -1, z: -0}
+              rightTangent: {x: 1, y: 1, z: 0}
+            - controlPoint: {x: NaN, y: NaN, z: NaN}
+              leftTangent: {x: -5, y: -0, z: -0}
+              rightTangent: {x: 5, y: 0, z: 0}
+            - controlPoint: {x: 40, y: 0, z: 0}
+              leftTangent: {x: -0, y: 0, z: -0}
+              rightTangent: {x: 0, y: -0, z: 0}
+            length: NaN
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          fillSplinePoints:
+          - position: {x: 0, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            mode: 0
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 0, y: 0, z: 0}
+            leftTangent: {x: 0, y: -1, z: 0}
+            rightTangent: {x: 1, y: -1, z: 0}
+            mode: 2
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 5, y: Infinity, z: 0}
+            leftTangent: {x: -4.5, y: -0, z: -0}
+            rightTangent: {x: 4.5, y: 0, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 20, y: 0, z: 0}
+            leftTangent: {x: -1, y: -1, z: -0}
+            rightTangent: {x: 1, y: 1, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: NaN, y: NaN, z: NaN}
+            leftTangent: {x: -5, y: -0, z: -0}
+            rightTangent: {x: 5, y: 0, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 40, y: 0, z: 0}
+            leftTangent: {x: -0, y: 0, z: -0}
+            rightTangent: {x: 0, y: -1, z: 0}
+            mode: 2
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 40, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            mode: 0
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          fillSpineIsOpen: 0
+          edgeSplinePoints:
+          - position: {x: 0, y: 0, z: 0}
+            leftTangent: {x: -1, y: 1, z: -0}
+            rightTangent: {x: 1, y: -1, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 5, y: Infinity, z: 0}
+            leftTangent: {x: -4.5, y: -0, z: -0}
+            rightTangent: {x: 4.5, y: 0, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 20, y: 0, z: 0}
+            leftTangent: {x: -1, y: -1, z: -0}
+            rightTangent: {x: 1, y: 1, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: NaN, y: NaN, z: NaN}
+            leftTangent: {x: -5, y: -0, z: -0}
+            rightTangent: {x: 5, y: 0, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          - position: {x: 40, y: 0, z: 0}
+            leftTangent: {x: -0, y: 0, z: -0}
+            rightTangent: {x: 0, y: -0, z: 0}
+            mode: 1
+            height: 1
+            spriteIndex: 0
+            corner: 0
+            m_CornerMode: 0
+          colliderPoints:
+          - {x: 0, y: -100}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 19.151472, y: 0.84852815}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 0, y: 0}
+          - {x: 40, y: 0}
+          - {x: 40, y: 0}
+          - {x: 40, y: -100}
+      _leaderboardKey: New Level_leaderboard
+      _startPoint: {x: -45.000015, y: 20}
+      _finishPoint: {x: 545.9629, y: -61.741974}
+      _killPlaneY: -10
+      _cameraStartPosition: {x: -35, y: 15}
   _nameToUIDDictionary:
     reorderableList:
       canAdd: 0
@@ -1704,14 +1819,11 @@ MonoBehaviour:
     reqReferences: {fileID: 0}
     isExpanded: 0
     _keyValues:
-    - Gap test
-    - Zigzag Test
+    - New Level
     _keys:
-    - Gap test
-    - Zigzag Test
+    - New Level
     _values:
-    - 53317577-4c49-4a12-94af-103691c85686
-    - 56a1b481-efb2-487e-aea6-3b5863fba2e2
+    - 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
   _uidToNameDictionary:
     reorderableList:
       canAdd: 0
@@ -1737,18 +1849,15 @@ MonoBehaviour:
     reqReferences: {fileID: 0}
     isExpanded: 0
     _keyValues:
-    - 53317577-4c49-4a12-94af-103691c85686
-    - 56a1b481-efb2-487e-aea6-3b5863fba2e2
+    - 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
     _keys:
-    - 53317577-4c49-4a12-94af-103691c85686
-    - 56a1b481-efb2-487e-aea6-3b5863fba2e2
+    - 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
     _values:
-    - Gap test
-    - Zigzag Test
+    - New Level
   _levelOrder: []
   _editorLevel:
-    _UID: 56a1b481-efb2-487e-aea6-3b5863fba2e2
-    _name: Zigzag Test
+    _UID: 3d7160e2-ebe6-4844-8c49-1f6775b5acb9
+    _name: New Level
     _doPublish: 0
     _goldRequired: 0
     _medalTimes:
@@ -1761,42 +1870,37 @@ MonoBehaviour:
     - position: {x: 251.62743, y: -1.058028}
       name: Ground 0
       segmentList:
-      - name: Segment 0
-        position: {x: -165.00002, y: 20, z: 0}
+      - name: GroundSegment(Clone)
+        position: {x: 0, y: 0, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
-        isStart: 1
+        isStart: 0
         isFinish: 0
         isFloating: 0
         hasShadow: 1
         curve:
-          curveDefinition:
-            curveSections:
-            - sectionType: 0
-              length: 120
-              shape: 0.5
-              pitch: 0
-              climb: 0
-            - sectionType: 1
-              length: 45
-              shape: 0.5
-              pitch: 1.25
-              climb: -20
-            name: Default Curve
           _sectionLengths:
-          - 110.19528
-          - 49.028217
+          - NaN
+          - NaN
+          - NaN
+          - NaN
           _curvePoints:
           - controlPoint: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-          - controlPoint: {x: 120, y: 0, z: 0}
-            leftTangent: {x: -66, y: -0, z: 0}
-            rightTangent: {x: 33, y: 0, z: -0}
-          - controlPoint: {x: 165, y: -20, z: 0}
-            leftTangent: {x: -13.655201, y: 11.000023, z: 0}
-            rightTangent: {x: 1, y: -0.8055556, z: 0}
-          length: 159.2235
-          _lowPoint: {x: 165, y: -20, z: 0}
+            leftTangent: {x: -1, y: 1, z: -0}
+            rightTangent: {x: 1, y: -1, z: 0}
+          - controlPoint: {x: 5, y: Infinity, z: 0}
+            leftTangent: {x: -4.5, y: -0, z: -0}
+            rightTangent: {x: 4.5, y: 0, z: 0}
+          - controlPoint: {x: 20, y: 0, z: 0}
+            leftTangent: {x: -1, y: -1, z: -0}
+            rightTangent: {x: 1, y: 1, z: 0}
+          - controlPoint: {x: NaN, y: NaN, z: NaN}
+            leftTangent: {x: -5, y: -0, z: -0}
+            rightTangent: {x: 5, y: 0, z: 0}
+          - controlPoint: {x: 40, y: 0, z: 0}
+            leftTangent: {x: -0, y: 0, z: -0}
+            rightTangent: {x: 0, y: -0, z: 0}
+          length: NaN
+          _lowPoint: {x: 0, y: 0, z: 0}
           _highPoint: {x: 0, y: 0, z: 0}
         fillSplinePoints:
         - position: {x: 0, y: -100, z: 0}
@@ -1809,29 +1913,45 @@ MonoBehaviour:
           m_CornerMode: 0
         - position: {x: 0, y: 0, z: 0}
           leftTangent: {x: 0, y: -1, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
+          rightTangent: {x: 1, y: -1, z: 0}
           mode: 2
           height: 1
           spriteIndex: 0
           corner: 0
           m_CornerMode: 0
-        - position: {x: 120, y: 0, z: 0}
-          leftTangent: {x: -66, y: -0, z: 0}
-          rightTangent: {x: 33, y: 0, z: -0}
+        - position: {x: 5, y: Infinity, z: 0}
+          leftTangent: {x: -4.5, y: -0, z: -0}
+          rightTangent: {x: 4.5, y: 0, z: 0}
           mode: 1
           height: 1
           spriteIndex: 0
           corner: 0
           m_CornerMode: 0
-        - position: {x: 165, y: -20, z: 0}
-          leftTangent: {x: -13.655201, y: 11.000023, z: 0}
+        - position: {x: 20, y: 0, z: 0}
+          leftTangent: {x: -1, y: -1, z: -0}
+          rightTangent: {x: 1, y: 1, z: 0}
+          mode: 1
+          height: 1
+          spriteIndex: 0
+          corner: 0
+          m_CornerMode: 0
+        - position: {x: NaN, y: NaN, z: NaN}
+          leftTangent: {x: -5, y: -0, z: -0}
+          rightTangent: {x: 5, y: 0, z: 0}
+          mode: 1
+          height: 1
+          spriteIndex: 0
+          corner: 0
+          m_CornerMode: 0
+        - position: {x: 40, y: 0, z: 0}
+          leftTangent: {x: -0, y: 0, z: -0}
           rightTangent: {x: 0, y: -1, z: 0}
           mode: 2
           height: 1
           spriteIndex: 0
           corner: 0
           m_CornerMode: 0
-        - position: {x: 165, y: -120, z: 0}
+        - position: {x: 40, y: -100, z: 0}
           leftTangent: {x: 0, y: 0, z: 0}
           rightTangent: {x: 0, y: 0, z: 0}
           mode: 0
@@ -1842,24 +1962,40 @@ MonoBehaviour:
         fillSpineIsOpen: 0
         edgeSplinePoints:
         - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
+          leftTangent: {x: -1, y: 1, z: -0}
+          rightTangent: {x: 1, y: -1, z: 0}
           mode: 1
           height: 1
           spriteIndex: 0
           corner: 0
           m_CornerMode: 0
-        - position: {x: 120, y: 0, z: 0}
-          leftTangent: {x: -66, y: -0, z: 0}
-          rightTangent: {x: 33, y: 0, z: -0}
+        - position: {x: 5, y: Infinity, z: 0}
+          leftTangent: {x: -4.5, y: -0, z: -0}
+          rightTangent: {x: 4.5, y: 0, z: 0}
           mode: 1
           height: 1
           spriteIndex: 0
           corner: 0
           m_CornerMode: 0
-        - position: {x: 165, y: -20, z: 0}
-          leftTangent: {x: -13.655201, y: 11.000023, z: 0}
-          rightTangent: {x: 1, y: -0.8055556, z: 0}
+        - position: {x: 20, y: 0, z: 0}
+          leftTangent: {x: -1, y: -1, z: -0}
+          rightTangent: {x: 1, y: 1, z: 0}
+          mode: 1
+          height: 1
+          spriteIndex: 0
+          corner: 0
+          m_CornerMode: 0
+        - position: {x: NaN, y: NaN, z: NaN}
+          leftTangent: {x: -5, y: -0, z: -0}
+          rightTangent: {x: 5, y: 0, z: 0}
+          mode: 1
+          height: 1
+          spriteIndex: 0
+          corner: 0
+          m_CornerMode: 0
+        - position: {x: 40, y: 0, z: 0}
+          leftTangent: {x: -0, y: 0, z: -0}
+          rightTangent: {x: 0, y: -0, z: 0}
           mode: 1
           height: 1
           spriteIndex: 0
@@ -1868,713 +2004,72 @@ MonoBehaviour:
         colliderPoints:
         - {x: 0, y: -100}
         - {x: 0, y: 0}
-        - {x: 0.053112976, y: 1.2}
-        - {x: 0.2114475, y: 1.2}
-        - {x: 0.4734969, y: 1.2}
-        - {x: 0.83775467, y: 1.2}
-        - {x: 1.3027142, y: 1.2}
-        - {x: 1.8668687, y: 1.2}
-        - {x: 2.5287118, y: 1.2}
-        - {x: 3.2867367, y: 1.2}
-        - {x: 4.1394367, y: 1.2}
-        - {x: 5.0853057, y: 1.2}
-        - {x: 6.122836, y: 1.2}
-        - {x: 7.250522, y: 1.2}
-        - {x: 8.466858, y: 1.2}
-        - {x: 9.770335, y: 1.2}
-        - {x: 11.159447, y: 1.2}
-        - {x: 12.63269, y: 1.2}
-        - {x: 14.188553, y: 1.2}
-        - {x: 15.825534, y: 1.2}
-        - {x: 17.542122, y: 1.2}
-        - {x: 19.336815, y: 1.2}
-        - {x: 21.208101, y: 1.2}
-        - {x: 23.154478, y: 1.2}
-        - {x: 25.174437, y: 1.2}
-        - {x: 27.266472, y: 1.2}
-        - {x: 29.429081, y: 1.2}
-        - {x: 31.660746, y: 1.2}
-        - {x: 33.959972, y: 1.2}
-        - {x: 36.325245, y: 1.2}
-        - {x: 38.755062, y: 1.2}
-        - {x: 41.24791, y: 1.2}
-        - {x: 43.80229, y: 1.2}
-        - {x: 46.416702, y: 1.2}
-        - {x: 49.08963, y: 1.2}
-        - {x: 51.819553, y: 1.2}
-        - {x: 54.604996, y: 1.2}
-        - {x: 57.44443, y: 1.2}
-        - {x: 60.33634, y: 1.2}
-        - {x: 63.27925, y: 1.2}
-        - {x: 66.27164, y: 1.2}
-        - {x: 69.312, y: 1.2}
-        - {x: 72.3988, y: 1.2}
-        - {x: 75.53058, y: 1.2}
-        - {x: 78.70581, y: 1.2}
-        - {x: 81.92297, y: 1.2}
-        - {x: 85.18058, y: 1.2}
-        - {x: 88.47711, y: 1.2}
-        - {x: 91.81108, y: 1.2}
-        - {x: 95.180954, y: 1.2}
-        - {x: 98.58524, y: 1.2}
-        - {x: 102.02244, y: 1.2}
-        - {x: 105.49102, y: 1.2}
-        - {x: 108.9895, y: 1.2}
-        - {x: 112.516365, y: 1.2}
-        - {x: 116.070114, y: 1.2}
-        - {x: 119.64922, y: 1.2}
-        - {x: 120, y: 1.2}
-        - {x: 123.913376, y: 1.1547208}
-        - {x: 127.49185, y: 1.0214319}
-        - {x: 130.77007, y: 0.80244434}
-        - {x: 133.76892, y: 0.50001055}
-        - {x: 136.50905, y: 0.116240144}
-        - {x: 139.01091, y: -0.3468789}
-        - {x: 141.29443, y: -0.88739777}
-        - {x: 143.37901, y: -1.5032581}
-        - {x: 145.28331, y: -2.1920524}
-        - {x: 147.02522, y: -2.9507318}
-        - {x: 148.6223, y: -3.7754009}
-        - {x: 150.092, y: -4.661249}
-        - {x: 151.45206, y: -5.6027374}
-        - {x: 152.72124, y: -6.5940986}
-        - {x: 153.91899, y: -7.629776}
-        - {x: 155.06549, y: -8.704819}
-        - {x: 156.18156, y: -9.815152}
-        - {x: 157.28818, y: -10.957525}
-        - {x: 158.40645, y: -12.129444}
-        - {x: 159.55756, y: -13.329031}
-        - {x: 160.76257, y: -14.554752}
-        - {x: 162.04276, y: -15.805367}
-        - {x: 163.41933, y: -17.07964}
-        - {x: 164.92223, y: -18.38329}
-        - {x: 165.75279, y: -19.065495}
-      - name: Segment 1
-        position: {x: -0.000015258789, y: -0.00000071525574, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
-        isStart: 0
-        isFinish: 0
-        isFloating: 0
-        hasShadow: 1
-        curve:
-          curveDefinition:
-            curveSections:
-            - sectionType: 0
-              length: 95.09
-              shape: 0.8
-              pitch: 0.99
-              climb: 0
-            name: Default Curve
-          _sectionLengths:
-          - 103.43421
-          _curvePoints:
-          - controlPoint: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -13.655201, y: 11.000023, z: 0}
-            rightTangent: {x: 40.965603, y: -33.00007, z: -0}
-          - controlPoint: {x: 95.09, y: 0, z: 0}
-            leftTangent: {x: -37.54172, y: -37.166306, z: 0}
-            rightTangent: {x: 1, y: 0.99, z: 0}
-          length: 103.43421
-          _lowPoint: {x: 24.50676, y: -9.093117, z: 0}
-          _highPoint: {x: 67.5, y: 11.601564, z: 0}
-        fillSplinePoints:
-        - position: {x: 0, y: -100, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          mode: 0
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: 0, y: -1, z: 0}
-          rightTangent: {x: 40.965603, y: -33.00007, z: -0}
-          mode: 2
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 95.09, y: 0, z: 0}
-          leftTangent: {x: -37.54172, y: -37.166306, z: 0}
-          rightTangent: {x: 0, y: -1, z: 0}
-          mode: 2
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 95.09, y: -100, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          mode: 0
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        fillSpineIsOpen: 0
-        edgeSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -13.655201, y: 11.000023, z: 0}
-          rightTangent: {x: 40.965603, y: -33.00007, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 95.09, y: 0, z: 0}
-          leftTangent: {x: -37.54172, y: -37.166306, z: 0}
-          rightTangent: {x: 1, y: 0.99, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        colliderPoints:
-        - {x: 0.75279236, y: 0.93450546}
-        - {x: 3.0937688, y: -0.94067574}
-        - {x: 5.3836875, y: -2.7520561}
-        - {x: 7.6218553, y: -4.4969873}
-        - {x: 9.810148, y: -6.174897}
-        - {x: 11.950437, y: -7.7852125}
-        - {x: 14.044573, y: -9.327366}
-        - {x: 16.09441, y: -10.800797}
-        - {x: 18.101784, y: -12.204948}
-        - {x: 20.06852, y: -13.539274}
-        - {x: 21.996433, y: -14.803242}
-        - {x: 23.887333, y: -15.996327}
-        - {x: 25.743021, y: -17.11804}
-        - {x: 27.56528, y: -18.167898}
-        - {x: 29.355917, y: -19.145452}
-        - {x: 31.116714, y: -20.050283}
-        - {x: 32.84949, y: -20.882019}
-        - {x: 34.556072, y: -21.640308}
-        - {x: 36.238327, y: -22.324856}
-        - {x: 37.898155, y: -22.935402}
-        - {x: 39.537533, y: -23.471722}
-        - {x: 41.1585, y: -23.93362}
-        - {x: 42.763187, y: -24.320923}
-        - {x: 44.35384, y: -24.633455}
-        - {x: 45.932766, y: -24.871016}
-        - {x: 47.5024, y: -25.03336}
-        - {x: 49.065254, y: -25.12017}
-        - {x: 50.623905, y: -25.13106}
-        - {x: 52.18095, y: -25.065521}
-        - {x: 53.738995, y: -24.922966}
-        - {x: 55.30061, y: -24.702675}
-        - {x: 56.868313, y: -24.403872}
-        - {x: 58.44454, y: -24.025686}
-        - {x: 60.0316, y: -23.567232}
-        - {x: 61.63174, y: -23.027576}
-        - {x: 63.247086, y: -22.405807}
-        - {x: 64.87968, y: -21.70102}
-        - {x: 66.53148, y: -20.912348}
-        - {x: 68.20439, y: -20.038963}
-        - {x: 69.900276, y: -19.08008}
-        - {x: 71.62094, y: -18.034946}
-        - {x: 73.368195, y: -16.902876}
-        - {x: 75.14382, y: -15.683204}
-        - {x: 76.94961, y: -14.375292}
-        - {x: 78.78736, y: -12.978547}
-        - {x: 80.65885, y: -11.492387}
-        - {x: 82.56588, y: -9.916268}
-        - {x: 84.51027, y: -8.249622}
-        - {x: 86.49385, y: -6.4919496}
-        - {x: 88.51843, y: -4.6427}
-        - {x: 90.5859, y: -2.7013702}
-        - {x: 92.6994, y: -0.66615444}
-        - {x: 94.24574, y: 0.8527813}
-        - {x: 95.09, y: 0}
-        - {x: 95.09, y: -100}
-    - position: {x: 270.1, y: -1.058028}
-      name: Ground 1
-      segmentList:
-      - name: Segment 0
-        position: {x: 445.9629, y: -36.741974, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
-        isStart: 0
-        isFinish: 1
-        isFloating: 0
-        hasShadow: 1
-        curve:
-          curveDefinition:
-            curveSections:
-            - sectionType: 1
-              length: 50
-              shape: 0.5
-              pitch: 0.5
-              climb: -25
-            - sectionType: 1
-              length: 300
-              shape: 0
-              pitch: 0
-              climb: 0
-            name: Default Curve
-          _sectionLengths:
-          - 53.14667
-          - 297.93454
-          _curvePoints:
-          - controlPoint: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-          - controlPoint: {x: 50, y: -25, z: 0}
-            leftTangent: {x: -30.745935, y: 0, z: 0}
-            rightTangent: {x: 15.372968, y: -0, z: -0}
-          - controlPoint: {x: 350, y: -25, z: 0}
-            leftTangent: {x: -0, y: 0, z: 0}
-            rightTangent: {x: 1, y: -0, z: 0}
-          length: 351.0812
-          _lowPoint: {x: 50, y: -25, z: 0}
-          _highPoint: {x: 0, y: 0, z: 0}
-        fillSplinePoints:
-        - position: {x: 0, y: -100, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          mode: 0
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: 0, y: -1, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 2
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 50, y: -25, z: 0}
-          leftTangent: {x: -30.745935, y: 0, z: 0}
-          rightTangent: {x: 15.372968, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 350, y: -25, z: 0}
-          leftTangent: {x: -0, y: 0, z: 0}
-          rightTangent: {x: 0, y: -1, z: 0}
-          mode: 2
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 350, y: -125, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          mode: 0
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        fillSpineIsOpen: 0
-        edgeSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 50, y: -25, z: 0}
-          leftTangent: {x: -30.745935, y: 0, z: 0}
-          rightTangent: {x: 15.372968, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 350, y: -25, z: 0}
-          leftTangent: {x: -0, y: 0, z: 0}
-          rightTangent: {x: 1, y: -0, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        colliderPoints:
-        - {x: 0, y: -100}
         - {x: 0, y: 0}
-        - {x: 1.0145938, y: 0.6508562}
-        - {x: 1.2450163, y: 0.3655799}
-        - {x: 1.6329756, y: -0.099332035}
-        - {x: 2.1759841, y: -0.72798765}
-        - {x: 2.8714797, y: -1.5044129}
-        - {x: 3.7168725, y: -2.412618}
-        - {x: 4.7095556, y: -3.4366117}
-        - {x: 5.8469086, y: -4.5604086}
-        - {x: 7.126292, y: -5.7680283}
-        - {x: 8.545059, y: -7.0435076}
-        - {x: 10.100542, y: -8.370894}
-        - {x: 11.790059, y: -9.734258}
-        - {x: 13.610924, y: -11.117694}
-        - {x: 15.560431, y: -12.5053215}
-        - {x: 17.635876, y: -13.881304}
-        - {x: 19.83456, y: -15.229844}
-        - {x: 22.15378, y: -16.53519}
-        - {x: 24.59087, y: -17.781643}
-        - {x: 27.14319, y: -18.95356}
-        - {x: 29.808174, y: -20.03536}
-        - {x: 32.583298, y: -21.011507}
-        - {x: 35.46617, y: -21.866512}
-        - {x: 38.454483, y: -22.584906}
-        - {x: 41.546078, y: -23.151226}
-        - {x: 44.73894, y: -23.549976}
-        - {x: 48.04696, y: -23.765772}
-        - {x: 50, y: -23.8}
-        - {x: 50.345833, y: -23.799995}
-        - {x: 50.76344, y: -23.800001}
-        - {x: 51.25185, y: -23.8}
-        - {x: 51.810036, y: -23.8}
-        - {x: 52.43701, y: -23.799997}
-        - {x: 53.13175, y: -23.8}
-        - {x: 53.89327, y: -23.799995}
-        - {x: 54.720543, y: -23.8}
-        - {x: 55.61258, y: -23.799997}
-        - {x: 56.568367, y: -23.8}
-        - {x: 57.58689, y: -23.800001}
-        - {x: 58.667168, y: -23.799997}
-        - {x: 59.808174, y: -23.799997}
-        - {x: 61.008923, y: -23.8}
-        - {x: 62.268387, y: -23.8}
-        - {x: 63.58558, y: -23.799997}
-        - {x: 64.95948, y: -23.8}
-        - {x: 66.38909, y: -23.8}
-        - {x: 67.87341, y: -23.800001}
-        - {x: 69.41142, y: -23.8}
-        - {x: 71.002144, y: -23.799997}
-        - {x: 72.64455, y: -23.800001}
-        - {x: 74.33763, y: -23.800003}
-        - {x: 76.08039, y: -23.799997}
-        - {x: 77.87182, y: -23.799997}
-        - {x: 79.71093, y: -23.8}
-        - {x: 81.5967, y: -23.800001}
-        - {x: 83.52812, y: -23.8}
-        - {x: 85.504196, y: -23.799997}
-        - {x: 87.52392, y: -23.800001}
-        - {x: 89.58628, y: -23.8}
-        - {x: 91.69028, y: -23.799997}
-        - {x: 93.83489, y: -23.799997}
-        - {x: 96.019165, y: -23.8}
-        - {x: 98.24202, y: -23.799997}
-        - {x: 100.50252, y: -23.800001}
-        - {x: 102.799614, y: -23.799997}
-        - {x: 105.13231, y: -23.799997}
-        - {x: 107.49961, y: -23.800001}
-        - {x: 109.9005, y: -23.800003}
-        - {x: 112.33397, y: -23.799997}
-        - {x: 114.79904, y: -23.799997}
-        - {x: 117.294685, y: -23.800001}
-        - {x: 119.81991, y: -23.8}
-        - {x: 122.37367, y: -23.799997}
-        - {x: 124.95502, y: -23.8}
-        - {x: 127.56293, y: -23.800005}
-        - {x: 130.19637, y: -23.8}
-        - {x: 132.85435, y: -23.799995}
-        - {x: 135.53589, y: -23.8}
-        - {x: 138.23997, y: -23.8}
-        - {x: 140.96558, y: -23.8}
-        - {x: 143.71169, y: -23.799997}
-        - {x: 146.47733, y: -23.799997}
-        - {x: 149.2615, y: -23.8}
-        - {x: 152.06317, y: -23.8}
-        - {x: 154.88135, y: -23.8}
-        - {x: 157.715, y: -23.799995}
-        - {x: 160.56319, y: -23.8}
-        - {x: 163.42484, y: -23.8}
-        - {x: 166.29893, y: -23.8}
-        - {x: 169.18454, y: -23.799995}
-        - {x: 172.08063, y: -23.8}
-        - {x: 174.9862, y: -23.800001}
-        - {x: 177.90019, y: -23.8}
-        - {x: 180.82164, y: -23.8}
-        - {x: 183.74956, y: -23.799997}
-        - {x: 186.68294, y: -23.8}
-        - {x: 189.62073, y: -23.8}
-        - {x: 192.56195, y: -23.799997}
-        - {x: 195.50562, y: -23.8}
-        - {x: 198.4507, y: -23.8}
-        - {x: 201.39621, y: -23.8}
-        - {x: 204.34108, y: -23.799997}
-        - {x: 207.28444, y: -23.8}
-        - {x: 210.22514, y: -23.8}
-        - {x: 213.16226, y: -23.799997}
-        - {x: 216.09479, y: -23.8}
-        - {x: 219.0217, y: -23.8}
-        - {x: 221.94199, y: -23.8}
-        - {x: 224.85466, y: -23.8}
-        - {x: 227.75868, y: -23.8}
-        - {x: 230.65308, y: -23.799997}
-        - {x: 233.53683, y: -23.8}
-        - {x: 236.40894, y: -23.8}
-        - {x: 239.2684, y: -23.8}
-        - {x: 242.11423, y: -23.8}
-        - {x: 244.94534, y: -23.8}
-        - {x: 247.76083, y: -23.800001}
-        - {x: 250.55965, y: -23.8}
-        - {x: 253.34079, y: -23.8}
-        - {x: 256.1032, y: -23.8}
-        - {x: 258.846, y: -23.800001}
-        - {x: 261.56805, y: -23.800001}
-        - {x: 264.2684, y: -23.8}
-        - {x: 266.9461, y: -23.800001}
-        - {x: 269.60004, y: -23.8}
-        - {x: 272.22928, y: -23.8}
-        - {x: 274.83282, y: -23.8}
-        - {x: 277.4096, y: -23.8}
-        - {x: 279.95868, y: -23.800001}
-        - {x: 282.479, y: -23.8}
-        - {x: 284.9696, y: -23.8}
-        - {x: 287.42947, y: -23.8}
-        - {x: 289.85754, y: -23.8}
-        - {x: 292.25293, y: -23.8}
-        - {x: 294.6145, y: -23.8}
-        - {x: 296.94128, y: -23.8}
-        - {x: 299.23236, y: -23.8}
-        - {x: 301.48663, y: -23.8}
-        - {x: 303.70306, y: -23.8}
-        - {x: 305.88077, y: -23.8}
-        - {x: 308.01868, y: -23.8}
-        - {x: 310.11578, y: -23.8}
-        - {x: 312.17108, y: -23.8}
-        - {x: 314.18356, y: -23.8}
-        - {x: 316.15222, y: -23.8}
-        - {x: 318.0761, y: -23.8}
-        - {x: 319.95413, y: -23.8}
-        - {x: 321.7853, y: -23.8}
-        - {x: 323.56866, y: -23.8}
-        - {x: 325.30322, y: -23.8}
-        - {x: 326.98785, y: -23.8}
-        - {x: 328.6217, y: -23.8}
-        - {x: 330.20367, y: -23.8}
-        - {x: 331.7328, y: -23.8}
-        - {x: 333.208, y: -23.8}
-        - {x: 334.6284, y: -23.8}
-        - {x: 335.99283, y: -23.8}
-        - {x: 337.30048, y: -23.8}
-        - {x: 338.55017, y: -23.8}
-        - {x: 339.741, y: -23.800001}
-        - {x: 340.8719, y: -23.8}
-        - {x: 341.94193, y: -23.8}
-        - {x: 342.95004, y: -23.8}
-        - {x: 343.8952, y: -23.799997}
-        - {x: 344.7765, y: -23.8}
-        - {x: 345.59283, y: -23.8}
-        - {x: 346.34323, y: -23.8}
-        - {x: 347.02673, y: -23.8}
-        - {x: 347.64224, y: -23.8}
-        - {x: 348.18884, y: -23.8}
-        - {x: 348.66547, y: -23.8}
-        - {x: 349.0711, y: -23.8}
-        - {x: 349.40485, y: -23.8}
-        - {x: 349.66562, y: -23.800001}
-        - {x: 349.85236, y: -23.8}
-        - {x: 349.96414, y: -23.8}
-        - {x: 350, y: -23.8}
-        - {x: 350, y: -25}
-        - {x: 350, y: -125}
-    - position: {x: 251.62743, y: -1.058028}
-      name: Ground 2
-      segmentList:
-      - name: Segment 0
-        position: {x: 121.96286, y: 45.00621, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
-        isStart: 0
-        isFinish: 0
-        isFloating: 1
-        hasShadow: 0
-        curve:
-          curveDefinition:
-            curveSections:
-            - sectionType: 1
-              length: 55.89
-              shape: 0.78
-              pitch: 1.37
-              climb: 0
-            name: Default Curve
-          _sectionLengths:
-          - 61.26367
-          _curvePoints:
-          - controlPoint: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-          - controlPoint: {x: 55.89, y: 0, z: 0}
-            leftTangent: {x: -28.27216, y: 38.732857, z: 0}
-            rightTangent: {x: 1, y: -1.37, z: 0}
-          length: 61.26367
-          _lowPoint: {x: 16.702042, y: -7.2474365, z: 0}
-          _highPoint: {x: 67.499985, y: 11.6015625, z: 0}
-        fillSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 55.89, y: 0, z: 0}
-          leftTangent: {x: -28.27216, y: 38.732857, z: 0}
-          rightTangent: {x: 1, y: -1.37, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        fillSpineIsOpen: 1
-        edgeSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 55.89, y: 0, z: 0}
-          leftTangent: {x: -28.27216, y: 38.732857, z: 0}
-          rightTangent: {x: 1, y: -1.37, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        colliderPoints:
         - {x: 0, y: 0}
-        - {x: -0.8713964, y: 0.8414471}
-        - {x: -0.5999755, y: 1.2017262}
-        - {x: -0.16157568, y: 1.7625706}
-        - {x: 0.4383111, y: 2.4996912}
-        - {x: 1.1943033, y: 3.388897}
-        - {x: 2.101086, y: 4.4060173}
-        - {x: 3.1534102, y: 5.526883}
-        - {x: 4.3461003, y: 6.72731}
-        - {x: 5.674069, y: 7.9830933}
-        - {x: 7.132324, y: 9.269976}
-        - {x: 8.715982, y: 10.563625}
-        - {x: 10.420269, y: 11.8396015}
-        - {x: 12.240517, y: 13.073289}
-        - {x: 14.172144, y: 14.239852}
-        - {x: 16.210562, y: 15.314129}
-        - {x: 18.3511, y: 16.27058}
-        - {x: 20.58879, y: 17.083216}
-        - {x: 22.918156, y: 17.725628}
-        - {x: 25.33286, y: 18.171093}
-        - {x: 27.825537, y: 18.392889}
-        - {x: 30.387646, y: 18.364733}
-        - {x: 33.009705, y: 18.061256}
-        - {x: 35.681778, y: 17.458399}
-        - {x: 38.394196, y: 16.533428}
-        - {x: 41.138172, y: 15.264655}
-        - {x: 43.90615, y: 13.6308975}
-        - {x: 46.69184, y: 11.610929}
-        - {x: 49.48993, y: 9.183106}
-        - {x: 52.2958, y: 6.3251486}
-        - {x: 55.09673, y: 3.0253677}
-        - {x: 56.859257, y: 0.7074877}
-    - position: {x: 251.62743, y: -1.058028}
-      name: Ground 3
-      segmentList:
-      - name: Segment 0
-        position: {x: 203.56285, y: -30.867887, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
-        isStart: 0
-        isFinish: 0
-        isFloating: 1
-        hasShadow: 0
-        curve:
-          curveDefinition:
-            curveSections:
-            - sectionType: 0
-              length: 55
-              shape: 0.9
-              pitch: 1.43
-              climb: 0
-            name: Default Curve
-          _sectionLengths:
-          - 62.99199
-          _curvePoints:
-          - controlPoint: {x: 0, y: 0, z: 0}
-            leftTangent: {x: -0, y: -0, z: 0}
-            rightTangent: {x: -0, y: -0, z: -0}
-          - controlPoint: {x: 55, y: 0, z: 0}
-            leftTangent: {x: -31.204079, y: -44.62183, z: 0}
-            rightTangent: {x: 1, y: 1.43, z: 0}
-          length: 62.99199
-          _lowPoint: {x: 16.702042, y: -7.2474384, z: 0}
-          _highPoint: {x: 67.500015, y: 11.601564, z: 0}
-        fillSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 55, y: 0, z: 0}
-          leftTangent: {x: -31.204079, y: -44.62183, z: 0}
-          rightTangent: {x: 1, y: 1.43, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        fillSpineIsOpen: 1
-        edgeSplinePoints:
-        - position: {x: 0, y: 0, z: 0}
-          leftTangent: {x: -0, y: -0, z: 0}
-          rightTangent: {x: -0, y: -0, z: -0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        - position: {x: 55, y: 0, z: 0}
-          leftTangent: {x: -31.204079, y: -44.62183, z: 0}
-          rightTangent: {x: 1, y: 1.43, z: 0}
-          mode: 1
-          height: 1
-          spriteIndex: 0
-          corner: 0
-          m_CornerMode: 0
-        colliderPoints:
         - {x: 0, y: 0}
-        - {x: 1.1156957, y: 0.46054834}
-        - {x: 1.3173392, y: 0.10400629}
-        - {x: 1.6551583, y: -0.46935248}
-        - {x: 2.1258488, y: -1.2338109}
-        - {x: 2.7260058, y: -2.1635416}
-        - {x: 3.4521532, y: -3.2326827}
-        - {x: 4.300736, y: -4.4153566}
-        - {x: 5.2681117, y: -5.685685}
-        - {x: 6.350524, y: -7.0178027}
-        - {x: 7.5440845, y: -8.385868}
-        - {x: 8.844761, y: -9.764116}
-        - {x: 10.248335, y: -11.126889}
-        - {x: 11.750421, y: -12.448714}
-        - {x: 13.346463, y: -13.704402}
-        - {x: 15.031819, y: -14.869175}
-        - {x: 16.8019, y: -15.918807}
-        - {x: 18.652433, y: -16.829742}
-        - {x: 20.579853, y: -17.57912}
-        - {x: 22.581778, y: -18.144594}
-        - {x: 24.6574, y: -18.50388}
-        - {x: 26.80763, y: -18.634016}
-        - {x: 29.03464, y: -18.510595}
-        - {x: 31.340952, y: -18.107283}
-        - {x: 33.728355, y: -17.395937}
-        - {x: 36.19709, y: -16.347252}
-        - {x: 38.74559, y: -14.931626}
-        - {x: 41.370724, y: -13.119863}
-        - {x: 44.06829, y: -10.8835335}
-        - {x: 46.83358, y: -8.195058}
-        - {x: 49.66168, y: -5.0275974}
-        - {x: 52.55714, y: -1.3416144}
-        - {x: 54.016598, y: 0.68769324}
-    _leaderboardKey: Zigzag Test_leaderboard
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 19.151472, y: 0.84852815}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 0, y: 0}
+        - {x: 40, y: 0}
+        - {x: 40, y: 0}
+        - {x: 40, y: -100}
+    _leaderboardKey: New Level_leaderboard
     _startPoint: {x: -45.000015, y: 20}
     _finishPoint: {x: 545.9629, y: -61.741974}
-    _killPlaneY: -108.48395
+    _killPlaneY: -10
     _cameraStartPosition: {x: -35, y: 15}
   _levelIsDirty: 0
-  lastLevelLoadedUID: 56a1b481-efb2-487e-aea6-3b5863fba2e2
+  lastLevelLoadedUID: 3d7160e2-ebe6-4844-8c49-1f6775b5acb9

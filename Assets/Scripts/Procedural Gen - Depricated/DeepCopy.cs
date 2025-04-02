@@ -38,13 +38,13 @@ public static class DeepCopy
             case CurveSectionType.Standard:
                 return CopyStandardCurveSection(sectionToCopy as StandardCurveSection);
             default:
-                return new StandardCurveSection();
+                return new StandardCurveSection(CurveDirection.Valley);
         }
     }
 
     private static StandardCurveSection CopyStandardCurveSection(StandardCurveSection sectionToCopy)
     {
-        return new(sectionToCopy.XYDelta, sectionToCopy.Height, sectionToCopy.Skew, sectionToCopy.Shape);
+        return new(sectionToCopy.XYDelta, sectionToCopy.Height, sectionToCopy.Skew, sectionToCopy.Shape, sectionToCopy.Type);
     }
 
     public static CurveSection CopyCurveSection(CurveSection sectionToCopy)

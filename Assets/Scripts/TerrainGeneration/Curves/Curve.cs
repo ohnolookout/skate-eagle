@@ -21,7 +21,7 @@ public class Curve
     public Vector3 HighPoint { get => _highPoint; set => _highPoint = value; }
     public CurvePoint StartPoint => _curvePoints[0];
     public CurvePoint EndPoint => _curvePoints[^1];
-    public Vector3 XYDelta => new Vector3(EndPoint.ControlPoint.x - StartPoint.ControlPoint.x, EndPoint.ControlPoint.y - StartPoint.ControlPoint.y);
+    public Vector3 XYDelta => new Vector3(EndPoint.Position.x - StartPoint.Position.x, EndPoint.Position.y - StartPoint.Position.y);
     public List<float> SectionLengths => _sectionLengths;
     public List<ICurveSection> CurveSections { get => curveSections; set => curveSections = value; }
     #endregion
@@ -47,10 +47,10 @@ public class Curve
     }
     public List<CurvePoint> GetCurvePoints()
     {
-        List<CurvePoint> allPoints = curveSections[0].GetCurvePoints();
+        List<CurvePoint> allPoints = curveSections[0].GetCurvePoints(new());
         for(int i = 1; i < curveSections.Count; i++)
         {
-            var newPoints = curveSections[i].GetCurvePoints();
+            var newPoints = curveSections[i].GetCurvePoints(allPoints[^1]);
             newPoints.RemoveAt(0);
             allPoints.AddRange(newPoints);
         }
@@ -137,7 +137,7 @@ public class Curve
         float length = 0;
         for (int i = 0; i < _curvePoints.Count - 1; i++)
         {
-            _sectionLengths.Add(BezierMath.Length(_curvePoints[i].ControlPoint, _curvePoints[i].RightTangent, _curvePoints[i + 1].LeftTangent, _curvePoints[i + 1].ControlPoint));
+            _sectionLengths.Add(BezierMath.Length(_curvePoints[i].Position, _curvePoints[i].RightTangent, _curvePoints[i + 1].LeftTangent, _curvePoints[i + 1].Position));
             length += _sectionLengths[^1];
         }
         return length;
@@ -158,7 +158,7 @@ public class Curve
 
     public void RecalculateDefaultHighLowPoints()
     {
-        _highPoint = _curvePoints[0].ControlPoint;
+        _highPoint = _curvePoints[0].Position;
         _lowPoint = _highPoint;
 
         for ( int i = 0; i < _curvePoints.Count - 1; i++)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class StraightCurveSection : ICurveSection
 {
     public CurveSectionType CurveType => CurveSectionType.Straight;
-    public List<CurvePoint> GetCurvePoints()
+    public List<CurvePoint> GetCurvePoints(CurvePoint startPoint)
     {
         throw new System.NotImplementedException();
     }

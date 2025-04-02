@@ -34,6 +34,10 @@ public class GroundSpawner : MonoBehaviour
     //Add segment to start at last endpoint
     public GroundSegment AddSegment(Ground ground, Curve curve)
     {
+        //Debug.Log("Adding segment with curve: ");
+        //curve.LogCurvePoints();
+
+
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(ground, "Add Segment");
 #endif
@@ -224,7 +228,7 @@ public class GroundSpawner : MonoBehaviour
     public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
         segment.IsStart = true;
-        var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).ControlPoint);
+        var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).Position);
         return startPoint;
     }
 
@@ -246,7 +250,7 @@ public class GroundSpawner : MonoBehaviour
         segment.IsFinish = true;
 
         //Add finish flag to designated point in GroundSegment.        
-        var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).ControlPoint);
+        var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).Position);
         finishPoint += new Vector3(50, 0, 0);
 
         _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);

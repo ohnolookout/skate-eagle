@@ -15,7 +15,7 @@ public static class CurveCollider
         collider.sharedMaterial = material;
         if (firstPoint == null)
         {
-            firstPoint = curve.GetPoint(0).ControlPoint;
+            firstPoint = curve.GetPoint(0).Position;
         }
         //Iterate through points that make up GroundSegment's curve.
         for (int i = 0; i < curve.Count - 1; i++)
@@ -71,7 +71,7 @@ public static class CurveCollider
         }
         if (segment.IsLastSegment)
         {
-            Vector2[] lastPointArray = new Vector2[2] { segment.Curve.EndPoint.ControlPoint, segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
+            Vector2[] lastPointArray = new Vector2[2] { segment.Curve.EndPoint.Position, segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
             collider.points = CombineArrays(collider.points, lastPointArray);
         }
     }
@@ -86,10 +86,10 @@ public static class CurveCollider
         } 
         for (int i = 1; i < resolution; i++)
         {
-            Vector3 newPoint = BezierMath.CalculateBezierPoint(firstPoint.ControlPoint, firstPoint.RightTangent + firstPoint.ControlPoint, secondPoint.LeftTangent + secondPoint.ControlPoint, secondPoint.ControlPoint, (1 / resolution) * i);
+            Vector3 newPoint = BezierMath.CalculateBezierPoint(firstPoint.Position, firstPoint.RightTangent + firstPoint.Position, secondPoint.LeftTangent + secondPoint.Position, secondPoint.Position, (1 / resolution) * i);
             points.Add(newPoint);
         }
-        points.Add(secondPoint.ControlPoint);
+        points.Add(secondPoint.Position);
         Vector2[] returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint is null));
         points.RemoveAt(0);
         return returnArray;
@@ -113,7 +113,7 @@ public static class CurveCollider
         }
         Vector3 lastDir = (lastPoint.RightTangent - lastPoint.LeftTangent)/2;
         lastDir.Normalize();
-        offsetArray[^1] = lastPoint.ControlPoint + new Vector3(lastDir.y, -lastDir.x) * -edgeOffset;
+        offsetArray[^1] = lastPoint.Position + new Vector3(lastDir.y, -lastDir.x) * -edgeOffset;
         return offsetArray;
     }
 
