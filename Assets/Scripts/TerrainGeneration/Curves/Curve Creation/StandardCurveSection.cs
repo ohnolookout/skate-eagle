@@ -58,6 +58,7 @@ public class StandardCurveSection : ICurveSection
         if (startTang != null)
         {
             var tangAngle = BezierMath.GetAngleFromTangent(_startPoint.Position, _endPoint.Position, (Vector2) startTang);
+            tangAngle = Mathf.Abs(tangAngle);
             _startAngle = tangAngle;
             _endAngle = tangAngle;            
             

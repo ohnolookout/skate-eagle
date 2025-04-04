@@ -51,12 +51,12 @@ public class GroundSpawner : MonoBehaviour
         newSegment.Curve = curve;
         newSegment.parentGround = ground;
         newSegment.PreviousSegment = ground.LastSegment;
-        newSegment.transform.position = new(0,0);
+        Vector2 startPoint = new(0, 0);
 
         if (ground.LastSegment != null)
         {
             ground.LastSegment.NextSegment = newSegment;
-
+            startPoint = ground.LastSegment.EndPosition;
             //Remove last collider point from previous segment if new segment is now last segment
             if (newSegment.IsLastSegment)
             {
@@ -71,6 +71,7 @@ public class GroundSpawner : MonoBehaviour
 
         }
 
+        newSegment.transform.position = startPoint;
         ground.SegmentList.Add(newSegment);
 
         ApplyCurveToSegment(newSegment, newSegment.Curve);

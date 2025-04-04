@@ -55,7 +55,7 @@ public class GroundEditManager : MonoBehaviour
     }
     public GroundSegment AddSegment(Ground ground)
     {
-        var prevTang = ground.LastSegment?.Curve.EndPoint.LeftTangent ?? null;
+        var prevTang = ground.LastSegment?.Curve.EndPoint.RightTangent ?? null;
         return _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
     }
 

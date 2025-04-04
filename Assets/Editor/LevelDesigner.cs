@@ -20,6 +20,8 @@ public class LevelDesigner : EditorWindow
     private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
+
+    private bool _debugMode = false;
     private bool _groundEditorNotFound = false;
     private Vector3 _lastTransformPosition;
 
@@ -167,6 +169,8 @@ public class LevelDesigner : EditorWindow
             _levelDB.EditorLevel = CreateLevel();
             _levelDB.LevelIsDirty = false;
         }
+
+        _debugMode = EditorGUILayout.Toggle("Debug Mode", _debugMode, GUILayout.ExpandWidth(false));
     }
     private void GroundMenu()
     {
@@ -408,6 +412,8 @@ public class LevelDesigner : EditorWindow
 
     private void SaveLevel()
     {
+        Debug.Log("Saving level " + levelName);
+
         if (!(_loadWindow is null))
         {
             _loadWindow.Close();
@@ -467,8 +473,6 @@ public class LevelDesigner : EditorWindow
         cameraStartPosition = levelToLoad.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(levelToLoad, _groundManager);
-
-        EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)
@@ -494,6 +498,13 @@ public class LevelDesigner : EditorWindow
 
     private bool DoDiscardChanges()
     {
+        if (_debugMode)
+        {
+            // In debug mode, always discard changes
+            Debug.Log("Debug mode, discarding changes");
+            return true;
+        }
+
         if (_levelDB.LevelIsDirty || SceneManager.GetActiveScene().isDirty)
         {
             var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
@@ -506,6 +517,7 @@ public class LevelDesigner : EditorWindow
         }
 
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
+
         return true;
     }
     #endregion
