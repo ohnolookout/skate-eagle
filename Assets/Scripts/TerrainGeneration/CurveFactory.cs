@@ -4,14 +4,12 @@ using UnityEngine;
 
 public static class CurveFactory
 {
-    public static Curve DefaultCurve(Vector2 prevTang)
+    public static Curve DefaultCurve(Vector2? prevTang)
     {
-        var peakSection = new StandardCurveSection(CurveDirection.Peak);
-        var valleySection = new StandardCurveSection(CurveDirection.Valley);
-        valleySection.Height = -valleySection.Height;
-        valleySection.SetStartTangents(prevTang);
+        var valleySection = new StandardCurveSection(CurveDirection.Valley, prevTang);
+        var peakSection = new StandardCurveSection(CurveDirection.Peak, valleySection.EndPoint.RightTangent);
 
-        List<ICurveSection> curveSections = new() { valleySection, peakSection };
+        List<StandardCurveSection> curveSections = new() { valleySection, peakSection };
 
         return new(curveSections);
     }

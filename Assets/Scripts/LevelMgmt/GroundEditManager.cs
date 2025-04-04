@@ -12,7 +12,7 @@ public class GroundEditManager : MonoBehaviour
     private GroundSpawner _groundSpawner;
     public GameObject startPoint;
     public GameObject finishPoint;
-    private Vector2 _defaultStartTang = new(1, -1);
+    private Vector2 _defaultStartTang = new(1, 1);
 
     #region Monobehaviors
     private void Awake()
@@ -55,7 +55,7 @@ public class GroundEditManager : MonoBehaviour
     }
     public GroundSegment AddSegment(Ground ground)
     {
-        var prevTang = -ground.LastSegment?.Curve.EndPoint.LeftTangent ?? _defaultStartTang;
+        var prevTang = ground.LastSegment?.Curve.EndPoint.LeftTangent ?? null;
         return _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
     }
 
@@ -111,7 +111,7 @@ public class GroundEditManager : MonoBehaviour
         }
 
         //Copy curve definition so that original def is not modified
-        List<ICurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
+        List<StandardCurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
         Curve newCurve = new(curveSections);
         var segIndex = ground.SegmentList.IndexOf(segment);
 
@@ -223,7 +223,7 @@ public class GroundEditManager : MonoBehaviour
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
 #endif
-
+        segment.Curve.UpdateCurveSections();
         _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
 
         segment.UpdateShadow();

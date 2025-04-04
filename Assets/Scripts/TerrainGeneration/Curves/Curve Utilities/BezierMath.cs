@@ -151,11 +151,6 @@ public static class BezierMath
 
     public static Vector2? GetIntersection(Vector2 position1, Vector2 tangent1, Vector2 position2, Vector2 tangent2)
     {
-        Debug.Log("Calculating intersection");
-        Debug.Log($"Position 1: {position1}");
-        Debug.Log($"Tangent 1: {tangent1}");
-        Debug.Log($"Position 2: {position2}");
-        Debug.Log($"Tangent 2: {tangent2}");
 
         float denominator = tangent1.x * tangent2.y - tangent1.y * tangent2.x;
 
@@ -180,9 +175,6 @@ public static class BezierMath
 
     public static Vector2 GetTangentFromAngle(Vector2 startPoint, Vector2 endPoint, float angle, float magnitude)
     {
-        // Clamp the angle to be between -89 and 89 degrees
-        angle = Math.Clamp(angle, -89f, 89f);
-
         // Calculate the direction vector from startPoint to endPoint
         Vector2 direction = (endPoint - startPoint).normalized;
 
@@ -190,8 +182,8 @@ public static class BezierMath
         float radians = MathF.PI * angle / 180f;
 
         // Rotate the direction vector by the given angle
-        float cosAngle = MathF.Cos(radians);
-        float sinAngle = MathF.Sin(radians);
+        float cosAngle = Mathf.Cos(radians);
+        float sinAngle = Mathf.Sin(radians);
         Vector2 tangent = new Vector2(
             direction.x * cosAngle - direction.y * sinAngle,
             direction.x * sinAngle + direction.y * cosAngle
@@ -200,6 +192,26 @@ public static class BezierMath
         // Scale the tangent by the given magnitude
         return tangent * magnitude;
     }
+    public static float GetAngleFromTangent(Vector2 startPoint, Vector2 endPoint, Vector2 tangent)
+    {
+        // Compute the direction vector of the line from startPoint to endPoint
+        Vector2 lineDirection = (endPoint - startPoint).normalized;
 
+        // Normalize the tangent vector
+        Vector2 tangentDirection = tangent.normalized;
+
+        // Compute the angle between the two vectors using the dot product
+        float dotProduct = Vector2.Dot(lineDirection, tangentDirection);
+        float angle = MathF.Acos(Mathf.Clamp(dotProduct, -1.0f, 1.0f));
+
+        // Determine the sign of the angle using the cross product (Z-component)
+        float crossProduct = lineDirection.x * tangentDirection.y - lineDirection.y * tangentDirection.x;
+        if (crossProduct < 0)
+        {
+            angle = -angle; // Negative angle if tangent is counterclockwise relative to the line
+        }
+
+        return angle * (180 / Mathf.PI); // Convert angle to degrees
+    }
 
 }

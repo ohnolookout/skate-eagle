@@ -139,6 +139,7 @@ public class LevelDesigner : EditorWindow
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.AddGround().gameObject;
+            _tabIndex = 1;
             SetLevelDirty();
         }
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
@@ -178,6 +179,7 @@ public class LevelDesigner : EditorWindow
         if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
+            _tabIndex = 2;
             SetLevelDirty();
         }
         if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
@@ -209,6 +211,7 @@ public class LevelDesigner : EditorWindow
             {
                 Selection.activeGameObject = _groundManager.gameObject;
             }
+            _tabIndex = 0;
             SetLevelDirty();
         }
         if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
@@ -269,16 +272,17 @@ public class LevelDesigner : EditorWindow
 
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
         {
-            _groundEditor.RemoveSegment(_segment);
-            if (_segment.PreviousSegment != null)
+            var segment = _segment;
+            if (segment.PreviousSegment != null)
             {
-                Selection.activeGameObject = _segment.PreviousSegment.gameObject;
+                Selection.activeGameObject = segment.PreviousSegment.gameObject;
             } else
             {
-                Selection.activeGameObject = _segment.parentGround.gameObject;
+                Selection.activeGameObject = segment.parentGround.gameObject;
             }
+            _tabIndex = 1;       
+            _groundEditor.RemoveSegment(segment);
             SetLevelDirty();
-            return;
         }
 
         if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
@@ -398,7 +402,6 @@ public class LevelDesigner : EditorWindow
 
     private void SetLevelDirty()
     {
-        Debug.Log("Level is dirty");
         _levelDB.LevelIsDirty = true;
         _levelDB.EditorLevel = CreateLevel();
     }

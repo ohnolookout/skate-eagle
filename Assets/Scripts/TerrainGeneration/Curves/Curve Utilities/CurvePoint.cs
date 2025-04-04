@@ -49,19 +49,26 @@ public struct CurvePoint
     {
         var mag = magnitude ?? leftTangent.magnitude;
         leftTangent = BezierMath.GetTangentFromAngle(Position, endPoint, angle, mag);
-        Debug.Log("Left Tangent: " + leftTangent);
     }
 
     public void SetRightTangentAngle(float angle, Vector2 endPoint, float? magnitude = null)
     {
         var mag = magnitude ?? rightTangent.magnitude;
         rightTangent = BezierMath.GetTangentFromAngle(Position, endPoint, angle, mag);
-        Debug.Log("Right Tangent: " + rightTangent);
     }
 
-    public void SetTangentAngles(float angle, Vector2 endPoint, float? magnitude = null)
+    public void SetTangentAngles(float angle, Vector2 endPoint, bool doReverse, float? magnitude = null)
     {
-        SetLeftTangentAngle(-angle, endPoint, magnitude);
+
+        if (doReverse)
+        {
+            angle = -angle;
+            SetRightTangentAngle(angle + 180, endPoint, magnitude);
+            SetLeftTangentAngle(angle, endPoint, magnitude);
+            return;
+        }
+
+        SetLeftTangentAngle(angle + 180, endPoint, magnitude);
         SetRightTangentAngle(angle, endPoint, magnitude);
     }
 

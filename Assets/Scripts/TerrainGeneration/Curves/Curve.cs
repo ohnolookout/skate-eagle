@@ -10,7 +10,7 @@ using Com.LuisPedroFonseca.ProCamera2D.TopDownShooter;
 public class Curve
 {
     #region Declarations
-    public List<ICurveSection> curveSections;
+    public List<StandardCurveSection> curveSections;
     [SerializeField][HideInInspector] private List<float> _sectionLengths;
     [SerializeField][HideInInspector] private List<CurvePoint> _curvePoints;
     [SerializeField][HideInInspector] private float length;
@@ -23,7 +23,7 @@ public class Curve
     public CurvePoint EndPoint => _curvePoints[^1];
     public Vector3 XYDelta => new Vector3(EndPoint.Position.x - StartPoint.Position.x, EndPoint.Position.y - StartPoint.Position.y);
     public List<float> SectionLengths => _sectionLengths;
-    public List<ICurveSection> CurveSections { get => curveSections; set => curveSections = value; }
+    public List<StandardCurveSection> CurveSections { get => curveSections; set => curveSections = value; }
     #endregion
 
     #region Construction
@@ -33,7 +33,7 @@ public class Curve
         _curvePoints = new();
     }
 
-    public Curve(List<ICurveSection> curveSections)
+    public Curve(List<StandardCurveSection> curveSections)
     {
         this.curveSections = curveSections;
         _curvePoints = GetCurvePoints();
@@ -57,64 +57,18 @@ public class Curve
 
         return allPoints;
     }
-    /*
-    public List<CurvePoint> CurvePointsFromDefinition(CurveDefinition curveDef, Vector2 prevTang)
-    {
-        List<CurvePoint> curvePoints = new();
 
-        //Initialize startPoint with tangents of previous point
-        CurvePoint startPoint = new(new(0, 0), -prevTang, prevTang);
-        foreach(var section in curveDef.curveSections)
+    public void UpdateCurveSections()
+    {
+        foreach (var section in curveSections)
         {
-            var sectionParams = section.GetSectionParameters(startPoint.RightTangent);
-
-            if (curvePoints.Count == 0)
-            {
-                curvePoints = CalculateCurvePointPair(sectionParams, startPoint);
-                _highPoint = curvePoints[0].ControlPoint;
-                _lowPoint = _highPoint;
-                EvaluateHighLow(BezierMath.GetMidpoint(curvePoints[0], curvePoints[1]));
-            }
-            else
-            {
-                List<CurvePoint> additionalCurvePoints = CalculateCurvePointPair(sectionParams, startPoint);
-
-                curvePoints[^1] = additionalCurvePoints[0];
-                curvePoints.Add(additionalCurvePoints[1]);
-                EvaluateHighLow(BezierMath.GetMidpoint(additionalCurvePoints[0], additionalCurvePoints[1]));
-            }
-            startPoint = curvePoints[^1];
+            section.UpdateCurvePoints();
         }
-
-        return curvePoints;
+        _curvePoints = GetCurvePoints();
     }
-    
-    private List<CurvePoint> CalculateCurvePointPair(CurveSectionParameters sectionParams, CurvePoint startPoint)
-    {
-        List<CurvePoint> curvePoints = new();
-
-        Vector3 prevTangent = -startPoint.LeftTangent.normalized;
-        CurvePoint nextPoint = new();
-        nextPoint.ControlPoint = startPoint.ControlPoint + new Vector3(sectionParams.Length, sectionParams.Climb);
-        nextPoint.SetTangents(sectionParams.Pitch, 1);
-
-        Vector3 middleVertex = BezierMath.CalculateThirdVertexFromCurvePoints(startPoint, nextPoint);
-        float firstMaxMagnitude = (middleVertex - startPoint.ControlPoint).magnitude * 1.1f;
-        float secondMaxMagnitude = (nextPoint.ControlPoint - middleVertex).magnitude * 1.1f;
-        float firstMagnitude = Mathf.Min(Mathf.Max(sectionParams.Shape * firstMaxMagnitude, startPoint.LeftTangent.magnitude * 0.5f), startPoint.LeftTangent.magnitude * 3f);
-        float secondMagnitude = sectionParams.Shape * secondMaxMagnitude;
-
-        startPoint.RightTangent = prevTangent * firstMagnitude;
-        nextPoint.LeftTangent = nextPoint.LeftTangent.normalized * secondMagnitude;
-        curvePoints.Add(startPoint);
-        curvePoints.Add(nextPoint);
-
-        return curvePoints;
-    }
-    */
     #endregion
 
-    #region Curve Stats
+        #region Curve Stats
 
     private void EvaluateHighLow(Vector3 newPoint)
     {

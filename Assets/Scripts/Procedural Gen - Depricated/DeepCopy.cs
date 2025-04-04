@@ -17,12 +17,12 @@ public static class DeepCopy
     }
     */
 
-    public static List<ICurveSection> CopyCurveSectionList(List<ICurveSection> sectionsToCopy)
+    public static List<StandardCurveSection> CopyCurveSectionList(List<StandardCurveSection> sectionsToCopy)
     {
-        List<ICurveSection> copiedSections = new();
-        foreach (ICurveSection sectionToCopy in sectionsToCopy)
+        List<StandardCurveSection> copiedSections = new();
+        foreach (StandardCurveSection sectionToCopy in sectionsToCopy)
         {
-            copiedSections.Add(CopyCurveSection(sectionToCopy));
+            copiedSections.Add(CopyStandardCurveSection(sectionToCopy));
         }
         return copiedSections;
     }
