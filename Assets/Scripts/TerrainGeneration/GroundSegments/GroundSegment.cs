@@ -17,6 +17,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private ShadowCaster2D _shadowCaster;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private EdgeCollider2D _collider;
+    [SerializeField] private EdgeCollider2D _bottomCollider;
     [SerializeField] private GameObject _highPoint;
     [SerializeField] private GameObject _lowPoint;
     [SerializeField] private List<CameraTarget> _cameraTargets;
@@ -45,6 +46,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Vector3 PrevTangent => _previousSegment != null ? _previousSegment.Curve.EndPoint.LeftTangent : new(1, 1);
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
+    public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsStart { get => _isStart; set => _isStart = value; }
@@ -95,31 +97,33 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 
     void OnDrawGizmosSelected()
     {
+        var startPos = transform.position;
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(curve.StartPoint.Position, 2f);
+        Gizmos.DrawSphere(curve.StartPoint.Position + startPos, 2f);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(curve.EndPoint.Position, 2f);
+        Gizmos.DrawSphere(curve.EndPoint.Position + startPos, 2f);
 
         Gizmos.color = Color.blue;
         for(int i = 1; i < curve.CurvePoints.Count - 1; i++)
         {
-            Gizmos.DrawSphere(curve.CurvePoints[i].Position, 2f);
+            Gizmos.DrawSphere(curve.CurvePoints[i].Position + startPos, 2f);
         }
 
         Gizmos.color = Color.yellow;
         foreach(var point in curve.CurvePoints)
         {
-            Gizmos.DrawSphere(point.LeftTangentPosition, 1f);
-            Gizmos.DrawSphere(point.RightTangentPosition, 1f);
+            Gizmos.DrawSphere(point.LeftTangentPosition + startPos, 1f);
+            Gizmos.DrawSphere(point.RightTangentPosition + startPos, 1f);
         }
 
         Gizmos.color = Color.white;
         foreach (var point in curve.CurvePoints)
         {
-            Gizmos.DrawLine(point.Position, point.LeftTangentPosition);
-            Gizmos.DrawLine(point.Position, point.RightTangentPosition);
+            Gizmos.DrawLine(point.Position + startPos, point.LeftTangentPosition + startPos);
+            Gizmos.DrawLine(point.Position + startPos, point.RightTangentPosition + startPos);
         }
+
     }
 
     public void UpdateShadow()
@@ -154,7 +158,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         }
 
         var worldPoint = _previousSegment.transform.TransformPoint(_previousSegment.Collider.points[^1]);
-        return transform.InverseTransformPoint(worldPoint);
+        var colliderPoint = transform.InverseTransformPoint(worldPoint);
+
+        return colliderPoint;
     }
     #endregion
 
@@ -182,9 +188,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         _highPoint.transform.position = curve.HighPoint + transform.position;
     }
 
-    public void RecalculateDefaultHighLowPoints()
+    public void DoDefaultHighLowPoints()
     {
-        curve.RecalculateDefaultHighLowPoints();
+        curve.DoDefaultHighLowPoints();
         UpdateHighLowTransforms();
     }
     #endregion

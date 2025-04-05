@@ -58,14 +58,16 @@ public class Curve
         return allPoints;
     }
 
-    public void UpdateCurveSections()
+    public void UpdateCurveSections(Vector2? prevTang = null)
     {
         foreach (var section in curveSections)
         {
-            section.UpdateCurvePoints();
+            section.UpdateCurvePoints(prevTang);
+            prevTang = section.EndPoint.RightTangent;
         }
         _curvePoints = GetCurvePoints();
     }
+
     #endregion
 
         #region Curve Stats
@@ -110,14 +112,14 @@ public class Curve
         }
     }
 
-    public void RecalculateDefaultHighLowPoints()
+    public void DoDefaultHighLowPoints()
     {
         _highPoint = _curvePoints[0].Position;
         _lowPoint = _highPoint;
 
         for ( int i = 0; i < _curvePoints.Count - 1; i++)
         {
-            EvaluateHighLow(BezierMath.GetMidpoint(_curvePoints[i], _curvePoints[i + 1]));
+            EvaluateHighLow(_curvePoints[i].Position);
         }
     }
     #endregion

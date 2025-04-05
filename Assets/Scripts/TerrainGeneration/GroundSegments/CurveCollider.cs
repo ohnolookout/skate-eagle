@@ -9,32 +9,6 @@ public static class CurveCollider
     private static float resolution, edgeOffset = 1.2f; //1.2f
 
     #region Generation
-    //Includes firstPoint to ensure exact transitions
-    public static EdgeCollider2D GenerateCollider(Curve curve, EdgeCollider2D collider, PhysicsMaterial2D material, Vector3? firstPoint, float resolutionMult = 10)
-    {
-        collider.sharedMaterial = material;
-        if (firstPoint == null)
-        {
-            firstPoint = curve.GetPoint(0).Position;
-        }
-        //Iterate through points that make up GroundSegment's curve.
-        for (int i = 0; i < curve.Count - 1; i++)
-        {
-            resolution = Mathf.Max(resolutionMult * curve.SectionLengths[i] / 20, 15);
-            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
-            if (i == 0)
-            {
-                collider.points = newPoints;
-                firstPoint = null;
-            }
-            else
-            {
-                collider.points = CombineArrays(collider.points, newPoints);
-            }
-        }
-        return collider;
-    }
-
     public static void BuildSegmentCollider(GroundSegment segment, PhysicsMaterial2D material, float resolutionMult = 10)
     {
         segment.Collider.sharedMaterial = material;
@@ -58,21 +32,26 @@ public static class CurveCollider
             }
         }
 
+        var bottomCollider = segment.BottomCollider;
+
         //Don't do edge collision if segment is floating;
         if (segment.IsFloating)
         {
+            bottomCollider.gameObject.SetActive(false);
             return;
         }
 
+        bottomCollider.gameObject.SetActive(true);
+        bottomCollider.points = new Vector2[2] { segment.Spline.GetPosition(0), segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
         if (segment.IsFirstSegment)
         {
-            Vector2[] firstPointArray = new Vector2[1] { segment.Spline.GetPosition(0) };
-            collider.points = CombineArrays(firstPointArray, collider.points);
+            Vector2[] firstPointArray = new Vector2[2] { segment.Spline.GetPosition(1), segment.Spline.GetPosition(0) };
+            bottomCollider.points = CombineArrays(firstPointArray, bottomCollider.points);
         }
         if (segment.IsLastSegment)
         {
-            Vector2[] lastPointArray = new Vector2[2] { segment.Curve.EndPoint.Position, segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
-            collider.points = CombineArrays(collider.points, lastPointArray);
+            Vector2[] lastPointArray = new Vector2[3] { segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1), segment.Curve.EndPoint.Position, collider.points[^1] };
+            bottomCollider.points = CombineArrays(bottomCollider.points, lastPointArray);
         }
     }
 

@@ -106,6 +106,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1667208778683555131}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7384599383855292058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2626602207683674183}
+  - component: {fileID: 2272586515581236096}
+  m_Layer: 0
+  m_Name: Bottom Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2626602207683674183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7384599383855292058}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1667208778683555131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!68 &2272586515581236096
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7384599383855292058}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &7386550993232820964
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,6 +365,7 @@ Transform:
   m_Children:
   - {fileID: 4185817891366673309}
   - {fileID: 3791618563265128526}
+  - {fileID: 2626602207683674183}
   - {fileID: 3243528010552149271}
   - {fileID: 5288257499446572976}
   m_Father: {fileID: 0}
@@ -400,7 +476,7 @@ MonoBehaviour:
   m_EnableTangents: 0
   m_GeometryCached: 0
   m_UTess2D: 0
-  m_UpdateShadow: 1
+  m_UpdateShadow: 0
   m_ShadowDetail: 8
   m_ShadowOffset: 0.5
   m_BoundsScale: 2
@@ -417,7 +493,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8309119641981291708}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
   m_Name: 
@@ -476,19 +552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curve:
-    curveDefinition:
-      curveSections:
-      - sectionType: 0
-        length: 45
-        shape: 0.5
-        pitch: 1.25
-        climb: 0
-      - sectionType: 1
-        length: 45
-        shape: 0.5
-        pitch: 1.25
-        climb: 0
-      name: Default Curve
+    curveSections: []
     _sectionLengths: []
     _curvePoints: []
     length: 0
@@ -499,6 +563,7 @@ MonoBehaviour:
   _shadowCaster: {fileID: 3786771108790229277}
   _colliderMaterial: {fileID: 6200000, guid: 94c1d44764f77c148b041b3d9a282ae9, type: 2}
   _collider: {fileID: 7359743252002306734}
+  _bottomCollider: {fileID: 2272586515581236096}
   _highPoint: {fileID: 6827530638482868012}
   _lowPoint: {fileID: 8388335674635242691}
   _cameraTargets: []
@@ -510,6 +575,7 @@ MonoBehaviour:
   _doTarget: 1
   parentGround: {fileID: 0}
   _previousSegment: {fileID: 0}
+  _nextSegment: {fileID: 0}
 --- !u!1 &8388335674635242691
 GameObject:
   m_ObjectHideFlags: 0

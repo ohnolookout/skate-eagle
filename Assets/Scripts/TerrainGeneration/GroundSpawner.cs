@@ -57,125 +57,34 @@ public class GroundSpawner : MonoBehaviour
         {
             ground.LastSegment.NextSegment = newSegment;
             startPoint = ground.LastSegment.EndPosition;
-            //Remove last collider point from previous segment if new segment is now last segment
-            if (newSegment.IsLastSegment)
-            {
-                var prevCollider = newSegment.PreviousSegment.Collider;
-
-#if UNITY_EDITOR
-                Undo.RecordObject(prevCollider, "Remove collider end points");
-#endif
-
-                prevCollider.points = prevCollider.points.Take(prevCollider.pointCount - 2).ToArray();
-            }
-
         }
 
         newSegment.transform.position = startPoint;
         ground.SegmentList.Add(newSegment);
 
         ApplyCurveToSegment(newSegment, newSegment.Curve);
-        newSegment.UpdateHighLowTransforms();
+        newSegment.DoDefaultHighLowPoints();
 
         if (!newSegment.HasShadow)
         {
             newSegment.GetComponent<ShadowCaster2D>().enabled = false;
         }
 
-        return newSegment;
-    }
-
-    /*
-    public GroundSegment AddSegment(Ground ground, bool addToFront = false)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(ground, "Add Segment");
-#endif
-
-        //Create new segment, set start point to end of current segment, and add to _segmentList
-        var newSegment = Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
+        if(newSegment.PreviousSegment != null)
+        {
 
 #if UNITY_EDITOR
-        Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
+            Undo.RecordObject(newSegment.PreviousSegment, "Remove collider end points");
 #endif
 
-        GroundSegment? prevSegment = null;
-        GroundSegment? nextSegment = null;
-        Vector2 startPoint = new(0, 0);
-        if (!addToFront)
-        {
-            prevSegment = ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1];
-            prevSegment.NextSegment = newSegment;
-
-            if(prevSegment != null)
-            {
-                startPoint = prevSegment.EndPosition;
-            }
-
-            newSegment.gameObject.name = "Segment " + ground.SegmentList.Count;
-            newSegment.Curve = CurveFactory.DefaultCurve(newSegment.PrevTangent);
-
-            ground.SegmentList.Add(newSegment);
-
+            BuildCollider(newSegment.PreviousSegment);
         }
-        else
-        {
-            if(ground.SegmentList.Count > 0)
-            {
-                
-                nextSegment = ground.SegmentList[0];
-                nextSegment.PreviousSegment = newSegment;
-                startPoint = nextSegment.StartPosition;
-            }
-            newSegment.Curve = CurveFactory.DefaultCurve(newSegment.PrevTangent);
-            //Offset ground by x delta of new segment
-            startPoint -= newSegment.Curve.XYDelta;
-            newSegment.gameObject.name = "Segment 0";
-
-            ground.SegmentList.Insert(0, newSegment);
-        }
-
-        newSegment.transform.position = startPoint;
-        GenerateSegment(newSegment, ground, prevSegment, nextSegment);
 
         return newSegment;
     }
-    */
     #endregion
 
     #region Build Segments
-
-    /*
-    public void GenerateSegment(GroundSegment segment, Ground parent, GroundSegment? previousSegment, GroundSegment? nextSegment)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment, "Generating segment");
-#endif
-
-        segment.parentGround = parent;
-        segment.PreviousSegment = previousSegment;
-
-        //Remove last collider point from previous segment if new segment is now last segment
-        if (segment.IsLastSegment && previousSegment != null)
-        {
-            var prevCollider = previousSegment.Collider;
-
-#if UNITY_EDITOR
-            Undo.RecordObject(prevCollider, "Remove collider end points");
-#endif
-
-            prevCollider.points = prevCollider.points.Take(prevCollider.pointCount - 2).ToArray();
-        }
-
-        ApplyCurveToSegment(segment, segment.Curve);
-        segment.UpdateHighLowTransforms();
-
-        if (!segment.HasShadow)
-        {
-            segment.GetComponent<ShadowCaster2D>().enabled = false;
-        }
-    }
-    */
 
     public void ApplyCurveToSegment(GroundSegment segment, Curve curve)
     {
@@ -206,10 +115,10 @@ public class GroundSpawner : MonoBehaviour
 
         GroundSplineUtility.InsertCurveToOpenSpline(segment.EdgeSpline, curve);
 
-        AddCollider(segment);
+        BuildCollider(segment);
 
     }
-    private EdgeCollider2D AddCollider(GroundSegment segment, float resolution = 10)
+    public EdgeCollider2D BuildCollider(GroundSegment segment, float resolution = 10)
     {
 #if UNITY_EDITOR
         Undo.RegisterCompleteObjectUndo(segment.Collider, "Add Collider");

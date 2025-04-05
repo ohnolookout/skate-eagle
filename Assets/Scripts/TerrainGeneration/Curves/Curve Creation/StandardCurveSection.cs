@@ -19,24 +19,23 @@ public class StandardCurveSection : ICurveSection
     [SerializeField] private CurvePoint _centerPoint;
 
     [SerializeField] private Vector3 _xyDelta = new (40, 0);  //Distance between start and end points
-    [SerializeField] private float _height = 10; //Height of middlepoint perpendicular to slope of start and end points as precentage of max height
-    [SerializeField] private float _skew = 0.5f; //Position of centerpoint along the line between start and end points
-    [SerializeField] private float _shape = 0.5f; //Velocity of centerPoint tangents as percentage of distance between start and end point tangents 
+    [SerializeField] private float _height = 35; //Height of middlepoint perpendicular to slope of start and end points as precentage of max height
+    [SerializeField] private float _skew = 50; //Position of centerpoint along the line between start and end points
+    [SerializeField] private float _shape = 50; //Velocity of centerPoint tangents as percentage of distance between start and end point tangents 
     [SerializeField] private float _startAngle = 45;
     [SerializeField] private float _endAngle = 45;
     [SerializeField] private float _startMagnitude = 7;
     [SerializeField] private float _endMagnitude = 7;
-    private float _maxStartMagnitude;
-    private float _maxEndMagnitude;
     [SerializeField] private CurveDirection _type;
 
+    private Curve _parentCurve;
     private const float _heightCeiling = 250;
 
     public Vector3 XYDelta { get => _xyDelta; set => _xyDelta = value; }
-    public Vector3 PerpendicularVectorSlope => new(XYDelta.y, XYDelta.x);
-    public float Height { get => _height; set => _height = Mathf.Clamp(value, -2, 2); }
-    public float Skew { get => _skew; set => _skew = Mathf.Clamp01(value); }
-    public float Shape { get => _shape; set => _shape = Mathf.Clamp01(value); }
+    public Vector3 PerpendicularVectorSlope => new(XYDelta.y, -XYDelta.x);
+    public float Height { get => _height; set => _height = value; }
+    public float Skew { get => _skew; set => _skew = value; }
+    public float Shape { get => _shape; set => _shape = value; }
     public float StartAngle { get => _startAngle; set => _startAngle = value; }
     public float EndAngle { get => _endAngle; set => _endAngle = value; }
     public float StartMagnitude { get => _startMagnitude; set => _startMagnitude = value; }
@@ -98,8 +97,13 @@ public class StandardCurveSection : ICurveSection
     #endregion
 
     #region Update Points
-    public void UpdateCurvePoints()
+    public void UpdateCurvePoints(Vector2? prevTang = null)
     {
+        if(prevTang != null)
+        {
+            SetStartPointTangent((Vector2)prevTang);
+        }
+
         ClampParameters();
 
         _startPoint.Position = new Vector3(0, 0);
@@ -119,15 +123,16 @@ public class StandardCurveSection : ICurveSection
         }
         else
         {
-            _height = Mathf.Clamp(_height, MinHeight(), MaxHeight());
             _startAngle = Mathf.Clamp(_startAngle, 0, 89);
             _endAngle = Mathf.Clamp(_endAngle, 0, 89);
-            _startMagnitude = Mathf.Clamp(_startMagnitude, 0, _maxStartMagnitude);
-            _endMagnitude = Mathf.Clamp(_endMagnitude, 0, _maxEndMagnitude);
         }
 
-        _skew = Mathf.Clamp01(_skew);
-        _shape = Mathf.Clamp(_shape, 0.05f, 1);
+        _height = Mathf.Clamp(_height, 0, 100);
+        _skew = Mathf.Clamp(_skew, 5, 95);
+        _shape = Mathf.Clamp(_shape, 5, 100);
+
+        _startMagnitude = Mathf.Clamp(_startMagnitude, 1, 200);
+        _endMagnitude = Mathf.Clamp(_endMagnitude, 1, 200);
     }
 
     private void UpdateTangents()
@@ -139,25 +144,46 @@ public class StandardCurveSection : ICurveSection
         _endPoint.SetTangentAngles(endAngle, _startPoint.Position, true, _endMagnitude);
 
     }
+    public void SetStartPointTangent(Vector2 newTang)
+    {
+        var tangAngle = BezierMath.GetAngleFromTangent(_startPoint.Position, _endPoint.Position, newTang);
+        tangAngle = Mathf.Abs(tangAngle);
+        _startAngle = tangAngle;
+        _startMagnitude = newTang.magnitude;
+
+        UpdateTangents();
+        UpdateCenterPoint();
+    }
+    public void SetEndPointTangent(Vector2 newTang)
+    {
+        var tangAngle = BezierMath.GetAngleFromTangent(_endPoint.Position, _startPoint.Position, newTang);
+        tangAngle = Mathf.Abs(tangAngle);
+        _endAngle = tangAngle;
+        _endMagnitude = newTang.magnitude;
+
+        UpdateTangents();
+        UpdateCenterPoint();
+    }
     #endregion
 
     #region Center Point
     private void UpdateCenterPoint()
     {
-        var midPoint = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew);
+        var midPoint = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew/100);
         var minHeight = MinHeight();
         var maxHeight = MaxHeight();
         var maxHeightDelta = maxHeight-minHeight;
 
-        var adjustedHeight = _height;
-        if(Type == CurveDirection.Valley)
+        var adjustedHeight = (_height/100) * maxHeightDelta;
+
+        if(Type == CurveDirection.Peak)
         {
             adjustedHeight = -adjustedHeight;
         }
 
         var centerPosition = BezierMath.GetPointAlongLine(midPoint, PerpendicularVectorSlope, adjustedHeight);
         _centerPoint.Position = centerPosition;
-        SetCenterPointTangents(_shape);
+        SetCenterPointTangents(_shape/100);
     }
 
     private void SetCenterPointTangents(float t)
@@ -175,9 +201,6 @@ public class StandardCurveSection : ICurveSection
 
         maxLeftTangent = BezierMath.GetParallelProjectionPoint(baselineStartPoint, baseLineEndPoint, _centerPoint.Position, 0);
         maxRightTangent = BezierMath.GetParallelProjectionPoint(baselineStartPoint, baseLineEndPoint, _centerPoint.Position, 1);
-
-        _maxStartMagnitude = (maxLeftTangent - (Vector2)_startPoint.Position).magnitude;
-        _maxEndMagnitude = ((Vector2)_endPoint.Position - maxRightTangent).magnitude;
     }
 
     private float MaxHeight()
@@ -191,7 +214,7 @@ public class StandardCurveSection : ICurveSection
         var max = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)tangentIntersection);
 
 
-        return Mathf.Min(max * 1.5f, _heightCeiling/2);
+        return Mathf.Min(max * 3f, _heightCeiling/2);
     }
 
     private float MinHeight()

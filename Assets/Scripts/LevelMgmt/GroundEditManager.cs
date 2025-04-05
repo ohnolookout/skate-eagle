@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -134,11 +135,11 @@ public class GroundEditManager : MonoBehaviour
     public void RemoveSegment(GroundSegment segment)
     {
         var ground = segment.parentGround;
+        var isLast = segment.IsLastSegment;
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(ground, "Remove Segment");
 #endif
-
         var index = ground.SegmentList.IndexOf(segment);
         ground.SegmentList.Remove(segment);
 
@@ -156,6 +157,12 @@ public class GroundEditManager : MonoBehaviour
         Undo.RegisterFullObjectHierarchyUndo(segment, "Remove Segment");
         Undo.DestroyObjectImmediate(segment.gameObject);
 #endif
+
+        //Rebuild collider from new last segment
+        if (isLast && ground.LastSegment != null)
+        {
+            _groundSpawner.BuildCollider(ground.LastSegment);
+        }
 
         RecalculateSegments(ground, index);
 
@@ -200,9 +207,10 @@ public class GroundEditManager : MonoBehaviour
             ground.SegmentList[i].gameObject.transform.position = startPosition;
             ground.SegmentList[i].gameObject.name = "Segment " + i;
 
+            //Update curve for first segment to be recalculated and include tang from previous segment
             if (i == startIndex)
             {
-                RefreshCurve(ground.SegmentList[i]);
+                RefreshCurve(ground.SegmentList[i], true);
             }
         }
     }
@@ -218,12 +226,28 @@ public class GroundEditManager : MonoBehaviour
         RecalculateSegments(ground, index + 1);
     }
 
-    public void RefreshCurve(GroundSegment segment)
+    public void RefreshCurve(GroundSegment segment, bool doUsePrevEndTang = false, bool doSetPrevSeg = false)
     {
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
 #endif
-        segment.Curve.UpdateCurveSections();
+        Vector2? startTang = null;
+
+        if(doUsePrevEndTang && segment.PreviousSegment != null)
+        {
+            startTang = segment.PreviousSegment.Curve.EndPoint.RightTangent;
+        }
+
+        segment.Curve.UpdateCurveSections(startTang); 
+        
+        if (doSetPrevSeg && segment.PreviousSegment != null)
+        {
+            Debug.Log("Setting endpoint on previous segment...");
+            segment.PreviousSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
+            segment.PreviousSegment.Curve.UpdateCurveSections();
+            _groundSpawner.ApplyCurveToSegment(segment.PreviousSegment, segment.PreviousSegment.Curve);
+        }
+
         _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
 
         segment.UpdateShadow();

@@ -258,7 +258,7 @@ public class LevelDesigner : EditorWindow
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
-            _groundEditor.RefreshCurve(_segment);
+            _groundEditor.RefreshCurve(_segment, false, true);
             _groundEditor.RecalculateSegments(_segment);
             SetLevelDirty();
         }
@@ -304,7 +304,7 @@ public class LevelDesigner : EditorWindow
 
         if(GUILayout.Button("Reset High/Low Points", GUILayout.ExpandWidth(false)))
         {
-            _segment.RecalculateDefaultHighLowPoints();
+            _segment.DoDefaultHighLowPoints();
             SetLevelDirty();
         }
 
