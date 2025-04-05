@@ -242,7 +242,6 @@ public class GroundEditManager : MonoBehaviour
         
         if (doSetPrevSeg && segment.PreviousSegment != null)
         {
-            Debug.Log("Setting endpoint on previous segment...");
             segment.PreviousSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
             segment.PreviousSegment.Curve.UpdateCurveSections();
             _groundSpawner.ApplyCurveToSegment(segment.PreviousSegment, segment.PreviousSegment.Curve);

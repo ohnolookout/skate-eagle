@@ -62,6 +62,7 @@ public static class SerializeLevelUtility
 
         //Collider
         serializedSegment.colliderPoints = CopyColliderPoints(segment.Collider);
+        serializedSegment.bottomColliderPoints = CopyColliderPoints(segment.BottomCollider);
 
         return serializedSegment;
     }
@@ -152,6 +153,8 @@ public static class SerializeLevelUtility
         //Create collierPoints
         segment.Collider.points = serializedSegment.colliderPoints.ToArray();
         segment.Collider.sharedMaterial = parent.ColliderMaterial;
+        segment.BottomCollider.points = serializedSegment.bottomColliderPoints.ToArray();
+        segment.BottomCollider.sharedMaterial = parent.ColliderMaterial;
 
     }
 

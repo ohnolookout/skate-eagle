@@ -501,7 +501,6 @@ public class LevelDesigner : EditorWindow
         if (_debugMode)
         {
             // In debug mode, always discard changes
-            Debug.Log("Debug mode, discarding changes");
             return true;
         }
 

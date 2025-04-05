@@ -27,6 +27,7 @@ public class SerializedGroundSegment
 
     //Collider contents
     public List<Vector2> colliderPoints;
+    public List<Vector2> bottomColliderPoints;
 
     public SerializedGroundSegment()
     {
