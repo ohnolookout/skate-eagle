@@ -67,8 +67,9 @@ public class GroundEditManager : MonoBehaviour
 
     public GroundSegment AddSegmentToFront(Ground ground, Curve curve)
     {
+        var segment = InsertSegment(ground, 0, curve);
         ground.transform.position -= curve.XYDelta;
-        return InsertSegment(ground, 0, curve);
+        return segment;
     }
 
     public GroundSegment InsertSegment(Ground ground, int index, Curve curve)
@@ -94,6 +95,7 @@ public class GroundEditManager : MonoBehaviour
             tempList[0].PreviousSegment = newSegment;
             newSegment.NextSegment = tempList[0];
         }
+
         ground.SegmentList.AddRange(tempList);
 
         //Recalculate segment positions after index
@@ -134,6 +136,7 @@ public class GroundEditManager : MonoBehaviour
 
     public void RemoveSegment(GroundSegment segment)
     {
+        Debug.Log("Removing segment: " + segment.gameObject.name);
         var ground = segment.parentGround;
         var isLast = segment.IsLastSegment;
 

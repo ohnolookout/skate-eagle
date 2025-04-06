@@ -57,6 +57,9 @@ public class GroundSpawner : MonoBehaviour
         {
             ground.LastSegment.NextSegment = newSegment;
             startPoint = ground.LastSegment.EndPosition;
+        } else
+        {
+            startPoint = ground.transform.position;
         }
 
         newSegment.transform.position = startPoint;
