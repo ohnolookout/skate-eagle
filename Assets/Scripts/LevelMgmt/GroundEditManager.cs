@@ -97,6 +97,7 @@ public class GroundEditManager : MonoBehaviour
         }
 
         ground.SegmentList.AddRange(tempList);
+        _groundSpawner.BuildCollider(newSegment);
 
         //Recalculate segment positions after index
         RecalculateSegments(ground, index + 1);
