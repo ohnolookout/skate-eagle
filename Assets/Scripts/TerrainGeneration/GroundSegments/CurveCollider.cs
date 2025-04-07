@@ -62,15 +62,29 @@ public static class CurveCollider
         if (firstVectorPoint != null)
         {
             points.Add((Vector3)firstVectorPoint);
-        } 
-        for (int i = 1; i < resolution; i++)
-        {
-            Vector3 newPoint = BezierMath.CalculateBezierPoint(firstPoint.Position, firstPoint.RightTangent + firstPoint.Position, secondPoint.LeftTangent + secondPoint.Position, secondPoint.Position, (1 / resolution) * i);
-            points.Add(newPoint);
         }
-        points.Add(secondPoint.Position);
-        Vector2[] returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint is null));
+
+        //Skip curve calcs if points form a straight line, just add points
+        if (AreTangentsAligned(firstPoint, secondPoint))
+        {
+            points.Add(firstPoint.Position);
+            points.Add(secondPoint.Position);
+        }
+        //Otherwise calculate points from curve
+        else
+        {
+            for (int i = 1; i < resolution; i++)
+            {
+                Vector3 newPoint = BezierMath.CalculateBezierPoint(firstPoint.Position, firstPoint.RightTangent + firstPoint.Position, secondPoint.LeftTangent + secondPoint.Position, secondPoint.Position, (1 / resolution) * i);
+                points.Add(newPoint);
+            }
+            points.Add(secondPoint.Position);
+        }
+
+        //Offset points to account for edge distance
+        Vector2[] returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint == null));
         points.RemoveAt(0);
+
         return returnArray;
     }
     #endregion
@@ -121,6 +135,34 @@ public static class CurveCollider
         array1.CopyTo(combinedArray, 0);
         array2.CopyTo(combinedArray, array1.Length);
         return combinedArray;
+    }
+
+    public static bool AreTangentsAligned(CurvePoint firstPoint, CurvePoint secondPoint, float tolerance = 1e-5f)
+    {
+        // Vector from first to second point
+        Vector2 pointToPoint = secondPoint.Position - firstPoint.Position;
+
+        // World space right tangent direction from first point
+        Vector2 rightTangentDir = firstPoint.RightTangent;
+        // World space left tangent direction from second point
+        Vector2 leftTangentDir = secondPoint.LeftTangent;
+
+        // If any direction is zero, we can't determine alignment
+        if (rightTangentDir == Vector2.zero || leftTangentDir == Vector2.zero || pointToPoint == Vector2.zero)
+            return false;
+
+        // Normalize vectors
+        Vector2 pointToPointDir = pointToPoint.normalized;
+        Vector2 rightDir = rightTangentDir.normalized;
+        Vector2 leftDir = leftTangentDir.normalized;
+
+        // Check if right tangent points toward second point
+        bool rightAligned = Vector2.Dot(rightDir, pointToPointDir) > 1f - tolerance;
+
+        // Check if left tangent points toward first point (i.e., opposite direction)
+        bool leftAligned = Vector2.Dot(leftDir, -pointToPointDir) > 1f - tolerance;
+
+        return rightAligned && leftAligned;
     }
     #endregion
 

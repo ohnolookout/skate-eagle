@@ -92,6 +92,11 @@ public class StandardCurveSection : ICurveSection
     public List<CurvePoint> GetCurvePoints(CurvePoint startPoint)
     {
         var positionChange = startPoint.Position;
+
+        if(Type == CurveDirection.Flat)
+        {
+            return new() { _startPoint.Move(positionChange), _endPoint.Move(positionChange) };
+        }
         return new() { _startPoint.Move(positionChange), _centerPoint.Move(positionChange), _endPoint.Move(positionChange) };
     }
     #endregion
@@ -175,8 +180,9 @@ public class StandardCurveSection : ICurveSection
         var maxHeightDelta = maxHeight-minHeight;
 
         var adjustedHeight = (_height/100) * maxHeightDelta;
+        Debug.Log($"Adjusted Height: {adjustedHeight}");
 
-        if(Type == CurveDirection.Peak)
+        if (Type == CurveDirection.Peak)
         {
             adjustedHeight = -adjustedHeight;
         }
@@ -205,15 +211,32 @@ public class StandardCurveSection : ICurveSection
 
     private float MaxHeight()
     {
-        var tangentIntersection = BezierMath.GetIntersection(_startPoint, _endPoint);
-        if (tangentIntersection == null)
+        var midPointPosition = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew / 100);
+        var midPointTangent = PerpendicularVectorSlope;
+        var startIntersection = BezierMath.GetIntersection(_startPoint.Position, _startPoint.RightTangent, midPointPosition, midPointTangent);
+        var endIntersection = BezierMath.GetIntersection(_endPoint.Position, _endPoint.LeftTangent, midPointPosition, midPointTangent);
+
+        if (startIntersection == null && endIntersection == null)
         {
             return _heightCeiling/2;
         }
 
-        var max = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)tangentIntersection);
+        float startMax = 0;
+        float endMax = 0;
 
+        if(startIntersection != null)
+        {
+            startMax = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)startIntersection);
+            Debug.Log($"StartMax: {startMax}");
+        }
+        if (endIntersection != null)
+        {
+            endMax = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)endIntersection);
+            Debug.Log($"EndMax: {endMax}");
+        }
 
+        var max = Math.Max(startMax, endMax);
+        Debug.Log($"Max: {max}");
         return Mathf.Min(max * 3f, _heightCeiling/2);
     }
 
@@ -222,7 +245,7 @@ public class StandardCurveSection : ICurveSection
         var leftTangHeight = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, _startPoint.RightTangentPosition);
         var rightTangHeight = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, _endPoint.LeftTangentPosition);
         var min = Mathf.Max(leftTangHeight, rightTangHeight);
-
+        Debug.Log($"Min: {min}");
         return min;
     }
     #endregion

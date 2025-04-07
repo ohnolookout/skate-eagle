@@ -66,11 +66,13 @@ public class Curve
             prevTang = section.EndPoint.RightTangent;
         }
         _curvePoints = GetCurvePoints();
+        GenerateCurveStats();
+
     }
 
     #endregion
 
-        #region Curve Stats
+    #region Curve Stats
 
     private void EvaluateHighLow(Vector3 newPoint)
     {
