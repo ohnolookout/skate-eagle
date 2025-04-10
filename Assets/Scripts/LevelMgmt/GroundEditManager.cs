@@ -243,7 +243,7 @@ public class GroundEditManager : MonoBehaviour
 
         segment.Curve.UpdateCurveSections(startTang); 
         
-        if (doSetPrevSeg && segment.PreviousSegment != null)
+        if ((doSetPrevSeg && segment.PreviousSegment != null) || segment.Curve.CurveSections[0].Type == CurveDirection.Flat)
         {
             segment.PreviousSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
             segment.PreviousSegment.Curve.UpdateCurveSections();

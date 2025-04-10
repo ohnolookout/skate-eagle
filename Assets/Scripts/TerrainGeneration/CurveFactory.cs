@@ -6,45 +6,51 @@ public static class CurveFactory
 {
     public static Curve DefaultCurve(Vector2? prevTang)
     {
-        var valleySection = new StandardCurveSection(CurveDirection.Valley, prevTang);
-        var peakSection = new StandardCurveSection(CurveDirection.Peak, valleySection.EndPoint.RightTangent);
+        var peak = new StandardCurveSection(CurveDirection.Peak, prevTang);
+        var valley = new StandardCurveSection(CurveDirection.Valley, peak.EndPoint.RightTangent);
 
-        List<StandardCurveSection> curveSections = new() { valleySection, peakSection };
+        List<StandardCurveSection> curveSections = new() { peak, valley };
 
         return new(curveSections);
     }
 
     public static Curve DefaultStartLine()
     {
-        var firstPoint = new CurvePoint(new (0, 0), new (0, -1), new (40, -130));
-        var secondPoint = new CurvePoint(new(400, -150), new(-45, 0.5f), new(10, -0.5f));
+        var flatSection = new StandardCurveSection(CurveDirection.Flat);
+        flatSection.XYDelta = new(75, 0);
+        flatSection.StartMagnitude = 7;
+        flatSection.EndMagnitude = 20;
+        flatSection.UpdateCurvePoints();
 
-        const float thirdPointXVelocity = 10;
-        const float thirdPointXSlope = -1.1f;
-        Vector3 leftTangent = new(-thirdPointXVelocity, -thirdPointXVelocity * thirdPointXSlope);
-        Vector3 rightTangent = new(thirdPointXVelocity, thirdPointXVelocity * thirdPointXSlope);
-        var thirdPoint = new CurvePoint(secondPoint.Position + new Vector3(30, -12), leftTangent, rightTangent);
+        var valleySection = new StandardCurveSection(CurveDirection.Valley, flatSection.EndPoint.RightTangent);
+        valleySection.XYDelta = new(59, -12);
+        valleySection.Height = 21;
+        valleySection.Skew = 63;
+        valleySection.Shape = 70;
+        valleySection.EndAngle = 48;
+        valleySection.StartMagnitude = 20;
+        valleySection.EndMagnitude = 7;
+        valleySection.UpdateCurvePoints(flatSection.EndPoint.RightTangent);
 
-        var curvePoints = new List<CurvePoint> { firstPoint, secondPoint, thirdPoint };
-        return new Curve(curvePoints);
+        return new Curve(new List<StandardCurveSection>() { flatSection, valleySection});
     }
 
     public static Curve DefaultFinishLine(CurvePoint startPoint)
     {
-        //Generate first point at controlPoint
-        var firstPoint = new CurvePoint(new(0, 0), startPoint.LeftTangent, -startPoint.LeftTangent);
+        var baseXDelta = Mathf.Max(startPoint.RightTangent.x, startPoint.RightTangent.y, 8);
+        var xyDelta = new Vector2(baseXDelta * 10, startPoint.RightTangent.y * 7);
+        var height = 18;
+        var skew = 45;
+        var shape = 45;
+        var valleySection = new StandardCurveSection(CurveDirection.Valley, xyDelta, height, skew, shape, startPoint.RightTangent);
 
-        //Generate second point
-        var finishY = Mathf.Max(Mathf.Abs(firstPoint.RightTangent.y), 12);
-        var secondLocation = new Vector3(finishY * 3, -finishY);
-        var secondPoint = new CurvePoint(secondLocation, new Vector3(-6, 0), new Vector3(6, 0));
+        var flatSection = new StandardCurveSection(CurveDirection.Flat, valleySection.EndPoint.RightTangent);
+        flatSection.XYDelta = new(300, 0);
+        flatSection.StartMagnitude = 7;
+        flatSection.EndMagnitude = 20;
+        flatSection.UpdateCurvePoints(valleySection.EndPoint.RightTangent);
 
-        //Generate third point
-        var thirdLocation = new Vector3(secondPoint.Position.x + 500, secondPoint.Position.y);
-        var thirdPoint = new CurvePoint(thirdLocation, new Vector3(-6, 0), new Vector3(6, 0));
-
-        var curvePoints = new List<CurvePoint> { firstPoint, secondPoint, thirdPoint };
-        return new Curve(curvePoints);
+        return new Curve(new List<StandardCurveSection>() { valleySection, flatSection});
     }
 
 }

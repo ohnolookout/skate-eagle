@@ -196,7 +196,6 @@ public static class BezierMath
     {
         // Compute the direction vector of the line from startPoint to endPoint
         Vector2 lineDirection = (endPoint - startPoint).normalized;
-
         // Normalize the tangent vector
         Vector2 tangentDirection = tangent.normalized;
 

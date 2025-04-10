@@ -229,9 +229,9 @@ public class LevelDesigner : EditorWindow
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
             var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(_ground.LastSegment.Curve.EndPoint));
-            segment.SetLowPoint(1);
+            segment.SetLowPoint(2);
             Selection.activeGameObject = segment.gameObject;
-            _groundEditor.SetFinishPoint(segment, 1);
+            _groundEditor.SetFinishPoint(segment, 2);
             SetLevelDirty();
         }
     }

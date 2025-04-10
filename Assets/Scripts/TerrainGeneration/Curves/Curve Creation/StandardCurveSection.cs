@@ -19,9 +19,9 @@ public class StandardCurveSection : ICurveSection
     [SerializeField] private CurvePoint _centerPoint;
 
     [SerializeField] private Vector3 _xyDelta = new (40, 0);  //Distance between start and end points
-    [SerializeField] private float _height = 35; //Height of middlepoint perpendicular to slope of start and end points as precentage of max height
+    [SerializeField] private float _height = 20; //Height of middlepoint perpendicular to slope of start and end points as precentage of max height
     [SerializeField] private float _skew = 50; //Position of centerpoint along the line between start and end points
-    [SerializeField] private float _shape = 50; //Velocity of centerPoint tangents as percentage of distance between start and end point tangents 
+    [SerializeField] private float _shape = 70; //Velocity of centerPoint tangents as percentage of distance between start and end point tangents 
     [SerializeField] private float _startAngle = 45;
     [SerializeField] private float _endAngle = 45;
     [SerializeField] private float _startMagnitude = 7;
@@ -53,25 +53,14 @@ public class StandardCurveSection : ICurveSection
         _endPoint = new(new Vector3(_xyDelta.x, _xyDelta.y));
         _centerPoint = new();
 
-
-        if (startTang != null)
-        {
-            var tangAngle = BezierMath.GetAngleFromTangent(_startPoint.Position, _endPoint.Position, (Vector2) startTang);
-            tangAngle = Mathf.Abs(tangAngle);
-            _startAngle = tangAngle;
-            _endAngle = tangAngle;            
-            
-            var tangMagnitude = ((Vector2) startTang).magnitude;
-            _startMagnitude = tangMagnitude;
-            _endMagnitude = tangMagnitude;
-        }
+        SetInitialAngle(startTang);
 
         UpdateTangents();
         UpdateCenterPoint();
         UpdateCurvePoints();
     }
 
-    public StandardCurveSection(Vector3 xyDelta, float height, float skew, float shape, CurveDirection type)
+    public StandardCurveSection(CurveDirection type, Vector3 xyDelta, float height, float skew, float shape, Vector2? startTang = null)
     {
         _type = type;
         XYDelta = xyDelta;
@@ -83,6 +72,7 @@ public class StandardCurveSection : ICurveSection
         _endPoint = new(new Vector3(_xyDelta.x, _xyDelta.y));
         _centerPoint = new();
 
+        SetInitialAngle(startTang);
 
         UpdateTangents();
         UpdateCenterPoint();
@@ -98,6 +88,21 @@ public class StandardCurveSection : ICurveSection
             return new() { _startPoint.Move(positionChange), _endPoint.Move(positionChange) };
         }
         return new() { _startPoint.Move(positionChange), _centerPoint.Move(positionChange), _endPoint.Move(positionChange) };
+    }
+
+    public void SetInitialAngle(Vector2? startTang = null)
+    {
+        if (startTang != null)
+        {
+            var tangAngle = BezierMath.GetAngleFromTangent(_startPoint.Position, _endPoint.Position, (Vector2)startTang);
+            tangAngle = Mathf.Abs(tangAngle);
+            _startAngle = tangAngle;
+            _endAngle = tangAngle;
+
+            var tangMagnitude = ((Vector2)startTang).magnitude;
+            _startMagnitude = tangMagnitude;
+            _endMagnitude = tangMagnitude;
+        }
     }
     #endregion
 
@@ -142,11 +147,11 @@ public class StandardCurveSection : ICurveSection
 
     private void UpdateTangents()
     {
-        var startAngle = Type == CurveDirection.Valley ? -_startAngle : _startAngle;
-        var endAngle = Type == CurveDirection.Valley ? -_endAngle : _endAngle;
+        var adjustedStartAngle = Type == CurveDirection.Valley ? -_startAngle : _startAngle;
+        var adjustedEndAngle = Type == CurveDirection.Valley ? -_endAngle : _endAngle;
 
-        _startPoint.SetTangentAngles(startAngle, _endPoint.Position, false, _startMagnitude);
-        _endPoint.SetTangentAngles(endAngle, _startPoint.Position, true, _endMagnitude);
+        _startPoint.SetTangentAngles(adjustedStartAngle, _endPoint.Position, false, _startMagnitude);
+        _endPoint.SetTangentAngles(adjustedEndAngle, _startPoint.Position, true, _endMagnitude);
 
     }
     public void SetStartPointTangent(Vector2 newTang)
@@ -180,7 +185,6 @@ public class StandardCurveSection : ICurveSection
         var maxHeightDelta = maxHeight-minHeight;
 
         var adjustedHeight = (_height/100) * maxHeightDelta;
-        Debug.Log($"Adjusted Height: {adjustedHeight}");
 
         if (Type == CurveDirection.Peak)
         {
@@ -213,6 +217,12 @@ public class StandardCurveSection : ICurveSection
     {
         var midPointPosition = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew / 100);
         var midPointTangent = PerpendicularVectorSlope;
+        
+        if(Type == CurveDirection.Peak)
+        {
+            midPointTangent = -midPointTangent;
+        }
+
         var startIntersection = BezierMath.GetIntersection(_startPoint.Position, _startPoint.RightTangent, midPointPosition, midPointTangent);
         var endIntersection = BezierMath.GetIntersection(_endPoint.Position, _endPoint.LeftTangent, midPointPosition, midPointTangent);
 
@@ -227,16 +237,13 @@ public class StandardCurveSection : ICurveSection
         if(startIntersection != null)
         {
             startMax = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)startIntersection);
-            Debug.Log($"StartMax: {startMax}");
         }
         if (endIntersection != null)
         {
             endMax = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)endIntersection);
-            Debug.Log($"EndMax: {endMax}");
         }
 
         var max = Math.Max(startMax, endMax);
-        Debug.Log($"Max: {max}");
         return Mathf.Min(max * 3f, _heightCeiling/2);
     }
 
@@ -245,7 +252,6 @@ public class StandardCurveSection : ICurveSection
         var leftTangHeight = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, _startPoint.RightTangentPosition);
         var rightTangHeight = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, _endPoint.LeftTangentPosition);
         var min = Mathf.Max(leftTangHeight, rightTangHeight);
-        Debug.Log($"Min: {min}");
         return min;
     }
     #endregion

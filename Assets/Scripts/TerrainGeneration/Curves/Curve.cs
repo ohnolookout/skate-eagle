@@ -37,13 +37,12 @@ public class Curve
     {
         this.curveSections = curveSections;
         _curvePoints = GetCurvePoints();
-        GenerateCurveStats();
+        UpdateCurveSections();
     }
 
     public Curve(List<CurvePoint> curvePoints)
     {
         _curvePoints = curvePoints;
-        GenerateCurveStats();
     }
     public List<CurvePoint> GetCurvePoints()
     {
@@ -60,10 +59,21 @@ public class Curve
 
     public void UpdateCurveSections(Vector2? prevTang = null)
     {
-        foreach (var section in curveSections)
+        for(int i = 0; i < curveSections.Count; i++)
         {
-            section.UpdateCurvePoints(prevTang);
-            prevTang = section.EndPoint.RightTangent;
+            if(curveSections[i].Type == CurveDirection.Flat)
+            {
+                curveSections[i].UpdateCurvePoints();
+                if (i > 0)
+                {
+                    curveSections[i-1].SetEndPointTangent(curveSections[i].StartPoint.LeftTangent);
+                    curveSections[i-1].UpdateCurvePoints();
+                }
+                continue;
+            }
+
+            curveSections[i].UpdateCurvePoints(prevTang);
+            prevTang = curveSections[i].EndPoint.RightTangent;
         }
         _curvePoints = GetCurvePoints();
         GenerateCurveStats();

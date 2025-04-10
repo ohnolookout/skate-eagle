@@ -44,7 +44,7 @@ public static class DeepCopy
 
     private static StandardCurveSection CopyStandardCurveSection(StandardCurveSection sectionToCopy)
     {
-        return new(sectionToCopy.XYDelta, sectionToCopy.Height, sectionToCopy.Skew, sectionToCopy.Shape, sectionToCopy.Type);
+        return new(sectionToCopy.Type, sectionToCopy.XYDelta, sectionToCopy.Height, sectionToCopy.Skew, sectionToCopy.Shape);
     }
 
     public static CurveSection CopyCurveSection(CurveSection sectionToCopy)
