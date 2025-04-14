@@ -17,7 +17,7 @@ public static class CurveFactory
     public static Curve DefaultStartLine()
     {
         var flatSection = new StandardCurveSection(CurveDirection.Flat);
-        flatSection.XYDelta = new(75, 0);
+        flatSection.XYDelta = new(150, 0);
         flatSection.StartMagnitude = 7;
         flatSection.EndMagnitude = 20;
         flatSection.UpdateCurvePoints();
@@ -35,8 +35,19 @@ public static class CurveFactory
         return new Curve(new List<StandardCurveSection>() { flatSection, valleySection});
     }
 
-    public static Curve DefaultFinishLine(CurvePoint startPoint)
+    public static Curve DefaultFinishLine(CurvePoint? curvePoint)
     {
+        CurvePoint startPoint;
+        if (curvePoint == null)
+        {
+            Debug.Log("CurvePoint is null, creating default start point.");
+            startPoint = new CurvePoint(Vector3.zero);
+            startPoint.SetTangents(new Vector3(6, -6));
+        } else
+        {
+            startPoint = curvePoint.Value;
+        }
+
         var baseXDelta = Mathf.Max(startPoint.RightTangent.x, startPoint.RightTangent.y, 8);
         var xyDelta = new Vector2(baseXDelta * 10, startPoint.RightTangent.y * 7);
         var height = 18;

@@ -18,6 +18,8 @@ public class Level
     [SerializeField] private Vector2 _finishPoint;
     [SerializeField] private float _killPlaneY;
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
+    [SerializeField] private Vector2[] _finishLineParameters;
+    [SerializeField] private bool _backstopIsActive = true;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
@@ -26,11 +28,13 @@ public class Level
     public bool DoPublish => _doPublish;
     public int GoldRequired => _goldRequired;
     public Vector2 StartPoint => _startPoint;
-    public Vector2 FinishPoint => _finishPoint;
+    public Vector2 FinishPoint => _finishLineParameters != null && _finishLineParameters.Length > 0 ? _finishLineParameters[0]: new Vector2(2000, 0);
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
+    public Vector2[] FinishLineParameters => _finishLineParameters;
+    public bool BackstopIsActive => _backstopIsActive;
 
-    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 finishPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100)
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 finishPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null)
     {
         _name = name;
         _medalTimes = medalTimes;
@@ -40,6 +44,10 @@ public class Level
         _finishPoint = finishPoint;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = killPlaneY;
-
+        _finishLineParameters = SerializeLevelUtility.SerializeFinishLine(finishLine);
+        if (finishLine != null)
+        {
+            _backstopIsActive = finishLine.Backstop.activeInHierarchy;
+        }
     }
 }

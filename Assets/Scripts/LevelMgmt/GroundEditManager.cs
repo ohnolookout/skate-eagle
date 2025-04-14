@@ -75,9 +75,12 @@ public class GroundEditManager : MonoBehaviour
     public GroundSegment InsertSegment(Ground ground, int index, Curve curve)
     {
 #if UNITY_EDITOR
-        if (index < 0 || index >= ground.SegmentList.Count)
+        if (index < 0)
         {
-            return null;
+            index = 0;
+        } else if(index > ground.SegmentList.Count)
+        {
+            index = ground.SegmentList.Count;
         }
         Undo.RegisterFullObjectHierarchyUndo(ground, "Insert Segment");
 #endif
@@ -136,9 +139,15 @@ public class GroundEditManager : MonoBehaviour
 
     public void RemoveSegment(GroundSegment segment)
     {
-        Debug.Log("Removing segment: " + segment.gameObject.name);
         var ground = segment.parentGround;
         var isLast = segment.IsLastSegment;
+
+        if (segment.IsFinish) {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Turn off finish");
+#endif
+            _groundManager.FinishLine.gameObject.SetActive(false);
+        }
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(ground, "Remove Segment");
@@ -254,6 +263,16 @@ public class GroundEditManager : MonoBehaviour
 
         segment.UpdateShadow();
 
+        if (segment.IsStart)
+        {
+            SetStartPoint(segment, 1);
+        }
+
+        if(segment.IsFinish)
+        {
+            SetFinishLine(segment);
+        }
+
     }
 
     public void ResetSegment(GroundSegment segment)
@@ -267,14 +286,24 @@ public class GroundEditManager : MonoBehaviour
     #region Start/Finish
     public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
     {
+        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set start");
+        segment.IsStart = true;
+        segment.SetLowPoint(curvePointIndex);
         startPoint.transform.position = _groundSpawner.SetStartPoint(segment, curvePointIndex);
         return startPoint.transform.position;
     }
 
-    public Vector2 SetFinishPoint(GroundSegment segment, int curvePointIndex)
+    public void SetFinishLine(GroundSegment segment)
     {
-        finishPoint.transform.position = _groundSpawner.SetFinishPoint(segment, curvePointIndex);
-        return finishPoint.transform.position;
+        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
+        segment.IsFinish = true;
+        segment.SetLowPoint(2);
+
+        var flagPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(2).Position + new Vector3(50, 0));
+        var backstopPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(3).Position);
+
+        _groundSpawner.SetFinishLine(flagPosition, backstopPosition);
     }
+
     #endregion
 }

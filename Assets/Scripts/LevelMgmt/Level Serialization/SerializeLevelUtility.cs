@@ -93,6 +93,20 @@ public static class SerializeLevelUtility
         }
         return pointsList;
     }
+
+    public static Vector2[] SerializeFinishLine(FinishLine finishLine)
+    {
+        if(finishLine == null)
+        {
+            return null;
+        }
+
+        return new Vector2[2]
+        {
+            finishLine.FlagPosition,
+            finishLine.BackstopPosition
+        };
+    }
     #endregion
 
     #region Deserialization
@@ -104,6 +118,9 @@ public static class SerializeLevelUtility
         {
             var newGround = DeserializeGround(serializedGround, groundManager.groundSpawner);
             groundManager.Grounds.Add(newGround);
+        }
+        if (level.FinishLineParameters.Length == 2) { 
+            groundManager.groundSpawner.SetFinishLine(level.FinishLineParameters[0], level.FinishLineParameters[1], level.BackstopIsActive);
         }
 
     }
@@ -117,14 +134,6 @@ public static class SerializeLevelUtility
             var segment = groundSpawner.AddEmptySegment(ground);
             DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);
             ground.SegmentList.Add(segment);
-            if (segment.IsStart)
-            {
-                groundSpawner.SetStartPoint(segment, 1);
-            }
-            if (segment.IsFinish)
-            {
-                groundSpawner.SetFinishPoint(segment, 1);
-            }
         }
 
         return ground;

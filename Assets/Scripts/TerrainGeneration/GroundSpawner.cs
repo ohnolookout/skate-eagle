@@ -13,10 +13,6 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private GameObject _groundPrefab;
     [SerializeField] private GameObject _groundSegmentPrefab;
-    [SerializeField] private GameObject _finishFlagPrefab;
-    [SerializeField] private GameObject _backstopPrefab;
-    private GameObject _finishFlag;
-    private GameObject _backstop;
 
     #region Add/Remove Segments
     public Ground AddGround()
@@ -91,6 +87,9 @@ public class GroundSpawner : MonoBehaviour
 
     public void ApplyCurveToSegment(GroundSegment segment, Curve curve)
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set edge");
+#endif
         //Set splines to default formatting
         GroundSplineUtility.FormatSpline(segment.Spline, segment.IsFloating);
 
@@ -124,10 +123,11 @@ public class GroundSpawner : MonoBehaviour
     public EdgeCollider2D BuildCollider(GroundSegment segment, float resolution = 10)
     {
 #if UNITY_EDITOR
-        Undo.RegisterCompleteObjectUndo(segment.Collider, "Add Collider");
+        Undo.RegisterCompleteObjectUndo(segment.Collider, "Edge Collider");
+        Undo.RegisterCompleteObjectUndo(segment.BottomCollider, "Bottom Collider");
 #endif
 
-        CurveCollider.BuildSegmentCollider(segment, segment.ColliderMaterial);
+        ColliderGenerator.BuildSegmentCollider(segment, segment.ColliderMaterial);
         return segment.Collider;
     }
 
@@ -145,48 +145,16 @@ public class GroundSpawner : MonoBehaviour
         return startPoint;
     }
 
-    public Vector2 SetFinishPoint(GroundSegment segment, int finishPointIndex)
+    public void SetFinishLine(Vector2 flagPosition, Vector2 backstopPosition, bool backstopIsActive = true)
     {
 #if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment, "Set Finish Point");
-        //If finishSegment has already been assigned, make isFinish false on old segment and destroy finish objects
-        if (_finishFlag != null)
-        {
-            Undo.DestroyObjectImmediate(_finishFlag);
-        }
-        if (_backstop != null)
-        {
-            Undo.DestroyObjectImmediate(_backstop);
-        }
+        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
 #endif
-
-        segment.IsFinish = true;
-
-        //Add finish flag to designated point in GroundSegment.        
-        var finishPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(finishPointIndex).Position);
-        finishPoint += new Vector3(50, 0, 0);
-
-        _finishFlag = Instantiate(_finishFlagPrefab, finishPoint, transform.rotation, segment.gameObject.transform);
-
-#if UNITY_EDITOR
-        Undo.RegisterCreatedObjectUndo(_finishFlag, "Add Flag");
-#endif
-
-        //Add backstop to endpoint of GroundSegment
-        _backstop = Instantiate(_backstopPrefab, segment.EndPosition - new Vector3(75, 0), transform.rotation, segment.gameObject.transform);
-
-#if UNITY_EDITOR
-        Undo.RegisterCreatedObjectUndo(_backstop, "Add Backstop");
-#endif
-
-        return finishPoint;
+        _groundManager.FinishLine.gameObject.SetActive(true);
+        _groundManager.FinishLine.Backstop.gameObject.SetActive(backstopIsActive);
+        _groundManager.FinishLine.SetFinishLine(flagPosition, backstopPosition);
     }
 
-    public void ClearStartFinishObjects()
-    {
-        _finishFlag = null;
-        _backstop = null;
-    }
     #endregion
 
 }

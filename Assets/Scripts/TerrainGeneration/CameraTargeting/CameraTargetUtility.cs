@@ -26,7 +26,7 @@ public static class CameraTargetUtility
     //Player
     public static Vector2 PlayerInfluence => new Vector2(1, 1f);
     public static float PlayerDuration = 0;
-    public static Vector2 PlayerOffset = new Vector2(10, -10);
+    public static Vector2 PlayerOffset = new Vector2(10, -5);
 
 
     private static Dictionary<CameraTargetType, Vector2> InfluenceDict = new()

@@ -33,7 +33,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private GroundSegment _nextSegment = null;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
-    public static Action<bool> OnActivateFinish { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Curve Curve { get => curve; set => curve = value; }
@@ -79,19 +78,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 
     void OnBecameVisible()
     {
-        if (_isFinish)
-        {
-            OnActivateFinish?.Invoke(true);
-        }
         OnSegmentBecomeVisible?.Invoke(this);
     }
 
     void OnBecameInvisible()
     {
-        if (_isFinish)
-        {
-            OnActivateFinish?.Invoke(false);
-        }
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 

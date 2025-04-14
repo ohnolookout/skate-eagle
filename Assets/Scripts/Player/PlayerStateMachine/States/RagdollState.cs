@@ -1,5 +1,8 @@
-﻿internal class RagdollState : PlayerState
+﻿using UnityEngine;
+
+public class RagdollState : PlayerState
 {
+    private bool _doCheckFall = true;
     public RagdollState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
     }
@@ -16,6 +19,11 @@
     public override void UpdateState()
     {
         DirectionCheck();
+        if(_doCheckFall && _player.RagdollBody.position.y < _player.KillPlaneY)
+        {
+            _doCheckFall = false;
+            _player.EventAnnouncer.InvokeAction(PlayerEvent.Fall);
+        }
     }
 
     public override void FixedUpdateState()

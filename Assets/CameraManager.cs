@@ -102,7 +102,7 @@ public class CameraManager : MonoBehaviour
 
     private void GoToStartPosition(Level level, PlayerRecord _)
     {
-        _camera.MoveCameraInstantlyToPosition(level.CameraStartPosition);
+        _camera.MoveCameraInstantlyToPosition(level.StartPoint);
     }
 
     private void TurnOnDuration()

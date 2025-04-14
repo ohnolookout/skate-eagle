@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Security.Cryptography;
 [ExecuteAlways]
-public static class CurveCollider
+public static class ColliderGenerator
 {
     private static float resolution, edgeOffset = 1.2f; //1.2f
 

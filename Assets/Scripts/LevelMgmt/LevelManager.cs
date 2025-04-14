@@ -12,7 +12,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public Vector3 startPosition = new();
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private InputEventController _inputEvents;
-    private bool _finishIsActive = false;
     [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
     private Player _player;
@@ -52,14 +51,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         InitializeLevel();
     }
 
-    void Update()
-    {
-        if (_finishIsActive)
-        {
-            CheckFinish();
-        }
-    }
-
     void OnDrawGizmosSelected()
     {
         if (_gameManager != null && _gameManager.CurrentLevel != null)
@@ -72,23 +63,12 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
     }
 
-    private void CheckFinish()
-    {
-        if (_playerTransform.position.x >= _gameManager.CurrentLevel.FinishPoint.x && _player.CollisionManager.BothWheelsCollided)
-        {
-            CrossFinish();
-        }
-    }
-
-    private void ActivateFinishCheck(bool doActivate)
-    {
-        _finishIsActive = doActivate;
-    }
     private void InitializeLevel()
     {
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
         OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
 
+        _groundManager.FinishLine.DoFinish += CrossFinish;
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
         
@@ -99,13 +79,11 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _inputEvents = new(InputType.UI);
         _inputEvents.OnSubmit += Submit;
-        GroundSegment.OnActivateFinish += ActivateFinishCheck;
     }
     private void OnDisable()
     {
         OnLevelExit?.Invoke();
         ResetStaticEvents();
-        GroundSegment.OnActivateFinish -= ActivateFinishCheck;
         Timer.OnStopTimer -= OnStopTimer;
     }
 
@@ -166,6 +144,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public void RestartLevel()
     {
         _inputEvents.OnRestart -= RestartLevel;
+        _groundManager.FinishLine.DoFinish -= CrossFinish;
 
         if (_player != null)
         {
@@ -178,8 +157,8 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     public void CrossFinish()
     {
+        _groundManager.FinishLine.DoFinish -= CrossFinish;
         OnCrossFinish?.Invoke();
-        _finishIsActive = false;
         _inputEvents.OnRestart -= RestartLevel;
     }
 
@@ -201,7 +180,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void OnStopTimer(float finishTime)
     {
-        _finishIsActive = false;
         FinishData finishData;
         finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, finishTime);
         OnFinish?.Invoke(finishData);

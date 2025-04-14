@@ -11,23 +11,16 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private GameObject _backstopPrefab;
     [SerializeField] private GameObject _finishFlag;
     [SerializeField] private GameObject _backstop;
+    [SerializeField] private FinishLine _finishLine;
     public GroundSpawner groundSpawner;
     private List<Ground> _grounds;
     public GameObject groundContainer;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     public List<Ground> Grounds { get => _grounds; set => _grounds = value; }
+    public FinishLine FinishLine { get => _finishLine;}
     #endregion
 
     #region Monobehaviors
-    private void Awake()
-    {
-
-    }
-
-    private void Start()
-    {
-    }
-
 
     private void OnDestroy()
     {
@@ -36,7 +29,7 @@ public class GroundManager : MonoBehaviour
 
     public void ClearGround()
     {
-        groundSpawner.ClearStartFinishObjects();
+        _finishLine.gameObject.SetActive(false);
         _grounds = new();
 
         while (groundContainer.transform.childCount > 0)

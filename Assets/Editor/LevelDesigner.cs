@@ -16,6 +16,8 @@ public class LevelDesigner : EditorWindow
     private SerializedProperty _serializedCurve;
     private SerializedProperty _doCameraTarget;
     private GroundSegment _segment;
+    private GroundSegment _finishSegment;
+    private GroundSegment _startSegment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
@@ -38,6 +40,8 @@ public class LevelDesigner : EditorWindow
     #endregion
 
     [MenuItem("Tools/LevelDesigner")]
+    
+    #region Monobehaviors
     public static void ShowWindow()
     {
         GetWindow<LevelDesigner>();
@@ -77,6 +81,7 @@ public class LevelDesigner : EditorWindow
             SetLevelDirty();
         }
     }
+    #endregion
 
     #region GUI
     private void OnGUI()
@@ -193,6 +198,16 @@ public class LevelDesigner : EditorWindow
         }
         if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
         {
+            if (_ground.LastSegment.IsFinish)
+            {
+                _finishSegment = null;
+            }
+
+            if(_ground.LastSegment.IsStart)
+            {
+                _startSegment = null;
+            }
+
             _groundEditor.RemoveSegment(_ground);
 
             if(Selection.activeGameObject == null)
@@ -222,16 +237,39 @@ public class LevelDesigner : EditorWindow
         {
             var segment = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultStartLine());            
             Selection.activeGameObject = segment.gameObject;
-            segment.SetLowPoint(2);
+
+            //Remove old start segment
+            if(_startSegment != null && _startSegment != segment)
+            {
+                _startSegment.IsStart = false;
+            }
+
+            _startSegment = segment;
+
             _groundEditor.SetStartPoint(segment, 1);
+
             SetLevelDirty();
         }
         if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
         {
-            var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(_ground.LastSegment.Curve.EndPoint));
-            segment.SetLowPoint(2);
+            CurvePoint? startPoint = null;
+            if (_ground.SegmentList.Count > 0)
+            {
+                startPoint = _ground.SegmentList[^1].Curve.EndPoint;
+            }
+
+            var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
             Selection.activeGameObject = segment.gameObject;
-            _groundEditor.SetFinishPoint(segment, 2);
+            
+            if(_finishSegment != null && _finishSegment != segment)
+            {
+                _finishSegment.IsFinish = false;
+            }
+
+            _finishSegment = segment;
+
+            _groundEditor.SetFinishLine(segment);
+            
             SetLevelDirty();
         }
     }
@@ -284,21 +322,18 @@ public class LevelDesigner : EditorWindow
             {
                 Selection.activeGameObject = segment.parentGround.gameObject;
             }
+
+            if(segment.IsFinish)
+            {
+                _finishSegment = null;
+            }
+            if (segment.IsStart)
+            {
+                _startSegment = null;
+            }
+
             _tabIndex = 1;       
             _groundEditor.RemoveSegment(segment);
-            SetLevelDirty();
-        }
-
-        if(GUILayout.Button("Set As Start", GUILayout.ExpandWidth(false)))
-        {
-            _groundEditor.SetStartPoint(_segment, 1);
-            SetLevelDirty();
-        }
-
-        if(GUILayout.Button("Set As Finish", GUILayout.ExpandWidth(false)))
-        {
-            _groundEditor.SetFinishPoint(_segment, 1);
-            _segment.SetLowPoint(1);
             SetLevelDirty();
         }
 
@@ -443,8 +478,9 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
+        var finishLine = _finishSegment != null ? _groundManager.FinishLine : null;
         return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
-            _groundEditor.finishPoint.transform.position, cameraStartPosition, killPlaneY);
+            _groundEditor.finishPoint.transform.position, cameraStartPosition, killPlaneY, finishLine);
     }
     public void LoadLevelByName(string levelName)
     {

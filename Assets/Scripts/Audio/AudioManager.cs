@@ -21,6 +21,7 @@ public class AudioManager : MonoBehaviour
     private int _soundModFrameRate = 6, _zoomModFrameRate = 10;
     private IPlayer _player;
     private Camera _camera;
+    private IEnumerator _delayedSoundRoutine;
 
     public float ZoomModifier { get => _modifierManager.ZoomModifier; }
 
@@ -239,6 +240,12 @@ public class AudioManager : MonoBehaviour
         {
             StopCoroutine(coroutine);
         }
+
+        if (_delayedSoundRoutine != null)
+        {
+            StopCoroutine(_delayedSoundRoutine);
+        }
+
         intensityDenominator = 300;
         playingSounds = new();
         fadingSources = new();
@@ -305,6 +312,18 @@ public class AudioManager : MonoBehaviour
         _audioSources[1].panStereo = _modifierManager.GetPan(sound);
         _audioSources[1].pitch = sound.pitch;
         _audioSources[1].PlayOneShot(sound.Clip());
+    }
+
+    public void PlayOneShotOnDelay(Sound sound, float delay, float modifier)
+    {
+        _delayedSoundRoutine = PlayOneShotOnDelayRoutine(sound, delay, modifier);
+        StartCoroutine(_delayedSoundRoutine);
+    }
+
+    private IEnumerator PlayOneShotOnDelayRoutine(Sound sound, float delay, float modifier)
+    {
+        yield return new WaitForSeconds(delay);
+        PlayOneShot(sound, modifier);
     }
     #endregion
 }

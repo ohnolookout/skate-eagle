@@ -94,6 +94,7 @@ public class PlayerAudio : MonoBehaviour
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Brake, Brake);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.LandSound, LandOneShot);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.BodySound, BodyOneShot);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Fall, FallSound);
         _player.CollisionManager.OnCollide += Collide;
         _player.CollisionManager.OnUncollide += Uncollide;
 
@@ -160,7 +161,7 @@ public class PlayerAudio : MonoBehaviour
 
     private void BodyAndBoardCollision(float magnitudeDelta)
     {
-        if (magnitudeDelta > 200)
+        if (magnitudeDelta > 150)
         {
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.HardBody]);
         } else if (magnitudeDelta > 80)
@@ -251,6 +252,12 @@ public class PlayerAudio : MonoBehaviour
     private void BodyOneShot(IPlayer _)
     {
         _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Body], 0.1f);
+    }
+
+    private void FallSound(IPlayer _)
+    {
+        _audioManager.PlayOneShotOnDelay(_oneShotDict[OneShotFX.HardBody], 0.5f, 1.5f);
+        _player.EventAnnouncer.UnsubscribeFromEvent(PlayerEvent.Fall, FallSound);
     }
 
     private void ActivateLandingTracking(IPlayer _)
