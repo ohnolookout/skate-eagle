@@ -49,10 +49,10 @@ public class GroundSpawner : MonoBehaviour
         newSegment.PreviousSegment = ground.LastSegment;
         Vector2 startPoint = new(0, 0);
 
-        if (ground.LastSegment != null)
+        if (newSegment.PreviousSegment != null)
         {
-            ground.LastSegment.NextSegment = newSegment;
-            startPoint = ground.LastSegment.EndPosition;
+            newSegment.PreviousSegment.NextSegment = newSegment;
+            startPoint = newSegment.PreviousSegment.EndPosition;
         } else
         {
             startPoint = ground.transform.position;
@@ -62,7 +62,7 @@ public class GroundSpawner : MonoBehaviour
         ground.SegmentList.Add(newSegment);
 
         ApplyCurveToSegment(newSegment, newSegment.Curve);
-        newSegment.DoDefaultHighLowPoints();
+        newSegment.PopulateDefaultTargets();
 
         if (!newSegment.HasShadow)
         {

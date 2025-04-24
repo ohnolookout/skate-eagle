@@ -53,6 +53,10 @@ public class CameraManager : MonoBehaviour
 
     private void CheckCurrentTarget()
     {
+        if(_currentTarget == null || _currentTarget.LowTarget == null)
+        {
+            return;
+        }
         var currentTarget = _currentTarget;
         var currentClosestPosition = _currentTarget.LowTarget.TargetPosition;
         var currentClosestDistance = Vector3.Distance(_camera.transform.position, currentClosestPosition);

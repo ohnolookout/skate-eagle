@@ -6,7 +6,7 @@ using System;
 
 public interface ICameraTargetable
 {
-    void PopulateHighLowTargets();
+    void PopulateDefaultTargets();
     //Use objects for assigning targets in the editor
     List<GameObject> LeftTargetObjects { get; set; }
     List<GameObject> RightTargetObjects { get; set; }
@@ -24,6 +24,13 @@ public class LinkedCameraTarget
     public List<LinkedCameraTarget> LeftTargets { get; set; } = new();
     public List<LinkedCameraTarget> RightTargets { get; set; } = new();
     public int[] SerializedLocation { get; set; }
+
+    public LinkedCameraTarget()
+    {
+        LeftTargets = new();
+        RightTargets = new();
+        SerializedLocation = new int[0];
+    }
 
 
 }

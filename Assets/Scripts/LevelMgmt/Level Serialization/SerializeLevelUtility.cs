@@ -7,6 +7,8 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.U2D;
 using UnityEngine.UIElements;
 using Com.LuisPedroFonseca.ProCamera2D;
+using System.Linq;
+using System;
 
 public static class SerializeLevelUtility
 {
@@ -82,6 +84,7 @@ public static class SerializeLevelUtility
 
         //CameraTargetable
         serializedSegment.linkedCameraTarget = segment.LinkedCameraTarget;
+        //Debug.Log("Serializing segment with " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
 
         return serializedSegment;
     }
@@ -117,6 +120,7 @@ public static class SerializeLevelUtility
     {
         if(finishLine == null)
         {
+            Debug.Log("Finish line is null");
             return null;
         }
 
@@ -134,16 +138,23 @@ public static class SerializeLevelUtility
             targetable.LinkedCameraTarget = new();
         }
 
-        targetable.PopulateHighLowTargets();
+        targetable.PopulateDefaultTargets();
         targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
         targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
     }
 
     private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
     {
+        //Debug.Log("Building targetable list from " + targetObjects.Count + " objects");
         var targetables = new List<LinkedCameraTarget>();
         for (int i = 0; i < targetObjects.Count; i++)
         {
+            if(targetObjects[i] == null)
+            {
+                targetObjects.RemoveAt(i);
+                i--;
+                continue;
+            }
             var linkedTarget = targetObjects[i].GetComponent<ICameraTargetable>();
             if (linkedTarget != null)
             {
@@ -155,6 +166,8 @@ public static class SerializeLevelUtility
                 i--;
             }
         }
+
+        //Debug.Log("Found " + targetables.Count + " targets");
         return targetables;
     }
 
@@ -170,14 +183,13 @@ public static class SerializeLevelUtility
             var ground = DeserializeGround(serializedGround, groundManager);
             groundManager.Grounds.Add(ground);
         }
-        if (level.FinishLineParameters.Length == 2) { 
+        if (level.FinishLineParameters != null && level.FinishLineParameters.Length == 2) { 
             groundManager.groundSpawner.SetFinishLine(level.FinishLineParameters[0], level.FinishLineParameters[1], level.BackstopIsActive);
         }
 
 
         if (Application.isPlaying)
         {
-            Debug.Log("Skipping camera targeting game object reassociation");
             return;
         }
 
@@ -201,6 +213,10 @@ public static class SerializeLevelUtility
         {
             var segment = groundSpawner.AddEmptySegment(ground);
             DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);
+            if(segment.PreviousSegment != null)
+            {
+                segment.PreviousSegment.NextSegment = segment;
+            }
             ground.SegmentList.Add(segment);
         }
 
@@ -235,6 +251,12 @@ public static class SerializeLevelUtility
 
         //Camera targets
         segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
+        if(segment.LinkedCameraTarget == null)
+        {
+            segment.LinkedCameraTarget = new();
+        }
+        //Debug.Log("Deserializing segment " + segment.gameObject.name + " with serialized location " + string.Join(",", segment.LinkedCameraTarget.SerializedLocation));
+        //Debug.Log("Segment has " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
 
     }
 
@@ -251,7 +273,7 @@ public static class SerializeLevelUtility
         }
 
         //Expand with additional types as added
-
+        //Debug.Log(targetables.Count + " targetables found");
         return targetables;
     }
 
@@ -275,15 +297,18 @@ public static class SerializeLevelUtility
     private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
     {
         List<GameObject> gameObjects = new();
+        //Debug.Log("Reassociating objects for " + linkedTargets.Count + " targets");
+
         foreach (var target in linkedTargets)
         {
             var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
+
             if(obj != null)
             {
                 gameObjects.Add(obj);
             }
         }
-
+        //Debug.Log("Reassociating objects: Found " + gameObjects.Count + " targetable objects");
         return gameObjects;
     }
 

@@ -34,7 +34,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private GroundSegment _nextSegment = null;
     [SerializeField] private List<GameObject> _leftTargetObjects;
     [SerializeField] private List<GameObject> _rightTargetObjects;
-    [SerializeField] private LinkedCameraTarget _linkedCameraTarget = new();
+    [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
@@ -63,7 +63,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Transform LowPoint => _lowPoint.transform;
     public List<GameObject> LeftTargetObjects { get => _leftTargetObjects; set => _leftTargetObjects = value; }
     public List<GameObject> RightTargetObjects { get => _rightTargetObjects; set => _rightTargetObjects = value; }
-    public LinkedCameraTarget LinkedCameraTarget { get; set; }
+    public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     #endregion
 
     #region Monobehaviors
@@ -157,19 +157,19 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #endregion
 
     #region High/LowPoints
-    public void PopulateHighLowTargets()
+    public void PopulateDefaultTargets()
     {
         _linkedCameraTarget.LowTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
         _linkedCameraTarget.HighTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, HighPoint.transform);
 
-        if (_previousSegment != null && !_linkedCameraTarget.LeftTargets.Contains(_previousSegment.LinkedCameraTarget))
+        if (_previousSegment != null && !LeftTargetObjects.Contains(_previousSegment.gameObject))
         {
-            _linkedCameraTarget.LeftTargets.Add(_previousSegment.LinkedCameraTarget);
+            LeftTargetObjects.Add(_previousSegment.gameObject);
         }
 
-        if (_nextSegment != null && !_linkedCameraTarget.RightTargets.Contains(_nextSegment.LinkedCameraTarget))
+        if (_nextSegment != null && !RightTargetObjects.Contains(_nextSegment.gameObject))
         {
-            _linkedCameraTarget.RightTargets.Add(_nextSegment.LinkedCameraTarget);
+            RightTargetObjects.Add(_nextSegment.gameObject);
         }
     }
 
