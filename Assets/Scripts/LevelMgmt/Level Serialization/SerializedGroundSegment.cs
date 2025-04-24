@@ -1,3 +1,4 @@
+using Com.LuisPedroFonseca.ProCamera2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,9 @@ public class SerializedGroundSegment
     public List<Vector2> colliderPoints;
     public List<Vector2> bottomColliderPoints;
 
+
+    //CameraTargetable contents
+    public LinkedCameraTarget linkedCameraTarget;
     public SerializedGroundSegment()
     {
     }

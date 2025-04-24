@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.U2D;
 using UnityEngine.UIElements;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public static class SerializeLevelUtility
 {
@@ -14,6 +15,8 @@ public static class SerializeLevelUtility
     {
         var serializedGrounds = new List<SerializedGround>();
 
+        GenerateGroundIndices(grounds);
+
         foreach (Ground ground in grounds)
         {
             serializedGrounds.Add(SerializeGround(ground));
@@ -21,8 +24,19 @@ public static class SerializeLevelUtility
 
         return serializedGrounds;
     }
+    private static void GenerateGroundIndices(Ground[] grounds)
+    {
+        for (int i = 0; i < grounds.Length; i++)
+        {
+            var ground = grounds[i];
+            for (int j = 0; j < ground.SegmentList.Count; j++)
+            {
+                ground.SegmentList[j].LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
+            }
+        }
+    }
 
-    public static SerializedGround SerializeGround(Ground ground)
+    private static SerializedGround SerializeGround(Ground ground)
     {
         var name = ground.gameObject.name;
         var position = ground.transform.position;
@@ -34,8 +48,10 @@ public static class SerializeLevelUtility
         return new SerializedGround(name, position, segmentList);
     }
 
-    public static SerializedGroundSegment SerializeGroundSegment(GroundSegment segment)
+    private static SerializedGroundSegment SerializeGroundSegment(GroundSegment segment)
     {
+        BuildLinkedCameraTarget(segment);
+
         SerializedGroundSegment serializedSegment = new();
 
         //Transform
@@ -63,6 +79,9 @@ public static class SerializeLevelUtility
         //Collider
         serializedSegment.colliderPoints = CopyColliderPoints(segment.Collider);
         serializedSegment.bottomColliderPoints = CopyColliderPoints(segment.BottomCollider);
+
+        //CameraTargetable
+        serializedSegment.linkedCameraTarget = segment.LinkedCameraTarget;
 
         return serializedSegment;
     }
@@ -107,6 +126,38 @@ public static class SerializeLevelUtility
             finishLine.BackstopPosition
         };
     }
+
+    private static void BuildLinkedCameraTarget(ICameraTargetable targetable)
+    {
+        if(targetable.LinkedCameraTarget == null)
+        {
+            targetable.LinkedCameraTarget = new();
+        }
+
+        targetable.PopulateHighLowTargets();
+        targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
+        targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
+    }
+
+    private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
+    {
+        var targetables = new List<LinkedCameraTarget>();
+        for (int i = 0; i < targetObjects.Count; i++)
+        {
+            var linkedTarget = targetObjects[i].GetComponent<ICameraTargetable>();
+            if (linkedTarget != null)
+            {
+                targetables.Add(linkedTarget.LinkedCameraTarget);
+            }
+            else
+            {
+                targetObjects.RemoveAt(i);
+                i--;
+            }
+        }
+        return targetables;
+    }
+
     #endregion
 
     #region Deserialization
@@ -116,16 +167,33 @@ public static class SerializeLevelUtility
 
         foreach (var serializedGround in level.SerializedGrounds)
         {
-            var newGround = DeserializeGround(serializedGround, groundManager.groundSpawner);
-            groundManager.Grounds.Add(newGround);
+            var ground = DeserializeGround(serializedGround, groundManager);
+            groundManager.Grounds.Add(ground);
         }
         if (level.FinishLineParameters.Length == 2) { 
             groundManager.groundSpawner.SetFinishLine(level.FinishLineParameters[0], level.FinishLineParameters[1], level.BackstopIsActive);
         }
 
+
+        if (Application.isPlaying)
+        {
+            Debug.Log("Skipping camera targeting game object reassociation");
+            return;
+        }
+
+        //Retrieve targetable objects from groundManager and reassociate targeted game objects for editing in inspector
+        var targetables = GetAllTargetables(groundManager);
+
+        foreach (var targetable in targetables)
+        {
+            ReassociateGameObjects(targetable, groundManager);
+        }
+
     }
-    public static Ground DeserializeGround(SerializedGround serializedGround, GroundSpawner groundSpawner)
+    private static Ground DeserializeGround(SerializedGround serializedGround, GroundManager groundManager)
     {
+        var groundSpawner = groundManager.groundSpawner;
+
         var ground = groundSpawner.AddGround();
         ground.name = serializedGround.name;
         ground.SegmentList = new();
@@ -139,7 +207,7 @@ public static class SerializeLevelUtility
         return ground;
     }
 
-    public static void DeserializeSegment(SerializedGroundSegment serializedSegment, GroundSegment segment, Ground parent, GroundSegment? previousSegment)
+    private static void DeserializeSegment(SerializedGroundSegment serializedSegment, GroundSegment segment, Ground parent, GroundSegment? previousSegment)
     {
         segment.transform.position = serializedSegment.position;
         segment.transform.rotation = serializedSegment.rotation;
@@ -165,6 +233,58 @@ public static class SerializeLevelUtility
         segment.BottomCollider.points = serializedSegment.bottomColliderPoints.ToArray();
         segment.BottomCollider.sharedMaterial = parent.ColliderMaterial;
 
+        //Camera targets
+        segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
+
+    }
+
+    private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
+    {
+        var targetables = new List<ICameraTargetable>();
+
+        foreach (var ground in groundManager.Grounds)
+        {
+            foreach (var segment in ground.SegmentList)
+            {
+                targetables.Add(segment);
+            }
+        }
+
+        //Expand with additional types as added
+
+        return targetables;
+    }
+
+    private static void ReassociateGameObjects(ICameraTargetable targetable, GroundManager groundManager)
+    {
+        //Iterate through all objects of groundManager and relink gameObjects in left and right target objects
+        //by using indices in serialized left and right targets
+        //ONLY RUN IF IN EDIT MODE, don't need actual gameobjects in play mode because object lists will not be edited
+
+        if (targetable == null)
+        {
+            Debug.Log("Targetable is null");
+            return;
+        }
+
+        targetable.LeftTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.LeftTargets, groundManager);
+        targetable.RightTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.RightTargets, groundManager);    
+
+    }
+
+    private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
+    {
+        List<GameObject> gameObjects = new();
+        foreach (var target in linkedTargets)
+        {
+            var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
+            if(obj != null)
+            {
+                gameObjects.Add(obj);
+            }
+        }
+
+        return gameObjects;
     }
 
     #endregion

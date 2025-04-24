@@ -6,6 +6,7 @@ using UnityEditor.Build;
 using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
@@ -20,7 +21,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private EdgeCollider2D _bottomCollider;
     [SerializeField] private GameObject _highPoint;
     [SerializeField] private GameObject _lowPoint;
-    [SerializeField] private List<CameraTarget> _cameraTargets;
+    //[SerializeField] private List<CameraTarget> _cameraTargets;
     public int floorHeight = 100;
     private int _containmentBuffer = 20;
     [SerializeField] private bool _isStart = false;
@@ -31,6 +32,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment = null;
     [SerializeField] private GroundSegment _nextSegment = null;
+    [SerializeField] private List<GameObject> _leftTargetObjects;
+    [SerializeField] private List<GameObject> _rightTargetObjects;
+    [SerializeField] private LinkedCameraTarget _linkedCameraTarget = new();
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
@@ -57,18 +61,15 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
     public Transform HighPoint => _highPoint.transform;
     public Transform LowPoint => _lowPoint.transform;
-    public CameraTarget LowPointTarget => _cameraTargets[0];
-    public CameraTarget HighPointTarget => _cameraTargets[1];
-    public List<CameraTarget> CameraTargets => _cameraTargets;
+    public List<GameObject> LeftTargetObjects { get => _leftTargetObjects; set => _leftTargetObjects = value; }
+    public List<GameObject> RightTargetObjects { get => _rightTargetObjects; set => _rightTargetObjects = value; }
+    public LinkedCameraTarget LinkedCameraTarget { get; set; }
     #endregion
 
     #region Monobehaviors
     void Awake()
     {
         _collider = gameObject.GetComponentInChildren<EdgeCollider2D>();
-        var lowPointTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, _lowPoint.transform);
-        var highPointTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, _highPoint.transform);
-        _cameraTargets = new List<CameraTarget> { lowPointTarget, highPointTarget };
     }
 
     void Start()
@@ -156,6 +157,22 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #endregion
 
     #region High/LowPoints
+    public void PopulateHighLowTargets()
+    {
+        _linkedCameraTarget.LowTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
+        _linkedCameraTarget.HighTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, HighPoint.transform);
+
+        if (_previousSegment != null && !_linkedCameraTarget.LeftTargets.Contains(_previousSegment.LinkedCameraTarget))
+        {
+            _linkedCameraTarget.LeftTargets.Add(_previousSegment.LinkedCameraTarget);
+        }
+
+        if (_nextSegment != null && !_linkedCameraTarget.RightTargets.Contains(_nextSegment.LinkedCameraTarget))
+        {
+            _linkedCameraTarget.RightTargets.Add(_nextSegment.LinkedCameraTarget);
+        }
+    }
+
     public void UpdateHighLowTransforms()
     {
         _highPoint.transform.position = curve.HighPoint + transform.position;

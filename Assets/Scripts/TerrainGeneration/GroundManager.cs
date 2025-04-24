@@ -38,5 +38,28 @@ public class GroundManager : MonoBehaviour
         }
     }
 
+    public GameObject GetGameObjectByIndices(int[] targetIndices)
+    {
+        if (targetIndices == null || targetIndices.Length == 0)
+        {
+            Debug.LogWarning($"GetGameObjectByIndices: No GameObject found due to empty indices");
+            return null;
+        }
+
+        if (targetIndices[0] < _grounds.Count)
+        {
+            if(targetIndices.Length == 1)
+            {
+                return _grounds[targetIndices[0]].gameObject;
+            }
+
+            return _grounds[0].SegmentList[targetIndices[1]].gameObject;
+        }
+
+        //Add more types to reflect serialization/deserialization order as needed
+
+        Debug.LogWarning($"GetGameObjectByIndices: No GameObject found for indices {string.Join(", ", targetIndices)}");
+        return null;
+    }
     #endregion
 }
