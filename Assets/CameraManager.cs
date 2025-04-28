@@ -84,8 +84,8 @@ public class CameraManager : MonoBehaviour
         var currentClosestPosition = _currentTarget.LowTarget.TargetPosition;
         var currentClosestDistance = Vector3.Distance(_camera.transform.position, currentClosestPosition);
 
-        foreach (var target in _nextCameraTargets)
-        {
+        for(int i = 0; i < _nextCameraTargets.Count; i++) {
+            var target = _nextCameraTargets[i];
             if (target == null)
             {
                 Debug.LogError("Target is null");
@@ -94,7 +94,7 @@ public class CameraManager : MonoBehaviour
 
             if(target.LowTarget == null)
             {
-                Debug.LogError("Target low target is null");
+                Debug.LogError("Target low target is null at index " + i);
                 continue;
             }
 
@@ -141,7 +141,7 @@ public class CameraManager : MonoBehaviour
                 continue;
             }
 
-            if(target == _currentTarget.LowTarget)
+            if(!segmentTargetIsFound && target == _currentTarget.LowTarget)
             {
                 segmentTargetIsFound = true;
                 continue;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Com.LuisPedroFonseca.ProCamera2D
 {
@@ -334,7 +335,8 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             if (duration > 0f)
             {
                 newCameraTarget.CurrentInfluence = 0f;
-                StartCoroutine(AdjustTargetInfluenceRoutine(newCameraTarget, targetInfluenceH, targetInfluenceV, duration));
+                newCameraTarget.AdjustmentCoroutine = AdjustTargetInfluenceRoutine(newCameraTarget, targetInfluenceH, targetInfluenceV, duration);
+                StartCoroutine(newCameraTarget.AdjustmentCoroutine);
             }
 
             newCameraTarget.CurrentInfluenceH = targetInfluenceH;
@@ -347,19 +349,33 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
         public CameraTarget AddCameraTarget(CameraTarget cameraTarget, float duration = 0f)
         {
-            cameraTarget.RemovalPending = false;
-            CameraTargets.Add(cameraTarget);
+            Debug.Log("Adding target. IsAdjusting: " + cameraTarget.IsAdjusting);
+            if (cameraTarget.IsAdjusting)
+            {
+                Debug.Log("Adjustment routine found: Canceling target adjustment routine...");
+                if(cameraTarget.AdjustmentCoroutine != null)
+                    StopCoroutine(cameraTarget.AdjustmentCoroutine);
+                cameraTarget.IsAdjusting = false;
+            }
+            else
+            {
+                CameraTargets.Add(cameraTarget);
+            }
+
             var influenceH = cameraTarget.TargetInfluenceH;
             var influenceV = cameraTarget.TargetInfluenceV;
 
             if (duration > 0f)
             {
                 cameraTarget.CurrentInfluence = 0f;
-                StartCoroutine(AdjustTargetInfluenceRoutine(cameraTarget, influenceH, influenceV, duration));
+                cameraTarget.AdjustmentCoroutine = AdjustTargetInfluenceRoutine(cameraTarget, influenceH, influenceV, duration);
+                StartCoroutine(cameraTarget.AdjustmentCoroutine);
             }
-
-            cameraTarget.CurrentInfluenceH = influenceH;
-            cameraTarget.CurrentInfluenceV = influenceV;
+            else 
+            { 
+                cameraTarget.CurrentInfluenceH = influenceH;
+                cameraTarget.CurrentInfluenceV = influenceV;
+            }
 
             return cameraTarget;
         }
@@ -387,9 +403,17 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             {
                 if (CameraTargets[i].TargetTransform.GetInstanceID() == targetTransform.GetInstanceID())
                 {
+                    if (CameraTargets[i].IsAdjusting)
+                    {
+                        Debug.Log("Target removal triggered: Canceling target adjustment routine...");
+                        if(CameraTargets[i].AdjustmentCoroutine != null)
+                            StopCoroutine(CameraTargets[i].AdjustmentCoroutine);
+                        CameraTargets[i].IsAdjusting = false;
+                    }
                     if (duration > 0)
                     {
-                        StartCoroutine(AdjustTargetInfluenceRoutine(CameraTargets[i], 0, 0, duration, true));
+                        CameraTargets[i].AdjustmentCoroutine = AdjustTargetInfluenceRoutine(CameraTargets[i], 0, 0, duration, true);
+                        StartCoroutine(CameraTargets[i].AdjustmentCoroutine);
                     }
                     else
                         CameraTargets.Remove(CameraTargets[i]);
@@ -406,9 +430,17 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             {
                 if (CameraTargets[i] == target)
                 {
+                    if(CameraTargets[i].IsAdjusting)
+                    {
+                        Debug.Log("Target removal triggered: Canceling target adjustment routine...");
+                        if (CameraTargets[i].AdjustmentCoroutine != null)
+                            StopCoroutine(CameraTargets[i].AdjustmentCoroutine);
+                        CameraTargets[i].IsAdjusting = false;
+                    }
                     if (duration > 0)
                     {
-                        StartCoroutine(AdjustTargetInfluenceRoutine(CameraTargets[i], 0, 0, duration, true));
+                        CameraTargets[i].AdjustmentCoroutine = AdjustTargetInfluenceRoutine(CameraTargets[i], 0, 0, duration, true);
+                        StartCoroutine(CameraTargets[i].AdjustmentCoroutine);
                     }
                     else
                         CameraTargets.Remove(CameraTargets[i]);
@@ -894,26 +926,14 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
         IEnumerator AdjustTargetInfluenceRoutine(CameraTarget cameraTarget, float influenceH, float influenceV, float duration, bool removeIfZeroInfluence = false)
         {
-            cameraTarget.RemovalPending = influenceH == 0 && influenceV == 0 && removeIfZeroInfluence;
-            var doCheckForRemoveCancel = cameraTarget.RemovalPending = true;
-
+            Debug.Log("Beginning target adjustment...");
+            cameraTarget.IsAdjusting = true;
             var startInfluenceH = cameraTarget.CurrentInfluenceH;
             var startInfluenceV = cameraTarget.CurrentInfluenceV;            
-            Debug.Log("Adjusting target values with start influences of " + startInfluenceH + " and " + startInfluenceV);
-            Debug.Log("Target values of " + influenceH + " and " + influenceV);
 
             var t = 0f;
             while (t <= 1.0f)
             {
-                if(!cameraTarget.RemovalPending && doCheckForRemoveCancel)
-                {
-                    //Reset to original values if target was fading to zero
-                    cameraTarget.CurrentInfluenceH = startInfluenceH;
-                    cameraTarget.CurrentInfluenceV = startInfluenceV;
-                    Debug.Log("Remove camera target canceled");
-                    yield break;
-                }
-
                 t += DeltaTime / duration;
                 cameraTarget.CurrentInfluenceH = Utils.EaseFromTo(startInfluenceH, influenceH, t, EaseType.Linear);
                 cameraTarget.CurrentInfluenceV = Utils.EaseFromTo(startInfluenceV, influenceV, t, EaseType.Linear);
@@ -921,13 +941,15 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 yield return GetYield();
             }
 
-            if (cameraTarget.RemovalPending && removeIfZeroInfluence && cameraTarget.CurrentInfluenceH <= 0 && cameraTarget.CurrentInfluenceV <= 0)
+            if (removeIfZeroInfluence && cameraTarget.CurrentInfluenceH <= 0 && cameraTarget.CurrentInfluenceV <= 0)
             {
-                //Reset to original values if target faded to zero
-                cameraTarget.CurrentInfluenceH = startInfluenceH;
-                cameraTarget.CurrentInfluenceV = startInfluenceV;
+                Debug.Log("Removing target after delay");
                 CameraTargets.Remove(cameraTarget);
-            }
+            } 
+
+            Debug.Log("Target adjustment finished");
+
+            cameraTarget.IsAdjusting = false;
         }
 
         IEnumerator UpdateScreenSizeRoutine(float finalSize, float duration, EaseType easeType)

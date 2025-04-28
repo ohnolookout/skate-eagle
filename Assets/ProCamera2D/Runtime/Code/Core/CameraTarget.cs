@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Com.LuisPedroFonseca.ProCamera2D
@@ -51,6 +52,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         }
         public Vector3 SerializedPosition;
 
-        public bool RemovalPending = false;
+        public IEnumerator AdjustmentCoroutine;
+        public bool IsAdjusting = false;
     }
 }

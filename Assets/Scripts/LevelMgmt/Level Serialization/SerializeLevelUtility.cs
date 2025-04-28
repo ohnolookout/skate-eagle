@@ -120,7 +120,6 @@ public static class SerializeLevelUtility
     {
         if(finishLine == null)
         {
-            Debug.Log("Finish line is null");
             return null;
         }
 
