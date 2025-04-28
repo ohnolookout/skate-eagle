@@ -13,15 +13,13 @@ public class CameraManager : MonoBehaviour
     public bool doLogPosition = false;
     private bool _doDuration = false;
     private bool _doUpdate = true;
-    private List<LinkedCameraTarget> _nextCameraTargets;
+    private List<LinkedCameraTarget> _nextCameraTargets = new();
     private IPlayer _player;
     void Awake()
     {
         _camera = ProCamera2D.Instance;
         _forwardFocus = _camera.GetComponent<ProCamera2DForwardFocus>();
         _transitionSmoothness = _forwardFocus.TransitionSmoothness;
-        //Targeting events
-        _camera.RemoveAllCameraTargets();
         LevelManager.OnPlayerCreated += AddPlayerTarget;
         LevelManager.OnLanding += GoToStartPosition;
         LevelManager.OnAttempt += TurnOnDuration;
@@ -36,11 +34,35 @@ public class CameraManager : MonoBehaviour
         FreezeCamera();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (_doUpdate)
         {
             CheckCurrentTarget();
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(_currentTarget == null)
+        {
+            return;
+        }
+        Gizmos.color = Color.red;
+        foreach(var target in _nextCameraTargets)
+        {
+            if (target == null || target.LowTarget == null)
+            {
+                continue;
+            }
+            Gizmos.DrawSphere(target.LowTarget.TargetPosition, 1f);
+        }
+
+        Gizmos.color = Color.blue;
+
+        if (_currentTarget != null && _currentTarget.LowTarget != null)
+        {
+            Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 1f);
         }
     }
 
@@ -53,17 +75,29 @@ public class CameraManager : MonoBehaviour
 
     private void CheckCurrentTarget()
     {
-        if(_currentTarget == null || _currentTarget.LowTarget == null)
+        if (_currentTarget == null || _currentTarget.LowTarget == null)
         {
             return;
         }
+
         var currentTarget = _currentTarget;
         var currentClosestPosition = _currentTarget.LowTarget.TargetPosition;
         var currentClosestDistance = Vector3.Distance(_camera.transform.position, currentClosestPosition);
 
-
         foreach (var target in _nextCameraTargets)
         {
+            if (target == null)
+            {
+                Debug.LogError("Target is null");
+                continue;
+            }
+
+            if(target.LowTarget == null)
+            {
+                Debug.LogError("Target low target is null");
+                continue;
+            }
+
             var targetPosition = target.LowTarget.TargetPosition;
             var targetDistance = Vector3.Distance(_camera.transform.position, targetPosition);
             if (targetDistance <= currentClosestDistance)
@@ -94,17 +128,38 @@ public class CameraManager : MonoBehaviour
 
         var duration = CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint);
 
+        bool playerTargetIsFound = false;
+        bool segmentTargetIsFound = false;
+
+        for(int i = 0; i < _camera.CameraTargets.Count; i++)
+        {
+            var target = _camera.CameraTargets[i];
+
+            if (!playerTargetIsFound && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
+            {
+                playerTargetIsFound = true;
+                continue;
+            }
+
+            if(target == _currentTarget.LowTarget)
+            {
+                segmentTargetIsFound = true;
+                continue;
+            }
+
+            _camera.RemoveCameraTarget(target, duration);
+        }
+
         foreach (var target in _nextCameraTargets)
         {
-            if(_camera.CameraTargets.Contains(target.LowTarget))
+            if(target.LowTarget == null)
             {
-                _camera.RemoveCameraTarget(target.LowTarget.TargetTransform, duration);
+                continue;
             }
-            else
-            {
-                _camera.AddCameraTarget(target.LowTarget, duration);
-            }                       
+            
+            _camera.AddCameraTarget(target.LowTarget, duration);
         }
+
     }
 
     private void OnSwitchPlayerDirection(IPlayer player)
@@ -142,9 +197,21 @@ public class CameraManager : MonoBehaviour
         _doUpdate = true;
     }
 
-    private void GoToStartPosition(Level level, PlayerRecord _)
+    private void GoToStartPosition(Level level, PlayerRecord _, ICameraTargetable startTarget)
     {
         _camera.MoveCameraInstantlyToPosition(level.StartPoint);
+        SetFirstTarget(startTarget);
+    }
+
+    private void SetFirstTarget(ICameraTargetable startTarget)
+    {
+        if (startTarget == null)
+        {
+            Debug.LogError("Start target is null");
+            return;
+        }
+        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.LowTarget, CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint));
+        UpdateCurrentTarget(startTarget.LinkedCameraTarget);
     }
 
     private void TurnOnDuration()

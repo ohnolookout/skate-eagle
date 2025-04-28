@@ -218,6 +218,11 @@ public static class SerializeLevelUtility
                 segment.PreviousSegment.NextSegment = segment;
             }
             ground.SegmentList.Add(segment);
+
+            if(segment.IsStart)
+            {
+                groundManager.StartTarget = segment;
+            }
         }
 
         return ground;
@@ -251,12 +256,6 @@ public static class SerializeLevelUtility
 
         //Camera targets
         segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
-        if(segment.LinkedCameraTarget == null)
-        {
-            segment.LinkedCameraTarget = new();
-        }
-        //Debug.Log("Deserializing segment " + segment.gameObject.name + " with serialized location " + string.Join(",", segment.LinkedCameraTarget.SerializedLocation));
-        //Debug.Log("Segment has " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
 
     }
 

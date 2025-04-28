@@ -7,15 +7,29 @@ namespace Com.LuisPedroFonseca.ProCamera2D
     public class CameraTarget
     {
         public Transform TargetTransform;
-
-        public float TargetInfluence
+        public float CurrentInfluence
         {
             set 
             { 
+                CurrentInfluenceH = value;
+                CurrentInfluenceV = value;
+            }
+        }
+
+        public float TargetInfluence
+        {
+            set
+            {
                 TargetInfluenceH = value;
                 TargetInfluenceV = value;
             }
         }
+
+        [RangeAttribute(0f, 1f)]
+        public float CurrentInfluenceH = 1f;
+
+        [RangeAttribute(0f, 1f)]
+        public float CurrentInfluenceV = 1f;
 
         [RangeAttribute(0f, 1f)]
         public float TargetInfluenceH = 1f;
@@ -30,11 +44,13 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             get
             {
                 if (TargetTransform != null)
-                    return _targetPosition = TargetTransform.position;
+                    return SerializedPosition = TargetTransform.position;
                 else
-                    return _targetPosition;
+                    return SerializedPosition;
             }
         }
-        Vector3 _targetPosition;
+        public Vector3 SerializedPosition;
+
+        public bool RemovalPending = false;
     }
 }

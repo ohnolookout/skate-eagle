@@ -207,7 +207,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                             var newCameraTarget = new CameraTarget
                             {
                                 TargetTransform = ((GameObject)dragged_object).transform,
-                                TargetInfluence = 1f
+                                CurrentInfluence = 1f
                             };
 							
                             proCamera2DRails.CameraTargets.Add(newCameraTarget);

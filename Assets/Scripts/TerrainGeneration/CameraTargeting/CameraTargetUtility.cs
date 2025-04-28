@@ -55,6 +55,7 @@ public static class CameraTargetUtility
         return new()
         {
             TargetTransform = targetTransform,
+            SerializedPosition = targetTransform.position,
             TargetInfluenceH = InfluenceDict[type].x,
             TargetInfluenceV = InfluenceDict[type].y,
             TargetOffset = OffsetDict[type]

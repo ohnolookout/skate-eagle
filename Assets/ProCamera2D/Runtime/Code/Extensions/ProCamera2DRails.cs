@@ -85,7 +85,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 {
                     case FollowMode.HorizontalAxis:
                         pos = VectorHVD(
-                            Vector3H(CameraTargets[i].TargetPosition) * CameraTargets[i].TargetInfluenceH, 
+                            Vector3H(CameraTargets[i].TargetPosition) * CameraTargets[i].CurrentInfluenceH, 
                             Vector3V(ProCamera2D.LocalPosition), 
                             0);
                         break;
@@ -93,14 +93,14 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                     case FollowMode.VerticalAxis:
                         pos = VectorHVD(
                             Vector3H(ProCamera2D.LocalPosition), 
-                            Vector3V(CameraTargets[i].TargetPosition) * CameraTargets[i].TargetInfluenceV, 
+                            Vector3V(CameraTargets[i].TargetPosition) * CameraTargets[i].CurrentInfluenceV, 
                             0);
                         break;
 
                     case FollowMode.BothAxis:
                         pos = VectorHVD(
-                            Vector3H(CameraTargets[i].TargetPosition) * CameraTargets[i].TargetInfluenceH, 
-                            Vector3V(CameraTargets[i].TargetPosition) * CameraTargets[i].TargetInfluenceV,
+                            Vector3H(CameraTargets[i].TargetPosition) * CameraTargets[i].CurrentInfluenceH, 
+                            Vector3V(CameraTargets[i].TargetPosition) * CameraTargets[i].CurrentInfluenceV,
                             0);
                         break;
                 }
@@ -122,8 +122,8 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             var newCameraTarget = new CameraTarget()
             {
                 TargetTransform = targetTransform,
-                TargetInfluenceH = targetInfluenceH,
-                TargetInfluenceV = targetInfluenceV,
+                CurrentInfluenceH = targetInfluenceH,
+                CurrentInfluenceV = targetInfluenceV,
                 TargetOffset = targetOffset
             };
 
@@ -179,7 +179,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             for (int i = 0; i < _cameraTargetsOnRails.Count; i++)
             {
                 ProCamera2D.RemoveCameraTarget(_cameraTargetsOnRails[CameraTargets[i]], transitionDuration);
-                _tempCameraTargets.Add(ProCamera2D.AddCameraTarget(CameraTargets[i].TargetTransform, CameraTargets[i].TargetInfluenceH, CameraTargets[i].TargetInfluenceV, transitionDuration, CameraTargets[i].TargetOffset));
+                _tempCameraTargets.Add(ProCamera2D.AddCameraTarget(CameraTargets[i].TargetTransform, CameraTargets[i].CurrentInfluenceH, CameraTargets[i].CurrentInfluenceV, transitionDuration, CameraTargets[i].TargetOffset));
             }
         }
 

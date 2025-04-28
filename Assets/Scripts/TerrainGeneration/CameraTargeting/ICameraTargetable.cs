@@ -23,6 +23,7 @@ public class LinkedCameraTarget
     public CameraTarget HighTarget { get; set; }
     public List<LinkedCameraTarget> LeftTargets { get; set; } = new();
     public List<LinkedCameraTarget> RightTargets { get; set; } = new();
+    public CameraTargetType TargetType { get; set; }
     public int[] SerializedLocation { get; set; }
 
     public LinkedCameraTarget()

@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private GameManager _gameManager;
     private Player _player;
     private Transform _playerTransform;
-    public static Action<Level, PlayerRecord> OnLanding { get; set; }
+    public static Action<Level, PlayerRecord, ICameraTargetable> OnLanding { get; set; }
     public static Action OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
     public static Action OnAttempt { get; set; }
@@ -66,7 +66,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void InitializeLevel()
     {
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord);
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartTarget);
 
         _groundManager.FinishLine.DoFinish += CrossFinish;
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);

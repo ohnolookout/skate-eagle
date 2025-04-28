@@ -212,7 +212,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             // Remove empty targets
             for (int i = 0; i < CameraTargets.Count; i++)
             {
-                if (CameraTargets[i].TargetTransform == null)
+                if (CameraTargets[i].TargetPosition == null)
                 {
                     CameraTargets.RemoveAt(i);
                 }
@@ -333,9 +333,12 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
             if (duration > 0f)
             {
-                newCameraTarget.TargetInfluence = 0f;
+                newCameraTarget.CurrentInfluence = 0f;
                 StartCoroutine(AdjustTargetInfluenceRoutine(newCameraTarget, targetInfluenceH, targetInfluenceV, duration));
             }
+
+            newCameraTarget.CurrentInfluenceH = targetInfluenceH;
+            newCameraTarget.CurrentInfluenceV = targetInfluenceV;
 
             return newCameraTarget;
         }
@@ -344,38 +347,22 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
         public CameraTarget AddCameraTarget(CameraTarget cameraTarget, float duration = 0f)
         {
+            cameraTarget.RemovalPending = false;
             CameraTargets.Add(cameraTarget);
             var influenceH = cameraTarget.TargetInfluenceH;
             var influenceV = cameraTarget.TargetInfluenceV;
+
             if (duration > 0f)
             {
-                cameraTarget.TargetInfluence = 0f;
+                cameraTarget.CurrentInfluence = 0f;
                 StartCoroutine(AdjustTargetInfluenceRoutine(cameraTarget, influenceH, influenceV, duration));
             }
 
+            cameraTarget.CurrentInfluenceH = influenceH;
+            cameraTarget.CurrentInfluenceV = influenceV;
+
             return cameraTarget;
         }
-
-        /// <summary>Add multiple targets for the camera to follow.</summary>
-        /// <param name="targetsTransforms">An array or list with the new targets</param>
-        /// <param name="targetsInfluenceH">The influence the targets horizontal position should have when calculating the average position of all the targets</param>
-        /// <param name="targetsInfluenceV">The influence the targets vertical position should have when calculating the average position of all the targets</param>
-        /// <param name="duration">The time it takes for the targets to reach their influence. Use for a more progressive transition.</param>
-        /// <param name="targetOffset">A vector that offsets the target position that the camera will follow</param>
-        public void AddCameraTargets(IList<Transform> targetsTransforms, float targetsInfluenceH = 1f, float targetsInfluenceV = 1f, float duration = 0f, Vector2 targetOffset = default(Vector2))
-        {
-            for (int i = 0; i < targetsTransforms.Count; i++)
-            {
-                AddCameraTarget(targetsTransforms[i], targetsInfluenceH, targetsInfluenceV, duration, targetOffset);
-            }
-        }
-
-		/// <summary>Add multiple targets for the camera to follow.</summary>
-		/// <param name="cameraTargets">An array or list with the new targets</param>
-		public void AddCameraTargets(IList<CameraTarget> cameraTargets)
-		{
-			CameraTargets.AddRange(cameraTargets);
-		}
 
         /// <summary>Gets the corresponding CameraTarget from an object's transform.</summary>
         /// <param name="targetTransform">The Transform of the target</param>
@@ -399,6 +386,25 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             for (int i = 0; i < CameraTargets.Count; i++)
             {
                 if (CameraTargets[i].TargetTransform.GetInstanceID() == targetTransform.GetInstanceID())
+                {
+                    if (duration > 0)
+                    {
+                        StartCoroutine(AdjustTargetInfluenceRoutine(CameraTargets[i], 0, 0, duration, true));
+                    }
+                    else
+                        CameraTargets.Remove(CameraTargets[i]);
+                }
+            }
+        }
+        
+        /// <summary>Remove a target from the camera.</summary>
+        /// <param name="targetTransform">The Transform of the target</param>
+        /// <param name="duration">The time it takes for this target to reach a zero influence. Use for a more progressive transition.</param>
+        public void RemoveCameraTarget(CameraTarget target, float duration = 0f)
+        {
+            for (int i = 0; i < CameraTargets.Count; i++)
+            {
+                if (CameraTargets[i] == target)
                 {
                     if (duration > 0)
                     {
@@ -438,8 +444,8 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 return StartCoroutine(AdjustTargetInfluenceRoutine(cameraTarget, targetInfluenceH, targetInfluenceV, duration));
             else
             {
-                cameraTarget.TargetInfluenceH = targetInfluenceH;
-                cameraTarget.TargetInfluenceV = targetInfluenceV;
+                cameraTarget.CurrentInfluenceH = targetInfluenceH;
+                cameraTarget.CurrentInfluenceV = targetInfluenceV;
 
                 return null;
             }
@@ -827,22 +833,23 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             var totalAccountableTargetsV = 0;
             for (int i = 0; i < targets.Count; i++)
             {
-                if (targets[i] == null || targets[i].TargetTransform == null)
+                if (targets[i] == null || targets[i].TargetPosition == null)
                 {
+                    Debug.LogWarning("Camera target " + i + " is null or has no target position. Removing it from the list.");
                     targets.RemoveAt(i);
                     continue;
                 }
 
-                midPointH += (Vector3H(targets[i].TargetPosition) + targets[i].TargetOffset.x) * targets[i].TargetInfluenceH;
-                midPointV += (Vector3V(targets[i].TargetPosition) + targets[i].TargetOffset.y) * targets[i].TargetInfluenceV;
+                midPointH += (Vector3H(targets[i].TargetPosition) + targets[i].TargetOffset.x) * targets[i].CurrentInfluenceH;
+                midPointV += (Vector3V(targets[i].TargetPosition) + targets[i].TargetOffset.y) * targets[i].CurrentInfluenceV;
 
-                totalInfluencesH += targets[i].TargetInfluenceH;
-                totalInfluencesV += targets[i].TargetInfluenceV;
+                totalInfluencesH += targets[i].CurrentInfluenceH;
+                totalInfluencesV += targets[i].CurrentInfluenceV;
 
-                if (targets[i].TargetInfluenceH > 0)
+                if (targets[i].CurrentInfluenceH > 0)
                     totalAccountableTargetsH++;
 
-                if (targets[i].TargetInfluenceV > 0)
+                if (targets[i].CurrentInfluenceV > 0)
                     totalAccountableTargetsV++;
             }
 
@@ -887,21 +894,40 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
         IEnumerator AdjustTargetInfluenceRoutine(CameraTarget cameraTarget, float influenceH, float influenceV, float duration, bool removeIfZeroInfluence = false)
         {
-            var startInfluenceH = cameraTarget.TargetInfluenceH;
-            var startInfluenceV = cameraTarget.TargetInfluenceV;
+            cameraTarget.RemovalPending = influenceH == 0 && influenceV == 0 && removeIfZeroInfluence;
+            var doCheckForRemoveCancel = cameraTarget.RemovalPending = true;
+
+            var startInfluenceH = cameraTarget.CurrentInfluenceH;
+            var startInfluenceV = cameraTarget.CurrentInfluenceV;            
+            Debug.Log("Adjusting target values with start influences of " + startInfluenceH + " and " + startInfluenceV);
+            Debug.Log("Target values of " + influenceH + " and " + influenceV);
 
             var t = 0f;
             while (t <= 1.0f)
             {
+                if(!cameraTarget.RemovalPending && doCheckForRemoveCancel)
+                {
+                    //Reset to original values if target was fading to zero
+                    cameraTarget.CurrentInfluenceH = startInfluenceH;
+                    cameraTarget.CurrentInfluenceV = startInfluenceV;
+                    Debug.Log("Remove camera target canceled");
+                    yield break;
+                }
+
                 t += DeltaTime / duration;
-                cameraTarget.TargetInfluenceH = Utils.EaseFromTo(startInfluenceH, influenceH, t, EaseType.Linear);
-                cameraTarget.TargetInfluenceV = Utils.EaseFromTo(startInfluenceV, influenceV, t, EaseType.Linear);
+                cameraTarget.CurrentInfluenceH = Utils.EaseFromTo(startInfluenceH, influenceH, t, EaseType.Linear);
+                cameraTarget.CurrentInfluenceV = Utils.EaseFromTo(startInfluenceV, influenceV, t, EaseType.Linear);
 
                 yield return GetYield();
             }
 
-            if (removeIfZeroInfluence && cameraTarget.TargetInfluenceH <= 0 && cameraTarget.TargetInfluenceV <= 0)
+            if (cameraTarget.RemovalPending && removeIfZeroInfluence && cameraTarget.CurrentInfluenceH <= 0 && cameraTarget.CurrentInfluenceV <= 0)
+            {
+                //Reset to original values if target faded to zero
+                cameraTarget.CurrentInfluenceH = startInfluenceH;
+                cameraTarget.CurrentInfluenceV = startInfluenceV;
                 CameraTargets.Remove(cameraTarget);
+            }
         }
 
         IEnumerator UpdateScreenSizeRoutine(float finalSize, float duration, EaseType easeType)

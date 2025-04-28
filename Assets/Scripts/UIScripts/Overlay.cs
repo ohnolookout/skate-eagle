@@ -85,7 +85,7 @@ public class Overlay : MonoBehaviour
         _finishScreen.ActivateDisplay(true);
     }
 
-    public void ActivateLandingScreen(Level level, PlayerRecord playerRecord)
+    public void ActivateLandingScreen(Level level, PlayerRecord playerRecord, ICameraTargetable _)
     {
         _landingScreen.GenerateLanding(level, playerRecord);
         _landingScreen.ActivateDisplay(true);
