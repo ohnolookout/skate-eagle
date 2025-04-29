@@ -256,7 +256,6 @@ public static class SerializeLevelUtility
 
         //Camera targets
         segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
-        Debug.Log("Deserializing segment with " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
 
     }
 
@@ -297,7 +296,6 @@ public static class SerializeLevelUtility
     private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
     {
         List<GameObject> gameObjects = new();
-        Debug.Log("Reassociating objects for " + linkedTargets.Count + " targets");
 
         foreach (var target in linkedTargets)
         {
@@ -307,12 +305,7 @@ public static class SerializeLevelUtility
             {
                 gameObjects.Add(obj);
             }
-            else
-            {
-                Debug.Log("Reassociated object is null");
-            }
         }
-        Debug.Log("Reassociating objects: Found " + gameObjects.Count + " targetable objects");
         return gameObjects;
     }
 
