@@ -349,10 +349,8 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
         public CameraTarget AddCameraTarget(CameraTarget cameraTarget, float duration = 0f)
         {
-            Debug.Log("Adding target. IsAdjusting: " + cameraTarget.IsAdjusting);
             if (cameraTarget.IsAdjusting)
             {
-                Debug.Log("Adjustment routine found: Canceling target adjustment routine...");
                 if(cameraTarget.AdjustmentCoroutine != null)
                     StopCoroutine(cameraTarget.AdjustmentCoroutine);
                 cameraTarget.IsAdjusting = false;
@@ -405,7 +403,6 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 {
                     if (CameraTargets[i].IsAdjusting)
                     {
-                        Debug.Log("Target removal triggered: Canceling target adjustment routine...");
                         if(CameraTargets[i].AdjustmentCoroutine != null)
                             StopCoroutine(CameraTargets[i].AdjustmentCoroutine);
                         CameraTargets[i].IsAdjusting = false;
@@ -432,7 +429,6 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 {
                     if(CameraTargets[i].IsAdjusting)
                     {
-                        Debug.Log("Target removal triggered: Canceling target adjustment routine...");
                         if (CameraTargets[i].AdjustmentCoroutine != null)
                             StopCoroutine(CameraTargets[i].AdjustmentCoroutine);
                         CameraTargets[i].IsAdjusting = false;
@@ -926,7 +922,6 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
         IEnumerator AdjustTargetInfluenceRoutine(CameraTarget cameraTarget, float influenceH, float influenceV, float duration, bool removeIfZeroInfluence = false)
         {
-            Debug.Log("Beginning target adjustment...");
             cameraTarget.IsAdjusting = true;
             var startInfluenceH = cameraTarget.CurrentInfluenceH;
             var startInfluenceV = cameraTarget.CurrentInfluenceV;            
@@ -943,11 +938,9 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
             if (removeIfZeroInfluence && cameraTarget.CurrentInfluenceH <= 0 && cameraTarget.CurrentInfluenceV <= 0)
             {
-                Debug.Log("Removing target after delay");
                 CameraTargets.Remove(cameraTarget);
             } 
 
-            Debug.Log("Target adjustment finished");
 
             cameraTarget.IsAdjusting = false;
         }

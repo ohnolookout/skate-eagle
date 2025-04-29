@@ -144,7 +144,8 @@ public static class SerializeLevelUtility
 
     private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
     {
-        //Debug.Log("Building targetable list from " + targetObjects.Count + " objects");
+        targetObjects = targetObjects.Distinct().ToList(); //Remove duplicates
+        Debug.Log("Building targetable list from " + targetObjects.Count + " objects");
         var targetables = new List<LinkedCameraTarget>();
         for (int i = 0; i < targetObjects.Count; i++)
         {
@@ -166,7 +167,7 @@ public static class SerializeLevelUtility
             }
         }
 
-        //Debug.Log("Found " + targetables.Count + " targets");
+        Debug.Log("Found " + targetables.Count + " targets");
         return targetables;
     }
 
@@ -255,6 +256,7 @@ public static class SerializeLevelUtility
 
         //Camera targets
         segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
+        Debug.Log("Deserializing segment with " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
 
     }
 
@@ -295,18 +297,22 @@ public static class SerializeLevelUtility
     private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
     {
         List<GameObject> gameObjects = new();
-        //Debug.Log("Reassociating objects for " + linkedTargets.Count + " targets");
+        Debug.Log("Reassociating objects for " + linkedTargets.Count + " targets");
 
         foreach (var target in linkedTargets)
         {
             var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
 
-            if(obj != null)
+            if (obj != null)
             {
                 gameObjects.Add(obj);
             }
+            else
+            {
+                Debug.Log("Reassociated object is null");
+            }
         }
-        //Debug.Log("Reassociating objects: Found " + gameObjects.Count + " targetable objects");
+        Debug.Log("Reassociating objects: Found " + gameObjects.Count + " targetable objects");
         return gameObjects;
     }
 

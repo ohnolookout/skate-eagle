@@ -19,12 +19,7 @@ public interface ICameraTargetable
 [Serializable]
 public class LinkedCameraTarget
 {
-    public CameraTarget LowTarget { get => _lowTarget; set 
-        { 
-            Debug.Log("Setting low target to: " + value);
-            _lowTarget = value; 
-        } 
-    }
+    public CameraTarget LowTarget { get => _lowTarget; set => _lowTarget = value; } 
     public CameraTarget HighTarget { get; set; }
     public List<LinkedCameraTarget> LeftTargets { get; set; } = new();
     public List<LinkedCameraTarget> RightTargets { get; set; } = new();
