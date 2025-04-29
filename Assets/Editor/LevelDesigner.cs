@@ -474,6 +474,7 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
+        _groundEditor.SetStartPoint(_groundManager.StartSegment, 1);
         _groundEditor.SetFinishLine(_groundManager.FinishSegment);
         return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
             cameraStartPosition, killPlaneY, _groundManager.FinishLine);
