@@ -15,7 +15,6 @@ public class Level
     [SerializeField] private List<SerializedGround> _serializedGrounds;
     [SerializeField] private string _leaderboardKey = "None";
     [SerializeField] private Vector2 _startPoint;
-    [SerializeField] private Vector2 _finishPoint;
     [SerializeField] private float _killPlaneY;
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
     [SerializeField] private Vector2[] _finishLineParameters;
@@ -34,14 +33,13 @@ public class Level
     public Vector2[] FinishLineParameters => _finishLineParameters;
     public bool BackstopIsActive => _backstopIsActive;
 
-    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 finishPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null)
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null)
     {
         _name = name;
         _medalTimes = medalTimes;
         _serializedGrounds = SerializeLevelUtility.SerializeGroundList(grounds);
         _leaderboardKey = _name + "_leaderboard";
         _startPoint = startPoint;
-        _finishPoint = finishPoint;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = killPlaneY;
         _finishLineParameters = SerializeLevelUtility.SerializeFinishLine(finishLine);

@@ -66,7 +66,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void InitializeLevel()
     {
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartTarget);
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
 
         _groundManager.FinishLine.DoFinish += CrossFinish;
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);

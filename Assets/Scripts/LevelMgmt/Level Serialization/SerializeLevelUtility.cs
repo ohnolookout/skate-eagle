@@ -120,6 +120,7 @@ public static class SerializeLevelUtility
     {
         if(finishLine == null)
         {
+            Debug.Log("Finish line is null! Idiot!");
             return null;
         }
 
@@ -145,7 +146,6 @@ public static class SerializeLevelUtility
     private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
     {
         targetObjects = targetObjects.Distinct().ToList(); //Remove duplicates
-        Debug.Log("Building targetable list from " + targetObjects.Count + " objects");
         var targetables = new List<LinkedCameraTarget>();
         for (int i = 0; i < targetObjects.Count; i++)
         {
@@ -167,7 +167,6 @@ public static class SerializeLevelUtility
             }
         }
 
-        Debug.Log("Found " + targetables.Count + " targets");
         return targetables;
     }
 
@@ -221,7 +220,12 @@ public static class SerializeLevelUtility
 
             if(segment.IsStart)
             {
-                groundManager.StartTarget = segment;
+                groundManager.StartSegment = segment;
+            }
+
+            if (segment.IsFinish)
+            {
+                groundManager.FinishSegment = segment;
             }
         }
 
@@ -280,7 +284,6 @@ public static class SerializeLevelUtility
     {
         //Iterate through all objects of groundManager and relink gameObjects in left and right target objects
         //by using indices in serialized left and right targets
-        //ONLY RUN IF IN EDIT MODE, don't need actual gameobjects in play mode because object lists will not be edited
 
         if (targetable == null)
         {

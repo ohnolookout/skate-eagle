@@ -12,7 +12,6 @@ public class GroundEditManager : MonoBehaviour
     private GroundManager _groundManager;
     private GroundSpawner _groundSpawner;
     public GameObject startPoint;
-    public GameObject finishPoint;
     private Vector2 _defaultStartTang = new(1, 1);
 
     #region Monobehaviors
@@ -40,11 +39,6 @@ public class GroundEditManager : MonoBehaviour
         {
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(startPoint.transform.position, 2f);
-        }
-        if (finishPoint != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(finishPoint.transform.position, 2f);
         }
     }
     #endregion
@@ -252,7 +246,7 @@ public class GroundEditManager : MonoBehaviour
 
         segment.Curve.UpdateCurveSections(startTang); 
         
-        if ((doSetPrevSeg && segment.PreviousSegment != null) || segment.Curve.CurveSections[0].Type == CurveDirection.Flat)
+        if (segment.PreviousSegment != null && (doSetPrevSeg || segment.Curve.CurveSections[0].Type == CurveDirection.Flat))
         {
             segment.PreviousSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
             segment.PreviousSegment.Curve.UpdateCurveSections();
@@ -295,6 +289,12 @@ public class GroundEditManager : MonoBehaviour
 
     public void SetFinishLine(GroundSegment segment)
     {
+        if(segment == null)
+        {
+            Debug.Log("SetFinishLine: Segment is null");
+            return;
+        }
+
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
         segment.IsFinish = true;
         segment.SetLowPoint(2);

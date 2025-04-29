@@ -16,8 +16,6 @@ public class LevelDesigner : EditorWindow
     private SerializedProperty _serializedCurve;
     private SerializedProperty _doCameraTarget;
     private GroundSegment _segment;
-    private GroundSegment _finishSegment;
-    private GroundSegment _startSegment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
     private Vector2 _scrollPosition;
@@ -200,12 +198,12 @@ public class LevelDesigner : EditorWindow
         {
             if (_ground.LastSegment.IsFinish)
             {
-                _finishSegment = null;
+                _groundManager.FinishSegment = null;
             }
 
             if(_ground.LastSegment.IsStart)
             {
-                _startSegment = null;
+                _groundManager.StartSegment = null;
             }
 
             _groundEditor.RemoveSegment(_ground);
@@ -239,12 +237,12 @@ public class LevelDesigner : EditorWindow
             Selection.activeGameObject = segment.gameObject;
 
             //Remove old start segment
-            if(_startSegment != null && _startSegment != segment)
+            if(_groundManager.StartSegment != null && _groundManager.StartSegment != segment)
             {
-                _startSegment.IsStart = false;
+                _groundManager.StartSegment.IsStart = false;
             }
 
-            _startSegment = segment;
+            _groundManager.StartSegment = segment;
 
             _groundEditor.SetStartPoint(segment, 1);
 
@@ -261,12 +259,12 @@ public class LevelDesigner : EditorWindow
             var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
             Selection.activeGameObject = segment.gameObject;
             
-            if(_finishSegment != null && _finishSegment != segment)
+            if(_groundManager.FinishSegment != null && _groundManager.FinishSegment != segment)
             {
-                _finishSegment.IsFinish = false;
+                _groundManager.FinishSegment.IsFinish = false;
             }
 
-            _finishSegment = segment;
+            _groundManager.FinishSegment = segment;
 
             _groundEditor.SetFinishLine(segment);
             
@@ -325,11 +323,11 @@ public class LevelDesigner : EditorWindow
 
             if(segment.IsFinish)
             {
-                _finishSegment = null;
+                _groundManager.FinishSegment = null;
             }
             if (segment.IsStart)
             {
-                _startSegment = null;
+                _groundManager.StartSegment = null;
             }
 
             _tabIndex = 1;       
@@ -429,9 +427,7 @@ public class LevelDesigner : EditorWindow
         
         if(_levelDB is null)
         {
-            Debug.Log("No level database found. Creating new database");
-            _levelDB = CreateInstance<LevelDatabase>();
-            AssetDatabase.CreateAsset(_levelDB, path);
+            Debug.Log("No level database found at " + path);
         } else
         {
             Debug.Log("Level Database loaded with " + _levelDB.LevelDictionary.Count + " levels.");
@@ -478,9 +474,9 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
-        var finishLine = _finishSegment != null ? _groundManager.FinishLine : null;
+        _groundEditor.SetFinishLine(_groundManager.FinishSegment);
         return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
-            _groundEditor.finishPoint.transform.position, cameraStartPosition, killPlaneY, finishLine);
+            cameraStartPosition, killPlaneY, _groundManager.FinishLine);
     }
     public void LoadLevelByName(string levelName)
     {
@@ -505,7 +501,6 @@ public class LevelDesigner : EditorWindow
         LoadMedalTimes(levelToLoad.MedalTimes);
 
         _groundEditor.startPoint.transform.position = levelToLoad.StartPoint;
-        _groundEditor.finishPoint.transform.position = levelToLoad.FinishPoint;
         cameraStartPosition = levelToLoad.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(levelToLoad, _groundManager);
