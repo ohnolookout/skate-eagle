@@ -16,22 +16,4 @@ public interface ICameraTargetable
     bool DoTarget { get; set; }
 }
 
-[Serializable]
-public class LinkedCameraTarget
-{
-    public CameraTarget LowTarget { get => _lowTarget; set => _lowTarget = value; } 
-    public CameraTarget HighTarget { get; set; }
-    public List<LinkedCameraTarget> LeftTargets { get; set; } = new();
-    public List<LinkedCameraTarget> RightTargets { get; set; } = new();
-    public CameraTargetType TargetType { get; set; }
-    public int[] SerializedLocation { get; set; }
-    [SerializeField] private CameraTarget _lowTarget;
-    public LinkedCameraTarget()
-    {
-        LeftTargets = new();
-        RightTargets = new();
-        SerializedLocation = new int[0];
-    }
 
-
-}

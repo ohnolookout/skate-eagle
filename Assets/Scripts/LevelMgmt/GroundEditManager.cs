@@ -12,7 +12,6 @@ public class GroundEditManager : MonoBehaviour
     private GroundManager _groundManager;
     private GroundSpawner _groundSpawner;
     public GameObject startPoint;
-    private Vector2 _defaultStartTang = new(1, 1);
 
     #region Monobehaviors
     private void Awake()
@@ -22,7 +21,7 @@ public class GroundEditManager : MonoBehaviour
 
         var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
         var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
-        if (level != null)
+        if (level != null && Application.isPlaying)
         {
             SerializeLevelUtility.DeserializeLevel(level, _groundManager);
         }
@@ -46,23 +45,32 @@ public class GroundEditManager : MonoBehaviour
     #region Add
     public Ground AddGround()
     {
-        return _groundSpawner.AddGround();
+        var ground = _groundSpawner.AddGround();
+
+        ground.gameObject.name = "Ground " + (_groundManager.groundContainer.transform.childCount - 1);
+
+        return ground;
     }
     public GroundSegment AddSegment(Ground ground)
     {
         var prevTang = ground.LastSegment?.Curve.EndPoint.RightTangent ?? null;
-        return _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
+        var segment = _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
+        segment.gameObject.name = SegmentName(segment);
+        return segment;
     }
 
     public GroundSegment AddSegment(Ground ground, Curve curve)
     {
-        return _groundSpawner.AddSegment(ground, curve);
+        var segment = _groundSpawner.AddSegment(ground, curve);
+        segment.gameObject.name = SegmentName(segment);
+        return segment;
     }
 
     public GroundSegment AddSegmentToFront(Ground ground, Curve curve)
     {
         var segment = InsertSegment(ground, 0, curve);
         ground.transform.position -= curve.XYDelta;
+        segment.gameObject.name = SegmentName(segment);
         return segment;
     }
 
@@ -114,13 +122,18 @@ public class GroundEditManager : MonoBehaviour
         List<StandardCurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
         Curve newCurve = new(curveSections);
         var segIndex = ground.SegmentList.IndexOf(segment);
-
+        GroundSegment newSeg;
         if (segIndex >= ground.SegmentList.Count - 1)
         {
-            return _groundSpawner.AddSegment(ground, newCurve);
+            newSeg = _groundSpawner.AddSegment(ground, newCurve);
         }
+        else 
+        {
+            newSeg = InsertSegment(ground, segIndex, newCurve);
+        }
+        newSeg.gameObject.name = SegmentName(newSeg);
 
-        return InsertSegment(ground, segIndex, newCurve);
+        return newSeg;
     }
 
     #endregion
@@ -128,7 +141,11 @@ public class GroundEditManager : MonoBehaviour
     #region Remove
     public void RemoveGround(Ground ground)
     {
+        var index = _groundManager.Grounds.IndexOf(ground);
+        Undo.RegisterFullObjectHierarchyUndo(_groundManager, "Remove ground");
+        _groundManager.Grounds.Remove(ground);
         Undo.DestroyObjectImmediate(ground.gameObject);
+        RenameAll(index);
     }
 
     public void RemoveSegment(GroundSegment segment)
@@ -200,6 +217,8 @@ public class GroundEditManager : MonoBehaviour
 
         //Copy remaining elements of segmentList to temp list, remove from segmentList
         var remainingSegments = ground.SegmentList.GetRange(startIndex, ground.SegmentList.Count - startIndex);
+        var groundPrefix = GroundPrefix(ground);
+
 
         for (int i = startIndex; i < ground.SegmentList.Count; i++)
         {
@@ -211,7 +230,7 @@ public class GroundEditManager : MonoBehaviour
 #endif
 
             ground.SegmentList[i].gameObject.transform.position = startPosition;
-            ground.SegmentList[i].gameObject.name = "Segment " + i;
+            ground.SegmentList[i].gameObject.name = SegmentName(ground.SegmentList[i], groundPrefix);
 
             //Update curve for first segment to be recalculated and include tang from previous segment
             if (i == startIndex)
@@ -274,6 +293,32 @@ public class GroundEditManager : MonoBehaviour
         segment.Curve = CurveFactory.DefaultCurve(segment.PrevTangent);
         RefreshCurve(segment);
         RecalculateSegments(segment);
+    }
+
+    private void RenameAll(int groundIndex)
+    {
+        Debug.Log("Renaming " + groundIndex + " to " + _groundManager.Grounds.Count);
+        for (int i = groundIndex; i < _groundManager.Grounds.Count; i++)
+        {
+            var ground = _groundManager.Grounds[i];
+            ground.gameObject.name = "Ground " + i;
+            var groundPrefix = GroundPrefix(ground);
+            for (int j = 0; j < ground.SegmentList.Count; j++)
+            {
+                ground.SegmentList[j].gameObject.name = SegmentName(ground.SegmentList[j], groundPrefix);
+            }
+        }
+    }
+
+    private string GroundPrefix(Ground ground)
+    {
+        return ground.gameObject.name.Remove(1, ground.gameObject.name.Length - 2);
+    }
+
+    private string SegmentName(GroundSegment segment, string groundPrefix = null)
+    {
+        groundPrefix = groundPrefix ?? GroundPrefix(segment.parentGround);
+        return groundPrefix + " Segment " + segment.parentGround.SegmentList.IndexOf(segment);
     }
     #endregion
 

@@ -14,7 +14,8 @@ public class LevelDesigner : EditorWindow
     private GameObject _selectedObject;
     private SerializedObject _so;
     private SerializedProperty _serializedCurve;
-    private SerializedProperty _doCameraTarget;
+    private SerializedProperty _serializedLeftTargetObjects;
+    private SerializedProperty _serializedRightTargetObjects;
     private GroundSegment _segment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
@@ -284,6 +285,8 @@ public class LevelDesigner : EditorWindow
 
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedCurve, true);
+        EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
+        EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
         _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
         _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
         _segment.DoTarget = EditorGUILayout.Toggle("Do Target", _segment.DoTarget, GUILayout.ExpandWidth(false));
@@ -416,6 +419,8 @@ public class LevelDesigner : EditorWindow
     {
         _so = new(segment);
         _serializedCurve = _so.FindProperty(nameof(GroundSegment.curve));
+        _serializedLeftTargetObjects = _so.FindProperty(nameof(GroundSegment.leftTargetObjects));
+        _serializedRightTargetObjects = _so.FindProperty(nameof(GroundSegment.rightTargetObjects));
     }
     #endregion
 
@@ -474,8 +479,17 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
-        _groundEditor.SetStartPoint(_groundManager.StartSegment, 1);
-        _groundEditor.SetFinishLine(_groundManager.FinishSegment);
+        
+        if(_groundManager.StartSegment != null)
+        {
+            _groundEditor.SetStartPoint(_groundManager.StartSegment, 1);
+        }
+
+        if (_groundManager.FinishSegment != null)
+        {
+            _groundEditor.SetFinishLine(_groundManager.FinishSegment);
+        }
+
         return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
             cameraStartPosition, killPlaneY, _groundManager.FinishLine);
     }
@@ -562,7 +576,7 @@ public class LevelDesigner : EditorWindow
         {
             foreach (var segment in ground.SegmentList)
             {
-                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
+                var newY = segment.LowPoint.position.y;
                 if (newY < lowY)
                 {
                     lowY = newY;

@@ -120,7 +120,6 @@ public static class SerializeLevelUtility
     {
         if(finishLine == null)
         {
-            Debug.Log("Finish line is null! Idiot!");
             return null;
         }
 
@@ -228,7 +227,8 @@ public static class SerializeLevelUtility
                 groundManager.FinishSegment = segment;
             }
         }
-
+        ground.SegmentList[0].gameObject.SetActive(false);
+        ground.SegmentList[0].gameObject.SetActive(true);
         return ground;
     }
 

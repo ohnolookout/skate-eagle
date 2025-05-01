@@ -13,13 +13,20 @@ public class CameraManager : MonoBehaviour
     public bool doLogPosition = false;
     private bool _doDuration = false;
     private bool _doUpdate = true;
-    private List<LinkedCameraTarget> _nextCameraTargets = new();
+    private List<LinkedCameraTarget> _targetsToCheck = new();
+    private List<LinkedCameraTarget> _targetsToTrack = new();
     private IPlayer _player;
+    private Transform _playerTransform;
+    private LayerMask _groundLayerMask;
+    private const float _groundCheckRadius = 100f;
+    private int _frameCount = 0;
     void Awake()
     {
         _camera = ProCamera2D.Instance;
         _forwardFocus = _camera.GetComponent<ProCamera2DForwardFocus>();
         _transitionSmoothness = _forwardFocus.TransitionSmoothness;
+        _groundLayerMask = LayerMask.GetMask("Ground");
+
         LevelManager.OnPlayerCreated += AddPlayerTarget;
         LevelManager.OnLanding += GoToStartPosition;
         LevelManager.OnAttempt += TurnOnDuration;
@@ -49,13 +56,13 @@ public class CameraManager : MonoBehaviour
             return;
         }
         Gizmos.color = Color.red;
-        foreach(var target in _nextCameraTargets)
+        foreach(var target in _targetsToCheck)
         {
             if (target == null || target.LowTarget == null)
             {
                 continue;
             }
-            Gizmos.DrawSphere(target.LowTarget.TargetPosition, 1f);
+            Gizmos.DrawSphere(target.LowTarget.TargetPosition, 2f);
         }
 
         Gizmos.color = Color.blue;
@@ -64,45 +71,37 @@ public class CameraManager : MonoBehaviour
         {
             Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 1f);
         }
+
+        Gizmos.DrawWireSphere(_camera.transform.position, _groundCheckRadius);
     }
 
     private void AddPlayerTarget(IPlayer player)
     {
         _player = player;
+        _playerTransform = player.Transform;
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
         _camera.AddCameraTarget(player.CameraTarget, CameraTargetUtility.GetDuration(CameraTargetType.Player));
     }
 
     private void CheckCurrentTarget()
     {
-        if (_currentTarget == null || _currentTarget.LowTarget == null)
+        if (_frameCount % 20 == 0)
         {
-            return;
+            RefreshOverlapSphere();
+            _frameCount = 0;
         }
 
+        _frameCount++;
+
+        var currentClosestDistance = float.PositiveInfinity;
         var currentTarget = _currentTarget;
-        var currentClosestPosition = _currentTarget.LowTarget.TargetPosition;
-        var currentClosestDistance = Vector3.Distance(_camera.transform.position, currentClosestPosition);
 
-        for(int i = 0; i < _nextCameraTargets.Count; i++) {
-            var target = _nextCameraTargets[i];
-            if (target == null)
+        foreach (var target in _targetsToCheck)
+        {
+            var sqDistance = (target.LowTarget.TargetPosition - _camera.transform.position).sqrMagnitude;
+            if (sqDistance < currentClosestDistance)
             {
-                Debug.LogError("Target is null");
-                continue;
-            }
-
-            if(target.LowTarget == null)
-            {
-                Debug.LogError("Target low target is null at index " + i);
-                continue;
-            }
-
-            var targetPosition = target.LowTarget.TargetPosition;
-            var targetDistance = Vector3.Distance(_camera.transform.position, targetPosition);
-            if (targetDistance <= currentClosestDistance)
-            {
-                targetDistance = currentClosestDistance;
+                currentClosestDistance = sqDistance;
                 currentTarget = target;
             }
         }
@@ -113,23 +112,39 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    private void RefreshOverlapSphere()
+    {
+        var colliders = Physics2D.OverlapCircleAll(_camera.transform.position, _groundCheckRadius, _groundLayerMask);
+        _targetsToCheck.Clear();
+        foreach (var collider in colliders)
+        {
+            var groundSegment = collider.GetComponentInParent<GroundSegment>();
+            if (groundSegment == null || !groundSegment.DoTarget)
+            {
+                continue;
+            }
+            _targetsToCheck.Add(groundSegment.LinkedCameraTarget);
+        }
+    }
+
     private void UpdateCurrentTarget(LinkedCameraTarget newTarget)
     {
         _currentTarget = newTarget;
 
         if (_player.FacingForward)
         {
-            _nextCameraTargets = _currentTarget.RightTargets;
+            _targetsToTrack = _currentTarget.RightTargets;
         }
         else
         {
-            _nextCameraTargets = _currentTarget.LeftTargets;
+            _targetsToTrack = _currentTarget.LeftTargets;
         }
+
+        _targetsToTrack.Add(_currentTarget);
 
         var duration = CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint);
 
         bool playerTargetIsFound = false;
-        bool segmentTargetIsFound = false;
 
         for(int i = 0; i < _camera.CameraTargets.Count; i++)
         {
@@ -141,16 +156,10 @@ public class CameraManager : MonoBehaviour
                 continue;
             }
 
-            if(!segmentTargetIsFound && target == _currentTarget.LowTarget)
-            {
-                segmentTargetIsFound = true;
-                continue;
-            }
-
             _camera.RemoveCameraTarget(target, duration);
         }
 
-        foreach (var target in _nextCameraTargets)
+        foreach (var target in _targetsToTrack)
         {
             if(target.LowTarget == null)
             {
@@ -164,15 +173,6 @@ public class CameraManager : MonoBehaviour
 
     private void OnSwitchPlayerDirection(IPlayer player)
     {
-        if (_player.FacingForward)
-        {
-            _nextCameraTargets = _currentTarget.RightTargets;
-        }
-        else
-        {
-            _nextCameraTargets = _currentTarget.LeftTargets;
-        }
-
         UpdateCurrentTarget(_currentTarget);
     }
 
@@ -195,6 +195,7 @@ public class CameraManager : MonoBehaviour
         _cameraZoom.gameObject.SetActive(true);
         _cameraZoom.ResetZoom();
         _doUpdate = true;
+        RefreshOverlapSphere();
     }
 
     private void GoToStartPosition(Level level, PlayerRecord _, ICameraTargetable startTarget)

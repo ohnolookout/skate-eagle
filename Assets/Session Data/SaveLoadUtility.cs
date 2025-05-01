@@ -32,7 +32,6 @@ public class SaveLoadUtility
 		session.SaveData.lastSaved = DateTime.Now;
 		string data = JsonConvert.SerializeObject(session.SaveData);
 		WriteToSavePath(data);
-		Debug.Log("Game data saved locally.");
 		return data;
 	}
 

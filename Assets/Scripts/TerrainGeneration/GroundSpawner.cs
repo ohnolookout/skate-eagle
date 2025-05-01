@@ -17,6 +17,7 @@ public class GroundSpawner : MonoBehaviour
     #region Add/Remove Segments
     public Ground AddGround()
     {
+        Debug.Log("Adding ground");
         var groundObj = Instantiate(_groundPrefab, _groundManager.groundContainer.transform);
         groundObj.name = "Ground " + (_groundManager.groundContainer.transform.childCount - 1);
 
@@ -30,9 +31,6 @@ public class GroundSpawner : MonoBehaviour
     //Add segment to start at last endpoint
     public GroundSegment AddSegment(Ground ground, Curve curve)
     {
-        //Debug.Log("Adding segment with curve: ");
-        //curve.LogCurvePoints();
-
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(ground, "Add Segment");

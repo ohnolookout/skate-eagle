@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3791618563265128526}
   - component: {fileID: 7359743252002306734}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3243528010552149271}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HighPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 4185817891366673309}
   - component: {fileID: 2986970068252795619}
   - component: {fileID: 1360708605129911030}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Edge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 5424034415216100495}
   - component: {fileID: 3786771108790229277}
   - component: {fileID: 1107344412609519658}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GroundSegment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -551,6 +551,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9b41a2ba9578840b40946b7c1420f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leftTargetObjects: []
+  rightTargetObjects: []
   curve:
     curveSections: []
     _sectionLengths: []
@@ -566,7 +568,6 @@ MonoBehaviour:
   _bottomCollider: {fileID: 2272586515581236096}
   _highPoint: {fileID: 6827530638482868012}
   _lowPoint: {fileID: 8388335674635242691}
-  _cameraTargets: []
   floorHeight: 100
   _isStart: 0
   _isFinish: 0
@@ -576,6 +577,29 @@ MonoBehaviour:
   parentGround: {fileID: 0}
   _previousSegment: {fileID: 0}
   _nextSegment: {fileID: 0}
+  _linkedCameraTarget:
+    LeftTargets: []
+    RightTargets: []
+    TargetType: 0
+    SerializedLocation: 
+    _lowTarget:
+      TargetTransform: {fileID: 0}
+      CurrentInfluenceH: 1
+      CurrentInfluenceV: 1
+      TargetInfluenceH: 1
+      TargetInfluenceV: 1
+      TargetOffset: {x: 0, y: 0}
+      SerializedPosition: {x: 0, y: 0, z: 0}
+      IsAdjusting: 0
+    _highTarget:
+      TargetTransform: {fileID: 0}
+      CurrentInfluenceH: 1
+      CurrentInfluenceV: 1
+      TargetInfluenceH: 1
+      TargetInfluenceV: 1
+      TargetOffset: {x: 0, y: 0}
+      SerializedPosition: {x: 0, y: 0, z: 0}
+      IsAdjusting: 0
 --- !u!1 &8388335674635242691
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,7 +609,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5288257499446572976}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LowPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

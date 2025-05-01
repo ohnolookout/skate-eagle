@@ -13,6 +13,8 @@ using static UnityEngine.Rendering.HableCurve;
 public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 {
     #region Declarations
+    public List<GameObject> leftTargetObjects;
+    public List<GameObject> rightTargetObjects;
     public Curve curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
     [SerializeField] private ShadowCaster2D _shadowCaster;
@@ -32,8 +34,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment = null;
     [SerializeField] private GroundSegment _nextSegment = null;
-    [SerializeField] private List<GameObject> _leftTargetObjects;
-    [SerializeField] private List<GameObject> _rightTargetObjects;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
     public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
@@ -61,8 +61,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
     public Transform HighPoint => _highPoint.transform;
     public Transform LowPoint => _lowPoint.transform;
-    public List<GameObject> LeftTargetObjects { get => _leftTargetObjects; set => _leftTargetObjects = value; }
-    public List<GameObject> RightTargetObjects { get => _rightTargetObjects; set => _rightTargetObjects = value; }
+    public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
+    public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     #endregion
 
