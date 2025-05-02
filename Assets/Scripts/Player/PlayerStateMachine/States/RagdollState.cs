@@ -34,7 +34,7 @@ public class RagdollState : PlayerState
     private void DirectionCheck()
     {
         bool lastDirection = _player.FacingForward;
-        _player.FacingForward = _player.RagdollBody.velocity.x >= 0;
+        _player.FacingForward = _player.RagdollBody.linearVelocity.x >= 0;
         if (_player.FacingForward != lastDirection)
         {
             _player.EventAnnouncer.InvokeAction(PlayerEvent.SwitchDirection);

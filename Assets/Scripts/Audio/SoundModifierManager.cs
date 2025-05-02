@@ -144,7 +144,7 @@ public class SoundModifierManager
 
     private static float Intensity(Rigidbody2D trackingBody, float denominator)
     {
-        return -1 + Mathf.Clamp(trackingBody.velocity.magnitude / denominator, 0, 2);
+        return -1 + Mathf.Clamp(trackingBody.linearVelocity.magnitude / denominator, 0, 2);
     }
     private float Pan(Rigidbody2D playerBody, Rigidbody2D panBody)
     {

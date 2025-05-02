@@ -27,7 +27,7 @@ public class StandbyState : PlayerState
         LevelManager.OnStandby -= DoEnterStandby;
         _player.AnimationManager.SetOnBoard(true);
         _player.NormalBody.bodyType = RigidbodyType2D.Dynamic;
-        _player.NormalBody.velocity += new Vector2(15, 0);
+        _player.NormalBody.linearVelocity += new Vector2(15, 0);
         _player.InputEvents.OnDownPress -= ExitState;
         _player.EventAnnouncer.InvokeAction(PlayerEvent.StartAttempt);
     }

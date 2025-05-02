@@ -70,13 +70,13 @@ public class PlayerAnimationManager
 
     public void UpdateSpeed()
     {
-        _animator.SetFloat("Speed", MinMaxTo01(_player.NormalBody.velocity.magnitude, _speedMin, _speedMax));
+        _animator.SetFloat("Speed", MinMaxTo01(_player.NormalBody.linearVelocity.magnitude, _speedMin, _speedMax));
     }
 
     public void UpdateAirborneSpeed()
     {
         UpdateSpeed();
-        _animator.SetFloat("YSpeed", MinMaxTo01(_player.NormalBody.velocity.y, -_ySpeedMax, _ySpeedMax));
+        _animator.SetFloat("YSpeed", MinMaxTo01(_player.NormalBody.linearVelocity.y, -_ySpeedMax, _ySpeedMax));
     }
 
     public void SetOnBoard(bool onBoard)

@@ -58,7 +58,7 @@ public class StompingState : PlayerState
     {
         if (_timer < _stallTime)
         {
-            _player.NormalBody.velocity -= new Vector2(_player.NormalBody.velocity.x * 0.1f, _player.NormalBody.velocity.y * 0.4f);
+            _player.NormalBody.linearVelocity -= new Vector2(_player.NormalBody.linearVelocity.x * 0.1f, _player.NormalBody.linearVelocity.y * 0.4f);
             _timer += Time.deltaTime;
         }
         else
@@ -71,10 +71,10 @@ public class StompingState : PlayerState
 
     private void DivePhase()
     {
-        if (_player.NormalBody.velocity.y > _player.Params.StompSpeedLimit)
+        if (_player.NormalBody.linearVelocity.y > _player.Params.StompSpeedLimit)
         {
-            _player.NormalBody.velocity -= new Vector2(0, 0.15f * Mathf.Abs(_player.NormalBody.velocity.y));
-            _player.NormalBody.velocity = new Vector2(_player.NormalBody.velocity.x, Mathf.Clamp(_player.NormalBody.velocity.y, _player.Params.StompSpeedLimit, -64));
+            _player.NormalBody.linearVelocity -= new Vector2(0, 0.15f * Mathf.Abs(_player.NormalBody.linearVelocity.y));
+            _player.NormalBody.linearVelocity = new Vector2(_player.NormalBody.linearVelocity.x, Mathf.Clamp(_player.NormalBody.linearVelocity.y, _player.Params.StompSpeedLimit, -64));
         }
         else
         {

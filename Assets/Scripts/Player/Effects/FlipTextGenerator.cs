@@ -40,7 +40,7 @@ public class FlipTextGenerator : MonoBehaviour
         flipText.transform.position = finalPosition; 
         float randomZ = UnityEngine.Random.Range(-45, 45);
         flipText.transform.eulerAngles = new Vector3(0, 0, randomZ);
-        flipText.SetText(GenerateText(), _player.NormalBody.velocity);
+        flipText.SetText(GenerateText(), _player.NormalBody.linearVelocity);
         flipText.StartLifecycle();
     }
 
@@ -56,7 +56,7 @@ public class FlipTextGenerator : MonoBehaviour
     private Vector3 GenerateLocation(IPlayer player, float scale)
     {
         float xCoord;
-        if(player.NormalBody.velocity.x >= 0)
+        if(player.NormalBody.linearVelocity.x >= 0)
         {
             xCoord = UnityEngine.Random.Range(-scale, -scale/2);
         } else

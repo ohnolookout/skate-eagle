@@ -34,9 +34,9 @@ public class JumpManager
     {
         _player.Params.JumpMultiplier = 1 - (_player.Params.JumpCount * 0.25f);
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Jump);
-        if (_player.NormalBody.velocity.y < 0)
+        if (_player.NormalBody.linearVelocity.y < 0)
         {
-            _player.NormalBody.velocity = new Vector2(_player.NormalBody.velocity.x, 0);
+            _player.NormalBody.linearVelocity = new Vector2(_player.NormalBody.linearVelocity.x, 0);
         }
         if (_player.Params.JumpCount == 0)
         {

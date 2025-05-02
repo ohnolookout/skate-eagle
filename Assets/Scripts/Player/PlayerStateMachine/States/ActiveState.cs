@@ -106,7 +106,7 @@ public class ActiveState : PlayerState
     private void DirectionCheck()
     {
         bool lastDirection = _player.FacingForward;
-        _player.FacingForward = _playerBody.velocity.x >= 0;
+        _player.FacingForward = _playerBody.linearVelocity.x >= 0;
         if (_player.FacingForward != lastDirection)
         {
             _player.SwitchDirection();

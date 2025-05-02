@@ -45,7 +45,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         InstantiatePlayer();
 
 #if UNITY_EDITOR
-        StartCoroutine(WaitForGameManagerInitializationRoutine());
+        StartCoroutine( WaitForGameManagerInitializationRoutine());
         return;
 #endif        
         InitializeLevel();
@@ -68,10 +68,18 @@ public class LevelManager : MonoBehaviour, ILevelManager
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
         OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
 
-        _groundManager.FinishLine.DoFinish += CrossFinish;
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
-        
+
+        _groundManager.FinishLine.DoFinish += CrossFinish;
+        _inputEvents.OnRestart += GoToStandby;
+    }
+
+    private void Reset()
+    {
+        InstantiatePlayer();
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
+        _groundManager.FinishLine.DoFinish += CrossFinish;
         _inputEvents.OnRestart += GoToStandby;
     }
 
@@ -152,7 +160,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         }
 
         OnRestart?.Invoke();
-        Start();
+        Reset();
     }
 
     public void CrossFinish()

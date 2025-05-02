@@ -15,6 +15,7 @@ public class CameraManager : MonoBehaviour
     private bool _doUpdate = true;
     private List<LinkedCameraTarget> _targetsToCheck = new();
     private List<LinkedCameraTarget> _targetsToTrack = new();
+    private Collider2D[] _tempColliders;
     private IPlayer _player;
     private Transform _playerTransform;
     private LayerMask _groundLayerMask;
@@ -85,7 +86,7 @@ public class CameraManager : MonoBehaviour
 
     private void CheckCurrentTarget()
     {
-        if (_frameCount % 20 == 0)
+        if (_frameCount % 10 == 0)
         {
             RefreshOverlapSphere();
             _frameCount = 0;
@@ -113,10 +114,10 @@ public class CameraManager : MonoBehaviour
     }
 
     private void RefreshOverlapSphere()
-    {
-        var colliders = Physics2D.OverlapCircleAll(_camera.transform.position, _groundCheckRadius, _groundLayerMask);
+    {        
+        _tempColliders = Physics2D.OverlapCircleAll(_camera.transform.position, _groundCheckRadius, _groundLayerMask);
         _targetsToCheck.Clear();
-        foreach (var collider in colliders)
+        foreach (var collider in _tempColliders)
         {
             var groundSegment = collider.GetComponentInParent<GroundSegment>();
             if (groundSegment == null || !groundSegment.DoTarget)
@@ -140,13 +141,13 @@ public class CameraManager : MonoBehaviour
             _targetsToTrack = _currentTarget.LeftTargets;
         }
 
-        _targetsToTrack.Add(_currentTarget);
 
         var duration = CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint);
 
         bool playerTargetIsFound = false;
+        bool currentTargetIsFound = false;
 
-        for(int i = 0; i < _camera.CameraTargets.Count; i++)
+        for (int i = 0; i < _camera.CameraTargets.Count; i++)
         {
             var target = _camera.CameraTargets[i];
 
@@ -156,7 +157,18 @@ public class CameraManager : MonoBehaviour
                 continue;
             }
 
+            if(target.TargetPosition == _currentTarget.LowTarget.TargetPosition)
+            {
+                currentTargetIsFound = true;
+                continue;
+            }
+
             _camera.RemoveCameraTarget(target, duration);
+        }
+
+        if (!currentTargetIsFound)
+        {
+            _camera.AddCameraTarget(_currentTarget.LowTarget, duration);
         }
 
         foreach (var target in _targetsToTrack)

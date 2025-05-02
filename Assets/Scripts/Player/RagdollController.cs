@@ -52,7 +52,7 @@ public class RagdollController : MonoBehaviour
         SwitchColliders(_ragdollColliders, true);
         SwitchRigidbodies(_normalRigidbodies, false, new(0, 0));
         SwitchRigidbodies(_ragdollRigidbodies, true, _player.MomentumTracker.VectorChange(TrackingType.PlayerNormal));
-        _normalRigidbodies[0].velocity = new();
+        _normalRigidbodies[0].linearVelocity = new();
         SwitchHinges(_ragDollJoints, true);
         ragdoll = true;
 
@@ -83,7 +83,7 @@ public class RagdollController : MonoBehaviour
             body.isKinematic = !isOn;
             if (isOn)
             {
-                body.velocity = _normalRigidbodies[0].velocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));
+                body.linearVelocity = _normalRigidbodies[0].linearVelocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));
             }
         }
         spine.angularVelocity = _normalRigidbodies[0].angularVelocity * 20;

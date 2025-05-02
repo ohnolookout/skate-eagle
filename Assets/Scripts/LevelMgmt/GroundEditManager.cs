@@ -16,6 +16,10 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
+        if(Application.isPlaying)
+        {
+            Destroy(this);
+        }
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
 

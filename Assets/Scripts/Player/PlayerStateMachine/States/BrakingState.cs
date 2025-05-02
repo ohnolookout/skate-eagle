@@ -23,11 +23,11 @@ public class BrakingState : PlayerState
 
     public override void FixedUpdateState()
     {
-        _playerBody.velocity -= _playerBody.velocity * 0.08f;
+        _playerBody.linearVelocity -= _playerBody.linearVelocity * 0.08f;
         CheckForDismount();
-        if (Mathf.Abs(_playerBody.velocity.x) < 1)
+        if (Mathf.Abs(_playerBody.linearVelocity.x) < 1)
         {
-            _playerBody.velocity = new Vector2(0, 0);
+            _playerBody.linearVelocity = new Vector2(0, 0);
             ChangeState(_stateFactory.GetState(PlayerStateType.Finished));
             return;
         }
@@ -37,7 +37,7 @@ public class BrakingState : PlayerState
 
     private void CheckForDismount()
     {
-        if (_playerBody.velocity.x < 10f && _onBoard)
+        if (_playerBody.linearVelocity.x < 10f && _onBoard)
         {
             _onBoard = false;
             _player.AnimationManager.SetOnBoard(false);

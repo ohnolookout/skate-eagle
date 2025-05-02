@@ -102,7 +102,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
             _collidedCategories[category].Remove(colliderName);
             return;
         }
-        TimedCollisionExit collisionExit = new(colliderName, category, Time.time, collision.otherRigidbody.velocity.magnitude);
+        TimedCollisionExit collisionExit = new(colliderName, category, Time.time, collision.otherRigidbody.linearVelocity.magnitude);
         _exitManager.AddPendingExit(collisionExit);
     }
 

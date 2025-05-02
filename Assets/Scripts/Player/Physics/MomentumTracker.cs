@@ -15,9 +15,9 @@ public class MomentumTracker
     {
         _lastVelocityDict = new();
         _bodyDict = new();
-        _lastVelocityDict[player] = player.velocity;
-        _lastVelocityDict[ragdollPlayer] = ragdollPlayer.velocity;
-        _lastVelocityDict[board] = board.velocity;
+        _lastVelocityDict[player] = player.linearVelocity;
+        _lastVelocityDict[ragdollPlayer] = ragdollPlayer.linearVelocity;
+        _lastVelocityDict[board] = board.linearVelocity;
         _bodyDict[TrackingType.PlayerNormal] = player;
         _bodyDict[TrackingType.PlayerRagdoll] = ragdollPlayer;
         _bodyDict[TrackingType.Board] = board;
@@ -31,7 +31,7 @@ public class MomentumTracker
         {
             foreach(var key in _lastVelocityDict.Keys.ToList())
             {
-                _lastVelocityDict[key] = key.velocity;
+                _lastVelocityDict[key] = key.linearVelocity;
             }
             _frameCounter = 0;
         }
@@ -45,7 +45,7 @@ public class MomentumTracker
     public Vector2 VectorChangeFromBody(Rigidbody2D inputBody, TrackingType trackingType)
     {
         Rigidbody2D trackingBody = _bodyDict[trackingType];
-        return inputBody.velocity - _lastVelocityDict[trackingBody];
+        return inputBody.linearVelocity - _lastVelocityDict[trackingBody];
     }
 
     public float ReboundMagnitude(TrackingType trackingBody)
@@ -81,11 +81,11 @@ public class MomentumTracker
     }
     public Vector2 VectorChange(Rigidbody2D body)
     {
-        return body.velocity - _lastVelocityDict[body];
+        return body.linearVelocity - _lastVelocityDict[body];
     }
 
     public Vector2 Velocity(TrackingType trackingBody)
     {
-        return _bodyDict[trackingBody].velocity;
+        return _bodyDict[trackingBody].linearVelocity;
     }
 }

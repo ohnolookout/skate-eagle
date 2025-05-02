@@ -47,7 +47,7 @@ public class CameraZoom : MonoBehaviour
         {
             PlayerZoom();
         }
-        else if (!PlayerInsideYBuffer(0.8f) && _player.NormalBody.velocityY >= 0)
+        else if (!PlayerInsideYBuffer(0.8f) && _player.NormalBody.linearVelocityY >= 0)
         {
             _doPlayerZoom = true;
             OnZoomOut?.Invoke(_camera);

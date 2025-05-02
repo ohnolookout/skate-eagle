@@ -282,7 +282,7 @@ public class PlayerAudio : MonoBehaviour
             if (!_audioManager.playingSounds.ContainsValue(_loopDict[LoopFX.Freewheel]))
             {
                 _audioManager.StopLoop(_loopDict[LoopFX.Roll]);
-                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.NormalBody.velocity.magnitude));
+                _audioManager.StartLoop(_loopDict[LoopFX.Freewheel], WheelFadeTime(player.NormalBody.linearVelocity.magnitude));
             }
         }
         else
@@ -294,7 +294,7 @@ public class PlayerAudio : MonoBehaviour
     private void Brake(IPlayer player)
     {
         _wheelsOnGround = true;
-        float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.velocity.x);
+        float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.linearVelocity.x);
         StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
         _audioManager.StartLoop(_loopDict[LoopFX.Board]);
 
