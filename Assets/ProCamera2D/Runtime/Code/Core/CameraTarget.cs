@@ -19,8 +19,8 @@ namespace Com.LuisPedroFonseca.ProCamera2D
 
         public float TargetInfluence
         {
-            set
-            {
+            set 
+            { 
                 TargetInfluenceH = value;
                 TargetInfluenceV = value;
             }
@@ -50,9 +50,12 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                     return SerializedPosition;
             }
         }
+
+        public bool IsAdjusting = false;
         public Vector3 SerializedPosition;
 
-        public IEnumerator AdjustmentCoroutine;
-        public bool IsAdjusting = false;
+        public IEnumerator AdjustmentCoroutine { get => _adjustmentCoroutine; set => _adjustmentCoroutine = value; }
+        private IEnumerator _adjustmentCoroutine;
+        Vector3 _targetPosition;
     }
 }

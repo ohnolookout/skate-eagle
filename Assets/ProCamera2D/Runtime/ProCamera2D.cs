@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using static UnityEngine.GraphicsBuffer;
 
+
 namespace Com.LuisPedroFonseca.ProCamera2D
 {
     /// <summary>
@@ -320,6 +321,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         /// <param name="targetInfluenceV">The influence this target vertical position should have when calculating the average position of all the targets</param>
         /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
         /// <param name="targetOffset">A vector that offsets the target position that the camera will follow</param>
+        
         public CameraTarget AddCameraTarget(Transform targetTransform, float targetInfluenceH = 1f, float targetInfluenceV = 1f, float duration = 0f, Vector2 targetOffset = default(Vector2))
         {
             var newCameraTarget = new CameraTarget
@@ -339,19 +341,17 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 StartCoroutine(newCameraTarget.AdjustmentCoroutine);
             }
 
-            newCameraTarget.CurrentInfluenceH = targetInfluenceH;
-            newCameraTarget.CurrentInfluenceV = targetInfluenceV;
-
             return newCameraTarget;
         }
 
         /// <summary>Add a cameratarget with duration.</summary>
         /// <param name="duration">The time it takes for this target to reach it's influence. Use for a more progressive transition.</param>
+        
         public CameraTarget AddCameraTarget(CameraTarget cameraTarget, float duration = 0f)
         {
             if (cameraTarget.IsAdjusting)
             {
-                if(cameraTarget.AdjustmentCoroutine != null)
+                if (cameraTarget.AdjustmentCoroutine != null)
                     StopCoroutine(cameraTarget.AdjustmentCoroutine);
                 cameraTarget.IsAdjusting = false;
             }
@@ -369,14 +369,21 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 cameraTarget.AdjustmentCoroutine = AdjustTargetInfluenceRoutine(cameraTarget, influenceH, influenceV, duration);
                 StartCoroutine(cameraTarget.AdjustmentCoroutine);
             }
-            else 
-            { 
+            else
+            {
                 cameraTarget.CurrentInfluenceH = influenceH;
                 cameraTarget.CurrentInfluenceV = influenceV;
             }
 
             return cameraTarget;
         }
+
+        /// <summary>Add multiple targets for the camera to follow.</summary>
+        /// <param name="cameraTargets">An array or list with the new targets</param>
+        public void AddCameraTargets(IList<CameraTarget> cameraTargets)
+		{
+			CameraTargets.AddRange(cameraTargets);
+		}
 
         /// <summary>Gets the corresponding CameraTarget from an object's transform.</summary>
         /// <param name="targetTransform">The Transform of the target</param>
@@ -417,7 +424,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                 }
             }
         }
-        
+
         /// <summary>Remove a target from the camera.</summary>
         /// <param name="targetTransform">The Transform of the target</param>
         /// <param name="duration">The time it takes for this target to reach a zero influence. Use for a more progressive transition.</param>
@@ -924,7 +931,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         {
             cameraTarget.IsAdjusting = true;
             var startInfluenceH = cameraTarget.CurrentInfluenceH;
-            var startInfluenceV = cameraTarget.CurrentInfluenceV;            
+            var startInfluenceV = cameraTarget.CurrentInfluenceV;
 
             var t = 0f;
             while (t <= 1.0f)
@@ -939,8 +946,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             if (removeIfZeroInfluence && cameraTarget.CurrentInfluenceH <= 0 && cameraTarget.CurrentInfluenceV <= 0)
             {
                 CameraTargets.Remove(cameraTarget);
-            } 
-
+            }
 
             cameraTarget.IsAdjusting = false;
         }

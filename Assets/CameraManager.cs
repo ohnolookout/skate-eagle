@@ -86,7 +86,7 @@ public class CameraManager : MonoBehaviour
 
     private void CheckCurrentTarget()
     {
-        if (_frameCount % 10 == 0)
+        if (_frameCount % 30 == 0)
         {
             RefreshOverlapSphere();
             _frameCount = 0;

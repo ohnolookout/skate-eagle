@@ -229,7 +229,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                             var newCameraTarget = new CameraTarget
                             {
                                 TargetTransform = ((GameObject)dragged_object).transform,
-                                CurrentInfluence = 1f
+                                TargetInfluence = 1f
                             };
 							
                             proCamera2D.CameraTargets.Add(newCameraTarget);
