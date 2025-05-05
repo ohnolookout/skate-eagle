@@ -71,15 +71,15 @@ public class AirborneState : PlayerState
     }
 
     private void DownPress()
-    {
-        _downPressCount++;
-        if (_downPressCount > 1)
-        {
-            ChangeState(_stateFactory.GetState(PlayerStateType.Stomping));
-        }
-        else
-        {
-            PlayerAsyncUtility.DelayedFunc(_decreaseDownPressCount, 0.25f);
-        }
+    { 
+        //_downPressCount++;
+        //if (_downPressCount > 1)
+        //{
+        //    ChangeState(_stateFactory.GetState(PlayerStateType.Stomping));
+        //}
+        //else
+        //{
+        //    PlayerAsyncUtility.DelayedFunc(_decreaseDownPressCount, 0.25f);
+        //}
     }
 }

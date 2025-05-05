@@ -2,12 +2,14 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CameraManager : MonoBehaviour
 {
     private ProCamera2D _camera;
     private ProCamera2DForwardFocus _forwardFocus;
     private LinkedCameraTarget _currentTarget;
+    private LinkedCameraTarget _rootKDTarget;
     [SerializeField] private CameraZoom _cameraZoom;
     private float _transitionSmoothness = 0.4f;
     public bool doLogPosition = false;
@@ -15,18 +17,14 @@ public class CameraManager : MonoBehaviour
     private bool _doUpdate = true;
     private List<LinkedCameraTarget> _targetsToCheck = new();
     private List<LinkedCameraTarget> _targetsToTrack = new();
-    private Collider2D[] _tempColliders;
     private IPlayer _player;
     private Transform _playerTransform;
-    private LayerMask _groundLayerMask;
-    private const float _groundCheckRadius = 100f;
     private int _frameCount = 0;
     void Awake()
     {
         _camera = ProCamera2D.Instance;
         _forwardFocus = _camera.GetComponent<ProCamera2DForwardFocus>();
         _transitionSmoothness = _forwardFocus.TransitionSmoothness;
-        _groundLayerMask = LayerMask.GetMask("Ground");
 
         LevelManager.OnPlayerCreated += AddPlayerTarget;
         LevelManager.OnLanding += GoToStartPosition;
@@ -57,7 +55,7 @@ public class CameraManager : MonoBehaviour
             return;
         }
         Gizmos.color = Color.red;
-        foreach(var target in _targetsToCheck)
+        foreach(var target in _targetsToTrack)
         {
             if (target == null || target.LowTarget == null)
             {
@@ -73,7 +71,6 @@ public class CameraManager : MonoBehaviour
             Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 1f);
         }
 
-        Gizmos.DrawWireSphere(_camera.transform.position, _groundCheckRadius);
     }
 
     private void AddPlayerTarget(IPlayer player)
@@ -86,47 +83,21 @@ public class CameraManager : MonoBehaviour
 
     private void CheckCurrentTarget()
     {
-        if (_frameCount % 30 == 0)
+
+        var closestTarget = _currentTarget;
+        if (_frameCount % 10 == 0)
         {
-            RefreshOverlapSphere();
+            closestTarget = KDTreeBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
             _frameCount = 0;
         }
 
         _frameCount++;
-
-        var currentClosestDistance = float.PositiveInfinity;
-        var currentTarget = _currentTarget;
-
-        foreach (var target in _targetsToCheck)
+        if(closestTarget != _currentTarget)
         {
-            var sqDistance = (target.LowTarget.TargetPosition - _camera.transform.position).sqrMagnitude;
-            if (sqDistance < currentClosestDistance)
-            {
-                currentClosestDistance = sqDistance;
-                currentTarget = target;
-            }
-        }
-
-        if(currentTarget != _currentTarget)
-        {
-            UpdateCurrentTarget(currentTarget);
+            UpdateCurrentTarget(closestTarget);
         }
     }
 
-    private void RefreshOverlapSphere()
-    {        
-        _tempColliders = Physics2D.OverlapCircleAll(_camera.transform.position, _groundCheckRadius, _groundLayerMask);
-        _targetsToCheck.Clear();
-        foreach (var collider in _tempColliders)
-        {
-            var groundSegment = collider.GetComponentInParent<GroundSegment>();
-            if (groundSegment == null || !groundSegment.DoTarget)
-            {
-                continue;
-            }
-            _targetsToCheck.Add(groundSegment.LinkedCameraTarget);
-        }
-    }
 
     private void UpdateCurrentTarget(LinkedCameraTarget newTarget)
     {
@@ -207,11 +178,11 @@ public class CameraManager : MonoBehaviour
         _cameraZoom.gameObject.SetActive(true);
         _cameraZoom.ResetZoom();
         _doUpdate = true;
-        RefreshOverlapSphere();
     }
 
     private void GoToStartPosition(Level level, PlayerRecord _, ICameraTargetable startTarget)
     {
+        _rootKDTarget = level.RootCameraTarget;
         _camera.MoveCameraInstantlyToPosition(level.StartPoint);
         SetFirstTarget(startTarget);
     }

@@ -76,6 +76,13 @@ public class GroundedState : PlayerState
 
     private void FirstJump()
     {
+        //Don't jump if player is on ground upside down
+        var adjustedRotation = _player.NormalBody.rotation % 360;
+        if (adjustedRotation > 90 || adjustedRotation < -90)
+        {
+            return;
+        }
+
         _player.JumpManager.Jump();
         ChangeState(_stateFactory.GetState(PlayerStateType.Airborne));
     }

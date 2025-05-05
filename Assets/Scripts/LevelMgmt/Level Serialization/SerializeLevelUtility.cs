@@ -85,6 +85,9 @@ public static class SerializeLevelUtility
         //CameraTargetable
         serializedSegment.linkedCameraTarget = segment.LinkedCameraTarget;
         //Debug.Log("Serializing segment with " + segment.LinkedCameraTarget.LeftTargets.Count + " left targets and " + segment.LinkedCameraTarget.RightTargets.Count + " right targets");
+        Debug.Log("Serializing segment with linkedCameraTarget " +
+            "left node: " + serializedSegment.linkedCameraTarget.LeftKDNode
+            + " right node: " + serializedSegment.linkedCameraTarget.RightKDNode);
 
         return serializedSegment;
     }
@@ -134,6 +137,7 @@ public static class SerializeLevelUtility
     {
         if(targetable.LinkedCameraTarget == null)
         {
+            Debug.LogWarning("LinkedCameraTarget is null, creating new one");
             targetable.LinkedCameraTarget = new();
         }
 
@@ -255,11 +259,22 @@ public static class SerializeLevelUtility
         //Create collierPoints
         segment.Collider.points = serializedSegment.colliderPoints.ToArray();
         segment.Collider.sharedMaterial = parent.ColliderMaterial;
-        segment.BottomCollider.points = serializedSegment.bottomColliderPoints.ToArray();
-        segment.BottomCollider.sharedMaterial = parent.ColliderMaterial;
+
+        if (!segment.IsFloating)
+        {
+            segment.BottomCollider.points = serializedSegment.bottomColliderPoints.ToArray();
+            segment.BottomCollider.sharedMaterial = parent.ColliderMaterial;
+        } else
+        {
+            segment.BottomCollider.gameObject.SetActive(false);
+        }
 
         //Camera targets
         segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
+        Debug.Log("Deserializing segment with linkedCameraTarget " +
+            "left node: " + segment.LinkedCameraTarget.LeftKDNode 
+            + " right node: " + segment.LinkedCameraTarget.LeftKDNode);
+        Debug.Log("Left targets: " + segment.LinkedCameraTarget.LeftTargets.Count + " right targets: " + segment.LinkedCameraTarget.RightTargets.Count);
 
     }
 

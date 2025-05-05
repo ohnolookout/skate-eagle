@@ -19,6 +19,7 @@ public class Level
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
     [SerializeField] private Vector2[] _finishLineParameters;
     [SerializeField] private bool _backstopIsActive = true;
+    [SerializeField] private LinkedCameraTarget _rootCameraTarget;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
@@ -32,12 +33,14 @@ public class Level
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
     public Vector2[] FinishLineParameters => _finishLineParameters;
     public bool BackstopIsActive => _backstopIsActive;
+    public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
 
-    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null)
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null, LinkedCameraTarget rootCameraTarget = null)
     {
         _name = name;
         _medalTimes = medalTimes;
         _serializedGrounds = SerializeLevelUtility.SerializeGroundList(grounds);
+        _rootCameraTarget = rootCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
         _startPoint = startPoint;
         _cameraStartPosition = cameraStartPosition;

@@ -355,4 +355,24 @@ public class GroundEditManager : MonoBehaviour
     }
 
     #endregion
+
+    #region CameraTargeting
+
+    public List<LinkedCameraTarget> GetAllCameraTargets()
+    {
+        var targets = new List<LinkedCameraTarget>();
+        foreach (var ground in _groundManager.Grounds)
+        {
+            foreach (var segment in ground.SegmentList)
+            {
+                if (segment.LinkedCameraTarget != null)
+                {
+                    targets.Add(segment.LinkedCameraTarget);
+                }
+            }
+        }
+        return targets;
+    }
+
+    #endregion
 }

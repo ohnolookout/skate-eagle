@@ -55,6 +55,18 @@ public class LevelDatabase : ScriptableObject
         }
         UpdateDictionaries(level);
         lastLevelLoadedUID = level.UID;
+
+        Debug.Log("Level added to DB");
+        foreach (var ground in level.SerializedGrounds)
+        {
+            foreach(var segment in ground.segmentList)
+            {
+                Debug.Log($"Segment linked camera target " +
+                    $"left node: {segment.linkedCameraTarget.LeftKDNode} " +
+                    $"right node: {segment.linkedCameraTarget.RightKDNode}");
+            }
+        }
+
         EditorUtility.SetDirty(this);
         return true;        
     }

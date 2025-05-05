@@ -80,7 +80,7 @@ public class RagdollController : MonoBehaviour
     {
         foreach (var body in bodies)
         {
-            body.isKinematic = !isOn;
+            body.bodyType = isOn ? RigidbodyType2D.Dynamic : RigidbodyType2D.Kinematic;
             if (isOn)
             {
                 body.linearVelocity = _normalRigidbodies[0].linearVelocity + new Vector2(Mathf.Max(vectorChange.x * 0.1f, 5), Mathf.Max(vectorChange.y * 0.3f, 10));

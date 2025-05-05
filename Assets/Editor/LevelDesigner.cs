@@ -289,6 +289,7 @@ public class LevelDesigner : EditorWindow
         EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
         _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
         _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
+        _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
         _segment.DoTarget = EditorGUILayout.Toggle("Do Target", _segment.DoTarget, GUILayout.ExpandWidth(false));
 
         _so.ApplyModifiedProperties();
@@ -335,12 +336,6 @@ public class LevelDesigner : EditorWindow
 
             _tabIndex = 1;       
             _groundEditor.RemoveSegment(segment);
-            SetLevelDirty();
-        }
-
-        if(GUILayout.Button("Reset High/Low Points", GUILayout.ExpandWidth(false)))
-        {
-            _segment.DoDefaultHighLowPoints();
             SetLevelDirty();
         }
 
@@ -490,8 +485,10 @@ public class LevelDesigner : EditorWindow
             _groundEditor.SetFinishLine(_groundManager.FinishSegment);
         }
 
+        var rootCameraTarget = KDTreeBuilder.BuildKdTree(_groundEditor.GetAllCameraTargets());
+
         return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
-            cameraStartPosition, killPlaneY, _groundManager.FinishLine);
+            cameraStartPosition, killPlaneY, _groundManager.FinishLine, rootCameraTarget);
     }
     public void LoadLevelByName(string levelName)
     {
@@ -576,7 +573,7 @@ public class LevelDesigner : EditorWindow
         {
             foreach (var segment in ground.SegmentList)
             {
-                var newY = segment.LowPoint.position.y;
+                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
                 if (newY < lowY)
                 {
                     lowY = newY;

@@ -31,6 +31,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private bool _isFloating = false;
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private bool _doTarget = true;
+    [SerializeField] private bool _useDefaultHighLowPoints = true;
     public Ground parentGround;
     [SerializeField] private GroundSegment _previousSegment = null;
     [SerializeField] private GroundSegment _nextSegment = null;
@@ -57,6 +58,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public bool IsFirstSegment => parentGround.SegmentList[0] == this;
     public bool IsLastSegment => parentGround.SegmentList[^1] == this;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public bool UseDefaultHighLowPoints { get => _useDefaultHighLowPoints; set => _useDefaultHighLowPoints = value; }
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
     public Transform HighPoint => _highPoint.transform;
@@ -159,6 +161,12 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region High/LowPoints
     public void PopulateDefaultTargets()
     {
+        if (UseDefaultHighLowPoints)
+        {
+            curve.DoDefaultHighLowPoints();
+            UpdateHighLowTransforms();
+        }
+
         _linkedCameraTarget.LowTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
         _linkedCameraTarget.HighTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, HighPoint.transform);
 
@@ -194,12 +202,6 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 
         curve.HighPoint = curve.CurvePoints[index].Position;
         _highPoint.transform.position = curve.HighPoint + transform.position;
-    }
-
-    public void DoDefaultHighLowPoints()
-    {
-        curve.DoDefaultHighLowPoints();
-        UpdateHighLowTransforms();
     }
     #endregion
 }
