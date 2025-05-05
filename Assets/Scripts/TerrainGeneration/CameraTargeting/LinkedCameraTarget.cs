@@ -11,8 +11,8 @@ public class LinkedCameraTarget
     public CameraTarget HighTarget { get => _highTarget; set => _highTarget = value; }
     [SerializeReference] public List<LinkedCameraTarget> LeftTargets = new();
     [SerializeReference] public List<LinkedCameraTarget> RightTargets = new();
-    public LinkedCameraTarget LeftKDNode;
-    public LinkedCameraTarget RightKDNode;
+    [SerializeReference] public LinkedCameraTarget LeftKDNode;
+    [SerializeReference] public LinkedCameraTarget RightKDNode;
     public CameraTargetType TargetType;
     public int[] SerializedLocation;
     [SerializeField] private CameraTarget _lowTarget;
