@@ -118,6 +118,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
             Gizmos.DrawLine(point.Position + startPos, point.RightTangentPosition + startPos);
         }
 
+        LinkedCameraTarget.DrawTargets();
+
     }
 
     public void UpdateShadow()

@@ -2,6 +2,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [Serializable]
@@ -24,5 +25,42 @@ public class LinkedCameraTarget
         SerializedLocation = new int[0];
     }
 
+    public void DrawTargets()
+    {
+        if (LowTarget != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(LowTarget.TargetPosition, 0.5f);
+        }
+        if (HighTarget != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(HighTarget.TargetPosition, 0.5f);
+        }
+
+        foreach (var target in LeftTargets)
+        {
+            if (target != null)
+            {
+                DrawToTarget(target, Color.deepPink);
+            }
+        }
+
+        foreach (var target in RightTargets)
+        {
+            if (target != null)
+            {
+                DrawToTarget(target, Color.cyan);
+            }
+        }
+
+    }
+    private void DrawToTarget(LinkedCameraTarget target, Color color)
+    {
+        Gizmos.color = color;
+        var pos = target.LowTarget.TargetPosition;
+        Gizmos.DrawSphere(pos, 0.5f);
+        Gizmos.DrawLine(pos, LowTarget.TargetPosition);
+    }
 
 }
