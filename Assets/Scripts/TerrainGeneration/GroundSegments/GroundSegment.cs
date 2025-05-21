@@ -33,11 +33,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private bool _doTarget = true;
     [SerializeField] private bool _useDefaultHighLowPoints = true;
     public Ground parentGround;
-    [SerializeField] private GroundSegment _previousSegment = null;
-    [SerializeField] private GroundSegment _nextSegment = null;
+    [SerializeField] private GroundSegment _nextLeftSegment = null;
+    [SerializeField] private GroundSegment _nextRightSegment = null;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
-    public GroundSegment PreviousSegment { get => _previousSegment; set => _previousSegment = value; }
-    public GroundSegment NextSegment { get => _nextSegment; set => _nextSegment = value; }
+    public GroundSegment NextLeftSegment { get => _nextLeftSegment; set => _nextLeftSegment = value; }
+    public GroundSegment NextRightSegment { get => _nextRightSegment; set => _nextRightSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Curve Curve { get => curve; set => curve = value; }
@@ -47,7 +47,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public SpriteShapeController FillShapeController { get => _fillShapeController; }
     public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.Position);
     public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.Position);
-    public Vector3 PrevTangent => _previousSegment != null ? _previousSegment.Curve.EndPoint.LeftTangent : new(1, 1);
+    public Vector3 PrevTangent => _nextLeftSegment != null ? _nextLeftSegment.Curve.EndPoint.LeftTangent : new(1, 1);
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
@@ -148,12 +148,12 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region Collider Utilities
     public Vector3 FirstColliderPoint()
     {
-        if (_previousSegment == null)
+        if (_nextLeftSegment == null)
         {
             return curve.StartPoint.Position;
         }
 
-        var worldPoint = _previousSegment.transform.TransformPoint(_previousSegment.Collider.points[^1]);
+        var worldPoint = _nextLeftSegment.transform.TransformPoint(_nextLeftSegment.Collider.points[^1]);
         var colliderPoint = transform.InverseTransformPoint(worldPoint);
 
         return colliderPoint;
@@ -172,14 +172,14 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         _linkedCameraTarget.LowTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
         _linkedCameraTarget.HighTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, HighPoint.transform);
 
-        if (_previousSegment != null && !LeftTargetObjects.Contains(_previousSegment.gameObject))
+        if (_nextLeftSegment != null && !LeftTargetObjects.Contains(_nextLeftSegment.gameObject))
         {
-            LeftTargetObjects.Add(_previousSegment.gameObject);
+            LeftTargetObjects.Add(_nextLeftSegment.gameObject);
         }
 
-        if (_nextSegment != null && !RightTargetObjects.Contains(_nextSegment.gameObject))
+        if (_nextRightSegment != null && !RightTargetObjects.Contains(_nextRightSegment.gameObject))
         {
-            RightTargetObjects.Add(_nextSegment.gameObject);
+            RightTargetObjects.Add(_nextRightSegment.gameObject);
         }
     }
 

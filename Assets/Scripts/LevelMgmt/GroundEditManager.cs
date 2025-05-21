@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -16,7 +17,7 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        if(Application.isPlaying)
+        if (Application.isPlaying)
         {
             Destroy(this);
         }
@@ -84,7 +85,7 @@ public class GroundEditManager : MonoBehaviour
         if (index < 0)
         {
             index = 0;
-        } else if(index > ground.SegmentList.Count)
+        } else if (index > ground.SegmentList.Count)
         {
             index = ground.SegmentList.Count;
         }
@@ -101,8 +102,8 @@ public class GroundEditManager : MonoBehaviour
         //Update previous segment of first segment in tempList
         if (tempList.Count > 0)
         {
-            tempList[0].PreviousSegment = newSegment;
-            newSegment.NextSegment = tempList[0];
+            tempList[0].NextLeftSegment = newSegment;
+            newSegment.NextRightSegment = tempList[0];
         }
 
         ground.SegmentList.AddRange(tempList);
@@ -131,7 +132,7 @@ public class GroundEditManager : MonoBehaviour
         {
             newSeg = _groundSpawner.AddSegment(ground, newCurve);
         }
-        else 
+        else
         {
             newSeg = InsertSegment(ground, segIndex, newCurve);
         }
@@ -159,7 +160,7 @@ public class GroundEditManager : MonoBehaviour
 
         if (segment.IsFinish) {
 #if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Turn off finish");
+            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Turn off finish");
 #endif
             _groundManager.FinishLine.gameObject.SetActive(false);
         }
@@ -173,11 +174,11 @@ public class GroundEditManager : MonoBehaviour
         //Update previous segment of segment after removal
         if (index == 0 && ground.SegmentList.Count > 0)
         {
-            ground.SegmentList[index].PreviousSegment = null;
+            ground.SegmentList[index].NextLeftSegment = null;
         }
         else if (index < ground.SegmentList.Count)
         {
-            ground.SegmentList[index].PreviousSegment = ground.SegmentList[index - 1];
+            ground.SegmentList[index].NextLeftSegment = ground.SegmentList[index - 1];
         }
 
 #if UNITY_EDITOR
@@ -227,7 +228,7 @@ public class GroundEditManager : MonoBehaviour
         for (int i = startIndex; i < ground.SegmentList.Count; i++)
         {
             //Set position of segment to end of previous segment or leave at current start position if first segment
-            Vector3 startPosition = ground.SegmentList[i].PreviousSegment != null ? ground.SegmentList[i].PreviousSegment.EndPosition : ground.SegmentList[i].StartPosition;
+            Vector3 startPosition = ground.SegmentList[i].NextLeftSegment != null ? ground.SegmentList[i].NextLeftSegment.EndPosition : ground.SegmentList[i].StartPosition;
 
 #if UNITY_EDITOR
             Undo.RegisterFullObjectHierarchyUndo(ground.SegmentList[i].gameObject, "Recalculate Segment");
@@ -262,18 +263,18 @@ public class GroundEditManager : MonoBehaviour
 #endif
         Vector2? startTang = null;
 
-        if(doUsePrevEndTang && segment.PreviousSegment != null)
+        if (doUsePrevEndTang && segment.NextLeftSegment != null)
         {
-            startTang = segment.PreviousSegment.Curve.EndPoint.RightTangent;
+            startTang = segment.NextLeftSegment.Curve.EndPoint.RightTangent;
         }
 
-        segment.Curve.UpdateCurveSections(startTang); 
-        
-        if (segment.PreviousSegment != null && (doSetPrevSeg || segment.Curve.CurveSections[0].Type == CurveDirection.Flat))
+        segment.Curve.UpdateCurveSections(startTang);
+
+        if (segment.NextLeftSegment != null && (doSetPrevSeg || segment.Curve.CurveSections[0].Type == CurveDirection.Flat))
         {
-            segment.PreviousSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
-            segment.PreviousSegment.Curve.UpdateCurveSections();
-            _groundSpawner.ApplyCurveToSegment(segment.PreviousSegment, segment.PreviousSegment.Curve);
+            segment.NextLeftSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
+            segment.NextLeftSegment.Curve.UpdateCurveSections();
+            _groundSpawner.ApplyCurveToSegment(segment.NextLeftSegment, segment.NextLeftSegment.Curve);
         }
 
         _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
@@ -285,7 +286,7 @@ public class GroundEditManager : MonoBehaviour
             SetStartPoint(segment, 1);
         }
 
-        if(segment.IsFinish)
+        if (segment.IsFinish)
         {
             SetFinishLine(segment);
         }
@@ -338,7 +339,7 @@ public class GroundEditManager : MonoBehaviour
 
     public void SetFinishLine(GroundSegment segment)
     {
-        if(segment == null)
+        if (segment == null)
         {
             Debug.Log("SetFinishLine: Segment is null");
             return;
@@ -372,6 +373,97 @@ public class GroundEditManager : MonoBehaviour
             }
         }
         return targets;
+    }
+
+    public GroundSegment FindNextSegment(GroundSegment segment, bool doLookRight, bool doLookUp, bool doLookDown)
+    {
+        if(doLookRight && segment.NextRightSegment != null)
+        {
+            Debug.Log("Right segment already exists!");
+            return segment.NextRightSegment;
+        }
+        else if (!doLookRight && segment.NextLeftSegment != null)
+        {
+            Debug.Log("Left segment already exists!");
+            return segment.NextLeftSegment;
+        }
+
+        var currentPos = segment.LowPoint.position;
+        GroundSegment nextSegment = null;
+        var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
+        var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
+        Vector2 nextPos = new(nextStartX, nextStartY);
+
+        Func<Vector2, Vector2, Vector2, bool> lookHorizontal;
+
+        lookHorizontal = doLookRight ? LookRight : LookLeft;
+
+        Func<Vector2, Vector2, Vector2, bool> lookVertical;
+
+        if ((doLookUp && doLookDown) || (!doLookUp && !doLookDown))
+        {
+            lookVertical = (Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos) => true;
+        } else if (doLookUp)
+        {
+            lookVertical = LookUp;
+        }
+        else
+        {
+            lookVertical = LookDown;
+        }
+
+        foreach (var ground in _groundManager.Grounds)
+        {
+            foreach (var seg in ground.SegmentList)
+            {
+                if(lookHorizontal(currentPos, nextPos, seg.LowPoint.position)
+                    && lookVertical(currentPos, nextPos, seg.LowPoint.position))
+                {
+                    nextSegment = seg;
+                    nextPos = seg.LowPoint.position;
+                }
+            }
+        }
+
+        Debug.Log("Next segment found.");
+        return nextSegment;
+    }
+
+    private bool LookRight(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
+    {
+        if (candidatePos.x > currentPos.x && candidatePos.x < nextPos.x)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool LookLeft(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
+    {
+        if (candidatePos.x < currentPos.x && candidatePos.x > nextPos.x)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool LookUp(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
+    {
+        if (candidatePos.y >= currentPos.y && candidatePos.y < nextPos.y)
+        {
+            return true;
+        }
+        return false;
+    }
+    private bool LookDown(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
+    {
+        if (candidatePos.y <= currentPos.y && candidatePos.y > nextPos.y)
+        {
+            return true;
+        }
+        return false;
     }
 
     #endregion

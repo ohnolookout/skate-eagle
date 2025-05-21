@@ -19,6 +19,7 @@ public class LevelDesigner : EditorWindow
     private GroundSegment _segment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
+    private FindAdjacentSegmentWindow _findAdjacentWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
 
@@ -285,8 +286,12 @@ public class LevelDesigner : EditorWindow
 
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(_serializedCurve, true);
+
+        GUILayout.Space(20);
+
         EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
         EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
+
         _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
         _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
         _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
@@ -302,6 +307,17 @@ public class LevelDesigner : EditorWindow
             _groundEditor.RecalculateSegments(_segment);
             SetLevelDirty();
         }
+
+        GUILayout.Space(20);
+
+        if (GUILayout.Button("Find Next Segments", GUILayout.ExpandWidth(false)))
+        {
+            _findAdjacentWindow = GetWindow<FindAdjacentSegmentWindow>();
+            _findAdjacentWindow.Init(this, _groundEditor, _segment);
+        }
+
+        GUILayout.Space(20);
+
         if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
@@ -317,9 +333,9 @@ public class LevelDesigner : EditorWindow
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
         {
             var segment = _segment;
-            if (segment.PreviousSegment != null)
+            if (segment.NextLeftSegment != null)
             {
-                Selection.activeGameObject = segment.PreviousSegment.gameObject;
+                Selection.activeGameObject = segment.NextLeftSegment.gameObject;
             } else
             {
                 Selection.activeGameObject = segment.parentGround.gameObject;
@@ -435,7 +451,7 @@ public class LevelDesigner : EditorWindow
 
     }
 
-    private void SetLevelDirty()
+    public void SetLevelDirty()
     {
         _levelDB.LevelIsDirty = true;
         _levelDB.EditorLevel = CreateLevel();

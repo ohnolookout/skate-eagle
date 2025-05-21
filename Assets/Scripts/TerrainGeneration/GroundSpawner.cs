@@ -43,13 +43,13 @@ public class GroundSpawner : MonoBehaviour
 #endif
         newSegment.Curve = curve;
         newSegment.parentGround = ground;
-        newSegment.PreviousSegment = ground.LastSegment;
+        newSegment.NextLeftSegment = ground.LastSegment;
         Vector2 startPoint = new(0, 0);
 
-        if (newSegment.PreviousSegment != null)
+        if (newSegment.NextLeftSegment != null)
         {
-            newSegment.PreviousSegment.NextSegment = newSegment;
-            startPoint = newSegment.PreviousSegment.EndPosition;
+            newSegment.NextLeftSegment.NextRightSegment = newSegment;
+            startPoint = newSegment.NextLeftSegment.EndPosition;
         } else
         {
             startPoint = ground.transform.position;
@@ -66,14 +66,14 @@ public class GroundSpawner : MonoBehaviour
             newSegment.GetComponent<ShadowCaster2D>().enabled = false;
         }
 
-        if(newSegment.PreviousSegment != null)
+        if(newSegment.NextLeftSegment != null)
         {
 
 #if UNITY_EDITOR
-            Undo.RecordObject(newSegment.PreviousSegment, "Remove collider end points");
+            Undo.RecordObject(newSegment.NextLeftSegment, "Remove collider end points");
 #endif
 
-            BuildCollider(newSegment.PreviousSegment);
+            BuildCollider(newSegment.NextLeftSegment);
         }
 
         return newSegment;

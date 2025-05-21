@@ -211,9 +211,9 @@ public static class SerializeLevelUtility
         {
             var segment = groundSpawner.AddEmptySegment(ground);
             DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);
-            if(segment.PreviousSegment != null)
+            if(segment.NextLeftSegment != null)
             {
-                segment.PreviousSegment.NextSegment = segment;
+                segment.NextLeftSegment.NextRightSegment = segment;
             }
             ground.SegmentList.Add(segment);
 
@@ -239,7 +239,7 @@ public static class SerializeLevelUtility
         segment.gameObject.name = serializedSegment.name;
 
         segment.parentGround = parent;
-        segment.PreviousSegment = previousSegment;
+        segment.NextLeftSegment = previousSegment;
         segment.Curve = serializedSegment.curve;
         segment.IsFinish = serializedSegment.isFinish;
         segment.IsStart = serializedSegment.isStart;
