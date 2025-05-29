@@ -24,7 +24,9 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private GameObject _highPoint;
     [SerializeField] private GameObject _lowPoint;
     [SerializeField] private int _leftFloorHeight = 100;
+    [SerializeField] private int _leftFloorAngle = 0;
     [SerializeField] private int _rightFloorHeight = 100;
+    [SerializeField] private int _rightFloorAngle = 0;
     private int _containmentBuffer = 20;
     [SerializeField] private bool _isStart = false;
     [SerializeField] private bool _isFinish = false;
@@ -52,6 +54,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
     public int LeftFloorHeight { get => _leftFloorHeight; set => _leftFloorHeight = value; }
     public int RightFloorHeight { get => _rightFloorHeight; set => _rightFloorHeight = value; }
+    public int LeftFloorAngle { get => _leftFloorAngle; set => _leftFloorAngle = value; }
+    public int RightFloorAngle { get => _rightFloorAngle; set => _rightFloorAngle = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
     public new GameObject gameObject { get => transform.gameObject; }

@@ -290,13 +290,15 @@ public class LevelDesigner : EditorWindow
         GUILayout.Space(20);
 
         _segment.LeftFloorHeight = EditorGUILayout.IntField("Left Floor Height", _segment.LeftFloorHeight, GUILayout.ExpandWidth(false));
+        _segment.LeftFloorAngle = EditorGUILayout.IntField("Left Floor Angle", _segment.LeftFloorAngle, GUILayout.ExpandWidth(false));
         _segment.RightFloorHeight = EditorGUILayout.IntField("Right Floor Height", _segment.RightFloorHeight, GUILayout.ExpandWidth(false));
+        _segment.RightFloorAngle = EditorGUILayout.IntField("Right Floor Angle", _segment.RightFloorAngle, GUILayout.ExpandWidth(false));
 
         EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
         EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
 
         _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
-        _segment.IsInverted = EditorGUILayout.Toggle("Inverted", _segment.IsInverted, GUILayout.ExpandWidth(false));
+        _segment.IsInverted = EditorGUILayout.Toggle("Invert Collider", _segment.IsInverted, GUILayout.ExpandWidth(false));
         _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
         _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
         _segment.DoTarget = EditorGUILayout.Toggle("Do Target", _segment.DoTarget, GUILayout.ExpandWidth(false));

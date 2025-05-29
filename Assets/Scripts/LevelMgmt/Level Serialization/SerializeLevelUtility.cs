@@ -62,6 +62,8 @@ public static class SerializeLevelUtility
         serializedSegment.rotation = segment.transform.rotation;
         serializedSegment.leftFloorHeight = segment.LeftFloorHeight;
         serializedSegment.rightFloorHeight = segment.RightFloorHeight;
+        serializedSegment.leftFloorAngle = segment.LeftFloorAngle;
+        serializedSegment.rightFloorAngle = segment.RightFloorAngle;
 
         //Segment
         serializedSegment.isStart = segment.IsStart;
@@ -242,6 +244,8 @@ public static class SerializeLevelUtility
         segment.gameObject.name = serializedSegment.name;
         segment.LeftFloorHeight = serializedSegment.leftFloorHeight;
         segment.RightFloorHeight = serializedSegment.rightFloorHeight;
+        segment.LeftFloorAngle = serializedSegment.leftFloorAngle;
+        segment.RightFloorAngle = serializedSegment.rightFloorAngle;
 
         segment.parentGround = parent;
         segment.NextLeftSegment = previousSegment;

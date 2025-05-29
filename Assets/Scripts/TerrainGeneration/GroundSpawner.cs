@@ -108,8 +108,9 @@ public class GroundSpawner : MonoBehaviour
         else
         {
             segment.GetComponent<SpriteShapeRenderer>().enabled = true;
-            var floorDirection = segment.IsInverted ? 1 : -1;
-            GroundSplineUtility.GenerateSpline(segment.Spline, curve, segment.LeftFloorHeight * floorDirection, segment.RightFloorHeight * floorDirection);
+            GroundSplineUtility.GenerateSpline(segment.Spline, curve, 
+                segment.LeftFloorHeight, segment.LeftFloorAngle, 
+                segment.RightFloorHeight, segment.RightFloorAngle);
         }
 
 #if UNITY_EDITOR

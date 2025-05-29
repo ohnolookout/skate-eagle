@@ -13,7 +13,9 @@ public class SerializedGroundSegment
     public Vector3 position;
     public Quaternion rotation;
     public int leftFloorHeight;
+    public int leftFloorAngle;
     public int rightFloorHeight;
+    public int rightFloorAngle;
 
     //Segment contents
     public bool isStart;

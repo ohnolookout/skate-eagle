@@ -9,10 +9,10 @@ public static class GroundSplineUtility
 {
 
 
-    public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int rightFloorHeight)
+    public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
     {
         InsertCurveToSpline(spline, curve, 1);
-        UpdateCorners(spline, leftFloorHeight, rightFloorHeight);
+        UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
     }
 
     public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
@@ -28,35 +28,44 @@ public static class GroundSplineUtility
 
 
 
-    private static void UpdateCorners(Spline spline, int leftFloorHeight, int rightFloorHeight)
+    private static void UpdateCorners(Spline spline, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
     {
-        UpdateRightCorner(spline, rightFloorHeight);
-        UpdateLeftCorner(spline, leftFloorHeight);
+        UpdateRightCorner(spline, rightFloorHeight, rightFloorAngle);
+        UpdateLeftCorner(spline, leftFloorHeight, leftFloorAngle);
     }
 
-    private static void UpdateRightCorner(Spline spline, float height)
+    private static void UpdateRightCorner(Spline spline, float height, int angle = 0)
     {
-        var tangMod = height < 0 ? -1 : 1;
-        //Reassigns the lower right corner (last index on the spline) to the same x as the preceding point and the y of the preceding point - the lowerBoundY buffer.
+        angle = angle % 360;
+        float radians = angle * Mathf.Deg2Rad;
+        Vector3 offset = new Vector3(Mathf.Sin(radians) * height, -Mathf.Cos(radians) * height);
+
         int lastIndex = spline.GetPointCount() - 1;
-        spline.SetPosition(lastIndex, new Vector3(spline.GetPosition(lastIndex - 1).x, spline.GetPosition(lastIndex - 1).y + height));
+        Vector3 previousPosition = spline.GetPosition(lastIndex - 1);
+        spline.SetPosition(lastIndex, previousPosition + offset);
+
         spline.SetTangentMode(lastIndex, ShapeTangentMode.Linear);
         spline.SetLeftTangent(lastIndex, new Vector3(-1, 0));
-        spline.SetRightTangent(lastIndex, new Vector3(0, -tangMod));
-        //Resets the corner point's tangent mode in case it was changed.
-        spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
-        spline.SetRightTangent(lastIndex - 1, new Vector2(0, tangMod));
-    }
-    private static void UpdateLeftCorner(Spline spline, float height)
-    {
+        spline.SetRightTangent(lastIndex, new Vector3(Mathf.Sin(radians), -Mathf.Cos(radians)));
 
-        var tangMod = height < 0 ? -1 : 1;
-        spline.SetPosition(0, new Vector3(spline.GetPosition(1).x, spline.GetPosition(1).y + height));
+        spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
+        spline.SetRightTangent(lastIndex - 1, new Vector2(-Mathf.Sin(radians), Mathf.Cos(radians)));
+    }
+    private static void UpdateLeftCorner(Spline spline, float height, int angle = 0)
+    {
+        angle = angle % 360;
+        float radians = angle * Mathf.Deg2Rad;
+        Vector3 offset = new Vector3(-Mathf.Sin(radians) * height, -Mathf.Cos(radians) * height);
+
+        Vector3 nextPosition = spline.GetPosition(1);
+        spline.SetPosition(0, nextPosition + offset);
+
         spline.SetTangentMode(0, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(0, new Vector3(0, -tangMod));
+        spline.SetLeftTangent(0, new Vector3(-Mathf.Sin(radians), -Mathf.Cos(radians)));
         spline.SetRightTangent(0, new Vector3(1, 0));
+
         spline.SetTangentMode(1, ShapeTangentMode.Broken);
-        spline.SetLeftTangent(1, new Vector2(0, tangMod));
+        spline.SetLeftTangent(1, new Vector3(Mathf.Sin(radians), Mathf.Cos(radians)));
     }
 
 
