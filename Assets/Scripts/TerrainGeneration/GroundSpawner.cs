@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.U2D;
 using static UnityEngine.Rendering.HableCurve;
 
 //Builds ground, ground segments, and start/finish objects at runtime
@@ -101,11 +102,14 @@ public class GroundSpawner : MonoBehaviour
 #endif
         if (segment.IsFloating)
         {
-            GroundSplineUtility.InsertCurveToOpenSpline(segment.Spline, curve);
+            segment.GetComponent<SpriteShapeRenderer>().enabled = false;
+            //GroundSplineUtility.InsertCurveToOpenSpline(segment.Spline, curve);
         }
         else
         {
-            GroundSplineUtility.GenerateSpline(segment.Spline, curve, segment.floorHeight);
+            segment.GetComponent<SpriteShapeRenderer>().enabled = true;
+            var floorDirection = segment.IsInverted ? 1 : -1;
+            GroundSplineUtility.GenerateSpline(segment.Spline, curve, segment.LeftFloorHeight * floorDirection, segment.RightFloorHeight * floorDirection);
         }
 
 #if UNITY_EDITOR

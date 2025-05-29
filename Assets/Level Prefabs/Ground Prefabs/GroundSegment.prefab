@@ -233,6 +233,7 @@ SpriteShapeRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -257,7 +258,7 @@ SpriteShapeRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 767759397
   m_SortingLayer: 1
-  m_SortingOrder: 200
+  m_SortingOrder: 205
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_MaskInteraction: 0
   m_ShapeTexture: {fileID: 0}
@@ -272,8 +273,8 @@ SpriteShapeRenderer:
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   m_LocalAABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Center: {x: -1.6400001, y: 0, z: 0}
+    m_Extent: {x: 0.64000016, y: 1, z: 0}
   m_SpriteSortPoint: 0
 --- !u!114 &1360708605129911030
 MonoBehaviour:
@@ -328,8 +329,8 @@ MonoBehaviour:
   m_Modifiers: []
   m_ColliderSegment: []
   m_ShadowSegment:
-  - {x: -1, y: -1}
-  - {x: -1, y: 0.97451854}
+  - {x: -2.28, y: -1}
+  - {x: -2.28, y: 1}
 --- !u!1 &8309119641981291708
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,6 +390,7 @@ SpriteShapeRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -568,18 +570,25 @@ MonoBehaviour:
   _bottomCollider: {fileID: 2272586515581236096}
   _highPoint: {fileID: 6827530638482868012}
   _lowPoint: {fileID: 8388335674635242691}
-  floorHeight: 100
+  _leftFloorHeight: 100
+  _rightFloorHeight: 100
   _isStart: 0
   _isFinish: 0
   _isFloating: 0
+  _isInverted: 0
   _hasShadow: 1
   _doTarget: 1
+  _useDefaultHighLowPoints: 1
   parentGround: {fileID: 0}
-  _previousSegment: {fileID: 0}
-  _nextSegment: {fileID: 0}
+  _nextLeftSegment: {fileID: 0}
+  _nextRightSegment: {fileID: 0}
   _linkedCameraTarget:
     LeftTargets: []
     RightTargets: []
+    LeftKDNode:
+      rid: -2
+    RightKDNode:
+      rid: -2
     TargetType: 0
     SerializedLocation: 
     _lowTarget:
@@ -589,8 +598,8 @@ MonoBehaviour:
       TargetInfluenceH: 1
       TargetInfluenceV: 1
       TargetOffset: {x: 0, y: 0}
-      SerializedPosition: {x: 0, y: 0, z: 0}
       IsAdjusting: 0
+      SerializedPosition: {x: 0, y: 0, z: 0}
     _highTarget:
       TargetTransform: {fileID: 0}
       CurrentInfluenceH: 1
@@ -598,8 +607,13 @@ MonoBehaviour:
       TargetInfluenceH: 1
       TargetInfluenceV: 1
       TargetOffset: {x: 0, y: 0}
-      SerializedPosition: {x: 0, y: 0, z: 0}
       IsAdjusting: 0
+      SerializedPosition: {x: 0, y: 0, z: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &8388335674635242691
 GameObject:
   m_ObjectHideFlags: 0

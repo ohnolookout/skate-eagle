@@ -60,11 +60,14 @@ public static class SerializeLevelUtility
         serializedSegment.name = segment.gameObject.name;
         serializedSegment.position = segment.transform.position;
         serializedSegment.rotation = segment.transform.rotation;
+        serializedSegment.leftFloorHeight = segment.LeftFloorHeight;
+        serializedSegment.rightFloorHeight = segment.RightFloorHeight;
 
         //Segment
         serializedSegment.isStart = segment.IsStart;
         serializedSegment.isFinish = segment.IsFinish;
         serializedSegment.isFloating = segment.IsFloating;
+        serializedSegment.isInverted = segment.IsInverted;
         serializedSegment.hasShadow = segment.HasShadow;
 
         //Curve
@@ -237,6 +240,8 @@ public static class SerializeLevelUtility
         segment.transform.position = serializedSegment.position;
         segment.transform.rotation = serializedSegment.rotation;
         segment.gameObject.name = serializedSegment.name;
+        segment.LeftFloorHeight = serializedSegment.leftFloorHeight;
+        segment.RightFloorHeight = serializedSegment.rightFloorHeight;
 
         segment.parentGround = parent;
         segment.NextLeftSegment = previousSegment;
@@ -244,6 +249,7 @@ public static class SerializeLevelUtility
         segment.IsFinish = serializedSegment.isFinish;
         segment.IsStart = serializedSegment.isStart;
         segment.IsFloating = serializedSegment.isFloating;
+        segment.IsInverted = serializedSegment.isInverted;
         segment.HasShadow = serializedSegment.hasShadow;
         segment.UpdateShadow();
 

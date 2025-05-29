@@ -23,12 +23,13 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private EdgeCollider2D _bottomCollider;
     [SerializeField] private GameObject _highPoint;
     [SerializeField] private GameObject _lowPoint;
-    //[SerializeField] private List<CameraTarget> _cameraTargets;
-    public int floorHeight = 100;
+    [SerializeField] private int _leftFloorHeight = 100;
+    [SerializeField] private int _rightFloorHeight = 100;
     private int _containmentBuffer = 20;
     [SerializeField] private bool _isStart = false;
     [SerializeField] private bool _isFinish = false;
     [SerializeField] private bool _isFloating = false;
+    [SerializeField] private bool _isInverted = false;
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private bool _doTarget = true;
     [SerializeField] private bool _useDefaultHighLowPoints = true;
@@ -49,6 +50,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.Position);
     public Vector3 PrevTangent => _nextLeftSegment != null ? _nextLeftSegment.Curve.EndPoint.LeftTangent : new(1, 1);
     public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
+    public int LeftFloorHeight { get => _leftFloorHeight; set => _leftFloorHeight = value; }
+    public int RightFloorHeight { get => _rightFloorHeight; set => _rightFloorHeight = value; }
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
@@ -58,6 +61,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public bool IsFirstSegment => parentGround.SegmentList[0] == this;
     public bool IsLastSegment => parentGround.SegmentList[^1] == this;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public bool IsInverted { get => _isInverted; set => _isInverted = value; }
     public bool UseDefaultHighLowPoints { get => _useDefaultHighLowPoints; set => _useDefaultHighLowPoints = value; }
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }

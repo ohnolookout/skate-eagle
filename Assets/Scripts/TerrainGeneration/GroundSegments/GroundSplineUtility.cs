@@ -9,10 +9,10 @@ public static class GroundSplineUtility
 {
 
 
-    public static void GenerateSpline(Spline spline, Curve curve, int floorHeight)
+    public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int rightFloorHeight)
     {
         InsertCurveToSpline(spline, curve, 1);
-        UpdateCorners(spline, floorHeight);
+        UpdateCorners(spline, leftFloorHeight, rightFloorHeight);
     }
 
     public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
@@ -28,33 +28,35 @@ public static class GroundSplineUtility
 
 
 
-    public static void UpdateCorners(Spline spline, float lowerY)
+    private static void UpdateCorners(Spline spline, int leftFloorHeight, int rightFloorHeight)
     {
-        UpdateRightCorners(spline, lowerY);
-        UpdateLeftCorners(spline, lowerY);
+        UpdateRightCorner(spline, rightFloorHeight);
+        UpdateLeftCorner(spline, leftFloorHeight);
     }
 
-    public static void UpdateRightCorners(Spline spline, float lowerY)
+    private static void UpdateRightCorner(Spline spline, float height)
     {
+        var tangMod = height < 0 ? -1 : 1;
         //Reassigns the lower right corner (last index on the spline) to the same x as the preceding point and the y of the preceding point - the lowerBoundY buffer.
         int lastIndex = spline.GetPointCount() - 1;
-        spline.SetPosition(lastIndex, new Vector3(spline.GetPosition(lastIndex - 1).x, spline.GetPosition(lastIndex - 1).y - lowerY));
+        spline.SetPosition(lastIndex, new Vector3(spline.GetPosition(lastIndex - 1).x, spline.GetPosition(lastIndex - 1).y + height));
         spline.SetTangentMode(lastIndex, ShapeTangentMode.Linear);
         spline.SetLeftTangent(lastIndex, new Vector3(-1, 0));
-        spline.SetRightTangent(lastIndex, new Vector3(0, 1));
+        spline.SetRightTangent(lastIndex, new Vector3(0, -tangMod));
         //Resets the corner point's tangent mode in case it was changed.
         spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
-        spline.SetRightTangent(lastIndex - 1, new Vector2(0, -1));
+        spline.SetRightTangent(lastIndex - 1, new Vector2(0, tangMod));
     }
-    public static void UpdateLeftCorners(Spline spline, float lowerY)
+    private static void UpdateLeftCorner(Spline spline, float height)
     {
 
-        spline.SetPosition(0, new Vector3(spline.GetPosition(1).x, spline.GetPosition(1).y - lowerY));
+        var tangMod = height < 0 ? -1 : 1;
+        spline.SetPosition(0, new Vector3(spline.GetPosition(1).x, spline.GetPosition(1).y + height));
         spline.SetTangentMode(0, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(0, new Vector3(0, 1));
+        spline.SetLeftTangent(0, new Vector3(0, -tangMod));
         spline.SetRightTangent(0, new Vector3(1, 0));
         spline.SetTangentMode(1, ShapeTangentMode.Broken);
-        spline.SetLeftTangent(1, new Vector2(0, -1));
+        spline.SetLeftTangent(1, new Vector2(0, tangMod));
     }
 
 

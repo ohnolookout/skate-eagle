@@ -5,6 +5,7 @@ using System.Data.Common;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.Rendering.HableCurve;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -258,6 +259,14 @@ public class GroundEditManager : MonoBehaviour
 
     public void RefreshCurve(GroundSegment segment, bool doUsePrevEndTang = false, bool doSetPrevSeg = false)
     {
+        if (segment.LeftFloorHeight == 0)
+        {
+            segment.LeftFloorHeight = 100;
+        }
+        if (segment.RightFloorHeight == 0)
+        {
+            segment.RightFloorHeight = 100;
+        }
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
 #endif

@@ -12,11 +12,14 @@ public class SerializedGroundSegment
     public string name;
     public Vector3 position;
     public Quaternion rotation;
+    public int leftFloorHeight;
+    public int rightFloorHeight;
 
     //Segment contents
     public bool isStart;
     public bool isFinish;
     public bool isFloating;
+    public bool isInverted;
     public bool hasShadow;
 
     //Curve contents

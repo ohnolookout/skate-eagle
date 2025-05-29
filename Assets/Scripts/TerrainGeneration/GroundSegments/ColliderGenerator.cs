@@ -20,7 +20,7 @@ public static class ColliderGenerator
         for (int i = 0; i < curve.Count - 1; i++)
         {
             resolution = Mathf.Max(resolutionMult * curve.SectionLengths[i] / 20, 15);
-            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint);
+            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint, !segment.IsInverted);
             if (i == 0)
             {
                 collider.points = newPoints;
@@ -55,7 +55,7 @@ public static class ColliderGenerator
         }
     }
 
-    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint)
+    private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint, bool doOffset)
     {
         //Debug.Log("Calculating collider points...");
         List<Vector2> points = new();
@@ -81,8 +81,17 @@ public static class ColliderGenerator
             points.Add(secondPoint.Position);
         }
 
-        //Offset points to account for edge distance
-        Vector2[] returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint == null));
+        //Offset points to account for edge distance if segment not inverted
+        Vector2[] returnArray;
+
+        if (doOffset)
+        {
+            returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint == null));
+        } else
+        {
+            returnArray = points.ToArray();
+        }
+
         points.RemoveAt(0);
 
         return returnArray;

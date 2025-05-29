@@ -68,7 +68,7 @@ public class CameraManager : MonoBehaviour
 
         if (_currentTarget != null && _currentTarget.LowTarget != null)
         {
-            Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 1f);
+            Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 2f);
         }
 
     }
