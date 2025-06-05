@@ -297,7 +297,7 @@ public class GroundEditManager : MonoBehaviour
 
         if (segment.IsFinish)
         {
-            SetFinishLine(segment);
+            SetFinishLine(segment, _groundManager.FinishLine.Parameters);
         }
 
     }
@@ -346,27 +346,57 @@ public class GroundEditManager : MonoBehaviour
         return startPoint.transform.position;
     }
 
-    public void SetFinishLine(GroundSegment segment)
+    public void SetFinishLine(GroundSegment segment, FinishLineParameters finishParams)
     {
-        if (segment == null)
+        if (!ValidateFinishParameters(segment, finishParams))
         {
-            Debug.Log("SetFinishLine: Segment is null");
             return;
         }
 
+        _groundManager.FinishLine.Parameters = finishParams;
+
+        var flagPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(finishParams.flagPointIndex).Position + new Vector3(finishParams.flagPointXOffset, 0));
+        var backstopPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(finishParams.backstopPointIndex).Position + new Vector3(finishParams.backstopPointXOffset, 0));
+        
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
+
+        if (_groundManager.FinishSegment != null && _groundManager.FinishSegment != segment)
+        {
+            _groundManager.FinishSegment.IsFinish = false;
+        }
+
+        _groundManager.FinishSegment = segment;
         segment.IsFinish = true;
-        segment.SetLowPoint(2);
+        segment.SetLowPoint(finishParams.flagPointIndex);
+        _groundSpawner.SetFinishLine(flagPosition, backstopPosition, finishParams.backstopIsActive);
+    }
 
-        var flagPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(2).Position + new Vector3(50, 0));
-        var backstopPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(3).Position);
+    private bool ValidateFinishParameters(GroundSegment segment, FinishLineParameters parameters)
+    {
+        if (segment == null)
+        {
+            return false;
+        }
 
-        _groundSpawner.SetFinishLine(flagPosition, backstopPosition);
+        if (parameters == null)
+        {
+            return false;
+        }
+
+        if (parameters.flagPointIndex < 0 || parameters.flagPointIndex >= segment.Curve.Count)
+        { 
+            return false;
+        }
+        if (parameters.backstopPointIndex < 0 || parameters.backstopPointIndex >= segment.Curve.Count)
+        { 
+            return false;
+        }
+        return true;
     }
 
     #endregion
 
-    #region CameraTargeting
+        #region CameraTargeting
 
     public List<LinkedCameraTarget> GetAllCameraTargets()
     {

@@ -20,6 +20,7 @@ public class LevelDesigner : EditorWindow
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
     private FindAdjacentSegmentWindow _findAdjacentWindow;
+    private FinishLineCreatorWindow _finishWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
 
@@ -259,21 +260,13 @@ public class LevelDesigner : EditorWindow
             }
 
             var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
-            Selection.activeGameObject = segment.gameObject;
-            
-            if(_groundManager.FinishSegment != null && _groundManager.FinishSegment != segment)
-            {
-                _groundManager.FinishSegment.IsFinish = false;
-            }
+            Selection.activeGameObject = segment.gameObject;         
 
-            _groundManager.FinishSegment = segment;
-
-            _groundEditor.SetFinishLine(segment);
+            _groundEditor.SetFinishLine(segment, new FinishLineParameters());
             
             SetLevelDirty();
         }
     }
-
     private void SegmentMenu()
     {
         if(_segment == null)
@@ -359,6 +352,12 @@ public class LevelDesigner : EditorWindow
             _tabIndex = 1;       
             _groundEditor.RemoveSegment(segment);
             SetLevelDirty();
+        }
+
+        if (GUILayout.Button("Finish Line Options", GUILayout.ExpandWidth(false)))
+        {
+            _finishWindow = GetWindow<FinishLineCreatorWindow>();
+            _finishWindow.Init(_segment, _groundManager, _groundEditor);
         }
 
         EditorGUILayout.EndScrollView();
@@ -472,6 +471,7 @@ public class LevelDesigner : EditorWindow
             _loadWindow.Close();
         }
 
+
         var levelToSave = CreateLevel();
         _levelDB.EditorLevel = levelToSave;
 
@@ -504,7 +504,7 @@ public class LevelDesigner : EditorWindow
 
         if (_groundManager.FinishSegment != null)
         {
-            _groundEditor.SetFinishLine(_groundManager.FinishSegment);
+            _groundEditor.SetFinishLine(_groundManager.FinishSegment, _groundManager.FinishLine.Parameters);
         }
 
         var rootCameraTarget = KDTreeBuilder.BuildKdTree(_groundEditor.GetAllCameraTargets());

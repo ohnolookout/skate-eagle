@@ -17,7 +17,8 @@ public class Level
     [SerializeField] private Vector2 _startPoint;
     [SerializeField] private float _killPlaneY;
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
-    [SerializeField] private Vector2[] _finishLineParameters;
+    [SerializeField] private Vector2[] _finishLinePositions;
+    [SerializeField] private FinishLineParameters _finishLineParameters = new();
     [SerializeField] private bool _backstopIsActive = true;
     [SerializeField] private LinkedCameraTarget _rootCameraTarget;
     public string UID { get => _UID; set => _UID = value; }
@@ -28,10 +29,11 @@ public class Level
     public bool DoPublish => _doPublish;
     public int GoldRequired => _goldRequired;
     public Vector2 StartPoint => _startPoint;
-    public Vector2 FinishPoint => _finishLineParameters != null && _finishLineParameters.Length > 0 ? _finishLineParameters[0]: new Vector2(2000, 0);
+    public Vector2 FinishPoint => _finishLinePositions != null && _finishLinePositions.Length > 0 ? _finishLinePositions[0]: new Vector2(2000, 0);
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
-    public Vector2[] FinishLineParameters => _finishLineParameters;
+    public Vector2[] FinishLinePositions => _finishLinePositions;
+    public FinishLineParameters FinishLineParameters {get => _finishLineParameters; set => _finishLineParameters = value; }
     public bool BackstopIsActive => _backstopIsActive;
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
 
@@ -45,7 +47,8 @@ public class Level
         _startPoint = startPoint;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = killPlaneY;
-        _finishLineParameters = SerializeLevelUtility.SerializeFinishLine(finishLine);
+        _finishLinePositions = SerializeLevelUtility.SerializeFinishLine(finishLine);
+        _finishLineParameters = finishLine != null ? finishLine.Parameters : new FinishLineParameters();
         if (finishLine != null)
         {
             _backstopIsActive = finishLine.Backstop.activeInHierarchy;

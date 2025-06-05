@@ -71,6 +71,7 @@ public static class SerializeLevelUtility
         serializedSegment.isFloating = segment.IsFloating;
         serializedSegment.isInverted = segment.IsInverted;
         serializedSegment.hasShadow = segment.HasShadow;
+        serializedSegment.useDefaultHighLowPoints = segment.UseDefaultHighLowPoints;
 
         //Curve
         segment.Curve.LowPoint = segment.LowPoint.position - segment.transform.position;
@@ -186,10 +187,12 @@ public static class SerializeLevelUtility
             var ground = DeserializeGround(serializedGround, groundManager);
             groundManager.Grounds.Add(ground);
         }
-        if (level.FinishLineParameters != null && level.FinishLineParameters.Length == 2) { 
-            groundManager.groundSpawner.SetFinishLine(level.FinishLineParameters[0], level.FinishLineParameters[1], level.BackstopIsActive);
+
+        if (level.FinishLinePositions != null && level.FinishLinePositions.Length == 2) { 
+            groundManager.groundSpawner.SetFinishLine(level.FinishLinePositions[0], level.FinishLinePositions[1], level.BackstopIsActive);
         }
 
+        groundManager.FinishLine.Parameters = level.FinishLineParameters;
 
         if (Application.isPlaying)
         {
@@ -231,9 +234,11 @@ public static class SerializeLevelUtility
             {
                 groundManager.FinishSegment = segment;
             }
+            segment.gameObject.SetActive(false);
+            segment.gameObject.SetActive(true);
         }
-        ground.SegmentList[0].gameObject.SetActive(false);
-        ground.SegmentList[0].gameObject.SetActive(true);
+        //ground.SegmentList[0].gameObject.SetActive(false);
+        //ground.SegmentList[0].gameObject.SetActive(true);
         return ground;
     }
 
@@ -255,6 +260,7 @@ public static class SerializeLevelUtility
         segment.IsFloating = serializedSegment.isFloating;
         segment.IsInverted = serializedSegment.isInverted;
         segment.HasShadow = serializedSegment.hasShadow;
+        segment.UseDefaultHighLowPoints = serializedSegment.useDefaultHighLowPoints;
         segment.UpdateShadow();
 
         segment.UpdateHighLowTransforms();

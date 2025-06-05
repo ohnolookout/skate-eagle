@@ -23,6 +23,7 @@ public class SerializedGroundSegment
     public bool isFloating;
     public bool isInverted;
     public bool hasShadow;
+    public bool useDefaultHighLowPoints;
 
     //Curve contents
     public Curve curve;

@@ -295,6 +295,10 @@ public class PlayerAudio : MonoBehaviour
     {
         _wheelsOnGround = true;
         float stopDuration = AudioManagerUtility.StopDuration(player.NormalBody.linearVelocity.x);
+        if (float.IsNaN(stopDuration))
+        {
+            stopDuration = 5;
+        }
         StartCoroutine(SpikeIntensityDenom(stopDuration, 5));
         _audioManager.StartLoop(_loopDict[LoopFX.Board]);
 

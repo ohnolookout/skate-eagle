@@ -9,7 +9,6 @@ public class LevelLoadWindow : EditorWindow
 {
     private LevelDesigner _groundDesigner;
     private LevelDatabase _levelDB;
-    private Dictionary<string, string> _levelPathsByName = new();
     private string[] _levelNames;
     private int _nameIndex;
     public static void ShowWindow()
