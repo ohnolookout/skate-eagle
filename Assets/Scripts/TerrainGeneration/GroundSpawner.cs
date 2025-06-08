@@ -147,16 +147,6 @@ public class GroundSpawner : MonoBehaviour
         return startPoint;
     }
 
-    public void SetFinishLine(Vector2 flagPosition, Vector2 backstopPosition, bool backstopIsActive = true)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
-#endif
-        _groundManager.FinishLine.gameObject.SetActive(true);
-        _groundManager.FinishLine.Backstop.gameObject.SetActive(backstopIsActive);
-        _groundManager.FinishLine.SetFinishLine(flagPosition, backstopPosition);
-    }
-
     #endregion
 
 }

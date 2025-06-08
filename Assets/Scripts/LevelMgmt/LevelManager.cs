@@ -58,8 +58,11 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(_gameManager.CurrentLevel.StartPoint, 1);
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(_gameManager.CurrentLevel.FinishPoint, 1);
+            if(_gameManager.CurrentLevel.FinishLineParameters != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(_gameManager.CurrentLevel.FinishLineParameters.flagPosition, 1);
+            }
         }
     }
 

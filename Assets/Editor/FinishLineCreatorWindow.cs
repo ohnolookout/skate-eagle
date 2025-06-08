@@ -58,9 +58,19 @@ public class FinishLineCreatorWindow : EditorWindow
                 }
             }
 
-            var finishLineParams = new FinishLineParameters(_flagPointIndex, _flagXOffset, _backstopPointIndex, _backstopXOffset, _backstopIsActive);
+            var finishLineParams = new FinishLineParameters(_segment, _flagPointIndex, _flagXOffset, _backstopPointIndex, _backstopXOffset, _backstopIsActive);
 
             _groundEditor.SetFinishLine(_segment, finishLineParams);
+        }
+
+        if(GUILayout.Button("Clear Finish Line"))
+        {
+            if(!EditorUtility.DisplayDialog("Warning", "This will clear the current finish line.", "OK", "Cancel"))
+            {
+                return;
+            }
+
+            _groundEditor.ClearFinishLine();
         }
 
         if (GUILayout.Button("Close"))

@@ -121,20 +121,6 @@ public static class SerializeLevelUtility
         return pointsList;
     }
 
-    public static Vector2[] SerializeFinishLine(FinishLine finishLine)
-    {
-        if(finishLine == null)
-        {
-            return null;
-        }
-
-        return new Vector2[2]
-        {
-            finishLine.FlagPosition,
-            finishLine.BackstopPosition
-        };
-    }
-
     private static void BuildLinkedCameraTarget(ICameraTargetable targetable)
     {
         if(targetable.LinkedCameraTarget == null)
@@ -188,11 +174,7 @@ public static class SerializeLevelUtility
             groundManager.Grounds.Add(ground);
         }
 
-        if (level.FinishLinePositions != null && level.FinishLinePositions.Length == 2) { 
-            groundManager.groundSpawner.SetFinishLine(level.FinishLinePositions[0], level.FinishLinePositions[1], level.BackstopIsActive);
-        }
-
-        groundManager.FinishLine.Parameters = level.FinishLineParameters;
+        groundManager.FinishLine.SetFinishLine(level.FinishLineParameters);
 
         if (Application.isPlaying)
         {

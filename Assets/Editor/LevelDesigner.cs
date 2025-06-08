@@ -176,6 +176,16 @@ public class LevelDesigner : EditorWindow
             _levelDB.LevelIsDirty = false;
         }
 
+        if (GUILayout.Button("Clear Finish Line", GUILayout.ExpandWidth(false)))
+        {
+            if (!EditorUtility.DisplayDialog("Warning", "This will clear the current finish line.", "OK", "Cancel"))
+            {
+                return;
+            }
+
+            _groundEditor.ClearFinishLine();
+        }
+
         _debugMode = EditorGUILayout.Toggle("Debug Mode", _debugMode, GUILayout.ExpandWidth(false));
     }
     private void GroundMenu()
@@ -262,7 +272,7 @@ public class LevelDesigner : EditorWindow
             var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
             Selection.activeGameObject = segment.gameObject;         
 
-            _groundEditor.SetFinishLine(segment, new FinishLineParameters());
+            _groundEditor.SetFinishLine(segment, new FinishLineParameters(segment));
             
             SetLevelDirty();
         }

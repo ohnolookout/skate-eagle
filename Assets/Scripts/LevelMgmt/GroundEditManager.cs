@@ -352,23 +352,34 @@ public class GroundEditManager : MonoBehaviour
         {
             return;
         }
-
-        _groundManager.FinishLine.Parameters = finishParams;
-
-        var flagPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(finishParams.flagPointIndex).Position + new Vector3(finishParams.flagPointXOffset, 0));
-        var backstopPosition = segment.transform.TransformPoint(segment.Curve.GetPoint(finishParams.backstopPointIndex).Position + new Vector3(finishParams.backstopPointXOffset, 0));
-        
+                
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
 
         if (_groundManager.FinishSegment != null && _groundManager.FinishSegment != segment)
         {
+            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishSegment.gameObject, "Remove finish line");
             _groundManager.FinishSegment.IsFinish = false;
         }
 
         _groundManager.FinishSegment = segment;
         segment.IsFinish = true;
         segment.SetLowPoint(finishParams.flagPointIndex);
-        _groundSpawner.SetFinishLine(flagPosition, backstopPosition, finishParams.backstopIsActive);
+
+        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
+        _groundManager.FinishLine.SetFinishLine(finishParams);
+    }
+
+    public void ClearFinishLine()
+    {
+        if (_groundManager.FinishSegment != null)
+        {
+            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishSegment.gameObject, "Clear finish line");
+            _groundManager.FinishSegment.IsFinish = false;
+            _groundManager.FinishSegment = null;
+        }
+
+        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Clear finish line");
+        _groundManager.FinishLine.ClearFinishLine();
     }
 
     private bool ValidateFinishParameters(GroundSegment segment, FinishLineParameters parameters)
@@ -387,10 +398,12 @@ public class GroundEditManager : MonoBehaviour
         { 
             return false;
         }
+
         if (parameters.backstopPointIndex < 0 || parameters.backstopPointIndex >= segment.Curve.Count)
         { 
             return false;
         }
+
         return true;
     }
 

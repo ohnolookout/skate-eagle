@@ -17,13 +17,14 @@ public class FinishLine : MonoBehaviour
     private float _upperY = float.PositiveInfinity;
     private float _lowerY = float.NegativeInfinity;
     private Func<float, bool> _isXBetween;
-    private FinishLineParameters _params;
+    private FinishLineParameters _parameters;
+    private static Vector2 _flagOffset = new(1.5f, 1f);
 
     public Vector2 FlagPosition => _flagPosition;
     public Vector2 BackstopPosition => _backstopPosition;
     public GameObject Backstop => _backstop;
     public GameObject Flag => _flag;
-    public FinishLineParameters Parameters { get => _params; set => _params = value; }
+    public FinishLineParameters Parameters { get => _parameters; set => _parameters = value; }
 
     void Awake()
     {
@@ -69,23 +70,54 @@ public class FinishLine : MonoBehaviour
         _playerBody = player.NormalBody;
     }
 
-    public void SetFinishLine(Vector3 flagPosition, Vector3 backstopPosition)
+    public void SetFinishLine(FinishLineParameters parameters)
     {
-        var flagOffset = new Vector3(1.5f, 1f, 0);
-        _flagPosition = flagPosition;
-        _backstopPosition = backstopPosition;
-        _flag.transform.position = flagPosition + flagOffset;
-        _backstop.transform.position = backstopPosition;
+        if(parameters == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        gameObject.SetActive(true);
+
+        _parameters = parameters;
+        _flagPosition = parameters.flagPosition;
+        _backstopPosition = parameters.backstopPosition;
+        _flag.transform.position = parameters.flagPosition + _flagOffset;
+
+        if (parameters.backstopIsActive)
+        {            
+            _backstop.transform.position = parameters.backstopPosition;
+            _backstop.SetActive(true);
+        } else
+        {
+            _backstop.SetActive(false);
+        }
+
         _lowerY = _flagPosition.y - _lowerYTolerance;
         _upperY = _flagPosition.y + _upperYTolerance;
 
-        if (_flagPosition.x < _backstopPosition.x)
+        if (parameters.isForward)
         {
             _isXBetween = x => x > _flagPosition.x && x < _backstopPosition.x;
-        } else
+        }
+        else
         {
             _isXBetween = x => x < _flagPosition.x && x > _backstopPosition.x;
         }
+    }
+
+    public void ClearFinishLine()
+    {
+        gameObject.SetActive(false);
+
+        _parameters = null;
+        _flagPosition = Vector2.zero;
+        _backstopPosition = Vector2.zero;
+
+        _flag.transform.position = Vector2.zero;
+        _backstop.transform.position = Vector2.zero;
+
     }
 
 }
