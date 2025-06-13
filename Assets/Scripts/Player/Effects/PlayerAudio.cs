@@ -147,11 +147,19 @@ public class PlayerAudio : MonoBehaviour
     {
         if (_wheelsOnGround || _wheelTimer >= 0)
         {
+            Debug.Log("Wheels already on ground or timer running. Skipping collision.");
+            Debug.Log("Wheels on ground: " + _wheelsOnGround);
+            Debug.Log("Wheel timer: " + _wheelTimer);
+            Debug.Log("Play landing sound: " + _player.DoLanding);
             return;
         }
         if (_player.DoLanding)
         {
+            Debug.Log("Playing landing oneshot.");
             _audioManager.PlayOneShot(_oneShotDict[OneShotFX.Wheel]);
+        } else
+        {
+            Debug.Log("_player.DoLanding == false. Not playing landing oneshot.");
         }
         _wheelsOnGround = true;
         _audioManager.StopLoop(_loopDict[LoopFX.Freewheel]);

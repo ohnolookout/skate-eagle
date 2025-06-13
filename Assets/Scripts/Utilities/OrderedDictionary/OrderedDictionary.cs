@@ -9,20 +9,14 @@ public class OrderedDictionary<TKey, TValue>
 
     public void Add(TKey key, TValue value)
     {
-        if (order.Contains(key))
-        {
-            order.Remove(key);
-        }
+        order.Remove(key);
         order.Add(key);
         dict[key] = value;
     }
 
     public void Insert(int index, TKey key, TValue value)
     {
-        if (order.Contains(key))
-        {
-            order.Remove(key);
-        }
+        order.Remove(key);
         order.Insert(index, key);
         dict[key] = value;
     }

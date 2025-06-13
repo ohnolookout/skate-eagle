@@ -35,13 +35,10 @@ public class FinishLine : MonoBehaviour
     {
         if(_isXBetween(_playerBody.position.x))
         {
-            Debug.Log("Player is between finish line X bounds");
             if (_playerBody.position.y > _lowerY && _playerBody.position.y < _upperY)
             {
-                Debug.Log("Player is between finish line Y bounds");
                 if (_player.CollisionManager.BothWheelsCollided)
                 {
-                    Debug.Log("Player has both wheels on the finish line");
                     DoFinish?.Invoke();
                 }
             }

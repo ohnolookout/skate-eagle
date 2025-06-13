@@ -44,9 +44,9 @@ public class Level
         _startPoint = startPoint;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = killPlaneY;   
-        _finishLineParameters = finishLine.Parameters;
         if (finishLine != null)
         {
+            _finishLineParameters = finishLine.Parameters;
             _backstopIsActive = finishLine.Backstop.activeInHierarchy;
         }
     }

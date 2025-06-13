@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public interface IPlayer
 {
-    bool Collided { get; }
     bool FacingForward { get; set; }
     bool IsRagdoll { get; set; }
     bool DoLanding { get; set; }

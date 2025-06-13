@@ -32,7 +32,6 @@ public class Player : MonoBehaviour, IPlayer
     public Rigidbody2D RagdollBody { get => _ragdollBody; }
     public PlayerParameters Params { get => _params; }
     public bool FacingForward { get => _facingForward; set => _facingForward = value; }
-    public bool Collided { get => _collisionManager.Collided; }
     public bool Stomping { get => _stomping; set => _stomping = value; }
     public bool IsRagdoll { get => _isRagdoll; set => _isRagdoll = value; }
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
