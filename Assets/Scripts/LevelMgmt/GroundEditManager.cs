@@ -477,7 +477,6 @@ public class GroundEditManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Next segment found.");
         return nextSegment;
     }
 
