@@ -1,5 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <uie:PropertyField name="LevelDictionary" binding-path="_levelDictionary" label="Level Dictionary" />
+    <uie:PropertyField name="LevelDictionary" binding-path="_doPublishDictionary" label="Level Dictionary" />
     <uie:PropertyField name="LevelOrder" binding-path="_levelOrder" label="Level Order" />
     <ui:TextField label="LastLevelLoaded" placeholder-text="Null" name="TextField" binding-path="lastLevelLoaded" />
+    <ui:Button text="Refresh Publish Dict" name="RefreshPublishDict" binding-path="RefreshDoPublishDictionary" emoji-fallback-support="false" />
 </ui:UXML>

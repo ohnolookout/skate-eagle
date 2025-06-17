@@ -18,7 +18,7 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private Level _editorLevel;
     [SerializeField] private bool _levelIsDirty = false;
     public string lastLevelLoadedUID;
-    public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary;
+    public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary; //Levels stored by UID
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
     public List<string> LevelOrder => _levelOrder;
@@ -65,27 +65,24 @@ public class LevelDatabase : ScriptableObject
         _levelDictionary[level.UID] = level;
         _nameToUIDDictionary[level.Name] = level.UID;
         _uidToNameDictionary[level.UID] = level.Name;
-
-        if(level.DoPublish && !_levelOrder.Contains(level.Name))
-        {
-            _levelOrder.Add(level.Name);
-        }
-        else if (!level.DoPublish && _levelOrder.Contains(level.Name))
-        {
-            _levelOrder.Remove(level.Name);
-        }
     }
 
     public void ChangeLevelName(Level level, string newName)
     {
         var uid = level.UID;
         var oldName = level.Name;
-        level.Name = newName;
+        level.Name = newName;        
 
         _nameToUIDDictionary.Remove(oldName);
         _nameToUIDDictionary[newName] = uid;
         _uidToNameDictionary[uid] = newName;
-        _levelDictionary[uid] = level;
+        _levelDictionary[uid] = level; 
+
+        if (_levelOrder.Contains(oldName))
+        {
+            var index = _levelOrder.IndexOf(oldName);
+            _levelOrder[index] = newName;
+        }
     }
 
     public Level GetLevelByName(string name)
@@ -203,7 +200,7 @@ public class LevelDatabase : ScriptableObject
             lastLevelLoadedUID = null;
         }
         return true;        
-    }
+    }        
 
     public string GetUID(string name)
     {

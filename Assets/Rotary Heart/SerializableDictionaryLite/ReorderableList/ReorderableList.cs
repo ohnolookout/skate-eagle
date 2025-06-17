@@ -1535,8 +1535,8 @@ namespace RotaryHeart.Lib.SerializableDictionary
                 {
                     normal = new GUIStyleState { background = Texture2D.whiteTexture }
                 };
-                expandButton = EditorGUIUtility.IconContent("winbtn_win_max");
-                collapseButton = EditorGUIUtility.IconContent("winbtn_win_min");
+                //expandButton = EditorGUIUtility.IconContent("winbtn_win_max");
+                //collapseButton = EditorGUIUtility.IconContent("winbtn_win_min");
                 selectedColor = GUI.skin.settings.selectionColor;
             }
         }

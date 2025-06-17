@@ -55,7 +55,7 @@ public class LevelMenu : MonoBehaviour
     }
     #endregion
 
-    #region Node Management
+    #region Level Button Management
     private void ActivateButtons()
     {
         _levelButtons = GetComponentsInChildren<LevelMenuButton>();
