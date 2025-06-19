@@ -67,8 +67,9 @@ public class LevelMenu : MonoBehaviour
                 break;
             }
 
-            var isLastUnlockedNode = SetUpButton(_levelButtons[i], _sessionData.LevelDB.GetLevelByIndex(i), i);
-            if (isLastUnlockedNode)
+            Debug.Log("Setting up button for level index: " + i);
+            var isLastUnlockedButton = SetUpButton(_levelButtons[i], _sessionData.LevelDB.GetLevelByIndex(i), i);
+            if (isLastUnlockedButton)
             {
                 _selectIndex = i;
             }
@@ -81,6 +82,8 @@ public class LevelMenu : MonoBehaviour
     {
         container.Level = level;
         container.containerIndex = index;
+
+        // Log all relevant variables to debug NullReferenceException
         PlayerRecord record = _sessionData.GetRecordByUID(level.UID);
         container.Setup(record.status);
         container.Button.onClick.AddListener(() => SelectButton(container));

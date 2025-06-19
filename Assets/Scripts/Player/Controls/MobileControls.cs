@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MobileControls : MonoBehaviour, IOverlayScreen
 {
+    [SerializeField] private LevelManager _levelManager;
     private InputEventController _controller;
     [SerializeField] private GameObject _display;
     void Awake()

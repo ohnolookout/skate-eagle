@@ -50,6 +50,13 @@ public class LevelDBInspector : Editor
             UpdateLevelOrder();
         }
 
+        if (GUILayout.Button("Clean Up DB", GUILayout.ExpandWidth(false)))
+        {
+            _levelDatabase.CleanUpDicts();
+            BuildDoPublishDict();
+            UpdateLevelOrder();
+        }
+
 
 
     }
@@ -84,8 +91,6 @@ public class LevelDBInspector : Editor
 
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
-        //_levelDatabase = (LevelDatabase)target;
-        //BuildDoPublishDict();
     }
 }
 

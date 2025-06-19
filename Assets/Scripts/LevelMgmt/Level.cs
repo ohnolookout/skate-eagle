@@ -30,7 +30,7 @@ public class Level
     public FinishLineParameters FinishLineParameters {get => _finishLineParameters; set => _finishLineParameters = value; }
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
 
-    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null, LinkedCameraTarget rootCameraTarget = null)
+    public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null, LinkedCameraTarget rootCameraTarget = null, string UID = null)
     {
         _name = name;
         _medalTimes = medalTimes;
@@ -39,7 +39,7 @@ public class Level
         _leaderboardKey = _name + "_leaderboard";
         _startPoint = startPoint;
         _cameraStartPosition = cameraStartPosition;
-        _killPlaneY = killPlaneY;   
+        _killPlaneY = killPlaneY;
         if (finishLine != null)
         {
             _finishLineParameters = finishLine.Parameters;

@@ -53,7 +53,6 @@ public class MainMenu : MonoBehaviour
     //Show notification depending on whether it's a new player or not
     private void HandleStartUp(InitializationResult result)
     {
-        Debug.Log("Main menu processing initialization...");
         _gameManager.PlayFabManager.OnInitializationComplete -= HandleStartUp;
         if (result.isFirstTime)
         {

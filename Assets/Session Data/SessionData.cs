@@ -187,7 +187,7 @@ public class SessionData
 
     public PlayerRecord PreviousLevelRecord(string UID)
     {
-        var currentLevel = _levelDB.GetLevelByName(UID);
+        var currentLevel = _levelDB.GetLevelByUID(UID);
         var previouslevel = _levelDB.GetPreviousLevel(currentLevel);
         return previouslevel != null ? GetRecordByUID(previouslevel.UID) : null;
     }

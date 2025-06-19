@@ -23,10 +23,11 @@ public class LevelDesigner : EditorWindow
     private FinishLineCreatorWindow _finishWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
+    private Scene _activeScene;
 
     private bool _debugMode = false;
-    private bool _groundEditorNotFound = false;
-    private Vector3 _lastTransformPosition;
+    private bool _groundEditorFound = false;
+    private Vector3? _lastTransformPosition = null;
 
     private string levelName = "New Level";
     public float medalTimeRed = 0;
@@ -50,8 +51,18 @@ public class LevelDesigner : EditorWindow
 
     private void OnEnable()
     {
+        _activeScene = SceneManager.GetActiveScene();
         _groundEditor = FindAnyObjectByType<GroundEditManager>();
         _groundManager = FindAnyObjectByType<GroundManager>();
+
+        if(_groundEditor == null || _groundManager == null)
+        {
+            _groundEditorFound = false;
+            return;
+        } else
+        {
+            _groundEditorFound = true;
+        }
 
         _selectedObject = Selection.activeGameObject;
         OnSelectionChanged();
@@ -76,7 +87,7 @@ public class LevelDesigner : EditorWindow
 
     void Update()
     {
-        if (_selectedObject != null && _selectedObject.transform.position != _lastTransformPosition)
+        if (_selectedObject != null && _lastTransformPosition != null && _selectedObject.transform.position != (Vector3)_lastTransformPosition)
         {
             _lastTransformPosition = _selectedObject.transform.position;
             SetLevelDirty();
@@ -92,22 +103,22 @@ public class LevelDesigner : EditorWindow
             EditorGUILayout.HelpBox("Level Designer is not available in play mode.", MessageType.Warning);
             return;
         }
-        if (_groundEditor == null)
+
+        if (SceneManager.GetActiveScene() != _activeScene)
         {
-            if (_groundEditorNotFound)
-            {
-                EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
-                return;
-            }
-
             OnEnable();
-
-            if(_groundEditor == null)
-            {
-                _groundEditorNotFound = true;
-                return;
-            }
         }
+
+        if (!_groundEditorFound)
+        {
+            EditorGUILayout.HelpBox("No GroundConstructor found in scene. Please add one to continue.", MessageType.Warning);
+            if (GUILayout.Button("Check for Ground Editor"))
+            {
+                OnEnable();
+            }
+            return;
+        }
+
         _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground", "Segment" });
         switch (_tabIndex)
         {
@@ -174,6 +185,7 @@ public class LevelDesigner : EditorWindow
             ResetMedalTimes();
             _levelDB.EditorLevel = CreateLevel();
             _levelDB.LevelIsDirty = false;
+            _lastTransformPosition = null;
         }
 
         if (GUILayout.Button("Clear Finish Line", GUILayout.ExpandWidth(false)))
@@ -430,6 +442,10 @@ public class LevelDesigner : EditorWindow
 
     private void AssignFirstGround()
     {
+        if(_groundManager == null)
+        {
+            return;
+        }
         if (_groundManager.groundContainer.transform.childCount > 0)
         {
             _ground = _groundManager.groundContainer.transform.GetChild(0).GetComponent<Ground>();
@@ -498,6 +514,7 @@ public class LevelDesigner : EditorWindow
         }
 
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
+        _lastTransformPosition = null;
 
     }
 
@@ -548,6 +565,7 @@ public class LevelDesigner : EditorWindow
         cameraStartPosition = levelToLoad.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(levelToLoad, _groundManager);
+        _lastTransformPosition = null;
     }
 
     private void LoadMedalTimes(MedalTimes medalTimes)

@@ -87,7 +87,7 @@ public class LevelDatabase : ScriptableObject
 
     public Level GetLevelByName(string name)
     {
-        if(name == null || !LevelNameExists(name))
+        if (name == null || !LevelNameExists(name))
         {
             return null;
         }
@@ -194,13 +194,78 @@ public class LevelDatabase : ScriptableObject
         _levelDictionary.Remove(name);
         _nameToUIDDictionary.Remove(name);
         _uidToNameDictionary.Remove(uid);
+        _levelOrder.Remove(name);
 
         if (lastLevelLoadedUID == uid)
         {
             lastLevelLoadedUID = null;
         }
         return true;        
-    }        
+    }
+    
+    public void CleanUpDicts()
+    {
+        var activeUIDs = _levelDictionary.Keys.ToList();
+        List<string> activeNames = new();
+        foreach(var UID in activeUIDs)
+        {            
+            var level = _levelDictionary[UID];
+
+            if(level == null || level.Name == null)
+            {
+                _levelDictionary.Remove(UID);
+                _uidToNameDictionary.Remove(UID);
+                continue;
+            }
+
+            if (level.Name != null)
+            {
+                activeNames.Add(level.Name);
+            }
+
+            if(!_nameToUIDDictionary.ContainsKey(level.Name))
+            {
+                _nameToUIDDictionary[level.Name] = UID;
+            }
+
+            if(!_uidToNameDictionary.ContainsKey(UID))
+            {
+                _uidToNameDictionary[UID] = level.Name;
+            }
+        }
+
+        var namesDictNames = _nameToUIDDictionary.Keys.ToList();
+
+        foreach (var name in namesDictNames)
+        {
+            if (!activeNames.Contains(name))
+            {
+                _uidToNameDictionary.Remove(_nameToUIDDictionary[name]);
+                _nameToUIDDictionary.Remove(name);
+            }
+        }
+
+        var UIDsDictUIDs = _uidToNameDictionary.Keys.ToList();
+
+        foreach (var uid in UIDsDictUIDs)
+        {
+            if (!_levelDictionary.ContainsKey(uid))
+            {
+                _nameToUIDDictionary.Remove(_uidToNameDictionary[uid]);
+                _uidToNameDictionary.Remove(uid);
+            }
+        }
+
+        var orderNames = _levelOrder.ToList();
+
+        foreach (var name in orderNames)
+        {
+            if (!activeNames.Contains(name))
+            {
+                _levelOrder.Remove(name);
+            }
+        }
+    }
 
     public string GetUID(string name)
     {

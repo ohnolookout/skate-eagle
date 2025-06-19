@@ -164,7 +164,7 @@ public static class SerializeLevelUtility
     #endregion
 
     #region Deserialization
-    public static void DeserializeLevel(Level level, GroundManager groundManager)
+    public static void DeserializeLevel(Level level, GroundManager groundManager, LevelManager levelManager = null)
     {
         groundManager.ClearGround();
 
@@ -174,7 +174,7 @@ public static class SerializeLevelUtility
             groundManager.Grounds.Add(ground);
         }
 
-        groundManager.FinishLine.SetFinishLine(level.FinishLineParameters);
+        groundManager.FinishLine.SetFinishLine(level.FinishLineParameters, levelManager);
 
         if (Application.isPlaying)
         {

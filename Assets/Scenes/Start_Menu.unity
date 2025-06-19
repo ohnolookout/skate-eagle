@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -885,7 +885,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4478039975661987063, guid: 18c292aa5272bea44adf2f98d2fccd9f, type: 3}
   m_PrefabInstance: {fileID: 285293945}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 591954421}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -1848,11 +1848,6 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3143874937206365422, guid: 4f003239cc7f4f74c9ee719a1cfb0ff8, type: 3}
   m_PrefabInstance: {fileID: 574918872}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &591954421 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4478039975661987059, guid: 18c292aa5272bea44adf2f98d2fccd9f, type: 3}
-  m_PrefabInstance: {fileID: 285293945}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &591954423 stripped
 RectTransform:
@@ -4480,7 +4475,62 @@ MonoBehaviour:
   - {fileID: 1966383281, guid: 50e3a39886c5ca34389914052dc6125d, type: 3}
   - {fileID: 1356405452, guid: 50e3a39886c5ca34389914052dc6125d, type: 3}
   - {fileID: 1855566702, guid: 50e3a39886c5ca34389914052dc6125d, type: 3}
-  SelectedLevel: {fileID: 0}
+  selectedLevel:
+    _UID: 
+    _name: 
+    _goldRequired: 0
+    _medalTimes:
+      _bronzeTime: 0
+      _silverTime: 0
+      _goldTime: 0
+      _blueTime: 0
+      _redTime: 0
+    _serializedGrounds: []
+    _leaderboardKey: 
+    _startPoint: {x: 0, y: 0}
+    _killPlaneY: 0
+    _cameraStartPosition: {x: 0, y: 0}
+    _finishLineParameters:
+      flagPointIndex: 0
+      flagPointXOffset: 0
+      backstopPointIndex: 0
+      backstopPointXOffset: 0
+      backstopIsActive: 0
+      flagPosition: {x: 0, y: 0}
+      backstopPosition: {x: 0, y: 0}
+      isForward: 0
+    _rootCameraTarget:
+      LeftTargets: []
+      RightTargets: []
+      LeftKDNode:
+        rid: -2
+      RightKDNode:
+        rid: -2
+      TargetType: 0
+      SerializedLocation: 
+      _lowTarget:
+        TargetTransform: {fileID: 0}
+        CurrentInfluenceH: 1
+        CurrentInfluenceV: 1
+        TargetInfluenceH: 1
+        TargetInfluenceV: 1
+        TargetOffset: {x: 0, y: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 0, y: 0, z: 0}
+      _highTarget:
+        TargetTransform: {fileID: 0}
+        CurrentInfluenceH: 1
+        CurrentInfluenceV: 1
+        TargetInfluenceH: 1
+        TargetInfluenceV: 1
+        TargetOffset: {x: 0, y: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 0, y: 0, z: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!224 &1379497552 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1945969726738957087, guid: 95a54f9cd2b63f342b26633d7d9539c3, type: 3}
@@ -4934,12 +4984,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!82 &1527572983 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 6067122416868169727, guid: a4389c9c2450f77429b0f68b7105f9dc, type: 3}
@@ -5635,24 +5685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 134f500c71e6111489776e16e5c6564c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bestBlock: {fileID: 1791654958}
-  incompleteText: {fileID: 532431999}
-  medal: {fileID: 1447035984}
-  lockedBlock: {fileID: 591954421}
-  playButton: {fileID: 1994251394}
-  bestTime: {fileID: 907101412}
-  levelName: {fileID: 1448215098}
-  lockedText: {fileID: 285293946}
-  medalImage: {fileID: 1447035986}
-  medalSprites:
-  - {fileID: -175544008, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  - {fileID: -1683080655, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  - {fileID: -39477107, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  - {fileID: -996871780, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  - {fileID: -1016430485, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  - {fileID: -971217479, guid: c7ad416af6398e341a9a0f070696dc8a, type: 3}
-  menu: {fileID: 1253713293}
-  selectedLevel: {fileID: 0}
 --- !u!1 &1791654958
 GameObject:
   m_ObjectHideFlags: 0

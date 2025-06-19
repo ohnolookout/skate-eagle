@@ -9,8 +9,6 @@ public class FinishLine : MonoBehaviour
     [SerializeField] private GameObject _backstop;
     private Vector2 _flagPosition;
     private Vector2 _backstopPosition;
-    private IPlayer _player;
-    private Rigidbody2D _playerBody;
     public Action DoFinish;
     private const float _upperYTolerance = 10;
     private const float _lowerYTolerance = 2f;
@@ -19,6 +17,7 @@ public class FinishLine : MonoBehaviour
     private Func<float, bool> _isXBetween;
     private FinishLineParameters _parameters;
     private static Vector2 _flagOffset = new(1.5f, 1f);
+    private LevelManager _levelManager;
 
     public Vector2 FlagPosition => _flagPosition;
     public Vector2 BackstopPosition => _backstopPosition;
@@ -26,18 +25,19 @@ public class FinishLine : MonoBehaviour
     public GameObject Flag => _flag;
     public FinishLineParameters Parameters { get => _parameters; set => _parameters = value; }
 
-    void Awake()
-    {
-        LevelManager.OnPlayerCreated += AddPlayer;
-    }
 
     void Update()
     {
-        if(_isXBetween(_playerBody.position.x))
+        if(_levelManager == null || _levelManager.PlayerBody == null)
         {
-            if (_playerBody.position.y > _lowerY && _playerBody.position.y < _upperY)
+            return;
+        }
+
+        if (_isXBetween(_levelManager.PlayerBody.position.x))
+        {
+            if (_levelManager.PlayerBody.position.y > _lowerY && _levelManager.PlayerBody.position.y < _upperY)
             {
-                if (_player.CollisionManager.BothWheelsCollided)
+                if (_levelManager.Player.CollisionManager.BothWheelsCollided)
                 {
                     DoFinish?.Invoke();
                 }
@@ -45,6 +45,7 @@ public class FinishLine : MonoBehaviour
 
         }
     }
+
 
     private void OnDrawGizmosSelected()
     {
@@ -61,15 +62,9 @@ public class FinishLine : MonoBehaviour
         Gizmos.DrawLine(lowerRightPoint, lowerLeftPoint);
     }
 
-    private void AddPlayer(IPlayer player)
+    public void SetFinishLine(FinishLineParameters parameters, LevelManager levelManager)
     {
-        _player = player;
-        _playerBody = player.NormalBody;
-    }
-
-    public void SetFinishLine(FinishLineParameters parameters)
-    {
-        if(parameters == null)
+        if (parameters == null)
         {
             gameObject.SetActive(false);
             return;
@@ -77,6 +72,7 @@ public class FinishLine : MonoBehaviour
 
         gameObject.SetActive(true);
 
+        _levelManager = levelManager;
         _parameters = parameters;
         _flagPosition = parameters.flagPosition;
         _backstopPosition = parameters.backstopPosition;

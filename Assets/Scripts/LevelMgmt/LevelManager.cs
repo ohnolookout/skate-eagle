@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     [SerializeField] private GameObject _playerPrefab;
     private GameManager _gameManager;
     private Player _player;
+    private Rigidbody2D _playerBody;
     private Transform _playerTransform;
     public static Action<Level, PlayerRecord, ICameraTargetable> OnLanding { get; set; }
     public static Action OnGameOver { get; set; }
@@ -27,8 +28,9 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnFall { get; set; }
     public static Action OnCrossFinish { get; set; }
     public static Action<IPlayer> OnPlayerCreated { get; set; }
-
     public GroundManager GroundManager { get => _groundManager; set => _groundManager = value; }
+    public Player Player { get => _player; set => _player = value; }
+    public Rigidbody2D PlayerBody { get => _playerBody; set => _playerBody = value; }
     public bool HasPlayer { get => _player != null; }
     public bool HasTerrainManager { get => _groundManager != null; }
     #endregion
@@ -68,7 +70,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void InitializeLevel()
     {
-        SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager);
+        SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager, this);
         OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
 
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
@@ -130,10 +132,13 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
         _playerTransform = _player.Transform;
+        _playerBody = _player.NormalBody;
+
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Finish, ActivateResultsScreen);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, GameOver);
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Fall, GameOver);
+
         OnPlayerCreated?.Invoke(_player);
     }
 

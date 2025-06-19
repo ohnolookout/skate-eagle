@@ -10,15 +10,16 @@ public class CameraZoom : MonoBehaviour
     #region Declarations
     private ProCamera2D _camera;
     private Transform _camContainer;
-    private IPlayer _player;
     private bool _doPlayerZoom = false,_doTransitionTargetSize = false;
     private float _targetSize, _transitionTargetSize, _defaultSize, _zoomYDelta = 0;
     private float _defaultYOffset;
+    [SerializeField] private LevelManager _levelManager;
     public Action<ProCamera2D> OnZoomOut;
     public Action OnFinishZoomIn;
     public float ZoomYDelta => _zoomYDelta;
     public bool DoPlayerZoom { get => _doPlayerZoom; set => _doPlayerZoom = value; }
     public float TargetSize => _targetSize;
+    private IPlayer _player => _levelManager.Player;
     #endregion
 
     #region Construct and Update
@@ -30,8 +31,6 @@ public class CameraZoom : MonoBehaviour
         _targetSize = _defaultSize;
         _transitionTargetSize = _defaultSize;
         _defaultYOffset = _camera.GetOffsetY();
-
-        LevelManager.OnPlayerCreated += OnPlayerCreated;
     }
     void Update()
     {
@@ -146,11 +145,6 @@ public class CameraZoom : MonoBehaviour
         }
     }
     #endregion
-
-    private void OnPlayerCreated(IPlayer player)
-    {
-        _player = player;
-    }
 
     public void ResetZoom()
     {
