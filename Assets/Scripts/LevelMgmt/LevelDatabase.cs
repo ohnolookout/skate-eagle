@@ -11,6 +11,7 @@ using Unity.VisualScripting;
 [Serializable]
 public class LevelDatabase : ScriptableObject
 {
+    #region Declarations
     [SerializeField] private SerializableDictionaryBase<string, Level> _levelDictionary;
     [SerializeField] private SerializableDictionaryBase<string, string> _nameToUIDDictionary;
     [SerializeField] private SerializableDictionaryBase<string, string> _uidToNameDictionary;
@@ -30,8 +31,9 @@ public class LevelDatabase : ScriptableObject
         _levelDictionary = new();
         _editorLevel = new("Editor Level", new(), new Ground[0]);
     }
+    #endregion
 
-
+    #region Save/Delete Level
     public bool SaveLevel(Level level)
     {
         if(level == null || level.Name == null)
@@ -67,6 +69,36 @@ public class LevelDatabase : ScriptableObject
         _uidToNameDictionary[level.UID] = level.Name;
     }
 
+    public bool DeleteLevel(string name)
+    {
+        if (name == null || !LevelNameExists(name))
+        {
+            Debug.Log("Name is null or doesn't exist in DB");
+            return false;
+        }
+
+        bool doDelete = EditorUtility.DisplayDialog("Delete Level", $"Are you sure you want to delete {name}?", "Yes", "No");
+
+        if (!doDelete)
+        {
+            return false;
+        }
+        var uid = _nameToUIDDictionary[name];
+
+        _levelDictionary.Remove(name);
+        _nameToUIDDictionary.Remove(name);
+        _uidToNameDictionary.Remove(uid);
+        _levelOrder.Remove(name);
+
+        if (lastLevelLoadedUID == uid)
+        {
+            lastLevelLoadedUID = null;
+        }
+
+        EditorUtility.SetDirty(this);
+        return true;
+    }
+
     public void ChangeLevelName(Level level, string newName)
     {
         var uid = level.UID;
@@ -83,7 +115,11 @@ public class LevelDatabase : ScriptableObject
             var index = _levelOrder.IndexOf(oldName);
             _levelOrder[index] = newName;
         }
+        EditorUtility.SetDirty(this);
     }
+    #endregion
+
+    #region Get Level Methods
 
     public Level GetLevelByName(string name)
     {
@@ -175,98 +211,6 @@ public class LevelDatabase : ScriptableObject
         return GetLevelByIndex(index - 1);
     }
 
-    public bool DeleteLevel(string name)
-    {
-        if (name == null || !LevelNameExists(name))
-        {
-            Debug.Log("Name is null or doesn't exist in DB");
-            return false;
-        }
-
-        bool doDelete = EditorUtility.DisplayDialog("Delete Level", $"Are you sure you want to delete {name}?", "Yes", "No");
-
-        if (!doDelete)
-        {
-            return false;
-        }
-        var uid = _nameToUIDDictionary[name];
-
-        _levelDictionary.Remove(name);
-        _nameToUIDDictionary.Remove(name);
-        _uidToNameDictionary.Remove(uid);
-        _levelOrder.Remove(name);
-
-        if (lastLevelLoadedUID == uid)
-        {
-            lastLevelLoadedUID = null;
-        }
-        return true;        
-    }
-    
-    public void CleanUpDicts()
-    {
-        var activeUIDs = _levelDictionary.Keys.ToList();
-        List<string> activeNames = new();
-        foreach(var UID in activeUIDs)
-        {            
-            var level = _levelDictionary[UID];
-
-            if(level == null || level.Name == null)
-            {
-                _levelDictionary.Remove(UID);
-                _uidToNameDictionary.Remove(UID);
-                continue;
-            }
-
-            if (level.Name != null)
-            {
-                activeNames.Add(level.Name);
-            }
-
-            if(!_nameToUIDDictionary.ContainsKey(level.Name))
-            {
-                _nameToUIDDictionary[level.Name] = UID;
-            }
-
-            if(!_uidToNameDictionary.ContainsKey(UID))
-            {
-                _uidToNameDictionary[UID] = level.Name;
-            }
-        }
-
-        var namesDictNames = _nameToUIDDictionary.Keys.ToList();
-
-        foreach (var name in namesDictNames)
-        {
-            if (!activeNames.Contains(name))
-            {
-                _uidToNameDictionary.Remove(_nameToUIDDictionary[name]);
-                _nameToUIDDictionary.Remove(name);
-            }
-        }
-
-        var UIDsDictUIDs = _uidToNameDictionary.Keys.ToList();
-
-        foreach (var uid in UIDsDictUIDs)
-        {
-            if (!_levelDictionary.ContainsKey(uid))
-            {
-                _nameToUIDDictionary.Remove(_uidToNameDictionary[uid]);
-                _uidToNameDictionary.Remove(uid);
-            }
-        }
-
-        var orderNames = _levelOrder.ToList();
-
-        foreach (var name in orderNames)
-        {
-            if (!activeNames.Contains(name))
-            {
-                _levelOrder.Remove(name);
-            }
-        }
-    }
-
     public string GetUID(string name)
     {
         if (name == null || !LevelNameExists(name))
@@ -307,5 +251,8 @@ public class LevelDatabase : ScriptableObject
         }
         return _uidToNameDictionary.ContainsKey(uid);
     }
+
+    #endregion
+
 }
 

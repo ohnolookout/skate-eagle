@@ -30,11 +30,11 @@ public class LevelDesigner : EditorWindow
     private Vector3? _lastTransformPosition = null;
 
     private string levelName = "New Level";
-    public float medalTimeRed = 0;
-    public float medalTimeBlue = 0;
-    public float medalTimeGold = 0;
-    public float medalTimeSilver = 0;
-    public float medalTimeBronze = 0;
+    public float medalTimeRed = 6;
+    public float medalTimeBlue = 8;
+    public float medalTimeGold = 10;
+    public float medalTimeSilver = 14;
+    public float medalTimeBronze = 20;
 
     public Vector2 cameraStartPosition = new(-35, 15);
     private Vector2 _defaultTang = new(-1, 1);

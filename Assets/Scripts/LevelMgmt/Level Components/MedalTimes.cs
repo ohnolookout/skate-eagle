@@ -18,15 +18,15 @@ public struct MedalTimes
         _redTime = redTime;
     }
 
-    public float Bronze => _bronzeTime;
+    public float Bronze { get => _bronzeTime; set => _bronzeTime = value; }
 
-    public float Silver => _silverTime;
+    public float Silver { get => _silverTime; set => _silverTime = value; }
 
-    public float Gold => _goldTime;
+    public float Gold { get => _goldTime; set => _goldTime = value; }
 
-    public float Blue => _blueTime;
+    public float Blue { get => _blueTime; set => _blueTime = value; }
 
-    public float Red => _redTime;
+    public float Red { get => _redTime; set => _redTime = value; }
 
     public float[] TimesArray => new float[5] { _redTime, _blueTime, _goldTime, _silverTime, _bronzeTime };
 
@@ -54,6 +54,32 @@ public struct MedalTimes
             }
         }
         return Medal.Participant;
+    }
+
+    public void SetTime(Medal medal, float time)
+    {
+        switch (medal)
+        {
+            case Medal.Red:
+                _redTime = time;
+                break;
+            case Medal.Blue:
+                _blueTime = time;
+                break;
+            case Medal.Gold:
+                _goldTime = time;
+                break;
+            case Medal.Silver:
+                _silverTime = time;
+                break;
+            case Medal.Bronze:
+                _bronzeTime = time;
+                Debug.Log("Medaltimes updated bronze to " + time);
+                Debug.Log("Saved bronze value: " + _bronzeTime);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(medal), medal, null);
+        }
     }
 
 }
