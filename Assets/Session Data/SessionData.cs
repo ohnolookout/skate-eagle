@@ -129,10 +129,11 @@ public class SessionData
             record.status = CompletionStatus.Incomplete;
             return record.status;
         }
-
+        Debug.Log("Current record levelUID " + record.levelUID);
+        
         //If previous level is complete and player has enough gold, set to incomplete. Otherwise, set locked.
         if (previousRecord.status == CompletionStatus.Complete
-            && _levelDB.GetLevelByName(record.levelUID).GoldRequired <= GoldPlusCount)
+            && _levelDB.GetLevelByUID(record.levelUID).GoldRequired <= GoldPlusCount)
         {
             record.status = CompletionStatus.Incomplete;
         } else

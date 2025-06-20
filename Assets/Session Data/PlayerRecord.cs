@@ -12,7 +12,7 @@ public class PlayerRecord
 	public float bestTime = float.PositiveInfinity;
 	public DateTime date;
 	public Medal medal = Medal.Participant;
-	public CompletionStatus status;
+	public CompletionStatus status = CompletionStatus.Locked;
 
 	public PlayerRecord(Level level)
 	{
