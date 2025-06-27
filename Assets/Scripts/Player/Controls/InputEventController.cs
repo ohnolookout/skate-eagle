@@ -10,7 +10,7 @@ public class InputEventController
 {
     private PlayerControls _inputActions;
     private InputType _inputType;
-    public Action OnJumpPress, OnJumpRelease, OnDownPress, OnDownRelease, OnRotateRelease, OnRestart, OnRagdoll, OnSubmit;
+    public Action OnJumpPress, OnJumpRelease, OnDownPress, OnDownRelease, OnRotateRelease, OnRestart, OnRagdoll;
     public Action<Vector2> OnRotate, OnNavigate;
     private Vector2 _rotateValue = new(0, 0);
 
@@ -56,7 +56,7 @@ public class InputEventController
         _inputActions.UI.Enable();
         _inputActions.UI.Restart.started += DoRestart;
         _inputActions.UI.Navigate.started += DoNavigate;
-        _inputActions.UI.Submit.started += DoSubmit;
+        //_inputActions.UI.Submit.started += DoSubmit;
     }
 
     public void DisableInputs()
@@ -141,11 +141,6 @@ public class InputEventController
         _inputActions.UI.Disable();
         _inputActions.UI.Restart.started -= DoRestart;
         _inputActions.UI.Navigate.started -= DoNavigate;
-        _inputActions.UI.Submit.started -= DoSubmit;
-    }
-    private void DoSubmit(InputAction.CallbackContext obj)
-    {
-        OnSubmit?.Invoke();
     }
 
     private void DoNavigate(InputAction.CallbackContext obj)

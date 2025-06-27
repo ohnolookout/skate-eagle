@@ -11,11 +11,10 @@ public class StandbyState : PlayerState
 
     public override void EnterState()
     {
-        DoEnterStandby += () => _playerMachine.Player.InputEvents.OnDownPress += DoChangeState;
-        if(_player.Params.StompCharge > 0)
+        DoEnterStandby += () =>
         {
-            DoEnterStandby += () => _player.EventAnnouncer.InvokeAction(PlayerEvent.StartWithStomp);
-        }
+            _playerMachine.Player.InputEvents.OnDownPress += DoChangeState;
+        };
         LevelManager.OnStandby += DoEnterStandby;
         DoChangeState += () => ChangeState(_stateFactory.GetState(PlayerStateType.Active), false);
         _player.DoLanding = false;

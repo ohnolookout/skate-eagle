@@ -82,7 +82,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void OnEnable()
     {
         _inputEvents = new(InputType.UI);
-        _inputEvents.OnSubmit += Submit;
     }
     private void OnDisable()
     {
@@ -146,7 +145,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         _inputEvents.OnRestart += RestartLevel;
         OnAttempt?.Invoke();
-
     }
     public void RestartLevel()
     {
@@ -195,7 +193,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     }
     public void Fall()
     {
-        Debug.Log("Falling");
         OnFall?.Invoke();
     }
 

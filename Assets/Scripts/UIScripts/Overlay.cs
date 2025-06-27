@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro.EditorUtilities;
+using UnityEngine.Events;
 
 
 public class Overlay : MonoBehaviour
@@ -84,6 +85,7 @@ public class Overlay : MonoBehaviour
         _timer.ActivateDisplay(false);
         _mobileControls.ActivateDisplay(false);
     }
+
     
 }
 
