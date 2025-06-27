@@ -23,7 +23,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public static Action OnAttempt { get; set; }
     public static Action OnStandby { get; set; }
     public static Action OnResultsScreen { get; set; }
-    public static Action OnRestart { get; set; }
     public static Action OnLevelExit { get; set; }
     public static Action OnFall { get; set; }
     public static Action OnCrossFinish { get; set; }
@@ -44,13 +43,13 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void Start()
     {
-        InstantiatePlayer();
 
 #if UNITY_EDITOR
         StartCoroutine( WaitForGameManagerInitializationRoutine());
         return;
 #endif        
         InitializeLevel();
+        InstantiatePlayer();
     }
 
     void OnDrawGizmosSelected()
@@ -80,14 +79,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         _inputEvents.OnRestart += GoToStandby;
     }
 
-    private void Reset()
-    {
-        InstantiatePlayer();
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
-        _groundManager.FinishLine.DoFinish += CrossFinish;
-        _inputEvents.OnRestart += GoToStandby;
-    }
-
     private void OnEnable()
     {
         _inputEvents = new(InputType.UI);
@@ -105,6 +96,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         yield return new WaitWhile(() => GameManager.Instance.IsInitializing);
         InitializeLevel();
+        InstantiatePlayer();
     }
 #endif
 #endregion
@@ -121,7 +113,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
         OnGameOver = null;
         OnResultsScreen = null;
         OnStandby = null;
-        OnRestart = null;
         OnFall = null;
         OnPlayerCreated = null;
         GroundSegment.OnSegmentBecomeVisible = null;
@@ -167,8 +158,10 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Destroy(_player.gameObject);
         }
 
-        OnRestart?.Invoke();
-        Reset();
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
+        InstantiatePlayer();
+        _groundManager.FinishLine.DoFinish += CrossFinish;
+        _inputEvents.OnRestart += GoToStandby;
     }
 
     public void CrossFinish()

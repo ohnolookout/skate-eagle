@@ -17,8 +17,7 @@ public class BackgroundContainer : MonoBehaviour
 
     private void Awake()
     {
-        LevelManager.OnRestart += GenerateSequence;
-        GenerateSequence();
+        LevelManager.OnLanding += GenerateSequence;
     }
     void Start()
     {
@@ -59,7 +58,7 @@ public class BackgroundContainer : MonoBehaviour
         return returnSequence;
     }
 
-    public void GenerateSequence()
+    public void GenerateSequence(Level _, PlayerRecord __, ICameraTargetable ___)
     {
         BgPanelSequence = RandomIndexOrder(_bgPanelPoolCount, _bgPanelSequenceCount);
     }

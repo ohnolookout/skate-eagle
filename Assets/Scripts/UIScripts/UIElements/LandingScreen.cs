@@ -51,18 +51,19 @@ public class LandingScreen : MonoBehaviour, IOverlayScreen
         {
             playerTime.text = "--:--";
             playerMedal.sprite = medalSprites[5];
-            DeactivatePlayerBadge();
+            ActivatePlayerBadge(false);
         } else {
             playerTime.text = OverlayUtility.TimeToString((float)playerInfo.bestTime);
             playerMedal.sprite = medalSprites[(int)playerInfo.medal];
             nextLevelUnlocked = (int)playerInfo.medal <= 3;
+            ActivatePlayerBadge(true);
         }
         StrikeThruTimes(playerInfo.medal);
     }
 
-    private void DeactivatePlayerBadge()
+    private void ActivatePlayerBadge(bool doActivate)
     {
-        bestTimeBadgeGrayOut.SetActive(true);
+        bestTimeBadgeGrayOut.SetActive(!doActivate);
     }
 
     public void ActivateDisplay(bool doActivate)

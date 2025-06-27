@@ -45,22 +45,27 @@ public class BigBgManger : MonoBehaviour
         _positionCoefficient = (-_panelCount / 2) + 0.5f;
         _cam = Camera.main;
         _camTransform = _cam.transform;
-        LevelManager.OnRestart += Restart;
         _startPosition = transform.position;
-    }
-    void Start()
-    {
+
         _leftAnchor.transform.position = new(-_totalWidth / 2, 0);
         _rightAnchor.transform.position = new(_totalWidth / 2, 0);
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
 
-        _orderedBgPanels = new();
+        LevelManager.OnLanding += OnLanding;
+    }
+    private void OnLanding(Level _, PlayerRecord __, ICameraTargetable ___)
+    {
         ArrangePanels();
         BuildPositionalLists();
 
     }
     void Update()
     {
+        if(_panelPositionalList == null)
+        {
+            return;
+        }
+
         _panelPositionalList.Update();
 
         _currentHalfWidth = (_rightAnchor.position.x - _leftAnchor.position.x) / 2;
@@ -73,10 +78,6 @@ public class BigBgManger : MonoBehaviour
 
     }
 
-    private void Restart()
-    {
-        Start();
-    }
     /*
     void OnDrawGizmos()
     {
@@ -102,6 +103,7 @@ public class BigBgManger : MonoBehaviour
     #region Initialization
     private void ArrangePanels()
     {
+        _orderedBgPanels = new();
         List<int> indexSequence;
         if (HasSharedObjectPool)
         {

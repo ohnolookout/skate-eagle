@@ -54,7 +54,7 @@ public class AudioManager : MonoBehaviour
 
         GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
         GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
-        LevelManager.OnRestart += ClearLoops;
+        LevelManager.OnLanding += ClearLoops;
         LevelManager.OnGameOver += ClearLoops;
         LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
         LevelManager.OnFinish += _ => SetModifierFramerate(1);
@@ -227,6 +227,11 @@ public class AudioManager : MonoBehaviour
         {
             StopLoop(sound.source);
         }
+    }
+
+    public void ClearLoops(Level _, PlayerRecord __, ICameraTargetable ___)
+    {
+        ClearLoops();
     }
 
     public void ClearLoops()

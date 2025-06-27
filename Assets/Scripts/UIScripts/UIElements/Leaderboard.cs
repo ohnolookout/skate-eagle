@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public enum LeaderboardActivation { MedalLocked, LoginLocked, NoLeaderboard, Active}
 public class Leaderboard : MonoBehaviour
 {
+    #region Declarations
     [SerializeField] private LeaderboardRow[] _leaderboardRows;
     [SerializeField] private GameObject _medalLockPanel, _loginLockPanel, _noLeaderboardPanel;
     [SerializeField] private GameObject[] _grayOuts;
@@ -21,7 +22,6 @@ public class Leaderboard : MonoBehaviour
     public Button NextPageButton;
     private static Color _buttonColorEnabled = new(1, 1, 1, 1);
     private static Color _buttonColorDisabled = new(160 / 255f, 160 / 255f, 160 / 255f, 61 / 255f);
-
     private bool IsLastPage { 
         get => _isLastPage; 
         set{
@@ -29,7 +29,6 @@ public class Leaderboard : MonoBehaviour
             FormatLastPageButtons(!value);
         }
     }
-
     private bool IsFirstPage
     {
         get => _isFirstPage;
@@ -41,7 +40,9 @@ public class Leaderboard : MonoBehaviour
     }
 
     private int _playerLowerBound => _playerRank - _displayCount;
+    #endregion
 
+    #region Monobehaviors
     void Awake()
     {
         _displayCount = _leaderboardRows.Length;
@@ -52,17 +53,20 @@ public class Leaderboard : MonoBehaviour
         NextPageButton.onClick.AddListener(NextPage);
 
     }
+    #endregion
 
+    #region Initialization
     public void Initialize(Level level)
     {
         ValidateActivation();
         if (_activationStatus == LeaderboardActivation.Active)
         {
+            GrayOut(false);
             PopulateLeaderboard(level.LeaderboardKey);
         }
         else
         {
-            GrayOut();
+            GrayOut(true);
         }
     }
 
@@ -89,21 +93,30 @@ public class Leaderboard : MonoBehaviour
             return;
         }
 
+        _medalLockPanel.SetActive(false);
+        _loginLockPanel.SetActive(false);
+        _noLeaderboardPanel.SetActive(false);
         _activationStatus = LeaderboardActivation.Active;
 
     }
 
-    private void GrayOut()
+    private void GrayOut(bool doGrayOut)
     {
         foreach (var gray in _grayOuts)
         {
-            gray.SetActive(true);
+            gray.SetActive(doGrayOut);
         }
     }
+    #endregion
 
     #region Populate Members
     private void PopulateLeaderboard(string leaderboardKey)
     {
+        if (_displayCount == 0)
+        {
+            _displayCount = _leaderboardRows.Length;
+        }
+
         _leaderboardKey = leaderboardKey;
         GoToPlayerRank();
     }
@@ -136,7 +149,7 @@ public class Leaderboard : MonoBehaviour
     private void UpdateMembers(List<PlayerLeaderboardEntry> leaderboardEntries)
     {
         //If row is highlighted, unhighlight on member update
-        if(_highlightedRowIndex > -1)
+        if (_highlightedRowIndex > -1)
         {
             _leaderboardRows[_highlightedRowIndex].Unhighlight(_highlightedRowIndex);
         }
@@ -244,7 +257,6 @@ public class Leaderboard : MonoBehaviour
 
     private void OnLeaderboardAroundPlayerRequestFailure(PlayFabError error)
     {
-        Debug.Log("Leaderboard around player request failed!");
         _activationStatus = LeaderboardActivation.LoginLocked;
         _loginLockPanel.SetActive(true);
     }

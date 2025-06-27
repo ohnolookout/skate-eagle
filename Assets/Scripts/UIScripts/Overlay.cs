@@ -32,7 +32,6 @@ public class Overlay : MonoBehaviour
         LevelManager.OnResultsScreen += ActivateResultsScreen;
         LevelManager.OnStandby += ActivateStandbyScreen;
         LevelManager.OnFinish += LoadResultsScreen;
-        LevelManager.OnRestart += ActivateStartScreen;
         LevelManager.OnLanding += ActivateLandingScreen;
 
         _playButton.onClick.AddListener(_levelManager.GoToStandby);
@@ -40,17 +39,6 @@ public class Overlay : MonoBehaviour
         _menuButton.onClick.AddListener(GameManager.Instance.BackToLevelMenu);
         _gameOverRestartButton.onClick.AddListener(_levelManager.RestartLevel);
         _continueButton.onClick.AddListener(_levelManager.RestartLevel);
-    }
-
-    public void ActivateStartScreen()
-    {
-        _gameplayRestartButton.onClick.RemoveListener(_levelManager.RestartLevel);
-        _landingScreen.ActivateDisplay(true);
-        _finishScreen.ActivateDisplay(false);
-        _gameOverObject.SetActive(false);
-        _standbyObject.SetActive(false);
-        _timer.ActivateDisplay(false);
-        _mobileControls.ActivateDisplay(false);
     }
 
     public void ActivateStandbyScreen()
@@ -88,7 +76,13 @@ public class Overlay : MonoBehaviour
     public void ActivateLandingScreen(Level level, PlayerRecord playerRecord, ICameraTargetable _)
     {
         _landingScreen.GenerateLanding(level, playerRecord);
+        _gameplayRestartButton.onClick.RemoveListener(_levelManager.RestartLevel);
         _landingScreen.ActivateDisplay(true);
+        _finishScreen.ActivateDisplay(false);
+        _gameOverObject.SetActive(false);
+        _standbyObject.SetActive(false);
+        _timer.ActivateDisplay(false);
+        _mobileControls.ActivateDisplay(false);
     }
     
 }

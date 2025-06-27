@@ -26,18 +26,17 @@ public class CameraManager : MonoBehaviour
         _forwardFocus = _camera.GetComponent<ProCamera2DForwardFocus>();
         _transitionSmoothness = _forwardFocus.TransitionSmoothness;
 
+        FreezeCamera();
+
         LevelManager.OnPlayerCreated += AddPlayerTarget;
         LevelManager.OnLanding += GoToStartPosition;
         LevelManager.OnAttempt += TurnOnDuration;
-
 
         //Freeze events
         LevelManager.OnStandby += UnfreezeCamera;
         LevelManager.OnFall += FreezeCamera;
         LevelManager.OnCrossFinish += FreezeCamera;
         LevelManager.OnGameOver += FreezeCamera;
-        LevelManager.OnRestart += FreezeCamera;
-        FreezeCamera();
     }
 
     void FixedUpdate()
@@ -182,6 +181,7 @@ public class CameraManager : MonoBehaviour
 
     private void GoToStartPosition(Level level, PlayerRecord _, ICameraTargetable startTarget)
     {
+        FreezeCamera();
         _rootKDTarget = level.RootCameraTarget;
         _camera.MoveCameraInstantlyToPosition(level.StartPoint);
         SetFirstTarget(startTarget);
@@ -195,7 +195,10 @@ public class CameraManager : MonoBehaviour
             return;
         }
         _camera.AddCameraTarget(startTarget.LinkedCameraTarget.LowTarget, CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint));
-        UpdateCurrentTarget(startTarget.LinkedCameraTarget);
+
+        _currentTarget = startTarget.LinkedCameraTarget;
+
+        _targetsToTrack = _currentTarget.RightTargets;
     }
 
     private void TurnOnDuration()

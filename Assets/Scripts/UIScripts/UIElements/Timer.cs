@@ -17,7 +17,7 @@ public class Timer : MonoBehaviour, IOverlayScreen
         LevelManager.OnAttempt += StartTimer;
         LevelManager.OnGameOver += GameOver;
         LevelManager.OnCrossFinish += FinishLevel;
-        LevelManager.OnRestart += Restart;
+        LevelManager.OnLanding += Restart;
     }
 
     void Update()
@@ -39,7 +39,7 @@ public class Timer : MonoBehaviour, IOverlayScreen
         LevelManager.OnAttempt -= StartTimer;
         LevelManager.OnGameOver -= GameOver;
         LevelManager.OnCrossFinish -= FinishLevel;
-        LevelManager.OnRestart -= Restart;
+        LevelManager.OnLanding -= Restart;
     }
 
     public void StartTimer()
@@ -61,7 +61,7 @@ public class Timer : MonoBehaviour, IOverlayScreen
         StopTimer(false);
     }
 
-    public void Restart()
+    public void Restart(Level _, PlayerRecord __, ICameraTargetable ___)
     {
         StopTimer(false);
     }
