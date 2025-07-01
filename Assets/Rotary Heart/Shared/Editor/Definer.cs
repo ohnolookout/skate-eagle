@@ -3,6 +3,9 @@ using UnityEditor;
 
 namespace RotaryHeart.Lib
 {
+    /// <summary>
+    /// Class used to handle defines for the assets
+    /// </summary>
     public class Definer
     {
         /// <summary>
@@ -16,8 +19,7 @@ namespace RotaryHeart.Lib
                 return;
             }
 
-            string availableDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-            List<string> definesSplit = new List<string>(availableDefines.Split(';'));
+            List<string> definesSplit = new List<string>(GetDefines());
 
             foreach (string define in defines)
             {
@@ -27,7 +29,7 @@ namespace RotaryHeart.Lib
                 }
             }
 
-            _ApplyDefine(string.Join(";", definesSplit.ToArray()));
+            ApplyDefine(string.Join(";", definesSplit.ToArray()));
         }
 
         /// <summary>
@@ -39,15 +41,14 @@ namespace RotaryHeart.Lib
             if (defines == null || defines.Count == 0)
                 return;
 
-            string availableDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-            List<string> definesSplit = new List<string>(availableDefines.Split(';'));
+            List<string> definesSplit = new List<string>(GetDefines());
 
             foreach (string define in defines)
             {
                 definesSplit.Remove(define);
             }
 
-            _ApplyDefine(string.Join(";", definesSplit.ToArray()));
+            ApplyDefine(string.Join(";", definesSplit.ToArray()));
         }
 
         /// <summary>
@@ -60,26 +61,44 @@ namespace RotaryHeart.Lib
             {
                 return false;
             }
-            
-            string availableDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-            List<string> definesSplit = new List<string>(availableDefines.Split(';'));
+
+            List<string> definesSplit = new List<string>(GetDefines());
 
             return definesSplit.Contains(define);
+        }
+
+        /// <summary>
+        /// Returns the array of defines
+        /// </summary>
+        private static string[] GetDefines()
+        {
+#if UNITY_6000_0_OR_NEWER
+            UnityEditor.Build.NamedBuildTarget namedGroup = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            string availableDefines = PlayerSettings.GetScriptingDefineSymbols(namedGroup);
+#else
+            string availableDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+#endif
+            return availableDefines.Split(';');
         }
 
         /// <summary>
         /// Actual logic that applies the defines symbols
         /// </summary>
         /// <param name="define">List of defines to save, this includes the already defined ones</param>
-        static void _ApplyDefine(string define)
+        private static void ApplyDefine(string define)
         {
             if (string.IsNullOrEmpty(define))
             {
                 return;
             }
 
+#if UNITY_6000_0_OR_NEWER
+            UnityEditor.Build.NamedBuildTarget namedGroup = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            PlayerSettings.SetScriptingDefineSymbols(namedGroup, define);
+#else
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, define);
+#endif
         }
     }
-    
+
 }

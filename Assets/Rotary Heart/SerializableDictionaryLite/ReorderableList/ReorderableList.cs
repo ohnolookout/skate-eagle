@@ -808,6 +808,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
                 showPage = Mathf.Clamp(showPage, 0, pagesCount);
             }
 
+            bool previousEnabledState = GUI.enabled;
             GUI.enabled = currentPage != showPage;
             if (pagesCount > 0)
             {
@@ -817,8 +818,9 @@ namespace RotaryHeart.Lib.SerializableDictionary
                     selection.Clear();
                 }
             }
-            GUI.enabled = true;
+            GUI.enabled = previousEnabledState;
 
+            previousEnabledState = GUI.enabled;
             GUI.enabled = currentPage != showPage + 1;
             bool drawButton = false;
             if (showPage > 3)
@@ -841,8 +843,9 @@ namespace RotaryHeart.Lib.SerializableDictionary
                     selection.Clear();
                 }
             }
-            GUI.enabled = true;
+            GUI.enabled = previousEnabledState;
 
+            previousEnabledState = GUI.enabled;
             GUI.enabled = currentPage != showPage + 2;
             drawButton = false;
             if (showPage > 3)
@@ -865,8 +868,9 @@ namespace RotaryHeart.Lib.SerializableDictionary
                     selection.Clear();
                 }
             }
-            GUI.enabled = true;
+            GUI.enabled = previousEnabledState;
 
+            previousEnabledState = GUI.enabled;
             GUI.enabled = currentPage != showPage + 3;
             drawButton = false;
             if (showPage > 4)
@@ -889,7 +893,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
                     selection.Clear();
                 }
             }
-            GUI.enabled = true;
+            GUI.enabled = previousEnabledState;
 
             if (GUI.Button(moveNext, char.ConvertFromUtf32(0x2192), Style.preButton))
             {
@@ -1535,8 +1539,8 @@ namespace RotaryHeart.Lib.SerializableDictionary
                 {
                     normal = new GUIStyleState { background = Texture2D.whiteTexture }
                 };
-                //expandButton = EditorGUIUtility.IconContent("winbtn_win_max");
-                //collapseButton = EditorGUIUtility.IconContent("winbtn_win_min");
+                expandButton = EditorGUIUtility.IconContent("winbtn_win_rest");
+                collapseButton = EditorGUIUtility.IconContent("winbtn_win_min");
                 selectedColor = GUI.skin.settings.selectionColor;
             }
         }

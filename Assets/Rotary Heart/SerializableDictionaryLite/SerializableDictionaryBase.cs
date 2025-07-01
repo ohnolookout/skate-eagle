@@ -191,7 +191,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
             _keys.Add(key);
             _values.Add(value);
         }
-        
+
         public void Clear()
         {
             if (_dict != null)
@@ -204,7 +204,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
             if (_values != null)
                 _values.Clear();
         }
-        
+
         public bool Remove(TKey key)
         {
             if (_dict == null)
@@ -215,7 +215,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
             if (_keys != null)
             {
                 index = _keys.IndexOf(key);
-                
+
                 if (index != -1)
                     _keys.RemoveAt(index);
             }
@@ -452,7 +452,7 @@ namespace RotaryHeart.Lib.SerializableDictionary
         }
 
 #endif
-        
+
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             if (_dict == null || _dict.Count == 0)

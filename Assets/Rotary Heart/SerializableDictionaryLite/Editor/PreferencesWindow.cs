@@ -59,11 +59,12 @@ namespace RotaryHeart.Lib.SerializableDictionary
             showSize = EditorGUILayout.Toggle(gui_showSizes, showSize);
             showPages = EditorGUILayout.Toggle(gui_showPages, showPages);
 
+            bool previousEnabledState = GUI.enabled;
             GUI.enabled = showPages;
 
             pageCount = Mathf.Clamp(EditorGUILayout.IntField(gui_pageCount, pageCount), 5, int.MaxValue);
 
-            GUI.enabled = true;
+            GUI.enabled = previousEnabledState;
 
             if (GUI.changed)
             {
