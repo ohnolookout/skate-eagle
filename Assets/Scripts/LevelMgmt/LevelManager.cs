@@ -189,6 +189,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     {
         FinishData finishData;
         finishData = FinishUtility.GenerateFinishData(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, finishTime);
+        GameManager.Instance.UpdateRecord(finishData);
         OnFinish?.Invoke(finishData);
     }
     public void Fall()

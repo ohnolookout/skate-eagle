@@ -84,15 +84,11 @@ public class LevelMenu : MonoBehaviour
 
         // Log all relevant variables to debug NullReferenceException
         var recordStatus = _sessionData.GetRecordByUID(level.UID).status;
-        var previousRecord = _sessionData.PreviousLevelRecord(level.UID);
-        CompletionStatus? previousRecordStatus = previousRecord != null ? previousRecord.status : null;
 
-        container.Setup(recordStatus, previousRecordStatus);
+        container.Setup(recordStatus);
         container.Button.onClick.AddListener(() => SelectButton(container));
 
-        if (recordStatus == CompletionStatus.Incomplete ||
-            (recordStatus == CompletionStatus.Locked
-            && previousRecordStatus == CompletionStatus.Complete))
+        if (recordStatus == CompletionStatus.Incomplete)
         {
             return true;
         }
@@ -114,15 +110,12 @@ public class LevelMenu : MonoBehaviour
     #region Level Selection Panel
     public void GenerateLevelPanel(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {
-        Debug.Log("Generating level panel for: " + level.Name);
         var previousRecordStatus = previousRecord != null ? previousRecord.status : CompletionStatus.Complete;
         selectedLevel = level;
         levelName.text = selectedLevel.Name;
 
-        Debug.Log("Previous record status: " + previousRecordStatus);
-        Debug.Log("Record status: " + record.status);
         ActivateLevelPanelObjects(level, record.status, previousRecordStatus);
-        if (record.status == CompletionStatus.Locked || previousRecordStatus != CompletionStatus.Complete)
+        if (record.status == CompletionStatus.Locked)
         {
             return;
         }
@@ -158,7 +151,7 @@ public class LevelMenu : MonoBehaviour
 
     private void ActivateLevelPanelObjects(Level level, CompletionStatus recordStatus, CompletionStatus previousRecordStatus)
     {
-        if (recordStatus == CompletionStatus.Locked || previousRecordStatus != CompletionStatus.Complete)
+        if (recordStatus == CompletionStatus.Locked)
         {
             bestBlock.SetActive(false);
             incompleteBlock.SetActive(false);

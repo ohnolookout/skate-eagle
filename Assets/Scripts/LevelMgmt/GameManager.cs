@@ -79,7 +79,6 @@ public class GameManager : MonoBehaviour
         }
         
         OnLoading += ActivateLoadingScreen;
-        LevelManager.OnFinish += UpdateRecord;
 
 #if UNITY_EDITOR
         if (clearPlayerPrefs)

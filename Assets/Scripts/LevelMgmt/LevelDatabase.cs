@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using UnityEditor;
 using RotaryHeart.Lib.SerializableDictionary;
-using Unity.VisualScripting;
 
 [CreateAssetMenu(fileName = "New Level", menuName = "ScriptableObjects/LevelDatabase")]
 [Serializable]
