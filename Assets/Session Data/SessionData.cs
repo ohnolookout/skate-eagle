@@ -17,7 +17,6 @@ public class SessionData
         { Medal.Bronze, 0 },
         { Medal.Participant, 0}
     };
-    //private Dictionary<string, LevelNode> nodeDict = new();
     public int GoldPlusCount => _medalCount[Medal.Gold] + _medalCount[Medal.Blue] + _medalCount[Medal.Red];
     public Dictionary<Medal, int> MedalCount => _medalCount;
     public SaveData SaveData => _saveData;    
@@ -26,9 +25,11 @@ public class SessionData
     public SessionData(SaveData loadedGame)
     {
         _saveData = loadedGame;
-        _levelDB = Resources.Load<LevelDatabase>("LevelDB"); ;
-        //nodeDict = levelList.levelNodeDict;
+        _levelDB = Resources.Load<LevelDatabase>("LevelDB");
+
         BuildRecordsAndMedals(loadedGame);
+        
+        _levelDB.LevelOrderIsDirty = false; //Reset dirty flag after building records
     }
 
     //Adds records to dictionary for any nodes that don't currently exist in recordDict
@@ -68,7 +69,7 @@ public class SessionData
                 record = AddLevelToRecords(currentLevel);
             }
             //Update record status only if last record is complete.
-            if (lastRecordStatus == CompletionStatus.Complete && record.status == CompletionStatus.Locked)
+            if (lastRecordStatus == CompletionStatus.Complete || _levelDB.LevelOrderIsDirty)
             {
                 RefreshRecordStatus(record);
             }
@@ -108,8 +109,18 @@ public class SessionData
         }
     }
 
-    public CompletionStatus RefreshRecordStatus(PlayerRecord record)
+    private CompletionStatus RefreshRecordStatus(PlayerRecord record)
     {
+        if(_levelDB.LevelOrderIsDirty)
+        {
+            var prevLevel = _levelDB.GetPreviousLevel(record.levelName);
+            if (prevLevel != null && GetRecordByUID(prevLevel.UID).status != CompletionStatus.Complete)
+            {
+                record.status = CompletionStatus.Locked;
+                return record.status;
+            }
+        }
+
         //Set status to complete if medal is higher than participant
         if (record.medal != Medal.Participant)
         {

@@ -18,6 +18,7 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private List<string> _levelOrder;
     [SerializeField] private Level _editorLevel;
     [SerializeField] private bool _levelIsDirty = false;
+    [SerializeField] private bool _levelOrderIsDirty = false;
     public string lastLevelLoadedUID;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary; //Levels stored by UID
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
@@ -25,6 +26,7 @@ public class LevelDatabase : ScriptableObject
     public List<string> LevelOrder => _levelOrder;
     public Level EditorLevel {get => _editorLevel; set => _editorLevel = value; }
     public bool LevelIsDirty { get => _levelIsDirty; set => _levelIsDirty = value; }
+    public bool LevelOrderIsDirty { get => _levelOrderIsDirty; set => _levelOrderIsDirty = value; }
 
     public LevelDatabase()
     {

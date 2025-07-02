@@ -26,15 +26,22 @@ public class LevelDBInspector : Editor
 
     public override void OnInspectorGUI()
     {
+        GUILayout.Label("Level Order", EditorStyles.boldLabel);
+
         EditorGUI.BeginChangeCheck();
-        
+
         EditorGUILayout.PropertyField(_levelOrder, true);
 
         if(EditorGUI.EndChangeCheck())
         {
             _so.ApplyModifiedProperties();
+            _levelDB.LevelOrderIsDirty = true;
             BuildDoPublishDict();
         }
+
+        GUILayout.Space(20);
+
+        GUILayout.Label("Levels To Publish", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
 
@@ -50,6 +57,11 @@ public class LevelDBInspector : Editor
             UpdateLevelOrder();
         }
 
+        GUILayout.Space(20);
+
+        GUILayout.Label("Utilities", EditorStyles.boldLabel);
+
+
         if (GUILayout.Button("Clean Up DB", GUILayout.ExpandWidth(false)))
         {
             CleanUpDicts();
@@ -62,6 +74,7 @@ public class LevelDBInspector : Editor
             FixMedalDefaults();
         }
 
+        _levelDB.LevelOrderIsDirty = EditorGUILayout.Toggle("Level Order Dirty", _levelDB.LevelOrderIsDirty);
 
 
     }
@@ -74,7 +87,6 @@ public class LevelDBInspector : Editor
             var doPublish = _levelDB.LevelOrder.Contains(levelName);
             _doPublishDictionary[levelName] = doPublish;
         }
-
     }
 
     private void UpdateLevelOrder()
@@ -96,6 +108,8 @@ public class LevelDBInspector : Editor
 
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
+
+        _levelDB.LevelOrderIsDirty = true;
     }
     public void CleanUpDicts()
     {
