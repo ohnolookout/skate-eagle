@@ -16,9 +16,9 @@ public class LevelMenuButton : MonoBehaviour
     public Level Level { get  => _level; set => _level = value; }
 
 
-    public void Setup(CompletionStatus status)
+    public void Setup(CompletionStatus status, CompletionStatus? previousRecordStatus)
     {
-        if (status == CompletionStatus.Locked)
+        if (status == CompletionStatus.Locked || (previousRecordStatus != null && (CompletionStatus)previousRecordStatus != CompletionStatus.Complete))
         {
             lockedFade.SetActive(true);
         }

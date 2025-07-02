@@ -469,12 +469,11 @@ public class LevelDesigner : EditorWindow
     #region Level Save/Load
     private void LoadLevelDB()
     {
-        var path = "Assets/LevelDatabase/LevelDB.asset";
-        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath(path, typeof(LevelDatabase));
+        _levelDB = Resources.Load<LevelDatabase>("LevelDB");
         
         if(_levelDB is null)
         {
-            Debug.Log("No level database found at " + path);
+            Debug.Log("No level database found.");
         } else
         {
             Debug.Log("Level Database loaded with " + _levelDB.LevelDictionary.Count + " levels.");

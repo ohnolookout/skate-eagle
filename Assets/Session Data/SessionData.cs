@@ -37,6 +37,7 @@ public class SessionData
     public void BuildRecordsAndMedals(SaveData loadedGame)
     {
         Level currentLevel = _levelDB.GetLevelByIndex(0);
+
         if(currentLevel == null)
         {
             return;
@@ -45,10 +46,11 @@ public class SessionData
         //Set first node to incomplete if it's currently locked (only happens at new game).
         if (!_saveData.recordDict.ContainsKey(currentLevel.UID))
         {
-            AddLevelToRecords(currentLevel);
-            GetRecordByUID(currentLevel.UID).status = CompletionStatus.Incomplete;
+            var newRecord = AddLevelToRecords(currentLevel);
+            newRecord.status = CompletionStatus.Incomplete;
             currentLevel = _levelDB.GetNextLevel(currentLevel);
         }
+
         CompletionStatus lastRecordStatus = CompletionStatus.Complete;
 
         //Advance through nodes using next

@@ -83,13 +83,16 @@ public class LevelMenu : MonoBehaviour
         container.containerIndex = index;
 
         // Log all relevant variables to debug NullReferenceException
-        PlayerRecord record = _sessionData.GetRecordByUID(level.UID);
-        container.Setup(record.status);
+        var recordStatus = _sessionData.GetRecordByUID(level.UID).status;
+        var previousRecord = _sessionData.PreviousLevelRecord(level.UID);
+        CompletionStatus? previousRecordStatus = previousRecord != null ? previousRecord.status : null;
+
+        container.Setup(recordStatus, previousRecordStatus);
         container.Button.onClick.AddListener(() => SelectButton(container));
 
-        if (record.status == CompletionStatus.Incomplete ||
-            (record.status == CompletionStatus.Locked
-            && _sessionData.PreviousLevelRecord(record.levelUID).status == CompletionStatus.Complete))
+        if (recordStatus == CompletionStatus.Incomplete ||
+            (recordStatus == CompletionStatus.Locked
+            && previousRecordStatus == CompletionStatus.Complete))
         {
             return true;
         }
@@ -111,13 +114,16 @@ public class LevelMenu : MonoBehaviour
     #region Level Selection Panel
     public void GenerateLevelPanel(Level level, PlayerRecord record, PlayerRecord previousRecord)
     {
+        Debug.Log("Generating level panel for: " + level.Name);
+        var previousRecordStatus = previousRecord != null ? previousRecord.status : CompletionStatus.Complete;
         selectedLevel = level;
         levelName.text = selectedLevel.Name;
-        ActivateLevelPanelObjects(record.status);
-        if (record.status == CompletionStatus.Locked)
+
+        Debug.Log("Previous record status: " + previousRecordStatus);
+        Debug.Log("Record status: " + record.status);
+        ActivateLevelPanelObjects(level, record.status, previousRecordStatus);
+        if (record.status == CompletionStatus.Locked || previousRecordStatus != CompletionStatus.Complete)
         {
-            PlayLevelButton.gameObject.SetActive(false);
-            lockedText.text = GetLockedLevelMessage(level, record, previousRecord);
             return;
         }
         PlayLevelButton.gameObject.SetActive(true);
@@ -125,9 +131,9 @@ public class LevelMenu : MonoBehaviour
         medalImage.sprite = medalSprites[(int)record.medal];
     }
 
-    private string GetLockedLevelMessage(Level level, PlayerRecord record, PlayerRecord previousRecord)
+    private string GetLockedLevelMessage(Level level, CompletionStatus recordStatus, CompletionStatus previousRecordStatus)
     {
-        if (previousRecord.status == CompletionStatus.Locked)
+        if (previousRecordStatus == CompletionStatus.Locked)
         {
             return "Locked";
         }
@@ -141,7 +147,7 @@ public class LevelMenu : MonoBehaviour
         {
             pluralizedMedal += "s";
         }
-        if (previousRecord.status == CompletionStatus.Incomplete)
+        if (previousRecordStatus == CompletionStatus.Incomplete)
         {
             return $"Complete previous level and earn {goldRequired} more gold {pluralizedMedal} or better to unlock.";
         }
@@ -150,18 +156,20 @@ public class LevelMenu : MonoBehaviour
 
     }
 
-    private void ActivateLevelPanelObjects(CompletionStatus panelType)
+    private void ActivateLevelPanelObjects(Level level, CompletionStatus recordStatus, CompletionStatus previousRecordStatus)
     {
-        if (panelType == CompletionStatus.Locked)
+        if (recordStatus == CompletionStatus.Locked || previousRecordStatus != CompletionStatus.Complete)
         {
             bestBlock.SetActive(false);
             incompleteBlock.SetActive(false);
             medalImage.gameObject.SetActive(false);
             lockedText.gameObject.SetActive(true);
+            PlayLevelButton.gameObject.SetActive(false);
+            lockedText.text = GetLockedLevelMessage(level, recordStatus, previousRecordStatus);
             return;
         }
         lockedText.gameObject.SetActive(false);
-        if (panelType == CompletionStatus.Incomplete)
+        if (recordStatus == CompletionStatus.Incomplete)
         {
             bestBlock.SetActive(false);
             incompleteBlock.SetActive(true);
