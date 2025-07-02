@@ -261,6 +261,7 @@ public abstract class PositionalList<T> where T : IPosition
     }
     #endregion
 
+#if UNITY_EDITOR
     #region Validation
     public void ValidateConstruction()
     {
@@ -292,7 +293,8 @@ public abstract class PositionalList<T> where T : IPosition
         }
         return true;
     }
-#endregion
+    #endregion
+#endif
 
     #region Change Object Order
     public void MoveTrailingToLeading(Vector2 newPosition)

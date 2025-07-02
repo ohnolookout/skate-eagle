@@ -33,6 +33,7 @@ public class LevelDatabase : ScriptableObject
     }
     #endregion
 
+#if UNITY_EDITOR
     #region Save/Delete Level
     public bool SaveLevel(Level level)
     {
@@ -118,6 +119,7 @@ public class LevelDatabase : ScriptableObject
         EditorUtility.SetDirty(this);
     }
     #endregion
+#endif
 
     #region Get Level Methods
 
@@ -130,7 +132,11 @@ public class LevelDatabase : ScriptableObject
 
         var uid = _nameToUIDDictionary[name];
         lastLevelLoadedUID = uid;
+
+#if UNITY_EDITOR
         EditorUtility.SetDirty(this);
+#endif
+
         return _levelDictionary[uid];
     }
 

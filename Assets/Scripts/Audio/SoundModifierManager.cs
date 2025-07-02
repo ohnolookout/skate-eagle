@@ -29,13 +29,15 @@ public class SoundModifierManager
         BuildModifierDict(_modifiers, trackedBodies);
     }
 
-    private static void BuildModifierDict(Dictionary<Rigidbody2D, SoundModifiers> dict, Rigidbody2D[] trackedBodies)
+    private void BuildModifierDict(Dictionary<Rigidbody2D, SoundModifiers> dict, Rigidbody2D[] trackedBodies)
     {
         foreach (var body in trackedBodies)
         {
-            if (!dict.ContainsKey(body))
+            var bodyKey = body ?? _playerBody;
+
+            if (!dict.ContainsKey(bodyKey))
             {
-                dict[body] = new(0f);
+                dict[bodyKey] = new(0f);
             }
         }
     }
@@ -134,6 +136,10 @@ public class SoundModifierManager
 
     public float GetPan(Sound sound)
     {
+        if(sound.localizedSource == null)
+        {
+            sound.localizedSource = _playerBody;
+        }
         return _modifiers[sound.localizedSource].pan;
     }
 

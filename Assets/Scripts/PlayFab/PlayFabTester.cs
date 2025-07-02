@@ -114,7 +114,7 @@ public class PlayFabTester : MonoBehaviour
 
     void Start()
     {
-        var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));        
+        var levelDB = Resources.Load<LevelDatabase>("LevelDB");        
         SeedLeaderboardsButton.onClick.AddListener(
                 () => StartCoroutine(SeedLevelLeaderboardsRoutine(levelDB))
             );

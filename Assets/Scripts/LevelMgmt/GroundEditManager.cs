@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +27,7 @@ public class GroundEditManager : MonoBehaviour
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
 
-        var levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
+        var levelDB = Resources.Load<LevelDatabase>("LevelDB");
         var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
         if (level != null && Application.isPlaying)
         {
@@ -148,10 +150,12 @@ public class GroundEditManager : MonoBehaviour
     public void RemoveGround(Ground ground)
     {
         var index = _groundManager.Grounds.IndexOf(ground);
+
         Undo.RegisterFullObjectHierarchyUndo(_groundManager, "Remove ground");
         _groundManager.Grounds.Remove(ground);
         Undo.DestroyObjectImmediate(ground.gameObject);
         RenameAll(index);
+
     }
 
     public void RemoveSegment(GroundSegment segment)
@@ -519,3 +523,5 @@ public class GroundEditManager : MonoBehaviour
 
     #endregion
 }
+
+#endif

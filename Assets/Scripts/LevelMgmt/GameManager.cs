@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase));
+        _levelDB = Resources.Load<LevelDatabase>("LevelDB");
         if (doLoadEditorLevel)
         {
             _currentLevel = _levelDB.EditorLevel;

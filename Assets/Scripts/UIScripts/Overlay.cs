@@ -1,10 +1,5 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using TMPro.EditorUtilities;
-using UnityEngine.Events;
 
 
 public class Overlay : MonoBehaviour

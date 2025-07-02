@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 7817932771902614301}
   m_Layer: 0
   m_Name: GroundEditManager
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4376218200876623944}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98c6f1301e3976a47aaf10d233a16513, type: 3}
   m_Name: 
@@ -236,10 +236,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainPrefab: {fileID: 6362839127374078604, guid: 1f49bbbce52b5444ca2600fe84e3dc11, type: 3}
-  _finishFlagPrefab: {fileID: 6849070183138834917, guid: aa12db359f56e85498d87da578195f0b, type: 3}
-  _backstopPrefab: {fileID: 8604669192707788244, guid: 3806a06a8635be3429cab4e2beadbd95, type: 3}
-  _finishFlag: {fileID: 0}
-  _backstop: {fileID: 0}
   _finishLine: {fileID: 0}
   groundSpawner: {fileID: 1560943902924081631}
   groundContainer: {fileID: 142988458053501574}

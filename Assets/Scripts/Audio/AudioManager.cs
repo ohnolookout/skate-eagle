@@ -223,6 +223,11 @@ public class AudioManager : MonoBehaviour
 
     public void StopLoop(Sound sound)
     {
+        if(sound.source == null)
+        {
+            return;
+        }
+
         if (playingSounds.ContainsKey(sound.source) && playingSounds[sound.source] == sound)
         {
             StopLoop(sound.source);

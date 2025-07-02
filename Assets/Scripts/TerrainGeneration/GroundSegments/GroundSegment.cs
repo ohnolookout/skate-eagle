@@ -1,12 +1,8 @@
 using UnityEngine;
 using UnityEngine.U2D;
 using System;
-using UnityEditor;
-using UnityEditor.Build;
-using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
-using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]

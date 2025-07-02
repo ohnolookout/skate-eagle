@@ -30,6 +30,16 @@ public class PlayerAudio : MonoBehaviour
         _player = transform.parent.GetComponent<IPlayer>();
         _sounds = _oneShotDict.Values.ToList();
         _sounds.AddRange(_loopDict.Values.ToList());
+
+        //Replace null localized sources with player body
+        foreach (var sound in _sounds)
+        {
+            if(sound.localizedSource == null)
+            {
+                sound.localizedSource = _player.NormalBody;
+            }
+        }
+
         _audioManager = AudioManager.Instance;
         if (_audioManager == null)
         {

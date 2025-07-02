@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Linq;
 using TMPro;
@@ -150,3 +152,5 @@ public class Debugger : MonoBehaviour
         return logMessage;
     }
 }
+
+#endif

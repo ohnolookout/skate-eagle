@@ -26,7 +26,7 @@ public class SessionData
     public SessionData(SaveData loadedGame)
     {
         _saveData = loadedGame;
-        _levelDB = (LevelDatabase)AssetDatabase.LoadAssetAtPath("Assets/LevelDatabase/LevelDB.asset", typeof(LevelDatabase)); ;
+        _levelDB = Resources.Load<LevelDatabase>("LevelDB"); ;
         //nodeDict = levelList.levelNodeDict;
         BuildRecordsAndMedals(loadedGame);
     }

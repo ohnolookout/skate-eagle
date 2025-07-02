@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.Android.Gradle.Manifest;
 
 public enum CollisionType { Ground, OtherBody };
 public class PendingExitManager
