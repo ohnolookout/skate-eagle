@@ -37,11 +37,10 @@ public class SaveLoadUtility
 
 	private void WriteToSavePath(string data)
 	{
-		if (!File.Exists(SavePath))
-		{
-			File.Create(SavePath);
-		}
-		File.WriteAllText(SavePath, data);
+        using (StreamWriter writer = new StreamWriter(SavePath, false))
+        {
+            writer.Write(data);
+        }
 	}
 
 	public SessionData LoadGame()

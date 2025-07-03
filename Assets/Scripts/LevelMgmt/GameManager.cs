@@ -130,6 +130,7 @@ public class GameManager : MonoBehaviour
     public void ResetSaveData()
     {
         _sessionData = _saveLoadUtility.NewGame();
+        SceneManager.LoadScene("Start_Menu");
     }
 
     public void OnResetAccount()
