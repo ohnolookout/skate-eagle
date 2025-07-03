@@ -55,7 +55,7 @@ public abstract class PositionalList<T> where T : IPosition
     }
     public void Initialize()
     {
-
+        Debug.Log("Initializing positional list...");
 #if UNITY_EDITOR
         ValidateConstruction();
 #endif
@@ -151,16 +151,6 @@ public abstract class PositionalList<T> where T : IPosition
     {
         bool objectsChanged = false;
 
-        /*
-#if UNITY_EDITOR
-        if (DoLog)
-        {
-            Debug.Log($"Updating current objects. Trailing X: {_trailingX} Leading X: {_leadingX}");
-            Debug.Log($"Current trailing X: {CurrentTrailingPosition().x} Current leading X: {CurrentLeadingPosition().x}");
-            Debug.Log($"Next trailing X: {NextTrailingPosition().x} Next leading X: {NextLeadingPosition().x}");
-        };
-#endif
-        */
         if (CurrentTrailingIndex < _allObjects.Count && CurrentTrailingPosition().x < _trailingX)
         {
             RemoveTrailingObject();
@@ -220,6 +210,10 @@ public abstract class PositionalList<T> where T : IPosition
 
     public virtual void RemoveTrailingObject()
     {
+        if(_currentObjects.Count == 0)
+        {
+            return;
+        }
         OnObjectRemoved?.Invoke(_currentObjects[0], ListSection.Trailing);
         _currentObjects.RemoveAt(0);
         _trailingIndex++;
@@ -248,6 +242,10 @@ public abstract class PositionalList<T> where T : IPosition
 
     public virtual void RemoveLeadingObject()
     {
+        if (_currentObjects.Count == 0)
+        {
+            return;
+        }
         OnObjectRemoved?.Invoke(_currentObjects[_currentObjects.Count - 1], ListSection.Leading);
         _currentObjects.RemoveAt(_currentObjects.Count - 1);
         _leadingIndex--;
