@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine.UIElements;
-using UnityEngine.EventSystems;
-using log4net.Core;
 using System.Linq;
 [CustomEditor(typeof(LevelDatabase))]
 
@@ -15,6 +11,7 @@ public class LevelDBInspector : Editor
     private Dictionary<string, bool> _doPublishDictionary;
     private SerializedProperty _levelOrder;
     private LevelDatabase _levelDB;
+    private CopyLevelWindow _copyLevelWindow;
 
     private void OnEnable()
     {
@@ -67,6 +64,12 @@ public class LevelDBInspector : Editor
             CleanUpDicts();
             BuildDoPublishDict();
             UpdateLevelOrder();
+        }
+
+        if (GUILayout.Button("Copy Level", GUILayout.ExpandWidth(false)))
+        {
+            _copyLevelWindow = EditorWindow.GetWindow<CopyLevelWindow>();
+            _copyLevelWindow.Init(_levelDB);
         }
 
         if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))

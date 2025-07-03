@@ -64,6 +64,35 @@ public class LevelDatabase : ScriptableObject
         return true;        
     }
 
+    public bool CopyLevel(Level levelToCopy, string name)
+    {
+        var overwrite = false;
+        levelToCopy = new(levelToCopy); // Create a copy of the level to avoid modifying the original
+        levelToCopy.Name = name;
+
+        if (UIDExists(levelToCopy.UID))
+        {
+            overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Level with UID {levelToCopy.UID} already exists in the target DB. Do you want to overwrite it?", "Yes", "No");
+            if (!overwrite)
+            {
+                return false;
+            }
+            else
+            {
+                levelToCopy.UID = Guid.NewGuid().ToString();
+            }
+        }
+
+        if (!overwrite && LevelNameExists(levelToCopy.Name))
+        {
+            EditorUtility.DisplayDialog("Duplicate Level Name", "Level name already exists. Pick unique level name to continue.", "OK");
+            return false;
+        }
+
+        UpdateDictionaries(levelToCopy);
+        return true;
+    }
+
     private void UpdateDictionaries(Level level)
     {
         _levelDictionary[level.UID] = level;

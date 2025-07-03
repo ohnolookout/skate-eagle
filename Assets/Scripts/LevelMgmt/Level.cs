@@ -45,4 +45,18 @@ public class Level
             _finishLineParameters = finishLine.Parameters;
         }
     }
+
+    public Level(Level level)
+    {
+        _UID = level.UID;
+        _name = level.Name;
+        _medalTimes = level.MedalTimes;
+        _serializedGrounds = new List<SerializedGround>(level.SerializedGrounds);
+        _leaderboardKey = level.LeaderboardKey;
+        _startPoint = level.StartPoint;
+        _cameraStartPosition = level.CameraStartPosition;
+        _killPlaneY = level.KillPlaneY;
+        _finishLineParameters = level.FinishLineParameters;
+        _rootCameraTarget = level.RootCameraTarget;
+    }
 }
