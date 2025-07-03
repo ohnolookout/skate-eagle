@@ -55,7 +55,6 @@ public abstract class PositionalList<T> where T : IPosition
     }
     public void Initialize()
     {
-        Debug.Log("Initializing positional list...");
 #if UNITY_EDITOR
         ValidateConstruction();
 #endif

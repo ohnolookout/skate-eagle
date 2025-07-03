@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
@@ -35,7 +36,7 @@ public class LevelMenu : MonoBehaviour
 
     void Update()
     {
-        if(Input.touchCount > 0 || Input.GetMouseButtonDown(0))
+        if(UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0 || Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_eventSystem.currentSelectedGameObject == null || _eventSystem.currentSelectedGameObject.transform.tag != "MapNode")
             {
