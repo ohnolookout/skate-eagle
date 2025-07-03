@@ -54,12 +54,12 @@ public class AudioManager : MonoBehaviour
 
         GameManager.Instance.OnLevelLoaded += OnLevelLoaded;
         GameManager.Instance.OnMenuLoaded += OnMenuLoaded;
-        LevelManager.OnLanding += ClearLoops;
-        LevelManager.OnGameOver += ClearLoops;
-        LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
-        LevelManager.OnFinish += _ => SetModifierFramerate(1);
-        LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
-        LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
+        //LevelManager.OnLanding += ClearLoops;
+        //LevelManager.OnGameOver += ClearLoops;
+        //LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
+        //LevelManager.OnFinish += _ => SetModifierFramerate(1);
+        //LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
+        //LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
     }
 
     private void Start()
@@ -98,6 +98,17 @@ public class AudioManager : MonoBehaviour
     private void OnMenuLoaded(bool goToLevelMenu)
     {
         ClearLoops();
+
+        _updateLocalModifiers = false;
+        _updateZoomModifier = false;
+        _player = null;
+        _modifierManager = null;
+
+        if (_soundtrack != null)
+        {
+            PlaySoundtrack(_soundtrack);
+        }
+
     }
 
     private void OnLevelLoaded(Level level)
@@ -109,6 +120,12 @@ public class AudioManager : MonoBehaviour
             PlaySoundtrack(_soundtrack);
         }
 
+        LevelManager.OnLanding += ClearLoops;
+        LevelManager.OnGameOver += ClearLoops;
+        LevelManager.OnAttempt += () => StartUpdatingModifiers(true);
+        LevelManager.OnFinish += _ => SetModifierFramerate(1);
+        LevelManager.OnResultsScreen += () => StartUpdatingModifiers(false);
+        LevelManager.OnLevelExit += () => StartUpdatingModifiers(false);
         //SubscribeToCameraEvents();
     }
 
@@ -242,10 +259,12 @@ public class AudioManager : MonoBehaviour
     public void ClearLoops()
     {
         if (_audioSources == null) return;
+
         for (int i = 2; i < _audioSources.Length; i++)
         {
             _audioSources[i].Stop();
         }
+
         foreach(var coroutine in fadingSources.Values)
         {
             StopCoroutine(coroutine);

@@ -103,6 +103,12 @@ public class GameManager : MonoBehaviour
 
         _playFabManager.OnInitializationComplete += OnInitializationComplete;
         StartCoroutine(_playFabManager.Initialize(this, false));
+
+        var sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "City" || sceneName == "Level_Designer")
+        {
+            OnLevelLoaded?.Invoke(_currentLevel);
+        }
     }
 
     public void OnInitializationComplete(InitializationResult result)

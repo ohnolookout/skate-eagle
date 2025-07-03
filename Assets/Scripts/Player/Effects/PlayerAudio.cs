@@ -63,30 +63,12 @@ public class PlayerAudio : MonoBehaviour
         UpdateWheelTimer();
     }
 
-    private void OnEnable()
-    {
-        /*
-        _cameraOperator = Camera.main.GetComponent<ICameraOperator>();
-        if (_cameraOperator != null)
-        {
-            _cameraOperator.OnZoomOut += StartWind;
-            _cameraOperator.OnFinishZoomIn += StopWind;
-        }
-        */
-    }
     private void OnDisable()
     {
         if (_audioManager == null)
         {
             return;
         }
-        /*
-        if (_cameraOperator != null)
-        {
-            _cameraOperator.OnZoomOut -= StartWind;
-            _cameraOperator.OnFinishZoomIn -= StopWind;
-        }
-        */
     }
     #endregion
 

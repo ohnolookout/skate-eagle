@@ -93,7 +93,6 @@ public class MainMenu : MonoBehaviour
     #region Navigation
     private void OnMenuLoaded(bool goToLevelMenu)
     {
-        Debug.Log("Menu loaded. Go to level menu: " + goToLevelMenu);
         if (goToLevelMenu)
         {
             GoToLevelScreen();
