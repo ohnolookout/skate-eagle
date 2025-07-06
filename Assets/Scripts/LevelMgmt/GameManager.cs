@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _loadingScreen;
     public Slider loadingBar;
 
-    public bool clearPlayerPrefs = false;
     public bool doLoadEditorLevel = false;
     private bool _isInitializing = false;
     public bool IsInitializing => _isInitializing;
@@ -80,16 +79,6 @@ public class GameManager : MonoBehaviour
         
         OnLoading += ActivateLoadingScreen;
 
-#if UNITY_EDITOR
-        if (clearPlayerPrefs)
-        {
-            Debug.Log("Clearing player prefs...");
-            PlayerPrefs.DeleteAll();
-            ResetSaveData();
-
-        }
-#endif
-
     }
 
     private void Start()
@@ -135,9 +124,12 @@ public class GameManager : MonoBehaviour
 
     public void OnResetAccount()
     {
-        _sessionData = _saveLoadUtility.NewGame();
-        _onAccountReset?.Invoke();
-         StartCoroutine(_playFabManager.Initialize(this, true));
+        PlayerPrefs.DeleteAll();
+        ResetSaveData();
+        Start();
+        //_sessionData = _saveLoadUtility.NewGame();
+        //_onAccountReset?.Invoke();
+        // StartCoroutine(_playFabManager.Initialize(this, true));
     }
 
     public void UpdateRecord(FinishData finishData)

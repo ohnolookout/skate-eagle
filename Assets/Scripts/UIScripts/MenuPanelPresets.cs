@@ -133,7 +133,7 @@ public static class MenuPanelPresets
         //Secondary confrim panels
         var errorPanel = OneButtonSecondaryPanel(OnSecondaryConfirmNeutralButton);
         errorPanel.TitleText = "Nice";
-        errorPanel.TitleText = "Email added successfully. Now your account is secure and you can access it from other devices.";
+        errorPanel.BodyText = "Email added! You can now your account from other devices.";
 
         preset.SecondaryPanelPresets = new() { errorPanel };
 

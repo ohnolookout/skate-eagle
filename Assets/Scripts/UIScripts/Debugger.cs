@@ -41,9 +41,6 @@ public class Debugger : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-    }
 
     void Update()
     {
@@ -104,9 +101,15 @@ public class Debugger : MonoBehaviour
 
     public void DeletePlayerAccount()
     {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("Cannot delete player account outside of play mode.");
+            return;
+        }
         _statusLog.text = "Deleting account... Please wait.";
         GameManager.Instance.OnAccountReset += () => PostStatus("Account deleted.");
         GameManager.Instance.PlayFabManager.OnInitializationComplete += _ => PostStatus("PlayFab reinitialized.");
+        GameManager.Instance.PlayFabManager.UnlinkAuthorization();
         GameManager.Instance.PlayFabManager.DeletePlayerAccount(GameManager.Instance);
     }
 

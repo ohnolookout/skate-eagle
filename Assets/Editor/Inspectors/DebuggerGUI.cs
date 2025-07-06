@@ -6,6 +6,7 @@ public class DebuggerGUI : Editor
 {
     SerializedObject _so;
     Debugger _debugger;
+    PlayFabLoginWindow _playFabLoginWindow;
 
     private void OnEnable()
     {

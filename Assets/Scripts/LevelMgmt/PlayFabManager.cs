@@ -273,6 +273,7 @@ public class PlayFabManager : MonoBehaviour
 
     private void OnAddEmailFailure(PlayFabError error)
     {
+        _authService.RememberMe = false;
         PlayFabAuthService.OnLoginSuccess -= OnAddEmailSuccess;
         PlayFabAuthService.OnPlayFabError -= OnAddEmailFailure;
 
@@ -572,6 +573,11 @@ public class PlayFabManager : MonoBehaviour
         );
 
 
+    }
+
+    public void UnlinkAuthorization()
+    {
+        _authService.UnlinkSilentAuth();
     }
 
     #endregion
