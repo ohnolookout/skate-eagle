@@ -159,10 +159,12 @@ public class PopUpFactory
             (toggle) => {
                 if (toggle)
                 {
+                    Debug.Log("Setting DontAskEmailKey to 1");
                     PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 1);
                 }
                 else
                 {
+                    Debug.Log("Setting DontAskEmailKey to 0");
                     PlayerPrefs.SetInt(PlayFabManager.DontAskEmailKey, 0);
                 }
             },

@@ -68,6 +68,7 @@ public class MenuPanel : MonoBehaviour
         }
 
         CloseButton.Button.onClick.RemoveAllListeners();
+        Toggle.onValueChanged.RemoveAllListeners();
 
         Toggle.isOn = false;
 
