@@ -20,6 +20,7 @@ TagManager:
   - Soundtrack
   - GroundManager
   - TerrainManager
+  - TutorialSign
   layers:
   - Default
   - TransparentFX
@@ -54,6 +55,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2382969791
+    locked: 0
+  - name: Signs
+    uniqueID: 1620060213
+    locked: 0
   - name: Player
     uniqueID: 3800049987
     locked: 0
