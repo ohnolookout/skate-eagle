@@ -8,13 +8,25 @@ public class SerializedGround : IDeserializable
 {
     public Vector2 position;
     public string name;
-    public List<IDeserializable> serializedSegmentList;
+    public List<SerializedGroundSegment> serializedSegmentList;
+    public List<IDeserializable> serializedObjectList;
 
     public SerializedGround(string name, Vector2 position, List<IDeserializable> segmentList)
     {
         this.name = name;
         this.position = position;
-        this.serializedSegmentList = segmentList;
+        this.serializedObjectList = segmentList;
+    }
+
+    public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList)
+    {
+        this.name = name;
+        this.position = position;
+        serializedObjectList = new List<IDeserializable>();
+        foreach (var segment in segmentList)
+        {
+            serializedObjectList.Add(segment);
+        }
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

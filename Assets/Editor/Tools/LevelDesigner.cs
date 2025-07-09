@@ -535,8 +535,8 @@ public class LevelDesigner : EditorWindow
 
         var rootCameraTarget = KDTreeBuilder.BuildKdTree(_groundEditor.GetAllCameraTargets());
 
-        return new Level(levelName, medalTimes, groundsArray, _groundEditor.startPoint.transform.position, 
-            cameraStartPosition, killPlaneY, _groundManager.FinishLine, rootCameraTarget);
+        return new Level(levelName, medalTimes, _groundManager, _groundEditor.startPoint.transform.position, 
+            cameraStartPosition, killPlaneY, rootCameraTarget);
     }
     public void LoadLevelByName(string levelName)
     {

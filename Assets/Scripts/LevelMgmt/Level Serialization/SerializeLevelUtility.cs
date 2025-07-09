@@ -26,6 +26,22 @@ public static class SerializeLevelUtility
 
         return serializedGrounds;
     }
+
+    public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager)
+    {
+        var serializables = groundManager.GetComponentsInChildren<ISerializable>();
+        var groundsSerializables = groundManager.groundContainer.GetComponentsInChildren<ISerializable>();
+        serializables = serializables.Concat(groundsSerializables).ToArray();
+
+        List<IDeserializable> serializedObjects = new();
+
+        foreach(var serializable in serializables)
+        {
+            serializedObjects.Add(serializable.Serialize());
+        }
+
+        return serializedObjects;
+    }
     private static void GenerateGroundIndices(Ground[] grounds)
     {
         for (int i = 0; i < grounds.Length; i++)
@@ -167,14 +183,35 @@ public static class SerializeLevelUtility
     public static void DeserializeLevel(Level level, GroundManager groundManager, LevelManager levelManager = null)
     {
         groundManager.ClearGround();
+        var groundSpawner = groundManager.groundSpawner;
 
-        foreach (var serializedGround in level.SerializedGrounds)
-        {
-            var ground = DeserializeGround(serializedGround, groundManager);
-            groundManager.Grounds.Add(ground);
+        bool serializedGroundsFound = false;
+
+        if (level.SerializedGrounds != null && level.SerializedGrounds.Count > 0) {
+            
+            serializedGroundsFound = true;
+            foreach (var serializedGround in level.SerializedGrounds)
+            {
+                var ground = groundSpawner.AddGround();
+
+                serializedGround.Deserialize(ground.gameObject, groundManager.gameObject);
+
+                groundManager.Grounds.Add(ground);
+            }
         }
 
-        groundManager.FinishLine.SetFinishLine(level.FinishLineParameters, levelManager);
+        if (level.SerializedFinishLine != null)
+        {
+            level.SerializedFinishLine.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+        }
+
+        if (!serializedGroundsFound && level.SerializedObjects != null && level.SerializedObjects.Count > 0)
+        {
+            foreach (var serializedObject in level.SerializedObjects)
+            {
+
+            }
+        }
 
         if (Application.isPlaying)
         {
@@ -188,83 +225,6 @@ public static class SerializeLevelUtility
         {
             ReassociateGameObjects(targetable, groundManager);
         }
-
-    }
-    private static Ground DeserializeGround(SerializedGround serializedGround, GroundManager groundManager)
-    {
-        var groundSpawner = groundManager.groundSpawner;
-
-        var ground = groundSpawner.AddGround();
-        ground.name = serializedGround.name;
-        ground.SegmentList = new();
-        foreach (var serializedSegment in serializedGround.serializedSegmentList)
-        {
-            var segment = groundSpawner.AddEmptySegment(ground);
-            DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);
-            if(segment.NextLeftSegment != null)
-            {
-                segment.NextLeftSegment.NextRightSegment = segment;
-            }
-            ground.SegmentList.Add(segment);
-
-            if(segment.IsStart)
-            {
-                groundManager.StartSegment = segment;
-            }
-
-            if (segment.IsFinish)
-            {
-                groundManager.FinishSegment = segment;
-            }
-            segment.gameObject.SetActive(false);
-            segment.gameObject.SetActive(true);
-        }
-        //ground.SegmentList[0].gameObject.SetActive(false);
-        //ground.SegmentList[0].gameObject.SetActive(true);
-        return ground;
-    }
-
-    private static void DeserializeSegment(SerializedGroundSegment serializedSegment, GroundSegment segment, Ground parent, GroundSegment? previousSegment)
-    {
-        segment.transform.position = serializedSegment.position;
-        segment.transform.rotation = serializedSegment.rotation;
-        segment.gameObject.name = serializedSegment.name;
-        segment.LeftFloorHeight = serializedSegment.leftFloorHeight;
-        segment.RightFloorHeight = serializedSegment.rightFloorHeight;
-        segment.LeftFloorAngle = serializedSegment.leftFloorAngle;
-        segment.RightFloorAngle = serializedSegment.rightFloorAngle;
-
-        segment.parentGround = parent;
-        segment.NextLeftSegment = previousSegment;
-        segment.Curve = serializedSegment.curve;
-        segment.IsFinish = serializedSegment.isFinish;
-        segment.IsStart = serializedSegment.isStart;
-        segment.IsFloating = serializedSegment.isFloating;
-        segment.IsInverted = serializedSegment.isInverted;
-        segment.HasShadow = serializedSegment.hasShadow;
-        segment.UseDefaultHighLowPoints = serializedSegment.useDefaultHighLowPoints;
-        segment.UpdateShadow();
-
-        segment.UpdateHighLowTransforms();
-
-        GroundSplineUtility.GenerateSpline(segment.Spline, serializedSegment.fillSplinePoints, serializedSegment.fillSpineIsOpen);
-        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, serializedSegment.edgeSplinePoints, true);
-
-        //Create collierPoints
-        segment.Collider.points = serializedSegment.colliderPoints.ToArray();
-        segment.Collider.sharedMaterial = parent.ColliderMaterial;
-
-        if (!segment.IsFloating)
-        {
-            segment.BottomCollider.points = serializedSegment.bottomColliderPoints.ToArray();
-            segment.BottomCollider.sharedMaterial = parent.ColliderMaterial;
-        } else
-        {
-            segment.BottomCollider.gameObject.SetActive(false);
-        }
-
-        //Camera targets
-        segment.LinkedCameraTarget = serializedSegment.linkedCameraTarget;
 
     }
 

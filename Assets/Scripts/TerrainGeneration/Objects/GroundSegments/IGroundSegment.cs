@@ -13,7 +13,6 @@ public interface IGroundSegment : IDoublePosition, IPosition, ISerializable
     bool IsFinish { get; set; }
     EdgeCollider2D Collider { get; set; }
     
-    IDeserializable Serialize(GameObject targetObject, GameObject contextObject);
     bool ContainsX(float targetX);
     bool EndsBeforeX(float endX);
     bool StartsAfterX(float startX);

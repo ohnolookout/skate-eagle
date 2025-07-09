@@ -370,7 +370,7 @@ public class GroundEditManager : MonoBehaviour
         segment.SetLowPoint(finishParams.flagPointIndex);
 
         Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
-        _groundManager.FinishLine.SetFinishLine(finishParams, null);
+        _groundManager.FinishLine.SetFinishLine(finishParams);
     }
 
     public void ClearFinishLine()

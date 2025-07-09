@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
-public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable, ISerializable
+public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
 {
     #region Declarations
     public List<GameObject> leftTargetObjects;
