@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FinishLine : MonoBehaviour
+public class FinishLine : MonoBehaviour, ISerializable
 {
+    #region Declarations
     [SerializeField] private GameObject _flag;
     [SerializeField] private GameObject _backstop;
     private Vector2 _flagPosition;
@@ -15,29 +16,35 @@ public class FinishLine : MonoBehaviour
     private float _upperY = float.PositiveInfinity;
     private float _lowerY = float.NegativeInfinity;
     private Func<float, bool> _isXBetween;
-    private FinishLineParameters _parameters;
+    private SerializedFinishLine _parameters;
     private static Vector2 _flagOffset = new(1.5f, 1f);
-    private LevelManager _levelManager;
+    private IPlayer _player;
+    private Rigidbody2D _playerBody;
 
     public Vector2 FlagPosition => _flagPosition;
     public Vector2 BackstopPosition => _backstopPosition;
     public GameObject Backstop => _backstop;
     public GameObject Flag => _flag;
-    public FinishLineParameters Parameters { get => _parameters; set => _parameters = value; }
+    public SerializedFinishLine Parameters { get => _parameters; set => _parameters = value; }
+    #endregion
 
-
+    #region Monobehaviours
+    void Awake()
+    {
+        LevelManager.OnPlayerCreated += OnPlayerCreated;
+    }
     void Update()
     {
-        if(_levelManager == null || _levelManager.PlayerBody == null)
+        if(_playerBody == null || _player == null)
         {
             return;
         }
 
-        if (_isXBetween(_levelManager.PlayerBody.position.x))
+        if (_isXBetween(_playerBody.position.x))
         {
-            if (_levelManager.PlayerBody.position.y > _lowerY && _levelManager.PlayerBody.position.y < _upperY)
+            if (_playerBody.position.y > _lowerY && _playerBody.position.y < _upperY)
             {
-                if (_levelManager.Player.CollisionManager.BothWheelsCollided)
+                if (_player.CollisionManager.BothWheelsCollided)
                 {
                     DoFinish?.Invoke();
                 }
@@ -45,7 +52,6 @@ public class FinishLine : MonoBehaviour
 
         }
     }
-
 
     private void OnDrawGizmosSelected()
     {
@@ -61,8 +67,10 @@ public class FinishLine : MonoBehaviour
         Gizmos.DrawLine(upperRightPoint, lowerRightPoint);
         Gizmos.DrawLine(lowerRightPoint, lowerLeftPoint);
     }
+    #endregion
 
-    public void SetFinishLine(FinishLineParameters parameters, LevelManager levelManager)
+    #region Construction
+    public void SetFinishLine(SerializedFinishLine parameters)
     {
         if (parameters == null)
         {
@@ -72,7 +80,6 @@ public class FinishLine : MonoBehaviour
 
         gameObject.SetActive(true);
 
-        _levelManager = levelManager;
         _parameters = parameters;
         _flagPosition = parameters.flagPosition;
         _backstopPosition = parameters.backstopPosition;
@@ -113,4 +120,20 @@ public class FinishLine : MonoBehaviour
 
     }
 
+    private void OnPlayerCreated(IPlayer player)
+    {
+        _player = player;
+        _playerBody = player.NormalBody;
+    }
+    #endregion
+
+    public IDeserializable Serialize()
+    {
+        if (_parameters == null)
+        {
+            return null;
+        }
+
+        return _parameters;
+    }
 }

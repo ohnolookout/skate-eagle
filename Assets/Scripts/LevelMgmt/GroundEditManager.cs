@@ -350,7 +350,7 @@ public class GroundEditManager : MonoBehaviour
         return startPoint.transform.position;
     }
 
-    public void SetFinishLine(GroundSegment segment, FinishLineParameters finishParams)
+    public void SetFinishLine(GroundSegment segment, SerializedFinishLine finishParams)
     {
         if (!ValidateFinishParameters(segment, finishParams))
         {
@@ -386,7 +386,7 @@ public class GroundEditManager : MonoBehaviour
         _groundManager.FinishLine.ClearFinishLine();
     }
 
-    private bool ValidateFinishParameters(GroundSegment segment, FinishLineParameters parameters)
+    private bool ValidateFinishParameters(GroundSegment segment, SerializedFinishLine parameters)
     {
         if (segment == null)
         {

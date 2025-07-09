@@ -16,7 +16,7 @@ public class Level
     [SerializeField] private Vector2 _startPoint;
     [SerializeField] private float _killPlaneY;
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
-    [SerializeField] private FinishLineParameters _finishLineParameters;
+    [SerializeField] private SerializedFinishLine _finishLineParameters;
     [SerializeField] private LinkedCameraTarget _rootCameraTarget;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
@@ -27,7 +27,7 @@ public class Level
     public Vector2 StartPoint => _startPoint;
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
-    public FinishLineParameters FinishLineParameters {get => _finishLineParameters; set => _finishLineParameters = value; }
+    public SerializedFinishLine FinishLineParameters {get => _finishLineParameters; set => _finishLineParameters = value; }
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
 
     public Level(string name, MedalTimes medalTimes, Ground[] grounds, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, FinishLine finishLine = null, LinkedCameraTarget rootCameraTarget = null, string UID = null)

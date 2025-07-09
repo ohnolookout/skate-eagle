@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using static UnityEngine.Rendering.HableCurve;
 
-public class Ground : MonoBehaviour
+public class Ground : MonoBehaviour, ISerializable
 {
     #region Declarations
     [SerializeField] private List<GroundSegment> _segmentList;
@@ -20,4 +20,15 @@ public class Ground : MonoBehaviour
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     #endregion
 
+    public IDeserializable Serialize()
+    {
+        var name = gameObject.name;
+        var position = transform.position;
+        var segmentList = new List<IDeserializable>();
+        foreach (GroundSegment segment in SegmentList)
+        {
+            segmentList.Add(segment.Serialize());
+        }
+        return new SerializedGround(name, position, segmentList);
+    }
 }

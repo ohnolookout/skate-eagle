@@ -284,7 +284,7 @@ public class LevelDesigner : EditorWindow
             var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
             Selection.activeGameObject = segment.gameObject;         
 
-            _groundEditor.SetFinishLine(segment, new FinishLineParameters(segment));
+            _groundEditor.SetFinishLine(segment, new SerializedFinishLine(segment));
             
             SetLevelDirty();
         }

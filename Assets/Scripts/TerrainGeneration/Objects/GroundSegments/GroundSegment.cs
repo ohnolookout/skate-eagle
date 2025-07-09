@@ -3,10 +3,11 @@ using UnityEngine.U2D;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
-public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
+public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable, ISerializable
 {
     #region Declarations
     public List<GameObject> leftTargetObjects;
@@ -209,5 +210,53 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         curve.HighPoint = curve.CurvePoints[index].Position;
         _highPoint.transform.position = curve.HighPoint + transform.position;
     }
+    #endregion
+
+    #region Serialization
+
+    public IDeserializable Serialize()
+    {
+        SerializeLevelUtility.BuildLinkedCameraTarget(this);
+
+        SerializedGroundSegment serializedSegment = new();
+
+        //Transform
+        serializedSegment.name = gameObject.name;
+        serializedSegment.position =transform.position;
+        serializedSegment.rotation = transform.rotation;
+        serializedSegment.leftFloorHeight = LeftFloorHeight;
+        serializedSegment.rightFloorHeight = RightFloorHeight;
+        serializedSegment.leftFloorAngle = LeftFloorAngle;
+        serializedSegment.rightFloorAngle = RightFloorAngle;
+
+        //Segment
+        serializedSegment.isStart = IsStart;
+        serializedSegment.isFinish = IsFinish;
+        serializedSegment.isFloating = IsFloating;
+        serializedSegment.isInverted = IsInverted;
+        serializedSegment.hasShadow = HasShadow;
+        serializedSegment.useDefaultHighLowPoints = UseDefaultHighLowPoints;
+
+        //Curve
+        Curve.LowPoint = LowPoint.position - transform.position;
+        Curve.HighPoint = HighPoint.position - transform.position;
+        serializedSegment.curve = Curve;
+
+
+        //Spline
+        serializedSegment.fillSplinePoints = SerializeLevelUtility.CopySplinePoints(Spline);
+        serializedSegment.fillSpineIsOpen = Spline.isOpenEnded;
+        serializedSegment.edgeSplinePoints = SerializeLevelUtility.CopySplinePoints(EdgeSpline);
+
+        //Collider
+        serializedSegment.colliderPoints = SerializeLevelUtility.CopyColliderPoints(Collider);
+        serializedSegment.bottomColliderPoints = SerializeLevelUtility.CopyColliderPoints(BottomCollider);
+
+        //CameraTargetable
+        serializedSegment.linkedCameraTarget = LinkedCameraTarget;
+
+        return serializedSegment;
+    }
+
     #endregion
 }

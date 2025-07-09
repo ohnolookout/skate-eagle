@@ -57,10 +57,13 @@ public class FinishLineCreatorWindow : EditorWindow
                     return;
                 }
             }
+            var flagPosition = _segment.transform.TransformPoint(_segment.Curve.GetPoint(_flagPointIndex).Position + new Vector3(_flagXOffset, 0));
+            var backstopPosition = _segment.transform.TransformPoint(_segment.Curve.GetPoint(_backstopPointIndex).Position + new Vector3(_backstopXOffset, 0));
 
-            var finishLineParams = new FinishLineParameters(_segment, _flagPointIndex, _flagXOffset, _backstopPointIndex, _backstopXOffset, _backstopIsActive);
 
-            _groundEditor.SetFinishLine(_segment, finishLineParams);
+            var serializedFinishLine = new SerializedFinishLine(_flagPointIndex, _flagXOffset, _backstopPointIndex, _backstopXOffset, _backstopIsActive, flagPosition, backstopPosition);
+
+            _groundEditor.SetFinishLine(_segment, serializedFinishLine);
         }
 
         if(GUILayout.Button("Clear Finish Line"))

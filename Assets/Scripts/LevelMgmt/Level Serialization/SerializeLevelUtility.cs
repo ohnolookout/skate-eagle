@@ -94,7 +94,7 @@ public static class SerializeLevelUtility
         return serializedSegment;
     }
 
-    private static List<SplineControlPoint> CopySplinePoints(Spline splineToCopy)
+    public static List<SplineControlPoint> CopySplinePoints(Spline splineToCopy)
     {
         var pointsList = new List<SplineControlPoint>();
         for (int i = 0; i < splineToCopy.GetPointCount(); i++)
@@ -111,7 +111,7 @@ public static class SerializeLevelUtility
 
     }
 
-    private static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
+    public static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
     {
         var pointsList = new List<Vector2>();
         for (int i = 0; i < colliderToCopy.points.Length; i++)
@@ -121,7 +121,7 @@ public static class SerializeLevelUtility
         return pointsList;
     }
 
-    private static void BuildLinkedCameraTarget(ICameraTargetable targetable)
+    public static void BuildLinkedCameraTarget(ICameraTargetable targetable)
     {
         if(targetable.LinkedCameraTarget == null)
         {
@@ -197,7 +197,7 @@ public static class SerializeLevelUtility
         var ground = groundSpawner.AddGround();
         ground.name = serializedGround.name;
         ground.SegmentList = new();
-        foreach (var serializedSegment in serializedGround.segmentList)
+        foreach (var serializedSegment in serializedGround.serializedSegmentList)
         {
             var segment = groundSpawner.AddEmptySegment(ground);
             DeserializeSegment(serializedSegment, segment, ground, ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1]);

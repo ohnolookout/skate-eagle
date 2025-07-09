@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using System;
 
-public class TutorialSign: MonoBehaviour
+public class TutorialSign: MonoBehaviour, ISerializable
 {
     [SerializeField] private TextMeshPro _signText;
 
@@ -11,28 +11,9 @@ public class TutorialSign: MonoBehaviour
         get => _signText;
         set => _signText = value;
     }
-}
 
-
-[Serializable]
-public class SerializedTutorialSignData
-{
-    [SerializeField] private string _signText;
-    [SerializeField] private Vector2 _position;
-    public string SignText
+    public IDeserializable Serialize()
     {
-        get => _signText;
-        set => _signText = value;
-    }
-
-    public Vector2 Position
-    {
-        get => _position;
-        set => _position = value;
-    }
-    public SerializedTutorialSignData(string signText, Vector2 position)
-    {
-        _signText = signText;
-        _position = position;
+        return new SerializedTutorialSign(_signText.text, new Vector2(transform.position.x, transform.position.z));
     }
 }
