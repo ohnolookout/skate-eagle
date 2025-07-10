@@ -31,6 +31,7 @@ public class SerializedGround : IDeserializable
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)
     {
+        Debug.Log("Deserializing Ground: " + name);
         var ground = targetObject.GetComponent<Ground>();
         var groundManager = contextObject.GetComponent<GroundManager>();
 
@@ -48,6 +49,8 @@ public class SerializedGround : IDeserializable
 
         ground.name = name;
         ground.SegmentList = new();
+
+        Debug.Log("Deserializing " + serializedObjectList.Count + " segments for ground: " + name);
 
         foreach (var serializedSegment in serializedSegmentList)
         {
