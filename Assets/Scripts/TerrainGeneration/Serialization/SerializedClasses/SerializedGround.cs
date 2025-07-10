@@ -8,7 +8,7 @@ public class SerializedGround : IDeserializable
 {
     public Vector2 position;
     public string name;
-    public List<SerializedGroundSegment> serializedSegmentList;
+    public List<SerializedGroundSegment> segmentList;
     public List<IDeserializable> serializedObjectList;
 
     public SerializedGround(string name, Vector2 position, List<IDeserializable> segmentList)
@@ -52,7 +52,7 @@ public class SerializedGround : IDeserializable
 
         Debug.Log("Deserializing " + serializedObjectList.Count + " segments for ground: " + name);
 
-        foreach (var serializedSegment in serializedSegmentList)
+        foreach (var serializedSegment in segmentList)
         {
 
             var segment = groundManager.groundSpawner.AddEmptySegment(ground);
