@@ -16,12 +16,19 @@ public class SerializedGround : IDeserializable
         this.name = name;
         this.position = position;
         this.serializedObjectList = segmentList;
+        this.segmentList = new();
+
+        foreach (var segment in segmentList)
+        {
+            this.segmentList.Add(segment as SerializedGroundSegment);
+        }
     }
 
     public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList)
     {
         this.name = name;
         this.position = position;
+        this.segmentList = segmentList;
         serializedObjectList = new List<IDeserializable>();
         foreach (var segment in segmentList)
         {
@@ -50,7 +57,7 @@ public class SerializedGround : IDeserializable
         ground.name = name;
         ground.SegmentList = new();
 
-        Debug.Log("Deserializing " + serializedObjectList.Count + " segments for ground: " + name);
+        Debug.Log("Deserializing " + segmentList.Count + " segments for ground: " + name);
 
         foreach (var serializedSegment in segmentList)
         {
