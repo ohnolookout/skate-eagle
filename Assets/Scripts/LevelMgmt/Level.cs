@@ -57,8 +57,8 @@ public class Level
 
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager);
 
-        var grounds = groundManager.groundContainer.GetComponentsInChildren<Ground>();
-        _serializedGrounds = SerializeLevelUtility.SerializeGroundList(grounds);
+        //var grounds = groundManager.groundContainer.GetComponentsInChildren<Ground>();
+        //_serializedGrounds = SerializeLevelUtility.SerializeGroundList(grounds);
 
         _rootCameraTarget = rootCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
@@ -129,10 +129,6 @@ public class Level
 
             _serializedObjects.Add(ground);
         }
-
-        Debug.Log("Adding serialized finish line to serialized objects.");
-        Debug.Log("Flag position: " + _serializedFinishLine.flagPosition);
-        Debug.Log("Backstop position: " + _serializedFinishLine.backstopPosition);
 
         _serializedObjects.Add(_serializedFinishLine);
 
