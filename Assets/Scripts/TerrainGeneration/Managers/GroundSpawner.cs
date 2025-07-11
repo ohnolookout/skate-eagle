@@ -14,6 +14,8 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private GameObject _groundPrefab;
     [SerializeField] private GameObject _groundSegmentPrefab;
+    [SerializeField] private GameObject _longSignPrefab;
+    [SerializeField] private GameObject _squareSignPrefab;
 
     #region Add/Remove Segments
     public Ground AddGround()
@@ -145,6 +147,23 @@ public class GroundSpawner : MonoBehaviour
         segment.IsStart = true;
         var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).Position);
         return startPoint;
+    }
+
+    #endregion
+
+    #region Objects
+    public GameObject AddTutorialSign(bool isSquare)
+    {
+        var signPrefab = _longSignPrefab;
+
+        if(isSquare)
+        {
+            signPrefab = _squareSignPrefab;
+        }
+
+        var sign = Instantiate(signPrefab, _groundManager.groundContainer.transform);
+        return sign;
+                
     }
 
     #endregion

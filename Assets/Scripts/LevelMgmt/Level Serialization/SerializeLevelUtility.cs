@@ -202,17 +202,18 @@ public static class SerializeLevelUtility
 
         foreach (var serializedObject in level.SerializedObjects)
         {
-            if (serializedObject is SerializedGround)
-            {
-                var ground = groundSpawner.AddGround();
-                serializedObject.Deserialize(ground.gameObject, groundManager.gameObject);
-                groundManager.Grounds.Add(ground);
-            }
+            ProcessSerializedObject(serializedObject, groundManager);
+            //if (serializedObject is SerializedGround)
+            //{
+            //    var ground = groundSpawner.AddGround();
+            //    serializedObject.Deserialize(ground.gameObject, groundManager.gameObject);
+            //    groundManager.Grounds.Add(ground);
+            //}
 
-            if(serializedObject is SerializedFinishLine)
-            {
-                serializedObject.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
-            }
+            //if(serializedObject is SerializedFinishLine)
+            //{
+            //    serializedObject.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+            //}
         }
 
         if (Application.isPlaying)
@@ -230,6 +231,29 @@ public static class SerializeLevelUtility
 
     }
 
+    private static void ProcessSerializedObject(IDeserializable deserializable, GroundManager groundManager)
+    {
+        switch (deserializable)
+        {
+            case SerializedGround:
+                var ground = groundManager.groundSpawner.AddGround();
+                deserializable.Deserialize(ground.gameObject, groundManager.gameObject);
+                groundManager.Grounds.Add(ground);
+                break;
+            case SerializedFinishLine:
+                deserializable.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+                break;
+            case SerializedTutorialSign:
+                var isSquare = ((SerializedTutorialSign)deserializable).IsSquare;
+                var tutorialSign = groundManager.groundSpawner.AddTutorialSign(isSquare);
+                deserializable.Deserialize(tutorialSign.gameObject, groundManager.gameObject);
+                break;
+            default:
+                Debug.Log($"DeserializeLevel: Unhandled type {deserializable} during deserialization.");
+                break;
+        }
+    }
+
     private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
     {
         var targetables = new List<ICameraTargetable>();
@@ -242,8 +266,6 @@ public static class SerializeLevelUtility
             }
         }
 
-        //Expand with additional types as added
-        //Debug.Log(targetables.Count + " targetables found");
         return targetables;
     }
 
