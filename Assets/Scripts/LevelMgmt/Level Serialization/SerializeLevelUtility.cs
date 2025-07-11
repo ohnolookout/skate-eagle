@@ -187,31 +187,46 @@ public static class SerializeLevelUtility
 
         bool serializedGroundsFound = false;
 
-        if (level.SerializedGrounds != null && level.SerializedGrounds.Count > 0) {
-            
-            serializedGroundsFound = true;
-            foreach (var serializedGround in level.SerializedGrounds)
-            {
-                var ground = groundSpawner.AddGround();
+        //if (level.SerializedGrounds != null && level.SerializedGrounds.Count > 0)
+        //{
 
-                serializedGround.Deserialize(ground.gameObject, groundManager.gameObject);
+        //    serializedGroundsFound = true;
+        //    foreach (var serializedGround in level.SerializedGrounds)
+        //    {
+        //        var ground = groundSpawner.AddGround();
 
-                groundManager.Grounds.Add(ground);
-            }
-        }
+        //        serializedGround.Deserialize(ground.gameObject, groundManager.gameObject);
 
-        if (level.SerializedFinishLine != null)
-        {
-            level.SerializedFinishLine.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
-        }
+        //        groundManager.Grounds.Add(ground);
+        //    }
+        //}
 
         if (!serializedGroundsFound && level.SerializedObjects != null && level.SerializedObjects.Count > 0)
         {
+            Debug.Log("Deserializing serialized objects...");
             foreach (var serializedObject in level.SerializedObjects)
             {
+                Debug.Log("Deserializing object of type: " + serializedObject.ToString());
+                if (serializedObject is SerializedGround)
+                {
+                    Debug.Log("Deserializing ground...");
+                    var ground = groundSpawner.AddGround();
+                    serializedObject.Deserialize(ground.gameObject, groundManager.gameObject);
+                    groundManager.Grounds.Add(ground);
+                }
 
+                if(serializedObject is SerializedFinishLine)
+                {
+                    Debug.Log("Deserializing finish line...");
+                    serializedObject.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+                }
             }
         }
+
+        //if (level.SerializedFinishLine != null)
+        //{
+        //    level.SerializedFinishLine.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+        //}
 
         if (Application.isPlaying)
         {

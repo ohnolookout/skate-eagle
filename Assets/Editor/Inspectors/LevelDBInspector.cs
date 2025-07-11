@@ -72,6 +72,11 @@ public class LevelDBInspector : Editor
             _copyLevelWindow.Init(_levelDB);
         }
 
+        if (GUILayout.Button("Update Serialization Format", GUILayout.ExpandWidth(false)))
+        {
+            UpdateSerializationFormat();
+        }
+
         if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))
         {
             FixMedalDefaults();
@@ -187,7 +192,7 @@ public class LevelDBInspector : Editor
         _levelOrder = _so.FindProperty("_levelOrder");
     }
 
-    public void FixMedalDefaults()
+    private void FixMedalDefaults()
     {
         int levelUpdatedCount = 0;
         foreach (var level in _levelDB.LevelDictionary.Values)
@@ -240,5 +245,17 @@ public class LevelDBInspector : Editor
 
         Debug.Log("Updated medals in " + levelUpdatedCount + " levels.");
     }
+
+    //Add button to inspector
+    private void UpdateSerializationFormat()
+    {
+        var levels = _levelDB.LevelDictionary.Values.ToList();
+        foreach (var level in levels)
+        {
+            level.Reserialize();
+        }
+        EditorUtility.SetDirty(_levelDB);
+    }
+
 }
 

@@ -72,6 +72,7 @@ public class FinishLine : MonoBehaviour, ISerializable
     #region Construction
     public void SetFinishLine(SerializedFinishLine parameters)
     {
+    
         if (parameters == null)
         {
             gameObject.SetActive(false);
