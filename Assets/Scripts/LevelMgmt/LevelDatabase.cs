@@ -30,7 +30,7 @@ public class LevelDatabase : ScriptableObject
     public LevelDatabase()
     {
         _levelDictionary = new();
-        _editorLevel = new("Editor Level", new(), new Ground[0]);
+        _editorLevel = new("Editor Level", new(), new List<IDeserializable>());
     }
     #endregion
 

@@ -72,10 +72,12 @@ public class LevelDBInspector : Editor
             _copyLevelWindow.Init(_levelDB);
         }
 
-        if (GUILayout.Button("Update Serialization Format", GUILayout.ExpandWidth(false)))
-        {
-            UpdateSerializationFormat();
-        }
+        //Reserialization utility for old level format
+
+        //if (GUILayout.Button("Update Serialization Format", GUILayout.ExpandWidth(false)))
+        //{
+        //    UpdateSerializationFormat();
+        //}
 
         if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))
         {
@@ -246,16 +248,15 @@ public class LevelDBInspector : Editor
         Debug.Log("Updated medals in " + levelUpdatedCount + " levels.");
     }
 
-    //Add button to inspector
-    private void UpdateSerializationFormat()
-    {
-        var levels = _levelDB.LevelDictionary.Values.ToList();
-        foreach (var level in levels)
-        {
-            level.Reserialize();
-        }
-        EditorUtility.SetDirty(_levelDB);
-    }
+    //private void UpdateSerializationFormat()
+    //{
+    //    var levels = _levelDB.LevelDictionary.Values.ToList();
+    //    foreach (var level in levels)
+    //    {
+    //        level.Reserialize();
+    //    }
+    //    EditorUtility.SetDirty(_levelDB);
+    //}
 
 }
 
