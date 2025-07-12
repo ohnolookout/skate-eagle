@@ -13,22 +13,10 @@ using System;
 public static class SerializeLevelUtility
 {
     #region Serialization
-    public static List<SerializedGround> SerializeGroundList(Ground[] grounds)
-    {
-        var serializedGrounds = new List<SerializedGround>();
-
-        GenerateGroundIndices(grounds);
-
-        foreach (Ground ground in grounds)
-        {
-            serializedGrounds.Add(SerializeGround(ground));
-        }
-
-        return serializedGrounds;
-    }
 
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager)
     {
+        GenerateGroundIndices(groundManager.Grounds);
         var serializables = new List<ISerializable>();
         for (int i = 0; i < groundManager.transform.childCount; i++)
         {
@@ -57,9 +45,9 @@ public static class SerializeLevelUtility
 
         return serializedObjects;
     }
-    private static void GenerateGroundIndices(Ground[] grounds)
+    private static void GenerateGroundIndices(List<Ground> grounds)
     {
-        for (int i = 0; i < grounds.Length; i++)
+        for (int i = 0; i < grounds.Count; i++)
         {
             var ground = grounds[i];
             for (int j = 0; j < ground.SegmentList.Count; j++)
@@ -67,62 +55,6 @@ public static class SerializeLevelUtility
                 ground.SegmentList[j].LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
             }
         }
-    }
-
-    private static SerializedGround SerializeGround(Ground ground)
-    {
-        var name = ground.gameObject.name;
-        var position = ground.transform.position;
-        var segmentList = new List<SerializedGroundSegment>();
-        foreach (GroundSegment segment in ground.SegmentList)
-        {
-            segmentList.Add(SerializeGroundSegment(segment));
-        }
-        return new SerializedGround(name, position, segmentList);
-    }
-
-    private static SerializedGroundSegment SerializeGroundSegment(GroundSegment segment)
-    {
-        BuildLinkedCameraTarget(segment);
-
-        SerializedGroundSegment serializedSegment = new();
-
-        //Transform
-        serializedSegment.name = segment.gameObject.name;
-        serializedSegment.position = segment.transform.position;
-        serializedSegment.rotation = segment.transform.rotation;
-        serializedSegment.leftFloorHeight = segment.LeftFloorHeight;
-        serializedSegment.rightFloorHeight = segment.RightFloorHeight;
-        serializedSegment.leftFloorAngle = segment.LeftFloorAngle;
-        serializedSegment.rightFloorAngle = segment.RightFloorAngle;
-
-        //Segment
-        serializedSegment.isStart = segment.IsStart;
-        serializedSegment.isFinish = segment.IsFinish;
-        serializedSegment.isFloating = segment.IsFloating;
-        serializedSegment.isInverted = segment.IsInverted;
-        serializedSegment.hasShadow = segment.HasShadow;
-        serializedSegment.useDefaultHighLowPoints = segment.UseDefaultHighLowPoints;
-
-        //Curve
-        segment.Curve.LowPoint = segment.LowPoint.position - segment.transform.position;
-        segment.Curve.HighPoint = segment.HighPoint.position - segment.transform.position;
-        serializedSegment.curve = segment.Curve;
-
-
-        //Spline
-        serializedSegment.fillSplinePoints = CopySplinePoints(segment.Spline);
-        serializedSegment.fillSpineIsOpen = segment.Spline.isOpenEnded;
-        serializedSegment.edgeSplinePoints = CopySplinePoints(segment.EdgeSpline);
-
-        //Collider
-        serializedSegment.colliderPoints = CopyColliderPoints(segment.Collider);
-        serializedSegment.bottomColliderPoints = CopyColliderPoints(segment.BottomCollider);
-
-        //CameraTargetable
-        serializedSegment.linkedCameraTarget = segment.LinkedCameraTarget;
-
-        return serializedSegment;
     }
 
     public static List<SplineControlPoint> CopySplinePoints(Spline splineToCopy)
@@ -203,17 +135,6 @@ public static class SerializeLevelUtility
         foreach (var serializedObject in level.SerializedObjects)
         {
             ProcessSerializedObject(serializedObject, groundManager);
-            //if (serializedObject is SerializedGround)
-            //{
-            //    var ground = groundSpawner.AddGround();
-            //    serializedObject.Deserialize(ground.gameObject, groundManager.gameObject);
-            //    groundManager.Grounds.Add(ground);
-            //}
-
-            //if(serializedObject is SerializedFinishLine)
-            //{
-            //    serializedObject.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
-            //}
         }
 
         if (Application.isPlaying)

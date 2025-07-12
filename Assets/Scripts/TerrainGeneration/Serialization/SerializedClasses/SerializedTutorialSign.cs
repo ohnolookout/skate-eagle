@@ -8,35 +8,15 @@ public class SerializedTutorialSign : IDeserializable
     [SerializeField] private Vector2 _position;
     [SerializeField] private string _name;
     [SerializeField] private bool _isSquare = false;
-    public string SignText
-    {
-        get => _signText;
-        set => _signText = value;
-    }
-
-    public Vector2 Position
-    {
-        get => _position;
-        set => _position = value;
-    }
-
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
-    }
-
-    public bool IsSquare
-    {
-        get => _isSquare;
-        set => _isSquare = value;
-    }
-
-    public SerializedTutorialSign(string name, string signText, Vector2 position, bool isSquare)
+    [SerializeField] private float _imgRotation = 0;
+    
+    public bool IsSquare { get => _isSquare; set => _isSquare = value; }
+    public SerializedTutorialSign(string name, string signText, Vector2 position, float imgRotation, bool isSquare)
     {
         _name = name;
         _signText = signText;
         _position = position;
+        _imgRotation = imgRotation;
         _isSquare = isSquare;
     }
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)
@@ -44,7 +24,8 @@ public class SerializedTutorialSign : IDeserializable
         targetObject.name = _name;
         TutorialSign tutorialSign = targetObject.GetComponent<TutorialSign>();
         tutorialSign.SignText.text = _signText;
-        targetObject.transform.position = new Vector3(_position.x, 0, _position.y);
+        targetObject.transform.position = new(_position.x, _position.y);
+        tutorialSign.ImageTransform.rotation = Quaternion.Euler(0, 0, _imgRotation);
         return tutorialSign;
     }
 }
