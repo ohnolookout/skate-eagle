@@ -1,13 +1,9 @@
 #if UNITY_EDITOR
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using static UnityEngine.Rendering.HableCurve;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -20,29 +16,8 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        //Debug.Log("GroundEditManager Awake called");
-        //Debug.Log("Awake called for GroundEditManager");
-        //if (Application.isPlaying)
-        //{
-        //    Destroy(this);
-        //}
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
-
-        //var levelDB = Resources.Load<LevelDatabase>("LevelDB");
-        //var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
-
-        //if (level != null && Application.isPlaying)
-        //{
-        //    Debug.Log("Deserializing level: " + level);
-        //    SerializeLevelUtility.DeserializeLevel(level, _groundManager);
-        //}
-        //else
-        //{
-        //    Debug.Log("No level found to deserialize, clearing ground.");
-        //    _groundManager.ClearGround();
-        //}
-
     }
 
     private void OnDrawGizmosSelected()
@@ -344,6 +319,7 @@ public class GroundEditManager : MonoBehaviour
         return groundPrefix + " Segment " + segment.parentGround.SegmentList.IndexOf(segment);
     }
     #endregion
+
 
     #region Start/Finish
     public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
