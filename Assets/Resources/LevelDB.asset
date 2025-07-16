@@ -1037,33 +1037,37 @@ MonoBehaviour:
   - Plateaus
   - Double Double
   _editorLevel:
-    _UID: 4f1c4634-a6c2-4507-9952-a89644a9432c
-    _name: Time To Turn
+    _UID: 37fb708b-209b-4269-a2fa-8ccdde8beece
+    _name: Double Double
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 15
-      _silverTime: 12
-      _goldTime: 9
-      _blueTime: 7
+      _bronzeTime: 20
+      _silverTime: 14
+      _goldTime: 10
+      _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 7890022043522433385
-    - rid: 7890022113051148590
-    _leaderboardKey: Time To Turn_leaderboard
+    - rid: 7890022043386643132
+    - rid: 7890022044062188423
+    - rid: 7890022044062188424
+    - rid: 7890022044062188425
+    - rid: 7890022044062188426
+    - rid: 7890022044062188427
+    _leaderboardKey: Double Double_leaderboard
     _startPoint: {x: 192.62743, y: 10.941972}
-    _killPlaneY: -73.50544
+    _killPlaneY: -50.848232
     _cameraStartPosition: {x: 0, y: 0}
     _rootCameraTarget:
       LeftTargets:
-      - rid: 7890022113051148457
+      - rid: 7890022044062188428
       RightTargets:
-      - rid: 7890022113051148458
+      - rid: 7890022044062188429
       LeftKDNode:
-        rid: 7890022113051148457
+        rid: 7890022044062188430
       RightKDNode:
-        rid: 7890022113051148458
+        rid: 7890022044062188431
       TargetType: 0
-      SerializedLocation: 0000000001000000
+      SerializedLocation: 0400000001000000
       _lowTarget:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
@@ -1072,7 +1076,7 @@ MonoBehaviour:
         TargetInfluenceV: 1
         TargetOffset: {x: 0, y: 10}
         IsAdjusting: 0
-        SerializedPosition: {x: 379.9063, y: -29.129368, z: 0}
+        SerializedPosition: {x: 535.0177, y: -12.06808, z: 0}
       _highTarget:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
@@ -1081,10 +1085,10 @@ MonoBehaviour:
         TargetInfluenceV: 0.15
         TargetOffset: {x: 0, y: -12}
         IsAdjusting: 0
-        SerializedPosition: {x: 314.04846, y: 6.748809, z: 0}
+        SerializedPosition: {x: 515.0177, y: -1.058028, z: 0}
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
-  lastLevelLoadedUID: 4f1c4634-a6c2-4507-9952-a89644a9432c
+  lastLevelLoadedUID: 37fb708b-209b-4269-a2fa-8ccdde8beece
   references:
     version: 2
     RefIds:
@@ -14738,12 +14742,12 @@ MonoBehaviour:
             SerializedLocation: 0000000000000000
             _lowTarget:
               TargetTransform: {fileID: 0}
-              CurrentInfluenceH: 1
-              CurrentInfluenceV: 1
+              CurrentInfluenceH: 0
+              CurrentInfluenceV: 0.37333316
               TargetInfluenceH: 0
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 10}
-              IsAdjusting: 0
+              IsAdjusting: 1
               SerializedPosition: {x: 192.62743, y: 10.941972, z: 0}
             _highTarget:
               TargetTransform: {fileID: 0}
@@ -27254,7 +27258,7 @@ MonoBehaviour:
         SerializedLocation: 0000000001000000
         _lowTarget:
           TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
+          CurrentInfluenceH: 0
           CurrentInfluenceV: 1
           TargetInfluenceH: 0
           TargetInfluenceV: 1
@@ -27284,7 +27288,7 @@ MonoBehaviour:
         SerializedLocation: 0000000000000000
         _lowTarget:
           TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
+          CurrentInfluenceH: 0
           CurrentInfluenceV: 1
           TargetInfluenceH: 0
           TargetInfluenceV: 1
@@ -27314,7 +27318,7 @@ MonoBehaviour:
         SerializedLocation: 0000000002000000
         _lowTarget:
           TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
+          CurrentInfluenceH: 0
           CurrentInfluenceV: 1
           TargetInfluenceH: 0
           TargetInfluenceV: 1
@@ -27564,7 +27568,7 @@ MonoBehaviour:
             SerializedLocation: 0000000000000000
             _lowTarget:
               TargetTransform: {fileID: 0}
-              CurrentInfluenceH: 1
+              CurrentInfluenceH: 0
               CurrentInfluenceV: 1
               TargetInfluenceH: 0
               TargetInfluenceV: 1

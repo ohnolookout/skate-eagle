@@ -20,23 +20,28 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        if (Application.isPlaying)
-        {
-            Destroy(this);
-        }
+        //Debug.Log("GroundEditManager Awake called");
+        //Debug.Log("Awake called for GroundEditManager");
+        //if (Application.isPlaying)
+        //{
+        //    Destroy(this);
+        //}
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
 
-        var levelDB = Resources.Load<LevelDatabase>("LevelDB");
-        var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
-        if (level != null && Application.isPlaying)
-        {
-            SerializeLevelUtility.DeserializeLevel(level, _groundManager);
-        }
-        else
-        {
-            _groundManager.ClearGround();
-        }
+        //var levelDB = Resources.Load<LevelDatabase>("LevelDB");
+        //var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
+
+        //if (level != null && Application.isPlaying)
+        //{
+        //    Debug.Log("Deserializing level: " + level);
+        //    SerializeLevelUtility.DeserializeLevel(level, _groundManager);
+        //}
+        //else
+        //{
+        //    Debug.Log("No level found to deserialize, clearing ground.");
+        //    _groundManager.ClearGround();
+        //}
 
     }
 
