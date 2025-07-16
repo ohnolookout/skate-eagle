@@ -51,15 +51,45 @@ public class LevelDesigner : EditorWindow
 
     private void OnEnable()
     {
+        Initialize();
+        EditorApplication.playModeStateChanged += OnPlayModeChange;
+    }
+
+    private void OnDisable()
+    {
+        if (!DoDiscardChanges())
+        {
+            SaveLevel();
+        }
+        _groundEditor = null;
+        _groundManager = null;
+        _selectedObject = null;
+        Selection.selectionChanged -= OnSelectionChanged;
+        EditorApplication.playModeStateChanged -= OnPlayModeChange;
+    }
+
+
+    void Update()
+    {
+        if (_selectedObject != null && _lastTransformPosition != null && _selectedObject.transform.position != (Vector3)_lastTransformPosition)
+        {
+            _lastTransformPosition = _selectedObject.transform.position;
+            SetLevelDirty();
+        }
+    }
+
+    private void Initialize()
+    {
         _activeScene = SceneManager.GetActiveScene();
         _groundEditor = FindAnyObjectByType<GroundEditManager>();
         _groundManager = FindAnyObjectByType<GroundManager>();
 
-        if(_groundEditor == null || _groundManager == null)
+        if (_groundEditor == null || _groundManager == null)
         {
             _groundEditorFound = false;
             return;
-        } else
+        }
+        else
         {
             _groundEditorFound = true;
         }
@@ -73,24 +103,11 @@ public class LevelDesigner : EditorWindow
         LoadLevel(_levelDB.EditorLevel);
     }
 
-    private void OnDisable()
+    private void OnPlayModeChange(PlayModeStateChange state)
     {
-        if (!DoDiscardChanges())
+        if (state == PlayModeStateChange.EnteredEditMode)
         {
-            SaveLevel();
-        }
-        _groundEditor = null;
-        _groundManager = null;
-        _selectedObject = null;
-        Selection.selectionChanged -= OnSelectionChanged;
-    }
-
-    void Update()
-    {
-        if (_selectedObject != null && _lastTransformPosition != null && _selectedObject.transform.position != (Vector3)_lastTransformPosition)
-        {
-            _lastTransformPosition = _selectedObject.transform.position;
-            SetLevelDirty();
+            Initialize();
         }
     }
     #endregion

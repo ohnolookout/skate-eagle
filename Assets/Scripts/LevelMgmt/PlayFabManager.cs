@@ -138,10 +138,6 @@ public class PlayFabManager : MonoBehaviour
         PlayerPrefs.SetInt(LoginCountKey, loginCount);
         InitializationResult.loginCount = loginCount;
 
-        Debug.Log("Checking whether to ask for email.");
-        Debug.Log("Login count: " + loginCount);
-        Debug.Log("Has email: " + InitializationResult.hasEmail);
-        Debug.Log("Don't ask email: " + PlayerPrefs.GetInt(DontAskEmailKey, 0));
         //Determine whether to ask for email
         if (!InitializationResult.hasEmail && PlayerPrefs.GetInt(DontAskEmailKey, 0) == 0 && loginCount % AskEmailEveryX == 0)
         {
