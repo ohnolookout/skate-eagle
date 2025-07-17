@@ -36,6 +36,8 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private GroundSegment _nextLeftSegment = null;
     [SerializeField] private GroundSegment _nextRightSegment = null;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
+
+    private List<CurvePointEditObject> _curvePointEditObjects = new();
     public GroundSegment NextLeftSegment { get => _nextLeftSegment; set => _nextLeftSegment = value; }
     public GroundSegment NextRightSegment { get => _nextRightSegment; set => _nextRightSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }

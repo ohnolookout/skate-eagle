@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using static UnityEngine.Rendering.HableCurve;
 
 [Serializable]
 public class SerializedGround : IDeserializable
@@ -56,9 +58,10 @@ public class SerializedGround : IDeserializable
         ground.name = name;
         ground.SegmentList = new();
 
+        List<CurvePoint> allCurvePoints = new();
+
         foreach (var serializedSegment in segmentList)
         {
-
             var segment = groundManager.groundSpawner.AddEmptySegment(ground);
             serializedSegment.Deserialize(segment.gameObject, ground.gameObject);
 
@@ -77,10 +80,39 @@ public class SerializedGround : IDeserializable
             {
                 groundManager.FinishSegment = segment;
             }
+
+
             segment.gameObject.SetActive(false);
             segment.gameObject.SetActive(true);
         }
 
+#if UNITY_EDITOR
+        bool isFirstSegment = true;
+        foreach(var segment in ground.SegmentList)
+        {
+
+            if (isFirstSegment)
+            {
+                CurvePoint curvePoint = LocalizedCurvePointFromSegment(segment, segment.Curve.CurvePoints[0]);
+                ground.AddCurvePointEditObject(curvePoint);
+            }
+
+            for (int i = 1; i < segment.curve.CurvePoints.Count - 1; i++)
+            {
+                CurvePoint curvePoint = LocalizedCurvePointFromSegment(segment, segment.Curve.CurvePoints[i]);
+                ground.AddCurvePointEditObject(curvePoint);
+            }            
+
+        }
+#endif
+
         return ground;
+    }
+
+    private CurvePoint LocalizedCurvePointFromSegment(GroundSegment segment, CurvePoint curvePoint)
+    {
+        var worldPosition = segment.transform.TransformPoint(curvePoint.Position);
+        var groundLocalzedPosition = segment.parentGround.transform.InverseTransformPoint(worldPosition);
+        return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
     }
 }

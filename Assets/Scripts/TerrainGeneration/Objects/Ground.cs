@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
-using static UnityEngine.Rendering.HableCurve;
 
 public class Ground : MonoBehaviour, ISerializable
 {
@@ -10,7 +8,10 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] GameObject _segmentPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private bool _isFloating = false;
-    public GameObject FinishFlagPrefab, BackstopPrefab;
+    private List<CurvePointEditObject> _curvePointEditObjects = new();    
+    [SerializeField] private GameObject _curvePointEditObjectPrefab;
+    [SerializeField] private GameObject _curvePointParent;
+    [SerializeField] private List<CurvePoint> _curvePoints = new();
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
@@ -18,6 +19,7 @@ public class Ground : MonoBehaviour, ISerializable
     public CurvePoint EndPoint => _segmentList[^1].Curve.EndPoint;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
+    public List<CurvePoint> CurvePoints => _curvePoints;
     #endregion
 
     public IDeserializable Serialize()
@@ -30,5 +32,13 @@ public class Ground : MonoBehaviour, ISerializable
             segmentList.Add(segment.Serialize());
         }
         return new SerializedGround(name, position, segmentList);
+    }
+
+    public void AddCurvePointEditObject(CurvePoint curvePoint) 
+    {
+        var point = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointEditObject>();
+        point.groundTransform = transform;
+        point.SetCurvePoint(curvePoint);
+
     }
 }
