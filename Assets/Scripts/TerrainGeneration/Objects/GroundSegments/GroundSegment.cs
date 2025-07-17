@@ -37,7 +37,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     [SerializeField] private GroundSegment _nextRightSegment = null;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
 
-    private List<CurvePointEditObject> _curvePointEditObjects = new();
+    private List<CurvePointObject> _curvePointEditObjects = new();
     public GroundSegment NextLeftSegment { get => _nextLeftSegment; set => _nextLeftSegment = value; }
     public GroundSegment NextRightSegment { get => _nextRightSegment; set => _nextRightSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
@@ -96,38 +96,38 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 
-    void OnDrawGizmosSelected()
-    {
-        var startPos = transform.position;
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(curve.StartPoint.Position + startPos, 2f);
+    //void OnDrawGizmosSelected()
+    //{
+    //    var startPos = transform.position;
+    //    Gizmos.color = Color.green;
+    //    Gizmos.DrawSphere(curve.StartPoint.Position + startPos, 2f);
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(curve.EndPoint.Position + startPos, 2f);
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawSphere(curve.EndPoint.Position + startPos, 2f);
 
-        Gizmos.color = Color.blue;
-        for(int i = 1; i < curve.CurvePoints.Count - 1; i++)
-        {
-            Gizmos.DrawSphere(curve.CurvePoints[i].Position + startPos, 2f);
-        }
+    //    Gizmos.color = Color.blue;
+    //    for(int i = 1; i < curve.CurvePoints.Count - 1; i++)
+    //    {
+    //        Gizmos.DrawSphere(curve.CurvePoints[i].Position + startPos, 2f);
+    //    }
 
-        Gizmos.color = Color.yellow;
-        foreach(var point in curve.CurvePoints)
-        {
-            Gizmos.DrawSphere(point.LeftTangentPosition + startPos, 1f);
-            Gizmos.DrawSphere(point.RightTangentPosition + startPos, 1f);
-        }
+    //    Gizmos.color = Color.yellow;
+    //    foreach(var point in curve.CurvePoints)
+    //    {
+    //        Gizmos.DrawSphere(point.LeftTangentPosition + startPos, 1f);
+    //        Gizmos.DrawSphere(point.RightTangentPosition + startPos, 1f);
+    //    }
 
-        Gizmos.color = Color.white;
-        foreach (var point in curve.CurvePoints)
-        {
-            Gizmos.DrawLine(point.Position + startPos, point.LeftTangentPosition + startPos);
-            Gizmos.DrawLine(point.Position + startPos, point.RightTangentPosition + startPos);
-        }
+    //    Gizmos.color = Color.white;
+    //    foreach (var point in curve.CurvePoints)
+    //    {
+    //        Gizmos.DrawLine(point.Position + startPos, point.LeftTangentPosition + startPos);
+    //        Gizmos.DrawLine(point.Position + startPos, point.RightTangentPosition + startPos);
+    //    }
 
-        LinkedCameraTarget.DrawTargets();
+    //    LinkedCameraTarget.DrawTargets();
 
-    }
+    //}
 
     public void UpdateShadow()
     {

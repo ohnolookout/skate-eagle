@@ -20,23 +20,8 @@ public class GroundEditManager : MonoBehaviour
     #region Monobehaviors
     private void Awake()
     {
-        if (Application.isPlaying)
-        {
-            Destroy(this);
-        }
         _groundManager = gameObject.GetComponentInParent<GroundManager>();
         _groundSpawner = _groundManager.groundSpawner;
-
-        var levelDB = Resources.Load<LevelDatabase>("LevelDB");
-        var level = levelDB.GetLevelByUID(levelDB.lastLevelLoadedUID);
-        if (level != null && Application.isPlaying)
-        {
-            SerializeLevelUtility.DeserializeLevel(level, _groundManager);
-        }
-        else
-        {
-            _groundManager.ClearGround();
-        }
 
     }
 

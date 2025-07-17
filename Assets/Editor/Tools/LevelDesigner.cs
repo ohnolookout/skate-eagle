@@ -51,15 +51,22 @@ public class LevelDesigner : EditorWindow
 
     private void OnEnable()
     {
+        Initialize();
+        EditorApplication.playModeStateChanged += OnPlayModeChanged;
+    }
+
+    private void Initialize()
+    {
         _activeScene = SceneManager.GetActiveScene();
         _groundEditor = FindAnyObjectByType<GroundEditManager>();
         _groundManager = FindAnyObjectByType<GroundManager>();
 
-        if(_groundEditor == null || _groundManager == null)
+        if (_groundEditor == null || _groundManager == null)
         {
             _groundEditorFound = false;
             return;
-        } else
+        }
+        else
         {
             _groundEditorFound = true;
         }
@@ -71,6 +78,14 @@ public class LevelDesigner : EditorWindow
 
         LoadLevelDB();
         LoadLevel(_levelDB.EditorLevel);
+    }
+
+    private void OnPlayModeChanged(PlayModeStateChange state)
+    {
+        if(state == PlayModeStateChange.EnteredEditMode)
+        {
+            Initialize();
+        }
     }
 
     private void OnDisable()

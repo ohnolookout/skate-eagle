@@ -7,24 +7,27 @@ public struct CurvePoint
 {
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private bool _isBroken;
+    [SerializeField] private bool _isSymmetrical;
     [SerializeField] private bool _isCorner;
 
-    public CurvePoint(Vector3 control, bool isBroken = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, bool isBroken = false, bool isSymmetrical = false, bool isCorner = false)
     {
         position = control;
         leftTangent = new(0, 0);
         rightTangent = new(0, 0);
-        this._isBroken = isBroken;
-        this._isCorner = isCorner;
+        _isBroken = isBroken;
+        _isCorner = isCorner;
+        _isSymmetrical = isSymmetrical;
     }
 
-    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, bool isBroken = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, bool isBroken = false, bool isSymmetrical = false, bool isCorner = false)
     {
         position = control;
         leftTangent = lTang;
         rightTangent = rTang;
-        this._isBroken = isBroken;
-        this._isCorner = isCorner;
+        _isBroken = isBroken;
+        _isCorner = isCorner;
+        _isSymmetrical = isSymmetrical;
     }
 
 
@@ -33,6 +36,19 @@ public struct CurvePoint
     public Vector3 RightTangent {  get => rightTangent; set => rightTangent = value; } 
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
+    public bool IsSymmetrical
+    {
+        get => _isSymmetrical;
+        set
+        {
+            _isSymmetrical = value;
+            if (value)
+            {
+                rightTangent = -leftTangent;
+                _isBroken = false; // If it's symmetrical, it can't be broken
+            }
+        }
+    }
     public bool IsBroken { get => _isBroken; set => _isBroken = value; }
     public bool IsCorner { get => _isCorner; set => _isCorner = value; }
     public void SetTangents(float slope, float velocity)
