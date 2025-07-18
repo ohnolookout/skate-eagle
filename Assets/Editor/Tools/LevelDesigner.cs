@@ -331,7 +331,7 @@ public class LevelDesigner : EditorWindow
         _segment.IsInverted = EditorGUILayout.Toggle("Invert Collider", _segment.IsInverted, GUILayout.ExpandWidth(false));
         _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
         _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
-        _segment.DoTarget = EditorGUILayout.Toggle("Do Target", _segment.DoTarget, GUILayout.ExpandWidth(false));
+        _segment.DoTargetHigh = EditorGUILayout.Toggle("Do Target", _segment.DoTargetHigh, GUILayout.ExpandWidth(false));
 
         _so.ApplyModifiedProperties();
         _so.Update();

@@ -19,8 +19,8 @@ public static class KDTreeBuilder
         var axis = depth % 2;
 
         targets = targets.OrderBy(t => axis == 0 
-        ? t.LowTarget.TargetPosition.x 
-        : t.LowTarget.TargetPosition.y).ToList();
+        ? t.Target.TargetPosition.x 
+        : t.Target.TargetPosition.y).ToList();
 
         int medianIndex = targets.Count / 2;
         LinkedCameraTarget medianTarget = targets[medianIndex];
@@ -39,8 +39,8 @@ public static class KDTreeBuilder
             return best;
         }
 
-        float nodeDist = DistanceSquared(point, node.LowTarget.TargetPosition);
-        float bestDist = DistanceSquared(point, best.LowTarget.TargetPosition);
+        float nodeDist = DistanceSquared(point, node.Target.TargetPosition);
+        float bestDist = DistanceSquared(point, best.Target.TargetPosition);
 
         if (nodeDist < bestDist)
             best = node;
@@ -48,7 +48,7 @@ public static class KDTreeBuilder
         int axis = depth % 2;
 
         float pointVal = axis == 0 ? point.x : point.y;
-        float nodeVal = axis == 0 ? node.LowTarget.TargetPosition.x : node.LowTarget.TargetPosition.y;
+        float nodeVal = axis == 0 ? node.Target.TargetPosition.x : node.Target.TargetPosition.y;
 
         LinkedCameraTarget first = pointVal < nodeVal ? node.LeftKDNode : node.RightKDNode;
         LinkedCameraTarget second = pointVal < nodeVal ? node.RightKDNode : node.LeftKDNode;
@@ -56,7 +56,7 @@ public static class KDTreeBuilder
         best = FindNearestRecursive(first, point, depth + 1, best);
 
         float planeDist = (pointVal - nodeVal) * (pointVal - nodeVal);
-        bestDist = DistanceSquared(point, best.LowTarget.TargetPosition);
+        bestDist = DistanceSquared(point, best.Target.TargetPosition);
 
         if (planeDist < bestDist)
         {

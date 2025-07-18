@@ -56,18 +56,18 @@ public class CameraManager : MonoBehaviour
         Gizmos.color = Color.red;
         foreach(var target in _targetsToTrack)
         {
-            if (target == null || target.LowTarget == null)
+            if (target == null || target.Target == null)
             {
                 continue;
             }
-            Gizmos.DrawSphere(target.LowTarget.TargetPosition, 2f);
+            Gizmos.DrawSphere(target.Target.TargetPosition, 2f);
         }
 
         Gizmos.color = Color.blue;
 
-        if (_currentTarget != null && _currentTarget.LowTarget != null)
+        if (_currentTarget != null && _currentTarget.Target != null)
         {
-            Gizmos.DrawSphere(_currentTarget.LowTarget.TargetPosition, 2f);
+            Gizmos.DrawSphere(_currentTarget.Target.TargetPosition, 2f);
         }
 
     }
@@ -133,7 +133,7 @@ public class CameraManager : MonoBehaviour
                 continue;
             }
 
-            if(target.TargetPosition == _currentTarget.LowTarget.TargetPosition)
+            if(target.TargetPosition == _currentTarget.Target.TargetPosition)
             {
                 currentTargetIsFound = true;
                 continue;
@@ -144,17 +144,17 @@ public class CameraManager : MonoBehaviour
 
         if (!currentTargetIsFound)
         {
-            _camera.AddCameraTarget(_currentTarget.LowTarget, duration);
+            _camera.AddCameraTarget(_currentTarget.Target, duration);
         }
 
         foreach (var target in _targetsToTrack)
         {
-            if(target.LowTarget == null)
+            if(target.Target == null)
             {
                 continue;
             }
             
-            _camera.AddCameraTarget(target.LowTarget, duration);
+            _camera.AddCameraTarget(target.Target, duration);
         }
 
     }
@@ -200,7 +200,7 @@ public class CameraManager : MonoBehaviour
             Debug.LogError("Start target is null");
             return;
         }
-        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.LowTarget, CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint));
+        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint));
 
         _currentTarget = startTarget.LinkedCameraTarget;
 

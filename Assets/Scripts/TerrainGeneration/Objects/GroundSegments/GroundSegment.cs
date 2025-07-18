@@ -60,7 +60,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsStart { get => _isStart; set => _isStart = value; }
-    public bool DoTarget { get => _doTarget; set => _doTarget = value; }
+    public bool DoTargetHigh { get => _doTarget; set => _doTarget = value; }
     public bool IsFirstSegment => parentGround.SegmentList[0] == this;
     public bool IsLastSegment => parentGround.SegmentList[^1] == this;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
@@ -96,38 +96,12 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         OnSegmentBecomeInvisible?.Invoke(this);
     }
 
-    //void OnDrawGizmosSelected()
-    //{
-    //    var startPos = transform.position;
-    //    Gizmos.color = Color.green;
-    //    Gizmos.DrawSphere(curve.StartPoint.Position + startPos, 2f);
+    void OnDrawGizmosSelected()
+    {
 
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawSphere(curve.EndPoint.Position + startPos, 2f);
+        LinkedCameraTarget.DrawTargets();
 
-    //    Gizmos.color = Color.blue;
-    //    for(int i = 1; i < curve.CurvePoints.Count - 1; i++)
-    //    {
-    //        Gizmos.DrawSphere(curve.CurvePoints[i].Position + startPos, 2f);
-    //    }
-
-    //    Gizmos.color = Color.yellow;
-    //    foreach(var point in curve.CurvePoints)
-    //    {
-    //        Gizmos.DrawSphere(point.LeftTangentPosition + startPos, 1f);
-    //        Gizmos.DrawSphere(point.RightTangentPosition + startPos, 1f);
-    //    }
-
-    //    Gizmos.color = Color.white;
-    //    foreach (var point in curve.CurvePoints)
-    //    {
-    //        Gizmos.DrawLine(point.Position + startPos, point.LeftTangentPosition + startPos);
-    //        Gizmos.DrawLine(point.Position + startPos, point.RightTangentPosition + startPos);
-    //    }
-
-    //    LinkedCameraTarget.DrawTargets();
-
-    //}
+    }
 
     public void UpdateShadow()
     {
@@ -176,8 +150,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
             UpdateHighLowTransforms();
         }
 
-        _linkedCameraTarget.LowTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
-        _linkedCameraTarget.HighTarget = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentHighPoint, HighPoint.transform);
+        _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
 
         if (_nextLeftSegment != null && !LeftTargetObjects.Contains(_nextLeftSegment.gameObject))
         {

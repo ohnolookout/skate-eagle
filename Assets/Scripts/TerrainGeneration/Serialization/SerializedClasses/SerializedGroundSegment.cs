@@ -28,6 +28,7 @@ public class SerializedGroundSegment: IDeserializable
 
     //Curve contents
     public Curve curve;
+
     //Spline contents
     public List<SplineControlPoint> fillSplinePoints;
     public bool fillSpineIsOpen;
@@ -42,6 +43,26 @@ public class SerializedGroundSegment: IDeserializable
     public LinkedCameraTarget linkedCameraTarget;
     public SerializedGroundSegment()
     {
+    }
+
+    public SerializedGroundSegment(List<CurvePoint> curvePoints, Ground ground, int index)
+    {
+        //Position
+        name = ground.gameObject.name.Remove(1, ground.gameObject.name.Length - 2) + " Segment " + index;
+        position = ground.transform.position;
+        rotation = ground.transform.rotation;
+        leftFloorHeight = curvePoints[0].FloorHeight;
+        rightFloorHeight = curvePoints[^1].FloorHeight;
+        leftFloorAngle = curvePoints[0].FloorAngle;
+        rightFloorAngle = curvePoints[^1].FloorAngle;
+
+        //State
+        isStart = false;
+        isFinish = false;
+        isFloating = ground.IsFloating;
+        isInverted = ground.IsInverted;
+        hasShadow = ground.HasShadow;
+
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

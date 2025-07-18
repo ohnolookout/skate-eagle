@@ -9,10 +9,13 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] GameObject _segmentPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private bool _isFloating = false;
+    [SerializeField] private bool _isInverted = false;
+    [SerializeField] private bool _hasShadow = true;
     private List<CurvePointObject> _curvePointEditObjects = new();    
     [SerializeField] private GameObject _curvePointEditObjectPrefab;
     [SerializeField] private GameObject _curvePointParent;
     [SerializeField] private List<CurvePoint> _curvePoints = new();
+    [SerializeField] private List<LinkedCameraTarget> _linkedCameraTargets = new();
     //Add dictionary that maps CurvePointObjects to Splinepoints
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
@@ -20,21 +23,21 @@ public class Ground : MonoBehaviour, ISerializable
     public CurvePoint StartPoint => _segmentList[0].Curve.StartPoint;
     public CurvePoint EndPoint => _segmentList[^1].Curve.EndPoint;
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public bool IsInverted { get => _isInverted; set => _isInverted = value; }
+    public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
     public List<CurvePointObject> CurvePointEditObjects => _curvePointEditObjects;
+    public List<LinkedCameraTarget> LinkedCameraTargets => _linkedCameraTargets;
     #endregion
 
     public IDeserializable Serialize()
     {
         var name = gameObject.name;
         var position = transform.position;
-        var segmentList = new List<IDeserializable>();
-        foreach (GroundSegment segment in SegmentList)
-        {
-            segmentList.Add(segment.Serialize());
-        }
-        return new SerializedGround(name, position, segmentList);
+        SerializeLevelUtility.SegmentsFromCurvePoints(this, out var editSegment, out var runtimeSegments);
+
+        return new SerializedGround(name, position, runtimeSegments, editSegment, _curvePoints);
     }
 #if UNITY_EDITOR
     public void AddCurvePointEditObject(CurvePoint curvePoint) 

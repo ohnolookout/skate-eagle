@@ -1,44 +1,72 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 [Serializable]
-public struct CurvePoint
+public class CurvePoint: ICameraTargetable
 {
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
-    [SerializeField] private bool _isBroken;
+    [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical;
     [SerializeField] private bool _isCorner;
+    [SerializeField] private int _floorHeight;
+    [SerializeField] private int _floorAngle;
+    [SerializeField] private bool _forceNewSection;
+    [SerializeField] private bool _blockNewSection;
+    [SerializeField] private bool _doTargetHigh = false;
+    [SerializeField] private bool _doTargetLow = true;
+    [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
+    public List<GameObject> LeftTargetObjects = new();
+    public List<GameObject> RightTargetObjects = new();
+    public Vector3 Position { get => position; set => position = value; }
+    public Vector3 LeftTangent { get => leftTangent; set => leftTangent = value; }
+    public Vector3 RightTangent { get => rightTangent; set => rightTangent = value; }
+    public Vector3 LeftTangentPosition => position + leftTangent;
+    public Vector3 RightTangentPosition => position + rightTangent;
+    public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
+    public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
+    public bool IsCorner { get => _isCorner; set => _isCorner = value; }
+    public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
+    public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
+    public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
+    public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
+    public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
+    public bool DoTargetHigh { get => _doTargetHigh; set => _doTargetHigh = value; }
+    public bool DoTargetLow { get => _doTargetLow; set => _doTargetLow = value; }
+    List<GameObject> ICameraTargetable.LeftTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    List<GameObject> ICameraTargetable.RightTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public CurvePoint(Vector3 control, bool isBroken = false, bool isSymmetrical = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
     {
         position = control;
         leftTangent = new(0, 0);
         rightTangent = new(0, 0);
-        _isBroken = isBroken;
+        _mode = mode;
         _isCorner = isCorner;
         _isSymmetrical = isSymmetrical;
+        _floorHeight = 100;
+        _floorAngle = 0;
+        _forceNewSection = false;
+        _blockNewSection = false;
+
     }
 
-    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, bool isBroken = false, bool isSymmetrical = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
     {
         position = control;
         leftTangent = lTang;
         rightTangent = rTang;
-        _isBroken = isBroken;
+        _mode = mode;
         _isCorner = isCorner;
         _isSymmetrical = isSymmetrical;
+        _floorHeight = 100;
+        _floorAngle = 0;
+        _forceNewSection = false;
+        _blockNewSection = false;
     }
 
 
-    public Vector3 Position { get => position; set => position = value; }  
-    public Vector3 LeftTangent {  get => leftTangent; set => leftTangent = value; }
-    public Vector3 RightTangent {  get => rightTangent; set => rightTangent = value; } 
-    public Vector3 LeftTangentPosition => position + leftTangent;
-    public Vector3 RightTangentPosition => position + rightTangent;
-    public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
-    public bool IsBroken { get => _isBroken; set => _isBroken = value; }
-    public bool IsCorner { get => _isCorner; set => _isCorner = value; }
     public void SetTangents(float slope, float velocity)
     {
         leftTangent = new Vector3(-velocity, -velocity * slope);
@@ -116,5 +144,10 @@ public struct CurvePoint
         Vector2 direction = new Vector2(1, angleSlope).normalized;
 
         return direction * magnitude;
+    }
+
+    public void PopulateDefaultTargets()
+    {
+        throw new NotImplementedException();
     }
 }

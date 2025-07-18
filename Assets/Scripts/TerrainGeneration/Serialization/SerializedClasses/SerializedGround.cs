@@ -10,32 +10,21 @@ public class SerializedGround : IDeserializable
 {
     public Vector2 position;
     public string name;
-    public List<SerializedGroundSegment> segmentList;
+    public SerializedGroundSegment editorSegment; //Single segment for editing
+    public List<SerializedGroundSegment> segmentList; //Divided segments for runtime
     public List<CurvePoint> curvePointList;
-    public List<IDeserializable> serializedObjectList;
+    //public List<IDeserializable> serializedObjectList;
 
-    public SerializedGround(string name, Vector2 position, List<IDeserializable> segmentList)
+    public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList, SerializedGroundSegment editSegment, List<CurvePoint> curvePointList)
     {
         this.name = name;
         this.position = position;
-        this.serializedObjectList = segmentList;
         this.segmentList = new();
+        this.curvePointList = curvePointList;
 
         foreach (var segment in segmentList)
         {
             this.segmentList.Add(segment as SerializedGroundSegment);
-        }
-    }
-
-    public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList)
-    {
-        this.name = name;
-        this.position = position;
-        this.segmentList = segmentList;
-        serializedObjectList = new List<IDeserializable>();
-        foreach (var segment in segmentList)
-        {
-            serializedObjectList.Add(segment);
         }
     }
 

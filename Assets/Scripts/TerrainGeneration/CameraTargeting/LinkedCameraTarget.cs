@@ -8,16 +8,14 @@ using UnityEngine;
 [Serializable]
 public class LinkedCameraTarget
 {
-    public CameraTarget LowTarget { get => _lowTarget; set => _lowTarget = value; }
-    public CameraTarget HighTarget { get => _highTarget; set => _highTarget = value; }
+    public CameraTarget Target { get => _target; set => _target = value; }
     [SerializeReference] public List<LinkedCameraTarget> LeftTargets = new();
     [SerializeReference] public List<LinkedCameraTarget> RightTargets = new();
     [SerializeReference] public LinkedCameraTarget LeftKDNode;
     [SerializeReference] public LinkedCameraTarget RightKDNode;
     public CameraTargetType TargetType;
     public int[] SerializedLocation;
-    [SerializeField] private CameraTarget _lowTarget;
-    [SerializeField] private CameraTarget _highTarget;
+    [SerializeField] private CameraTarget _target;
     public LinkedCameraTarget()
     {
         LeftTargets = new();
@@ -27,15 +25,10 @@ public class LinkedCameraTarget
 
     public void DrawTargets()
     {
-        if (LowTarget != null)
+        if (Target != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(LowTarget.TargetPosition, 0.5f);
-        }
-        if (HighTarget != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(HighTarget.TargetPosition, 0.5f);
+            Gizmos.DrawSphere(Target.TargetPosition, 0.5f);
         }
 
         foreach (var target in LeftTargets)
@@ -58,9 +51,9 @@ public class LinkedCameraTarget
     private void DrawToTarget(LinkedCameraTarget target, Color color)
     {
         Gizmos.color = color;
-        var pos = target.LowTarget.TargetPosition;
+        var pos = target.Target.TargetPosition;
         Gizmos.DrawSphere(pos, 0.5f);
-        Gizmos.DrawLine(pos, LowTarget.TargetPosition);
+        Gizmos.DrawLine(pos, Target.TargetPosition);
     }
 
 }

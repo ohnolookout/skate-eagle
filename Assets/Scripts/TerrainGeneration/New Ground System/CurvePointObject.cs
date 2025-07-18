@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using UnityEngine.U2D;
+
 
 
 #if UNITY_EDITOR
@@ -39,7 +41,7 @@ public class CurvePointObject : MonoBehaviour
         {
             _curvePoint.RightTangent = -_curvePoint.LeftTangent; // If it's symmetrical, update the right tangent accordingly
         }
-        else if (!_curvePoint.IsBroken)
+        else if (_curvePoint.Mode == ShapeTangentMode.Continuous)
         {
             var rightMagnitude = _curvePoint.RightTangent.magnitude;
             _curvePoint.RightTangent = -_curvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
@@ -56,7 +58,7 @@ public class CurvePointObject : MonoBehaviour
         if(_curvePoint.IsSymmetrical)
         {
             _curvePoint.LeftTangent = -_curvePoint.RightTangent; // If it's symmetrical, update the right tangent accordingly
-        } else if (!_curvePoint.IsBroken)
+        } else if (_curvePoint.Mode == ShapeTangentMode.Continuous)
         {
             var leftMagnitude = _curvePoint.LeftTangent.magnitude;
             _curvePoint.LeftTangent = -_curvePoint.RightTangent.normalized * leftMagnitude; // Maintain the same magnitude for the left tangent
@@ -72,15 +74,15 @@ public class CurvePointObject : MonoBehaviour
         transform.position = localPosition;
     }
 
-    public void SettingsChanged(bool isBroken, bool isSymmetrical, bool isCorner)
+    public void SettingsChanged(ShapeTangentMode mode, bool isSymmetrical, bool isCorner)
     {
-        _curvePoint.IsBroken = isBroken;
+        _curvePoint.Mode = mode;
         _curvePoint.IsSymmetrical = isSymmetrical;
         if (isSymmetrical)
         {
             _curvePoint.RightTangent = -_curvePoint.LeftTangent; // If it's symmetrical, update the right tangent accordingly
         }
-        else if (!_curvePoint.IsBroken)
+        else if (_curvePoint.Mode == ShapeTangentMode.Continuous)
         {
             var rightMagnitude = _curvePoint.RightTangent.magnitude;
             _curvePoint.RightTangent = -_curvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
@@ -103,12 +105,12 @@ public class CurvePointObjectEditor : Editor
         EditorGUI.BeginChangeCheck();
 
         var isSymmetrical = GUILayout.Toggle(curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
-        var isBroken = GUILayout.Toggle(curvePointObject.CurvePoint.IsBroken, "Broken");
+        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", curvePointObject.CurvePoint.Mode);
 
-        if(EditorGUI.EndChangeCheck())
+        if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Settings");
-            curvePointObject.SettingsChanged(isBroken, isSymmetrical, curvePointObject.CurvePoint.IsCorner);
+            curvePointObject.SettingsChanged(mode, isSymmetrical, curvePointObject.CurvePoint.IsCorner);
         }
 
         if (GUILayout.Button("Reset Tangents"))
@@ -118,6 +120,24 @@ public class CurvePointObjectEditor : Editor
                 curvePointObject.CurvePoint.Position + new Vector3(-1, 0),
                 curvePointObject.CurvePoint.Position + new Vector3(-1, 0));
         }
+
+        //Camera targetting
+        EditorGUI.BeginChangeCheck();
+
+        var doTarget = GUILayout.Toggle(curvePointObject.CurvePoint.DoTargetHigh, "Do Target");
+
+        if(EditorGUI.EndChangeCheck())
+        {
+            Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Target Settings");
+            curvePointObject.CurvePoint.DoTargetHigh = doTarget;
+            //Need to purge from any other lists where it appears
+        }
+
+        if (curvePointObject.CurvePoint.DoTargetHigh)
+        {
+            //Show linked camera target settings
+        }
+
     }
     public void OnSceneGUI()
     {
