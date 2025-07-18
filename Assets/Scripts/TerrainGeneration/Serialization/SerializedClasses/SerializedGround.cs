@@ -11,6 +11,7 @@ public class SerializedGround : IDeserializable
     public Vector2 position;
     public string name;
     public List<SerializedGroundSegment> segmentList;
+    public List<CurvePoint> curvePointList;
     public List<IDeserializable> serializedObjectList;
 
     public SerializedGround(string name, Vector2 position, List<IDeserializable> segmentList)
@@ -58,8 +59,6 @@ public class SerializedGround : IDeserializable
         ground.name = name;
         ground.SegmentList = new();
 
-        List<CurvePoint> allCurvePoints = new();
-
         foreach (var serializedSegment in segmentList)
         {
             var segment = groundManager.groundSpawner.AddEmptySegment(ground);
@@ -87,32 +86,15 @@ public class SerializedGround : IDeserializable
         }
 
 #if UNITY_EDITOR
-        bool isFirstSegment = true;
-        foreach(var segment in ground.SegmentList)
+        //curvePointList = SerializeLevelUtility.GenerateCurvePointListFromGround(this);
+
+        foreach (var curvePoint in curvePointList)
         {
-
-            if (isFirstSegment)
-            {
-                CurvePoint curvePoint = LocalizedCurvePointFromSegment(segment, segment.Curve.CurvePoints[0]);
-                ground.AddCurvePointEditObject(curvePoint);
-            }
-
-            for (int i = 1; i < segment.curve.CurvePoints.Count - 1; i++)
-            {
-                CurvePoint curvePoint = LocalizedCurvePointFromSegment(segment, segment.Curve.CurvePoints[i]);
-                ground.AddCurvePointEditObject(curvePoint);
-            }            
-
+            ground.AddCurvePointEditObject(curvePoint);
         }
 #endif
 
         return ground;
     }
 
-    private CurvePoint LocalizedCurvePointFromSegment(GroundSegment segment, CurvePoint curvePoint)
-    {
-        var worldPosition = segment.transform.TransformPoint(curvePoint.Position);
-        var groundLocalzedPosition = segment.parentGround.transform.InverseTransformPoint(worldPosition);
-        return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
-    }
 }

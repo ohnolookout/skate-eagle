@@ -70,7 +70,22 @@ public class CurvePointObject : MonoBehaviour
         var localPosition = updatedPosition - groundTransform.position;
         _curvePoint.Position = localPosition;
         transform.position = localPosition;
-        Debug.Log($"Position changed to {_curvePoint.Position}");
+    }
+
+    public void SettingsChanged(bool isBroken, bool isSymmetrical, bool isCorner)
+    {
+        _curvePoint.IsBroken = isBroken;
+        _curvePoint.IsSymmetrical = isSymmetrical;
+        if (isSymmetrical)
+        {
+            _curvePoint.RightTangent = -_curvePoint.LeftTangent; // If it's symmetrical, update the right tangent accordingly
+        }
+        else if (!_curvePoint.IsBroken)
+        {
+            var rightMagnitude = _curvePoint.RightTangent.magnitude;
+            _curvePoint.RightTangent = -_curvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
+        }
+        _onCurvePointChange?.Invoke(this);
     }
 }
 
@@ -84,6 +99,17 @@ public class CurvePointObjectEditor : Editor
     {
         var curvePointObject = (CurvePointObject)target;
 
+        //Curvepoint settings
+        EditorGUI.BeginChangeCheck();
+
+        var isSymmetrical = GUILayout.Toggle(curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
+        var isBroken = GUILayout.Toggle(curvePointObject.CurvePoint.IsBroken, "Broken");
+
+        if(EditorGUI.EndChangeCheck())
+        {
+            Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Settings");
+            curvePointObject.SettingsChanged(isBroken, isSymmetrical, curvePointObject.CurvePoint.IsCorner);
+        }
 
         if (GUILayout.Button("Reset Tangents"))
         {

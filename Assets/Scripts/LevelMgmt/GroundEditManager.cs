@@ -398,7 +398,7 @@ public class GroundEditManager : MonoBehaviour
 
     #endregion
 
-        #region CameraTargeting
+    #region CameraTargeting
 
     public List<LinkedCameraTarget> GetAllCameraTargets()
     {

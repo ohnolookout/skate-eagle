@@ -105,4 +105,19 @@ public class Level
 
     //    Debug.Log("Serialized objects after reserialize: " + _serializedObjects.Count);
     //}
+
+    public void PopulateGroundCurvePoints()
+    {
+        var count = 0;
+        foreach(var serializable in _serializedObjects)
+        {
+            if (serializable is SerializedGround serializedGround)
+            {
+                serializedGround.curvePointList = SerializeLevelUtility.GenerateCurvePointListFromGround(serializedGround);
+                count++;
+            }
+        }
+
+        Debug.Log($"Level {Name}: Populated curve points for {count} serialized grounds.");
+    }
 }

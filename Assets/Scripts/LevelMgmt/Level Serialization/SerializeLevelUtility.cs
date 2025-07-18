@@ -222,5 +222,36 @@ public static class SerializeLevelUtility
         return gameObjects;
     }
 
+    public static List<CurvePoint> GenerateCurvePointListFromGround(SerializedGround serializedGround)
+    {
+        List<CurvePoint> curvePoints = new List<CurvePoint>();
+        bool isFirstSegment = true;
+        foreach (var serializedSegment in serializedGround.segmentList)
+        {
+
+            if (isFirstSegment)
+            {
+                CurvePoint curvePoint = LocalizedCurvePointFromSegment(serializedGround, serializedSegment, serializedSegment.curve.CurvePoints[0]);
+                curvePoints.Add(curvePoint);
+                isFirstSegment = false;
+            }
+
+            for (int i = 1; i < serializedSegment.curve.CurvePoints.Count; i++)
+            {
+                CurvePoint curvePoint = LocalizedCurvePointFromSegment(serializedGround, serializedSegment, serializedSegment.curve.CurvePoints[i]);
+                curvePoints.Add(curvePoint);
+            }
+
+        }
+
+        return curvePoints;
+    }
+
+    private static CurvePoint LocalizedCurvePointFromSegment(SerializedGround ground, SerializedGroundSegment segment, CurvePoint curvePoint)
+    {
+        var groundLocalzedPosition = (segment.position + curvePoint.Position) - (Vector3)ground.position;
+        return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
+    }
+
     #endregion
 }

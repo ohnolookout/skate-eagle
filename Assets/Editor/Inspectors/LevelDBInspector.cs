@@ -79,6 +79,11 @@ public class LevelDBInspector : Editor
         //    UpdateSerializationFormat();
         //}
 
+        if (GUILayout.Button("Populate Curve Points", GUILayout.ExpandWidth(false)))
+        {
+            PopulateGroundCurvePoints();
+        }
+
         if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))
         {
             FixMedalDefaults();
@@ -257,6 +262,16 @@ public class LevelDBInspector : Editor
     //    }
     //    EditorUtility.SetDirty(_levelDB);
     //}
+
+    private void PopulateGroundCurvePoints()
+    {
+        var levels = _levelDB.LevelDictionary.Values.ToList();
+        foreach (var level in levels)
+        {
+            level.PopulateGroundCurvePoints();
+        }
+        EditorUtility.SetDirty(_levelDB);
+    }
 
 }
 

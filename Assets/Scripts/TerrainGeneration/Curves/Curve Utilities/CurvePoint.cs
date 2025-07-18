@@ -36,19 +36,7 @@ public struct CurvePoint
     public Vector3 RightTangent {  get => rightTangent; set => rightTangent = value; } 
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
-    public bool IsSymmetrical
-    {
-        get => _isSymmetrical;
-        set
-        {
-            _isSymmetrical = value;
-            if (value)
-            {
-                rightTangent = -leftTangent;
-                _isBroken = false; // If it's symmetrical, it can't be broken
-            }
-        }
-    }
+    public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool IsBroken { get => _isBroken; set => _isBroken = value; }
     public bool IsCorner { get => _isCorner; set => _isCorner = value; }
     public void SetTangents(float slope, float velocity)
