@@ -140,12 +140,10 @@ public class Level
                     continue;
                 }
 
-                SerializeLevelUtility.SegmentsFromCurvePoints(serializedGround, out var editSegment, out var runtimeSegments);
-                serializedGround.editorSegment = editSegment;
-                serializedGround.segmentList = runtimeSegments;
+                SerializeLevelUtility.SerializeGroundSegments(serializedGround);
                 groundCount++;
 
-                Debug.Log($"Populated {runtimeSegments.Count} runtime segments.");
+                Debug.Log($"Populated {serializedGround.segmentList.Count} runtime segments.");
             }
         }
     }

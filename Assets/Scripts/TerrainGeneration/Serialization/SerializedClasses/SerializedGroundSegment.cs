@@ -21,22 +21,20 @@ public class SerializedGroundSegment
     //Segment contents
     public bool isStart;
     public bool isFinish;
-    public bool isFloating;
-    public bool isInverted;
-    public bool hasShadow;
-    public bool useDefaultHighLowPoints;
 
     //Curve contents
     public Curve curve;
 
     //Spline contents
+    public List<CurvePoint> fillSplineCurvePoints;
+    public List<CurvePoint> edgeSplineCurvePoints;
     public List<SplineControlPoint> fillSplinePoints;
     public bool fillSpineIsOpen;
     public List<SplineControlPoint> edgeSplinePoints;
 
     //Collider contents
-    public List<Vector2> colliderPoints;
-    public List<Vector2> bottomColliderPoints;
+    public Vector2[] colliderPoints;
+    public Vector2[] bottomColliderPoints;
 
 
     //CameraTargetable contents
@@ -46,12 +44,14 @@ public class SerializedGroundSegment
     {
 
     }
-    public SerializedGroundSegment(List<CurvePoint> curvePoints, SerializedGround serializedGround, int index)
+    public SerializedGroundSegment(string name, Vector3 position, Quaternion rotation, 
+        List<CurvePoint> curvePoints, Vector3? firstColliderPoint, 
+        bool isFloating, bool isInverted, bool isFirst, bool isLast)
     {
         //Position
-        name = serializedGround.name.Remove(1, serializedGround.name.Length - 2) + " Segment " + index;
-        position = serializedGround.position;
-        rotation = serializedGround.rotation;
+        this.name = name;
+        this.position = position;
+        this.rotation = rotation;
         leftFloorHeight = curvePoints[0].FloorHeight;
         rightFloorHeight = curvePoints[^1].FloorHeight;
         leftFloorAngle = curvePoints[0].FloorAngle;
@@ -60,35 +60,29 @@ public class SerializedGroundSegment
         //State
         isStart = false;
         isFinish = false;
-        isFloating = serializedGround.isFloating;
-        isInverted = serializedGround.isInverted;
-        hasShadow = serializedGround.hasShadow;
-    }
 
-    public SerializedGroundSegment(List<CurvePoint> curvePoints, Ground ground, int index)
-    {
-        //Position
-        name = ground.gameObject.name.Remove(1, ground.gameObject.name.Length - 2) + " Segment " + index;
-        position = ground.transform.position;
-        rotation = ground.transform.rotation;
-        leftFloorHeight = curvePoints[0].FloorHeight;
-        rightFloorHeight = curvePoints[^1].FloorHeight;
-        leftFloorAngle = curvePoints[0].FloorAngle;
-        rightFloorAngle = curvePoints[^1].FloorAngle;
+        //Curve points
+        edgeSplineCurvePoints = new(curvePoints);
+        fillSplineCurvePoints = new(curvePoints);
 
-        //State
-        isStart = false;
-        isFinish = false;
-        isFloating = ground.IsFloating;
-        isInverted = ground.IsInverted;
-        hasShadow = ground.HasShadow;
+        if (!isFloating)
+        {
+            GroundSplineUtility.AddCornerPoints(fillSplineCurvePoints);
+        }        
+
+        //Collider
+        colliderPoints = ColliderGenerator.GetEdgeColliderPoints(curvePoints, firstColliderPoint, isInverted);
+
+        if (!isFloating)
+        {
+            bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, isFirst, isLast);
+        }
+
 
     }
 
-    public GroundSegment Deserialize(GameObject targetObject, GameObject contextObject)
+    public GroundSegment Deserialize(GroundSegment segment, Ground ground)
     {
-        var segment = targetObject.GetComponent<GroundSegment>();
-        var ground = contextObject.GetComponent<Ground>();
 
         if (segment == null) {
             Debug.LogWarning("SerializedGroundSegment: Deserialize called on a GameObject that does not have a GroundSegment component.");
@@ -110,26 +104,19 @@ public class SerializedGroundSegment
         segment.parentGround = ground;
         segment.NextLeftSegment = ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1];
 
-        //segment.Curve = curve;
-        segment.IsFinish = isFinish;
-        segment.IsStart = isStart;
-        segment.IsFloating = isFloating;
-        segment.IsInverted = isInverted;
-        segment.HasShadow = hasShadow;
-        segment.UseDefaultHighLowPoints = useDefaultHighLowPoints;
-        segment.UpdateShadow();
+        segment.ActivateShadow(ground.HasShadow);
         //segment.UpdateHighLowTransforms();
 
-        GroundSplineUtility.GenerateSpline(segment.Spline, fillSplinePoints, fillSpineIsOpen);
-        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, edgeSplinePoints, true);
+        GroundSplineUtility.GenerateSpline(segment.Spline, fillSplineCurvePoints, ground.IsFloating);
+        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, edgeSplineCurvePoints, true);
 
         //Create collierPoints
-        segment.Collider.points = colliderPoints.ToArray();
+        segment.Collider.points = colliderPoints;
         segment.Collider.sharedMaterial = segment.parentGround.ColliderMaterial;
 
-        if (!segment.IsFloating)
+        if (!ground.IsFloating)
         {
-            segment.BottomCollider.points = bottomColliderPoints.ToArray();
+            segment.BottomCollider.points = bottomColliderPoints;
             segment.BottomCollider.sharedMaterial = segment.parentGround.ColliderMaterial;
         }
         else

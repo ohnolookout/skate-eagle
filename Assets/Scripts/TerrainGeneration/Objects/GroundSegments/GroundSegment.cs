@@ -83,7 +83,7 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
 
     void Start()
     {
-        UpdateShadow();
+        ActivateShadow(parentGround.HasShadow);
     }
 
     void OnBecameVisible()
@@ -103,9 +103,9 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
 
     }
 
-    public void UpdateShadow()
+    public void ActivateShadow(bool doActivate)
     {
-        _shadowCaster.enabled = _hasShadow;
+        _shadowCaster.enabled = doActivate;
     }
 
     #endregion
@@ -189,49 +189,49 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
 
     #region Serialization
 
-    public SerializedGroundSegment Serialize()
-    {
-        SerializeLevelUtility.BuildLinkedCameraTarget(this);
+    //public SerializedGroundSegment Serialize()
+    //{
+    //    SerializeLevelUtility.BuildLinkedCameraTarget(this);
 
-        SerializedGroundSegment serializedSegment = new();
+    //    SerializedGroundSegment serializedSegment = new();
 
-        //Transform
-        serializedSegment.name = gameObject.name;
-        serializedSegment.position =transform.position;
-        serializedSegment.rotation = transform.rotation;
-        serializedSegment.leftFloorHeight = LeftFloorHeight;
-        serializedSegment.rightFloorHeight = RightFloorHeight;
-        serializedSegment.leftFloorAngle = LeftFloorAngle;
-        serializedSegment.rightFloorAngle = RightFloorAngle;
+    //    //Transform
+    //    serializedSegment.name = gameObject.name;
+    //    serializedSegment.position =transform.position;
+    //    serializedSegment.rotation = transform.rotation;
+    //    serializedSegment.leftFloorHeight = LeftFloorHeight;
+    //    serializedSegment.rightFloorHeight = RightFloorHeight;
+    //    serializedSegment.leftFloorAngle = LeftFloorAngle;
+    //    serializedSegment.rightFloorAngle = RightFloorAngle;
 
-        //Segment
-        serializedSegment.isStart = IsStart;
-        serializedSegment.isFinish = IsFinish;
-        serializedSegment.isFloating = IsFloating;
-        serializedSegment.isInverted = IsInverted;
-        serializedSegment.hasShadow = HasShadow;
-        serializedSegment.useDefaultHighLowPoints = UseDefaultHighLowPoints;
+    //    //Segment
+    //    serializedSegment.isStart = IsStart;
+    //    serializedSegment.isFinish = IsFinish;
+    //    serializedSegment.isFloating = IsFloating;
+    //    serializedSegment.isInverted = IsInverted;
+    //    serializedSegment.hasShadow = HasShadow;
+    //    serializedSegment.useDefaultHighLowPoints = UseDefaultHighLowPoints;
 
-        ////Curve
-        //Curve.LowPoint = LowPoint.position - transform.position;
-        //Curve.HighPoint = HighPoint.position - transform.position;
-        //serializedSegment.curve = Curve;
+    //    ////Curve
+    //    //Curve.LowPoint = LowPoint.position - transform.position;
+    //    //Curve.HighPoint = HighPoint.position - transform.position;
+    //    //serializedSegment.curve = Curve;
 
 
-        //Spline
-        serializedSegment.fillSplinePoints = SerializeLevelUtility.CopySplinePoints(Spline);
-        serializedSegment.fillSpineIsOpen = Spline.isOpenEnded;
-        serializedSegment.edgeSplinePoints = SerializeLevelUtility.CopySplinePoints(EdgeSpline);
+    //    //Spline
+    //    //serializedSegment.fillSplinePoints = SerializeLevelUtility.CopySplinePoints(Spline);
+    //    //serializedSegment.fillSpineIsOpen = Spline.isOpenEnded;
+    //    //serializedSegment.edgeSplinePoints = SerializeLevelUtility.CopySplinePoints(EdgeSpline);
 
-        //Collider
-        serializedSegment.colliderPoints = SerializeLevelUtility.CopyColliderPoints(Collider);
-        serializedSegment.bottomColliderPoints = SerializeLevelUtility.CopyColliderPoints(BottomCollider);
+    //    //Collider
+    //    serializedSegment.colliderPoints = SerializeLevelUtility.CopyColliderPoints(Collider);
+    //    serializedSegment.bottomColliderPoints = SerializeLevelUtility.CopyColliderPoints(BottomCollider);
 
-        //CameraTargetable
-        serializedSegment.linkedCameraTarget = LinkedCameraTarget;
+    //    //CameraTargetable
+    //    serializedSegment.linkedCameraTarget = LinkedCameraTarget;
 
-        return serializedSegment;
-    }
+    //    return serializedSegment;
+    //}
 
     #endregion
 }

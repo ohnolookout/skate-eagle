@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Security.Cryptography;
+using UnityEngine;
+using static UnityEngine.Rendering.HableCurve;
 [ExecuteAlways]
 public static class ColliderGenerator
 {
@@ -57,9 +58,52 @@ public static class ColliderGenerator
         }
     }
 
+    public static Vector2[] GetEdgeColliderPoints(List<CurvePoint> curvePoints, Vector3? firstEdgeColliderPoint, bool isInverted = false, float resolutionMult = 10)
+    {
+        var colliderPoints = new Vector2[0];
+        //Iterate through points that make up GroundSegment's curve.
+        for (int i = 0; i < curvePoints.Count - 1; i++)
+        {
+            var p1 = curvePoints[i];
+            var p2 = curvePoints[i + 1];
+            resolution = Mathf.Max(resolutionMult * GetLength(p1, p2) / 20, 15);
+            Vector2[] newPoints = Calculate2DPoints(p1, p2, firstEdgeColliderPoint, isInverted);
+
+            if (i == 0)
+            {
+                colliderPoints = newPoints;
+                firstEdgeColliderPoint = null;
+            }
+            else
+            {
+                colliderPoints = CombineArrays(colliderPoints, newPoints);
+            }
+        }
+
+        return colliderPoints;
+    }
+
+    public static Vector2[] GetBottomColliderPoints(List<CurvePoint> fillSplinePoints, Vector2[] edgeColliderPoints, bool isFirstSegment, bool isLastSegment)
+    {
+        var colliderPoints = new Vector2[2] { fillSplinePoints[0].Position, fillSplinePoints[^1].Position };
+
+        if (isFirstSegment)
+        {
+            Vector2[] firstPointArray = new Vector2[2] { edgeColliderPoints[0], fillSplinePoints[0].Position };
+            colliderPoints = CombineArrays(firstPointArray, colliderPoints);
+        }
+        if (isLastSegment)
+        {
+            Vector2[] lastPointArray = new Vector2[3] { fillSplinePoints[^1].Position, fillSplinePoints[^2].Position, edgeColliderPoints[^1] };
+            colliderPoints = CombineArrays(colliderPoints, lastPointArray);
+        }
+
+        return colliderPoints;
+
+    }
+
     private static Vector2[] Calculate2DPoints(CurvePoint firstPoint, CurvePoint secondPoint, Vector3? firstVectorPoint, bool doOffset)
     {
-        //Debug.Log("Calculating collider points...");
         List<Vector2> points = new();
         if (firstVectorPoint != null)
         {
@@ -88,7 +132,7 @@ public static class ColliderGenerator
 
         if (doOffset)
         {
-            returnArray = OffsetPoints(points.ToArray(), secondPoint, !(firstVectorPoint == null));
+            returnArray = OffsetPoints(points.ToArray(), secondPoint, firstVectorPoint);
         } else
         {
             returnArray = points.ToArray();
@@ -107,16 +151,18 @@ public static class ColliderGenerator
     #endregion
 
     #region Offset Points
-    private static Vector2[] OffsetPoints(Vector2[] array, CurvePoint lastPoint, bool isFirstSegment)
+    private static Vector2[] OffsetPoints(Vector2[] array, CurvePoint lastPoint, Vector3? firstVectorPoint)
     {
         Vector2[] offsetArray = new Vector2[array.Length];
-        //Set first point directly because the overlap point has already been offset.
-        int startIndex = 0;
-        if (isFirstSegment)
+
+        var startIndex = 0;
+
+        if(firstVectorPoint != null)
         {
-            offsetArray[0] = array[0];
+            offsetArray[0] = (Vector2)firstVectorPoint;
             startIndex = 1;
         }
+
         for (int i = startIndex; i < array.Length-1; i++)
         {
             offsetArray[i] = CalculateOffset(array[i], array[i + 1], -edgeOffset);

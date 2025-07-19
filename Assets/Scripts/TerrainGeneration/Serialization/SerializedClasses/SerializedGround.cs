@@ -20,17 +20,12 @@ public class SerializedGround : IDeserializable
     public List<CurvePoint> curvePoints;
     //public List<IDeserializable> serializedObjectList;
 
-    public SerializedGround(string name, Vector2 position, List<SerializedGroundSegment> segmentList, SerializedGroundSegment editSegment, List<CurvePoint> curvePointList)
+    public SerializedGround(Ground ground)
     {
-        this.name = name;
-        this.position = position;
-        this.segmentList = new();
-        this.curvePoints = curvePointList;
-
-        foreach (var segment in segmentList)
-        {
-            this.segmentList.Add(segment as SerializedGroundSegment);
-        }
+        name = ground.gameObject.name;
+        position = ground.transform.position;
+        curvePoints = new(ground.CurvePoints);
+        SerializeLevelUtility.SerializeGroundSegments(this);
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)
@@ -104,7 +99,7 @@ public class SerializedGround : IDeserializable
     private void DeserializeEditSegment(GroundManager groundManager, Ground ground)
     {
         var segment = groundManager.groundSpawner.AddEmptySegment(ground);
-        editorSegment.Deserialize(segment.gameObject, ground.gameObject);
+        editorSegment.Deserialize(segment, ground);
     }
 
     private void DeserializeRuntimeSegments(GroundManager groundManager, Ground ground)
@@ -112,7 +107,7 @@ public class SerializedGround : IDeserializable
         foreach (var serializedSegment in segmentList)
         {
             var segment = groundManager.groundSpawner.AddEmptySegment(ground);
-            serializedSegment.Deserialize(segment.gameObject, ground.gameObject);
+            serializedSegment.Deserialize(segment, ground);
             segment.gameObject.SetActive(false);
             segment.gameObject.SetActive(true);
         }

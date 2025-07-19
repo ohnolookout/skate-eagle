@@ -33,11 +33,7 @@ public class Ground : MonoBehaviour, ISerializable
 
     public IDeserializable Serialize()
     {
-        var name = gameObject.name;
-        var position = transform.position;
-        SerializeLevelUtility.SegmentsFromCurvePoints(this, out var editSegment, out var runtimeSegments);
-
-        return new SerializedGround(name, position, runtimeSegments, editSegment, _curvePoints);
+        return new SerializedGround(this);
     }
 #if UNITY_EDITOR
     public void AddCurvePointEditObject(CurvePoint curvePoint) 

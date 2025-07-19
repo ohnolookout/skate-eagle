@@ -101,22 +101,14 @@ public class GroundSpawner : MonoBehaviour
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment, "Generating segment");
 #endif
-        if (segment.IsFloating)
-        {
-            segment.GetComponent<SpriteShapeRenderer>().enabled = false;
-            //GroundSplineUtility.InsertCurveToOpenSpline(segment.Spline, curve);
-        }
-        else
-        {
-            segment.GetComponent<SpriteShapeRenderer>().enabled = true;
-            GroundSplineUtility.GenerateSpline(segment.Spline, curvePoints);
-        }
+        segment.GetComponent<SpriteShapeRenderer>().enabled = !segment.IsFloating;
+        GroundSplineUtility.GenerateSpline(segment.Spline, curvePoints, segment.IsFloating);
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
 #endif
-
-        GroundSplineUtility.InsertCurvePointsToOpenSpline(segment.EdgeSpline, curvePoints);
+        //GroundSplineUtility.InsertCurvePointsToOpenSpline(segment.EdgeSpline, curvePoints);
+        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, curvePoints, true);
 
         BuildCollider(segment, curvePoints);
 

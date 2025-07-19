@@ -107,32 +107,32 @@ public static class SerializeLevelUtility
         return sections;
     }
 
-    public static void SegmentsFromCurvePoints(Ground ground, out SerializedGroundSegment editSegment, out List<SerializedGroundSegment> runtimeSegments)
-    {
-        editSegment = new(ground.CurvePoints, ground, 0);
-        runtimeSegments = new();
-
-        var segmentedCurvePoints = BreakDownSegments(ground.CurvePoints);
-
-        for (int i = 0; i < segmentedCurvePoints.Count; i++)
-        {
-            var serializedSegment = new SerializedGroundSegment(segmentedCurvePoints[i], ground, i);
-            runtimeSegments.Add(serializedSegment);
-        }
-
-    }
-    public static void SegmentsFromCurvePoints(SerializedGround serializedGround, out SerializedGroundSegment editSegment, out List<SerializedGroundSegment> runtimeSegments)
+    public static void SerializeGroundSegments(SerializedGround serializedGround)
     {
         Debug.Log($"Populating segments from {serializedGround.curvePoints.Count} curve points for serialized ground: {serializedGround.name}");
-        editSegment = new(serializedGround.curvePoints, serializedGround, 0);
-        runtimeSegments = new();
+
+        serializedGround.segmentList = new();
+        var groundNamePrefix = serializedGround.name.Remove(1, serializedGround.name.Length - 2);
+
+        serializedGround.editorSegment = new(groundNamePrefix + " Editor Segment", serializedGround.position, 
+            serializedGround.rotation, serializedGround.curvePoints, null, 
+            serializedGround.isFloating, serializedGround.isInverted, true, true);
 
         var segmentedCurvePoints = BreakDownSegments(serializedGround.curvePoints);
 
         for (int i = 0; i < segmentedCurvePoints.Count; i++)
         {
-            var serializedSegment = new SerializedGroundSegment(segmentedCurvePoints[i], serializedGround, i);
-            runtimeSegments.Add(serializedSegment);
+            var name = groundNamePrefix + " Segment " + i;
+            Vector3? lastColliderPoint = serializedGround.segmentList.Count > 0 ? serializedGround.segmentList[^1].colliderPoints[^1] : null;
+
+            var isFirst = i == 0;
+            var isLast = i == segmentedCurvePoints.Count - 1;
+
+            var serializedSegment = new SerializedGroundSegment(name, serializedGround.position, 
+                serializedGround.rotation, segmentedCurvePoints[i], lastColliderPoint,
+                serializedGround.isFloating, serializedGround.isInverted, isFirst, isLast);
+
+            serializedGround.segmentList.Add(serializedSegment);
         }
 
     }

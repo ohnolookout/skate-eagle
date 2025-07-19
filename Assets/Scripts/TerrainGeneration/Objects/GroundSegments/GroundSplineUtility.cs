@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,19 +8,74 @@ using UnityEngine.U2D;
 
 public static class GroundSplineUtility
 {
-    public static void GenerateSpline(Spline spline, List<CurvePoint> curvePoints)
+    public static void GenerateSpline(Spline spline, List<CurvePoint> curvePoints, bool isOpen)
+    {
+        if (curvePoints.Count < 2)
+        {
+            Debug.LogError("Not enough curve points to generate a spline.");
+            return;
+        }
+
+        //curvePoints = new(curvePoints); // Create a copy to avoid modifying the original list
+
+        FormatSpline(spline, isOpen);
+
+        //if (!isOpen)
+        //{
+        //    AddCornerPoints(curvePoints);
+        //}
+
+        int startIndex = 0;
+
+        for (int i = startIndex; i < curvePoints.Count; i++)
+        {            
+            InsertCurvePointToSpline(spline, curvePoints[i], i);
+        }
+
+        //if (!isOpen)
+        //{
+        //    //Break corner points
+        //    spline.SetTangentMode(1, ShapeTangentMode.Broken);
+        //    spline.SetLeftTangent(1, new(0, 0));
+
+        //    spline.SetTangentMode(spline.GetPointCount() - 2, ShapeTangentMode.Broken);
+        //    spline.SetRightTangent(spline.GetPointCount() - 2, new(0, 0));
+        //}
+    }
+
+    public static void CopySpline(Spline spline, List<CurvePoint> curvePoints, bool isOpen)
     {
         spline.Clear();
-        spline.isOpenEnded = false;
+        spline.isOpenEnded = isOpen;
 
-        var leftFloorHeight = curvePoints[0].FloorHeight;
-        var leftFloorAngle = curvePoints[0].FloorAngle;
-        var rightFloorHeight = curvePoints[curvePoints.Count - 1].FloorHeight;
-        var rightFloorAngle = curvePoints[curvePoints.Count - 1].FloorAngle;
-        
-        InsertCurvePointsToSpline(spline, curvePoints, 0);
-        UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
+        for (int i = 0; i < curvePoints.Count; i++)
+        {
+            CopyCurvePointToSpline(spline, curvePoints[i], i);
+        }
     }
+    //public static void GenerateSpline(Spline spline, List<CurvePoint> curvePoints)
+    //{
+    //    spline.Clear();
+    //    spline.isOpenEnded = false;
+
+    //    var leftFloorHeight = curvePoints[0].FloorHeight;
+    //    var leftFloorAngle = curvePoints[0].FloorAngle;
+    //    var rightFloorHeight = curvePoints[curvePoints.Count - 1].FloorHeight;
+    //    var rightFloorAngle = curvePoints[curvePoints.Count - 1].FloorAngle;
+
+    //    InsertCurvePointsToSpline(spline, curvePoints, 0);
+    //    UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
+    //}
+
+    //public static void InsertCurvePointsToOpenSpline(Spline spline, List<CurvePoint> curvePoints)
+    //{
+    //    CopyCurvePointToSpline(spline, curvePoints[0], 0);
+    //    CopyCurvePointToSpline(spline, curvePoints[1], 1);
+    //    for (int i = 2; i < curvePoints.Count; i++)
+    //    {
+    //        InsertCurvePointToSpline(spline, curvePoints[i], i);
+    //    }
+    //}
 
     //public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
     //{
@@ -27,18 +83,57 @@ public static class GroundSplineUtility
     //    UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
     //}
 
-    public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
-    {
-        spline.Clear();
-        spline.isOpenEnded = isOpen;
+    //public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
+    //{
+    //    spline.Clear();
+    //    spline.isOpenEnded = isOpen;
 
-        foreach (var point in splinePoints)
+    //    foreach (var point in splinePoints)
+    //    {
+    //        InsertSplinePointToSpline(spline, point, spline.GetPointCount());
+    //    }
+    //}
+
+    public static void AddCornerPoints(List<CurvePoint> curvePoints)
+    {
+
+        if (curvePoints.Count < 2)
         {
-            InsertSplinePointToSpline(spline, point, spline.GetPointCount());
+            Debug.LogError("Not enough curve points to add corner points.");
+            return;
         }
+
+        curvePoints[0].Mode = ShapeTangentMode.Broken;
+        curvePoints[0].LeftTangent = new Vector3(0, 0);
+
+        curvePoints[^1].Mode = ShapeTangentMode.Broken;
+        curvePoints[^1].RightTangent = new Vector3(0, 0);
+
+        var leftPosition = GetCornerPosition(curvePoints[0], true);
+        var rightPosition = GetCornerPosition(curvePoints[^1], false);
+
+        // Add left corner point
+        CurvePoint leftCorner = new CurvePoint(leftPosition, ShapeTangentMode.Linear);
+        curvePoints.Insert(0, leftCorner);
+
+        // Add right corner point
+        CurvePoint rightCorner = new CurvePoint(rightPosition, ShapeTangentMode.Linear);
+        curvePoints.Add(rightCorner);
     }
 
+    private static Vector3 GetCornerPosition(CurvePoint cornerPoint, bool isLeftCorner)
+    {
+        float radians = (cornerPoint.FloorAngle % 360) * Mathf.Deg2Rad;
 
+        if (isLeftCorner)
+        {
+            return cornerPoint.Position + new Vector3(-Mathf.Sin(radians) * cornerPoint.FloorHeight, -Mathf.Cos(radians) * cornerPoint.FloorHeight);
+        }
+        else
+        {
+            return cornerPoint.Position + new Vector3(Mathf.Sin(radians) * cornerPoint.FloorHeight, -Mathf.Cos(radians) * cornerPoint.FloorHeight);
+        }
+    }
 
     private static void UpdateCorners(Spline spline, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
     {
@@ -57,11 +152,11 @@ public static class GroundSplineUtility
         spline.SetPosition(lastIndex, previousPosition + offset);
 
         spline.SetTangentMode(lastIndex, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(lastIndex, new Vector3(-1, 0));
-        spline.SetRightTangent(lastIndex, new Vector3(Mathf.Sin(radians), -Mathf.Cos(radians)));
+        //spline.SetLeftTangent(lastIndex, new Vector3(-1, 0));
+        //spline.SetRightTangent(lastIndex, new Vector3(Mathf.Sin(radians), -Mathf.Cos(radians)));
 
-        spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Broken);
-        spline.SetRightTangent(lastIndex - 1, new Vector2(-Mathf.Sin(radians), Mathf.Cos(radians)));
+        spline.SetTangentMode(lastIndex - 1, ShapeTangentMode.Linear);
+        //spline.SetRightTangent(lastIndex - 1, new Vector2(-Mathf.Sin(radians), Mathf.Cos(radians)));
     }
     private static void UpdateLeftCorner(Spline spline, float height, int angle = 0)
     {
@@ -73,12 +168,13 @@ public static class GroundSplineUtility
         spline.SetPosition(0, nextPosition + offset);
 
         spline.SetTangentMode(0, ShapeTangentMode.Linear);
-        spline.SetLeftTangent(0, new Vector3(-Mathf.Sin(radians), -Mathf.Cos(radians)));
-        spline.SetRightTangent(0, new Vector3(1, 0));
+        //spline.SetLeftTangent(0, new Vector3(-Mathf.Sin(radians), -Mathf.Cos(radians)));
+        //spline.SetRightTangent(0, new Vector3(1, 0));
 
-        spline.SetTangentMode(1, ShapeTangentMode.Broken);
-        spline.SetLeftTangent(1, new Vector3(Mathf.Sin(radians), Mathf.Cos(radians)));
+        spline.SetTangentMode(1, ShapeTangentMode.Linear);
+        //spline.SetLeftTangent(1, new Vector3(Mathf.Sin(radians), Mathf.Cos(radians)));
     }
+
 
 
     //public static void InsertCurveToOpenSpline(Spline spline, Curve curve)
@@ -90,15 +186,6 @@ public static class GroundSplineUtility
     //        InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
     //    }
     //}
-    public static void InsertCurvePointsToOpenSpline(Spline spline, List<CurvePoint> curvePoints)
-    {
-        CopyCurvePointToSpline(spline, curvePoints[0], 0);
-        CopyCurvePointToSpline(spline, curvePoints[1], 1);
-        for (int i = 2; i < curvePoints.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curvePoints[i], i);
-        }
-    }
 
     //public static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
     //{
@@ -111,15 +198,15 @@ public static class GroundSplineUtility
 
     //}
 
-    public static void InsertCurvePointsToSpline(Spline spline, List<CurvePoint> curvePoints, int index) //Inserts curvePoints into the spline beginning at the given index
-    {
-        for (int i = 0; i < curvePoints.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curvePoints[i], index + i);
-        }
-        spline.SetTangentMode(index, ShapeTangentMode.Broken);
-        spline.SetRightTangent(index, new Vector3(0, -1));
-    }
+    //public static void InsertCurvePointsToSpline(Spline spline, List<CurvePoint> curvePoints, int index) //Inserts curvePoints into the spline beginning at the given index
+    //{
+    //    for (int i = 0; i < curvePoints.Count; i++)
+    //    {
+    //        InsertCurvePointToSpline(spline, curvePoints[i], index + i);
+    //    }
+    //    spline.SetTangentMode(index, ShapeTangentMode.Broken);
+    //    spline.SetRightTangent(index, new Vector3(0, -1));
+    //}
 
     public static void InsertCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index) //Inserts curvePoint at a given index
     {
@@ -148,11 +235,12 @@ public static class GroundSplineUtility
     public static void FormatSpline(Spline spline, bool isOpenEnded)
     {
         spline.isOpenEnded = isOpenEnded;
-        while (spline.GetPointCount() > 2)
-        {
-            spline.RemovePointAt(2);
-        }
-        spline.SetPosition(0, new Vector3(-5, -5));
-        spline.SetPosition(1, new Vector3(5, 5));
+        spline.Clear();
+        //while (spline.GetPointCount() > 2)
+        //{
+        //    spline.RemovePointAt(2);
+        //}
+        //spline.SetPosition(0, new Vector3(-5, -5));
+        //spline.SetPosition(1, new Vector3(5, 5));
     }
 }
