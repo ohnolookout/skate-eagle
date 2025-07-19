@@ -19,15 +19,15 @@ public class LowpointCache
         _lowestPoint = FindLowestPoint(_points);
     }
 
-    public LowpointCache(List<Curve> curves)
-    {
-        _points = new();
-        foreach(var curve in curves)
-        {
-            _points.Add(curve.LowPoint);
-        }
-        _lowestPoint = FindLowestPoint(_points);
-    }
+    //public LowpointCache(List<Curve> curves)
+    //{
+    //    _points = new();
+    //    foreach(var curve in curves)
+    //    {
+    //        _points.Add(curve.LowPoint);
+    //    }
+    //    _lowestPoint = FindLowestPoint(_points);
+    //}
 
     public void AddTrailing(Vector3 point)
     {

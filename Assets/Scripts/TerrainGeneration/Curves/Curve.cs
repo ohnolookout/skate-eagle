@@ -47,7 +47,7 @@ public class Curve
     public List<CurvePoint> GetCurvePoints()
     {
         List<CurvePoint> allPoints = curveSections[0].GetCurvePoints(new());
-        for(int i = 1; i < curveSections.Count; i++)
+        for (int i = 1; i < curveSections.Count; i++)
         {
             var newPoints = curveSections[i].GetCurvePoints(allPoints[^1]);
             newPoints.RemoveAt(0);
@@ -59,15 +59,15 @@ public class Curve
 
     public void UpdateCurveSections(Vector2? prevTang = null)
     {
-        for(int i = 0; i < curveSections.Count; i++)
+        for (int i = 0; i < curveSections.Count; i++)
         {
-            if(curveSections[i].Type == CurveDirection.Flat)
+            if (curveSections[i].Type == CurveDirection.Flat)
             {
                 curveSections[i].UpdateCurvePoints();
                 if (i > 0)
                 {
-                    curveSections[i-1].SetEndPointTangent(curveSections[i].StartPoint.LeftTangent);
-                    curveSections[i-1].UpdateCurvePoints();
+                    curveSections[i - 1].SetEndPointTangent(curveSections[i].StartPoint.LeftTangent);
+                    curveSections[i - 1].UpdateCurvePoints();
                 }
                 continue;
             }
@@ -129,7 +129,7 @@ public class Curve
         _highPoint = _curvePoints[0].Position;
         _lowPoint = _highPoint;
 
-        for ( int i = 0; i < _curvePoints.Count - 1; i++)
+        for (int i = 0; i < _curvePoints.Count - 1; i++)
         {
             EvaluateHighLow(_curvePoints[i].Position);
         }

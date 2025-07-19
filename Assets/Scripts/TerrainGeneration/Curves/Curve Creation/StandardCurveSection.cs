@@ -17,7 +17,7 @@ public class StandardCurveSection : ICurveSection
     [SerializeField] private CurvePoint _endPoint;
     [SerializeField] private CurvePoint _centerPoint;
 
-    [SerializeField] private Vector3 _xyDelta = new (40, 0);  //Distance between start and end points
+    [SerializeField] private Vector3 _xyDelta = new(40, 0);  //Distance between start and end points
     [SerializeField] private float _height = 20; //Height of middlepoint perpendicular to slope of start and end points as precentage of max height
     [SerializeField] private float _skew = 50; //Position of centerpoint along the line between start and end points
     [SerializeField] private float _shape = 70; //Velocity of centerPoint tangents as percentage of distance between start and end point tangents 
@@ -27,7 +27,7 @@ public class StandardCurveSection : ICurveSection
     [SerializeField] private float _endMagnitude = 7;
     [SerializeField] private CurveDirection _type;
 
-    private Curve _parentCurve;
+    //private Curve _parentCurve;
     private const float _heightCeiling = 250;
 
     public Vector3 XYDelta { get => _xyDelta; set => _xyDelta = value; }
@@ -82,7 +82,7 @@ public class StandardCurveSection : ICurveSection
     {
         var positionChange = startPoint.Position;
 
-        if(Type == CurveDirection.Flat)
+        if (Type == CurveDirection.Flat)
         {
             return new() { _startPoint.Move(positionChange), _endPoint.Move(positionChange) };
         }
@@ -108,7 +108,7 @@ public class StandardCurveSection : ICurveSection
     #region Update Points
     public void UpdateCurvePoints(Vector2? prevTang = null)
     {
-        if(prevTang != null)
+        if (prevTang != null)
         {
             SetStartPointTangent((Vector2)prevTang);
         }
@@ -120,7 +120,7 @@ public class StandardCurveSection : ICurveSection
 
         UpdateTangents();
         UpdateCenterPoint();
-        
+
     }
     private void ClampParameters()
     {
@@ -178,12 +178,12 @@ public class StandardCurveSection : ICurveSection
     #region Center Point
     private void UpdateCenterPoint()
     {
-        var midPoint = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew/100);
+        var midPoint = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew / 100);
         var minHeight = MinHeight();
         var maxHeight = MaxHeight();
-        var maxHeightDelta = maxHeight-minHeight;
+        var maxHeightDelta = maxHeight - minHeight;
 
-        var adjustedHeight = (_height/100) * maxHeightDelta;
+        var adjustedHeight = (_height / 100) * maxHeightDelta;
 
         if (Type == CurveDirection.Peak)
         {
@@ -192,7 +192,7 @@ public class StandardCurveSection : ICurveSection
 
         var centerPosition = BezierMath.GetPointAlongLine(midPoint, PerpendicularVectorSlope, adjustedHeight);
         _centerPoint.Position = centerPosition;
-        SetCenterPointTangents(_shape/100);
+        SetCenterPointTangents(_shape / 100);
     }
 
     private void SetCenterPointTangents(float t)
@@ -216,8 +216,8 @@ public class StandardCurveSection : ICurveSection
     {
         var midPointPosition = Vector2.Lerp(_startPoint.Position, _endPoint.Position, _skew / 100);
         var midPointTangent = PerpendicularVectorSlope;
-        
-        if(Type == CurveDirection.Peak)
+
+        if (Type == CurveDirection.Peak)
         {
             midPointTangent = -midPointTangent;
         }
@@ -227,13 +227,13 @@ public class StandardCurveSection : ICurveSection
 
         if (startIntersection == null && endIntersection == null)
         {
-            return _heightCeiling/2;
+            return _heightCeiling / 2;
         }
 
         float startMax = 0;
         float endMax = 0;
 
-        if(startIntersection != null)
+        if (startIntersection != null)
         {
             startMax = BezierMath.GetPerpendicularDistance(_startPoint.Position, _endPoint.Position, (Vector2)startIntersection);
         }
@@ -243,7 +243,7 @@ public class StandardCurveSection : ICurveSection
         }
 
         var max = Math.Max(startMax, endMax);
-        return Mathf.Min(max * 3f, _heightCeiling/2);
+        return Mathf.Min(max * 3f, _heightCeiling / 2);
     }
 
     private float MinHeight()
@@ -254,7 +254,7 @@ public class StandardCurveSection : ICurveSection
         return min;
     }
     #endregion
-    
+
 
 
 

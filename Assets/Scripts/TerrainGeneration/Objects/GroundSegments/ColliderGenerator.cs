@@ -9,18 +9,20 @@ public static class ColliderGenerator
     private static float resolution, edgeOffset = 1.2f; //1.2f
 
     #region Generation
-    public static void BuildSegmentCollider(GroundSegment segment, PhysicsMaterial2D material, float resolutionMult = 10)
+
+    public static void BuildSegmentCollider(GroundSegment segment, List<CurvePoint> curvePoints, PhysicsMaterial2D material, float resolutionMult = 10)
     {
         segment.Collider.sharedMaterial = material;
         var collider = segment.Collider;
         Vector3? firstPoint = segment.FirstColliderPoint();
-        var curve = segment.Curve;
 
         //Iterate through points that make up GroundSegment's curve.
-        for (int i = 0; i < curve.Count - 1; i++)
+        for (int i = 0; i < curvePoints.Count - 1; i++)
         {
-            resolution = Mathf.Max(resolutionMult * curve.SectionLengths[i] / 20, 15);
-            Vector2[] newPoints = Calculate2DPoints(curve.GetPoint(i), curve.GetPoint(i + 1), firstPoint, !segment.IsInverted);
+            var p1 = curvePoints[i];
+            var p2 = curvePoints[i + 1];
+            resolution = Mathf.Max(resolutionMult * GetLength(p1, p2) / 20, 15);
+            Vector2[] newPoints = Calculate2DPoints(p1, p2, firstPoint, !segment.IsInverted);
             if (i == 0)
             {
                 collider.points = newPoints;
@@ -50,7 +52,7 @@ public static class ColliderGenerator
         }
         if (segment.IsLastSegment)
         {
-            Vector2[] lastPointArray = new Vector2[3] { segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1), segment.Curve.EndPoint.Position, collider.points[^1] };
+            Vector2[] lastPointArray = new Vector2[3] { segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1), curvePoints[^1].Position, collider.points[^1] };
             bottomCollider.points = CombineArrays(bottomCollider.points, lastPointArray);
         }
     }
@@ -96,6 +98,12 @@ public static class ColliderGenerator
 
         return returnArray;
     }
+
+    private static float GetLength(CurvePoint p1, CurvePoint p2)
+    {
+        return BezierMath.Length(p1.Position, p1.RightTangent, p2.LeftTangent, p2.Position);        
+    }
+
     #endregion
 
     #region Offset Points

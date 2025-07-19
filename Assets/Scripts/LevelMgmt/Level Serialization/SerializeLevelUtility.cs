@@ -121,6 +121,21 @@ public static class SerializeLevelUtility
         }
 
     }
+    public static void SegmentsFromCurvePoints(SerializedGround serializedGround, out SerializedGroundSegment editSegment, out List<SerializedGroundSegment> runtimeSegments)
+    {
+        Debug.Log($"Populating segments from {serializedGround.curvePoints.Count} curve points for serialized ground: {serializedGround.name}");
+        editSegment = new(serializedGround.curvePoints, serializedGround, 0);
+        runtimeSegments = new();
+
+        var segmentedCurvePoints = BreakDownSegments(serializedGround.curvePoints);
+
+        for (int i = 0; i < segmentedCurvePoints.Count; i++)
+        {
+            var serializedSegment = new SerializedGroundSegment(segmentedCurvePoints[i], serializedGround, i);
+            runtimeSegments.Add(serializedSegment);
+        }
+
+    }
 
     public static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
     {

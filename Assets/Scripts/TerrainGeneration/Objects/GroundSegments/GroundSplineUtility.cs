@@ -21,11 +21,11 @@ public static class GroundSplineUtility
         UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
     }
 
-    public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
-    {
-        InsertCurveToSpline(spline, curve, 1);
-        UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
-    }
+    //public static void GenerateSpline(Spline spline, Curve curve, int leftFloorHeight, int leftFloorAngle, int rightFloorHeight, int rightFloorAngle)
+    //{
+    //    InsertCurveToSpline(spline, curve, 1);
+    //    UpdateCorners(spline, leftFloorHeight, leftFloorAngle, rightFloorHeight, rightFloorAngle);
+    //}
 
     public static void GenerateSpline(Spline spline, List<SplineControlPoint> splinePoints, bool isOpen)
     {
@@ -81,15 +81,15 @@ public static class GroundSplineUtility
     }
 
 
-    public static void InsertCurveToOpenSpline(Spline spline, Curve curve)
-    {
-        CopyCurvePointToSpline(spline, curve.GetPoint(0), 0);
-        CopyCurvePointToSpline(spline, curve.GetPoint(1), 1);
-        for (int i = 2; i < curve.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
-        }
-    }
+    //public static void InsertCurveToOpenSpline(Spline spline, Curve curve)
+    //{
+    //    CopyCurvePointToSpline(spline, curve.GetPoint(0), 0);
+    //    CopyCurvePointToSpline(spline, curve.GetPoint(1), 1);
+    //    for (int i = 2; i < curve.Count; i++)
+    //    {
+    //        InsertCurvePointToSpline(spline, curve.GetPoint(i), i);
+    //    }
+    //}
     public static void InsertCurvePointsToOpenSpline(Spline spline, List<CurvePoint> curvePoints)
     {
         CopyCurvePointToSpline(spline, curvePoints[0], 0);
@@ -100,16 +100,16 @@ public static class GroundSplineUtility
         }
     }
 
-    public static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
-    {
-        for (int i = 0; i < curve.Count; i++)
-        {
-            InsertCurvePointToSpline(spline, curve.GetPoint(i), index + i);
-        }
-        spline.SetTangentMode(index, ShapeTangentMode.Broken);
-        spline.SetRightTangent(index, new Vector3(0, -1));
+    //public static void InsertCurveToSpline(Spline spline, Curve curve, int index) //Inserts curve into the spline beginning at the given index
+    //{
+    //    for (int i = 0; i < curve.Count; i++)
+    //    {
+    //        InsertCurvePointToSpline(spline, curve.GetPoint(i), index + i);
+    //    }
+    //    spline.SetTangentMode(index, ShapeTangentMode.Broken);
+    //    spline.SetRightTangent(index, new Vector3(0, -1));
 
-    }
+    //}
 
     public static void InsertCurvePointsToSpline(Spline spline, List<CurvePoint> curvePoints, int index) //Inserts curvePoints into the spline beginning at the given index
     {

@@ -20,8 +20,8 @@ public class Ground : MonoBehaviour, ISerializable
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
-    public CurvePoint StartPoint => _segmentList[0].Curve.StartPoint;
-    public CurvePoint EndPoint => _segmentList[^1].Curve.EndPoint;
+    public CurvePoint StartPoint => CurvePoints[0];
+    public CurvePoint EndPoint => CurvePoints[^1];
     public bool IsFloating { get => _isFloating; set => _isFloating = value; }
     public bool IsInverted { get => _isInverted; set => _isInverted = value; }
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }

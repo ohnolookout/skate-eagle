@@ -79,9 +79,20 @@ public class LevelDBInspector : Editor
         //    UpdateSerializationFormat();
         //}
 
+
+        //Curve points utility for old ground system
         if (GUILayout.Button("Populate Curve Points", GUILayout.ExpandWidth(false)))
         {
             PopulateGroundCurvePoints();
+        }
+
+        if (GUILayout.Button("Populate Segment Curve Points", GUILayout.ExpandWidth(false)))
+        {
+            foreach (var level in _levelDB.LevelDictionary.Values)
+            {
+                level.PopulateSegmentCurvePoints();
+            }
+            EditorUtility.SetDirty(_levelDB);
         }
 
         if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))

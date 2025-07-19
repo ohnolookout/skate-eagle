@@ -134,7 +134,7 @@ public class LevelDesigner : EditorWindow
             return;
         }
 
-        _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground", "Segment" });
+        _tabIndex = GUILayout.Toolbar(_tabIndex, new string[] { "Level", "Ground"});
         switch (_tabIndex)
         {
             case 0:
@@ -143,9 +143,9 @@ public class LevelDesigner : EditorWindow
             case 1:
                 GroundMenu();
                 break;
-            case 2:
-                SegmentMenu();
-                break;
+            //case 2:
+            //    SegmentMenu();
+            //    break;
         }
     }
     private void LevelMenu()
@@ -223,43 +223,43 @@ public class LevelDesigner : EditorWindow
             return;
         }
 
-        if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
-        {
-            Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
-            _tabIndex = 2;
-            SetLevelDirty();
-        }
-        if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
-        {
-            Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultCurve(_defaultTang)).gameObject;
-            SetLevelDirty();
-        }
-        if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
-        {
-            if (_ground.LastSegment.IsFinish)
-            {
-                _groundManager.FinishSegment = null;
-            }
+        //if (GUILayout.Button("Add Segment", GUILayout.ExpandWidth(false)))
+        //{
+        //    Selection.activeGameObject = _groundEditor.AddSegment(_ground).gameObject;
+        //    _tabIndex = 2;
+        //    SetLevelDirty();
+        //}
+        //if (GUILayout.Button("Add Segment to Front", GUILayout.ExpandWidth(false)))
+        //{
+        //    Selection.activeGameObject = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultCurve(_defaultTang)).gameObject;
+        //    SetLevelDirty();
+        //}
+        //if (GUILayout.Button("Remove Segment", GUILayout.ExpandWidth(false)))
+        //{
+        //    if (_ground.LastSegment.IsFinish)
+        //    {
+        //        _groundManager.FinishSegment = null;
+        //    }
 
-            if(_ground.LastSegment.IsStart)
-            {
-                _groundManager.StartSegment = null;
-            }
+        //    if(_ground.LastSegment.IsStart)
+        //    {
+        //        _groundManager.StartSegment = null;
+        //    }
 
-            _groundEditor.RemoveSegment(_ground);
+        //    _groundEditor.RemoveSegment(_ground);
 
-            if(Selection.activeGameObject == null)
-            {
-                Selection.activeGameObject = _ground.gameObject;
-            }
+        //    if(Selection.activeGameObject == null)
+        //    {
+        //        Selection.activeGameObject = _ground.gameObject;
+        //    }
 
-            SetLevelDirty();
-        }
-        if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
-        {
-            _groundEditor.RecalculateSegments(_ground, 0);
-            SetLevelDirty();
-        }
+        //    SetLevelDirty();
+        //}
+        //if(GUILayout.Button("Recalculate Segments", GUILayout.ExpandWidth(false)))
+        //{
+        //    _groundEditor.RecalculateSegments(_ground, 0);
+        //    SetLevelDirty();
+        //}
         if (GUILayout.Button("Delete Ground", GUILayout.ExpandWidth(false)))
         {
             _groundEditor.RemoveGround(_ground);
@@ -271,134 +271,137 @@ public class LevelDesigner : EditorWindow
             _tabIndex = 0;
             SetLevelDirty();
         }
-        if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
-        {
-            var segment = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultStartLine());            
-            Selection.activeGameObject = segment.gameObject;
 
-            //Remove old start segment
-            if(_groundManager.StartSegment != null && _groundManager.StartSegment != segment)
-            {
-                _groundManager.StartSegment.IsStart = false;
-            }
+        //UNCOMMENT WHEN START/FINISH SEGMENTS ARE ADDED BACK
 
-            _groundManager.StartSegment = segment;
+        //if (GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
+        //{
+        //    var segment = _groundEditor.AddSegmentToFront(_ground, CurveFactory.DefaultStartLine());            
+        //    Selection.activeGameObject = segment.gameObject;
 
-            _groundEditor.SetStartPoint(segment, 1);
+        //    //Remove old start segment
+        //    if(_groundManager.StartSegment != null && _groundManager.StartSegment != segment)
+        //    {
+        //        _groundManager.StartSegment.IsStart = false;
+        //    }
 
-            SetLevelDirty();
-        }
-        if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
-        {
-            CurvePoint? startPoint = null;
-            if (_ground.SegmentList.Count > 0)
-            {
-                startPoint = _ground.SegmentList[^1].Curve.EndPoint;
-            }
+        //    _groundManager.StartSegment = segment;
 
-            var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
-            Selection.activeGameObject = segment.gameObject;         
+        //    _groundEditor.SetStartPoint(segment, 1);
 
-            _groundEditor.SetFinishLine(segment, new SerializedFinishLine(segment));
-            
-            SetLevelDirty();
-        }
+        //    SetLevelDirty();
+        //}
+        //if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
+        //{
+        //    CurvePoint? startPoint = null;
+        //    if (_ground.SegmentList.Count > 0)
+        //    {
+        //        startPoint = _ground.SegmentList[^1].Curve.EndPoint;
+        //    }
+
+        //    var segment = _groundEditor.AddSegment(_ground, CurveFactory.DefaultFinishLine(startPoint));
+        //    Selection.activeGameObject = segment.gameObject;         
+
+        //    _groundEditor.SetFinishLine(segment, new SerializedFinishLine(segment));
+
+        //    SetLevelDirty();
+        //}
     }
-    private void SegmentMenu()
-    {
-        if(_segment == null)
-        {
-            GUILayout.TextArea("No segment selected");
-            return;
-        }
+    //private void SegmentMenu()
+    //{
+    //    if(_segment == null)
+    //    {
+    //        GUILayout.TextArea("No segment selected");
+    //        return;
+    //    }
 
-        _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+    //    _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
-        EditorGUI.BeginChangeCheck();
-        EditorGUILayout.PropertyField(_serializedCurve, true);
+    //    EditorGUI.BeginChangeCheck();
+    //    EditorGUILayout.PropertyField(_serializedCurve, true);
 
-        GUILayout.Space(20);
+    //    GUILayout.Space(20);
 
-        _segment.LeftFloorHeight = EditorGUILayout.IntField("Left Floor Height", _segment.LeftFloorHeight, GUILayout.ExpandWidth(false));
-        _segment.LeftFloorAngle = EditorGUILayout.IntField("Left Floor Angle", _segment.LeftFloorAngle, GUILayout.ExpandWidth(false));
-        _segment.RightFloorHeight = EditorGUILayout.IntField("Right Floor Height", _segment.RightFloorHeight, GUILayout.ExpandWidth(false));
-        _segment.RightFloorAngle = EditorGUILayout.IntField("Right Floor Angle", _segment.RightFloorAngle, GUILayout.ExpandWidth(false));
+    //    _segment.LeftFloorHeight = EditorGUILayout.IntField("Left Floor Height", _segment.LeftFloorHeight, GUILayout.ExpandWidth(false));
+    //    _segment.LeftFloorAngle = EditorGUILayout.IntField("Left Floor Angle", _segment.LeftFloorAngle, GUILayout.ExpandWidth(false));
+    //    _segment.RightFloorHeight = EditorGUILayout.IntField("Right Floor Height", _segment.RightFloorHeight, GUILayout.ExpandWidth(false));
+    //    _segment.RightFloorAngle = EditorGUILayout.IntField("Right Floor Angle", _segment.RightFloorAngle, GUILayout.ExpandWidth(false));
 
-        EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
-        EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
+    //    EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
+    //    EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
 
-        _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
-        _segment.IsInverted = EditorGUILayout.Toggle("Invert Collider", _segment.IsInverted, GUILayout.ExpandWidth(false));
-        _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
-        _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
-        _segment.DoTargetHigh = EditorGUILayout.Toggle("Do Target", _segment.DoTargetHigh, GUILayout.ExpandWidth(false));
+    //    _segment.IsFloating = EditorGUILayout.Toggle("Floating", _segment.IsFloating, GUILayout.ExpandWidth(false));
+    //    _segment.IsInverted = EditorGUILayout.Toggle("Invert Collider", _segment.IsInverted, GUILayout.ExpandWidth(false));
+    //    _segment.HasShadow = EditorGUILayout.Toggle("Has Shadow", _segment.HasShadow, GUILayout.ExpandWidth(false));
+    //    _segment.UseDefaultHighLowPoints = EditorGUILayout.Toggle("Use Default High/Low", _segment.UseDefaultHighLowPoints, GUILayout.ExpandWidth(false));
+    //    _segment.DoTargetHigh = EditorGUILayout.Toggle("Do Target", _segment.DoTargetHigh, GUILayout.ExpandWidth(false));
 
-        _so.ApplyModifiedProperties();
-        _so.Update();
+    //    _so.ApplyModifiedProperties();
+    //    _so.Update();
 
-        if (EditorGUI.EndChangeCheck())
-        {
-            Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
-            _groundEditor.RefreshCurve(_segment, false, true);
-            _groundEditor.RecalculateSegments(_segment);
-            SetLevelDirty();
-        }
+    //    if (EditorGUI.EndChangeCheck())
+    //    {
+    //        Undo.RegisterFullObjectHierarchyUndo(_segment, "Curve Change");
+    //        _groundEditor.RefreshCurve(_segment, false, true);
+    //        _groundEditor.RecalculateSegments(_segment);
+    //        SetLevelDirty();
+    //    }
 
-        GUILayout.Space(20);
+    //    GUILayout.Space(20);
 
-        if (GUILayout.Button("Find Next Segments", GUILayout.ExpandWidth(false)))
-        {
-            _findAdjacentWindow = GetWindow<FindAdjacentSegmentWindow>();
-            _findAdjacentWindow.Init(this, _groundEditor, _segment);
-        }
+    //    if (GUILayout.Button("Find Next Segments", GUILayout.ExpandWidth(false)))
+    //    {
+    //        _findAdjacentWindow = GetWindow<FindAdjacentSegmentWindow>();
+    //        _findAdjacentWindow.Init(this, _groundEditor, _segment);
+    //    }
 
-        GUILayout.Space(20);
+    //    GUILayout.Space(20);
 
-        if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
-        {
-            Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
-            SetLevelDirty();
-        }
+    //    if (GUILayout.Button("Duplicate", GUILayout.ExpandWidth(false)))
+    //    {
+    //        Selection.activeGameObject = _groundEditor.DuplicateSegment(_segment).gameObject;
+    //        SetLevelDirty();
+    //    }
 
-        if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
-        {
-            _groundEditor.ResetSegment(_segment);
-            SetLevelDirty();
-        }
+    //    if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
+    //    {
+    //        _groundEditor.ResetSegment(_segment);
+    //        SetLevelDirty();
+    //    }
 
-        if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
-        {
-            var segment = _segment;
-            if (segment.NextLeftSegment != null)
-            {
-                Selection.activeGameObject = segment.NextLeftSegment.gameObject;
-            } else
-            {
-                Selection.activeGameObject = segment.parentGround.gameObject;
-            }
+    //    if (GUILayout.Button("Delete", GUILayout.ExpandWidth(false)))
+    //    {
+    //        var segment = _segment;
+    //        if (segment.NextLeftSegment != null)
+    //        {
+    //            Selection.activeGameObject = segment.NextLeftSegment.gameObject;
+    //        } else
+    //        {
+    //            Selection.activeGameObject = segment.parentGround.gameObject;
+    //        }
 
-            if(segment.IsFinish)
-            {
-                _groundManager.FinishSegment = null;
-            }
-            if (segment.IsStart)
-            {
-                _groundManager.StartSegment = null;
-            }
+    //        if(segment.IsFinish)
+    //        {
+    //            _groundManager.FinishSegment = null;
+    //        }
+    //        if (segment.IsStart)
+    //        {
+    //            _groundManager.StartSegment = null;
+    //        }
 
-            _tabIndex = 1;       
-            _groundEditor.RemoveSegment(segment);
-            SetLevelDirty();
-        }
+    //        _tabIndex = 1;       
+    //        _groundEditor.RemoveSegment(segment);
+    //        SetLevelDirty();
+    //    }
 
-        if (GUILayout.Button("Finish Line Options", GUILayout.ExpandWidth(false)))
-        {
-            _finishWindow = GetWindow<FinishLineCreatorWindow>();
-            _finishWindow.Init(_segment, _groundManager, _groundEditor);
-        }
+    //    if (GUILayout.Button("Finish Line Options", GUILayout.ExpandWidth(false)))
+    //    {
+    //        _finishWindow = GetWindow<FinishLineCreatorWindow>();
+    //        _finishWindow.Init(_segment, _groundManager, _groundEditor);
+    //    }
 
-        EditorGUILayout.EndScrollView();
-    }
+    //    EditorGUILayout.EndScrollView();
+    //}
 
     #endregion
 
@@ -475,7 +478,7 @@ public class LevelDesigner : EditorWindow
     private void SelectSegment(GroundSegment segment)
     {
         _so = new(segment);
-        _serializedCurve = _so.FindProperty(nameof(GroundSegment.curve));
+        //_serializedCurve = _so.FindProperty(nameof(GroundSegment.curve));
         _serializedLeftTargetObjects = _so.FindProperty(nameof(GroundSegment.leftTargetObjects));
         _serializedRightTargetObjects = _so.FindProperty(nameof(GroundSegment.rightTargetObjects));
     }

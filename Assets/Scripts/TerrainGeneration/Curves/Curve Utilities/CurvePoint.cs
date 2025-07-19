@@ -10,6 +10,8 @@ public class CurvePoint: ICameraTargetable
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical;
     [SerializeField] private bool _isCorner;
+    [SerializeField] private bool _isStart = false;
+    [SerializeField] private bool _isFinish = false;
     [SerializeField] private int _floorHeight;
     [SerializeField] private int _floorAngle;
     [SerializeField] private bool _forceNewSection;
@@ -25,6 +27,8 @@ public class CurvePoint: ICameraTargetable
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
+    public bool IsStart { get => _isStart; set => _isStart = value; }
+    public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool IsCorner { get => _isCorner; set => _isCorner = value; }
     public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
@@ -37,6 +41,19 @@ public class CurvePoint: ICameraTargetable
     List<GameObject> ICameraTargetable.LeftTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     List<GameObject> ICameraTargetable.RightTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+    public CurvePoint()
+    {
+        position = Vector3.zero;
+        leftTangent = new(-1, 0);
+        rightTangent = new(1, 0);
+        _mode = ShapeTangentMode.Continuous;
+        _isCorner = false;
+        _isSymmetrical = false;
+        _floorHeight = 100;
+        _floorAngle = 0;
+        _forceNewSection = false;
+        _blockNewSection = false;
+    }
     public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
     {
         position = control;

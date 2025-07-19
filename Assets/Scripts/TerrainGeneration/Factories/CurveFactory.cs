@@ -1,67 +1,67 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
 
-public static class CurveFactory
-{
-    public static Curve DefaultCurve(Vector2? prevTang)
-    {
-        var peak = new StandardCurveSection(CurveDirection.Peak, prevTang);
-        var valley = new StandardCurveSection(CurveDirection.Valley, peak.EndPoint.RightTangent);
+//public static class CurveFactory
+//{
+//    public static Curve DefaultCurve(Vector2? prevTang)
+//    {
+//        var peak = new StandardCurveSection(CurveDirection.Peak, prevTang);
+//        var valley = new StandardCurveSection(CurveDirection.Valley, peak.EndPoint.RightTangent);
 
-        List<StandardCurveSection> curveSections = new() { peak, valley };
+//        List<StandardCurveSection> curveSections = new() { peak, valley };
 
-        return new(curveSections);
-    }
+//        return new(curveSections);
+//    }
 
-    public static Curve DefaultStartLine()
-    {
-        var flatSection = new StandardCurveSection(CurveDirection.Flat);
-        flatSection.XYDelta = new(150, 0);
-        flatSection.StartMagnitude = 7;
-        flatSection.EndMagnitude = 20;
-        flatSection.UpdateCurvePoints();
+//    public static Curve DefaultStartLine()
+//    {
+//        var flatSection = new StandardCurveSection(CurveDirection.Flat);
+//        flatSection.XYDelta = new(150, 0);
+//        flatSection.StartMagnitude = 7;
+//        flatSection.EndMagnitude = 20;
+//        flatSection.UpdateCurvePoints();
 
-        var valleySection = new StandardCurveSection(CurveDirection.Valley, flatSection.EndPoint.RightTangent);
-        valleySection.XYDelta = new(59, -12);
-        valleySection.Height = 21;
-        valleySection.Skew = 63;
-        valleySection.Shape = 70;
-        valleySection.EndAngle = 48;
-        valleySection.StartMagnitude = 20;
-        valleySection.EndMagnitude = 7;
-        valleySection.UpdateCurvePoints(flatSection.EndPoint.RightTangent);
+//        var valleySection = new StandardCurveSection(CurveDirection.Valley, flatSection.EndPoint.RightTangent);
+//        valleySection.XYDelta = new(59, -12);
+//        valleySection.Height = 21;
+//        valleySection.Skew = 63;
+//        valleySection.Shape = 70;
+//        valleySection.EndAngle = 48;
+//        valleySection.StartMagnitude = 20;
+//        valleySection.EndMagnitude = 7;
+//        valleySection.UpdateCurvePoints(flatSection.EndPoint.RightTangent);
 
-        return new Curve(new List<StandardCurveSection>() { flatSection, valleySection});
-    }
+//        return new Curve(new List<StandardCurveSection>() { flatSection, valleySection});
+//    }
 
-    public static Curve DefaultFinishLine(CurvePoint? curvePoint)
-    {
-        CurvePoint startPoint;
-        if (curvePoint == null)
-        {
-            Debug.Log("CurvePoint is null, creating default start point.");
-            startPoint = new CurvePoint(Vector3.zero);
-            startPoint.SetTangents(new Vector3(6, -6));
-        } else
-        {
-            startPoint = curvePoint.Value;
-        }
+//    public static Curve DefaultFinishLine(CurvePoint? curvePoint)
+//    {
+//        CurvePoint startPoint;
+//        if (curvePoint == null)
+//        {
+//            Debug.Log("CurvePoint is null, creating default start point.");
+//            startPoint = new CurvePoint(Vector3.zero);
+//            startPoint.SetTangents(new Vector3(6, -6));
+//        } else
+//        {
+//            startPoint = curvePoint.Value;
+//        }
 
-        var baseXDelta = Mathf.Max(startPoint.RightTangent.x, startPoint.RightTangent.y, 8);
-        var xyDelta = new Vector2(baseXDelta * 10, startPoint.RightTangent.y * 7);
-        var height = 18;
-        var skew = 45;
-        var shape = 45;
-        var valleySection = new StandardCurveSection(CurveDirection.Valley, xyDelta, height, skew, shape, startPoint.RightTangent);
+//        var baseXDelta = Mathf.Max(startPoint.RightTangent.x, startPoint.RightTangent.y, 8);
+//        var xyDelta = new Vector2(baseXDelta * 10, startPoint.RightTangent.y * 7);
+//        var height = 18;
+//        var skew = 45;
+//        var shape = 45;
+//        var valleySection = new StandardCurveSection(CurveDirection.Valley, xyDelta, height, skew, shape, startPoint.RightTangent);
 
-        var flatSection = new StandardCurveSection(CurveDirection.Flat, valleySection.EndPoint.RightTangent);
-        flatSection.XYDelta = new(300, 0);
-        flatSection.StartMagnitude = 7;
-        flatSection.EndMagnitude = 20;
-        flatSection.UpdateCurvePoints(valleySection.EndPoint.RightTangent);
+//        var flatSection = new StandardCurveSection(CurveDirection.Flat, valleySection.EndPoint.RightTangent);
+//        flatSection.XYDelta = new(300, 0);
+//        flatSection.StartMagnitude = 7;
+//        flatSection.EndMagnitude = 20;
+//        flatSection.UpdateCurvePoints(valleySection.EndPoint.RightTangent);
 
-        return new Curve(new List<StandardCurveSection>() { valleySection, flatSection});
-    }
+//        return new Curve(new List<StandardCurveSection>() { valleySection, flatSection});
+//    }
 
-}
+//}

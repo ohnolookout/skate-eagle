@@ -44,90 +44,90 @@ public class GroundEditManager : MonoBehaviour
 
         return ground;
     }
-    public GroundSegment AddSegment(Ground ground)
-    {
-        var prevTang = ground.LastSegment?.Curve.EndPoint.RightTangent ?? null;
-        var segment = _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
-        segment.gameObject.name = SegmentName(segment);
-        return segment;
-    }
+//    public GroundSegment AddSegment(Ground ground)
+//    {
+//        var prevTang = ground.LastSegment?.Curve.EndPoint.RightTangent ?? null;
+//        var segment = _groundSpawner.AddSegment(ground, CurveFactory.DefaultCurve(prevTang));
+//        segment.gameObject.name = SegmentName(segment);
+//        return segment;
+//    }
 
-    public GroundSegment AddSegment(Ground ground, Curve curve)
-    {
-        var segment = _groundSpawner.AddSegment(ground, curve);
-        segment.gameObject.name = SegmentName(segment);
-        return segment;
-    }
+//    public GroundSegment AddSegment(Ground ground, Curve curve)
+//    {
+//        var segment = _groundSpawner.AddSegment(ground, curve);
+//        segment.gameObject.name = SegmentName(segment);
+//        return segment;
+//    }
 
-    public GroundSegment AddSegmentToFront(Ground ground, Curve curve)
-    {
-        var segment = InsertSegment(ground, 0, curve);
-        ground.transform.position -= curve.XYDelta;
-        segment.gameObject.name = SegmentName(segment);
-        return segment;
-    }
+//    public GroundSegment AddSegmentToFront(Ground ground, List<CurvePoint> curvePoints)
+//    {
+//        var segment = InsertSegment(ground, 0, curve);
+//        ground.transform.position -= curve.XYDelta;
+//        segment.gameObject.name = SegmentName(segment);
+//        return segment;
+//    }
 
-    public GroundSegment InsertSegment(Ground ground, int index, Curve curve)
-    {
-#if UNITY_EDITOR
-        if (index < 0)
-        {
-            index = 0;
-        } else if (index > ground.SegmentList.Count)
-        {
-            index = ground.SegmentList.Count;
-        }
-        Undo.RegisterFullObjectHierarchyUndo(ground, "Insert Segment");
-#endif
+//    public GroundSegment InsertSegment(Ground ground, int index, Curve curve)
+//    {
+//#if UNITY_EDITOR
+//        if (index < 0)
+//        {
+//            index = 0;
+//        } else if (index > ground.SegmentList.Count)
+//        {
+//            index = ground.SegmentList.Count;
+//        }
+//        Undo.RegisterFullObjectHierarchyUndo(ground, "Insert Segment");
+//#endif
 
-        //Split segment list into two lists at index, remove all segments after index from original list
-        var tempList = ground.SegmentList.GetRange(index, ground.SegmentList.Count - index);
-        ground.SegmentList.RemoveRange(index, ground.SegmentList.Count - index);
+//        //Split segment list into two lists at index, remove all segments after index from original list
+//        var tempList = ground.SegmentList.GetRange(index, ground.SegmentList.Count - index);
+//        ground.SegmentList.RemoveRange(index, ground.SegmentList.Count - index);
 
-        //Add segment using curveDef
-        var newSegment = _groundSpawner.AddSegment(ground, curve);
+//        //Add segment using curveDef
+//        var newSegment = _groundSpawner.AddSegment(ground, curve);
 
-        //Update previous segment of first segment in tempList
-        if (tempList.Count > 0)
-        {
-            tempList[0].NextLeftSegment = newSegment;
-            newSegment.NextRightSegment = tempList[0];
-        }
+//        //Update previous segment of first segment in tempList
+//        if (tempList.Count > 0)
+//        {
+//            tempList[0].NextLeftSegment = newSegment;
+//            newSegment.NextRightSegment = tempList[0];
+//        }
 
-        ground.SegmentList.AddRange(tempList);
+//        ground.SegmentList.AddRange(tempList);
 
-        //Recalculate segment positions after index
-        RecalculateSegments(ground, index + 1);
+//        //Recalculate segment positions after index
+//        RecalculateSegments(ground, index + 1);
 
-        return newSegment;
-    }
+//        return newSegment;
+//    }
 
-    public GroundSegment DuplicateSegment(GroundSegment segment)
-    {
-        var ground = segment.parentGround;
-        var index = ground.SegmentList.IndexOf(segment);
-        if (index == -1)
-        {
-            return null;
-        }
+//    public GroundSegment DuplicateSegment(GroundSegment segment)
+//    {
+//        var ground = segment.parentGround;
+//        var index = ground.SegmentList.IndexOf(segment);
+//        if (index == -1)
+//        {
+//            return null;
+//        }
 
-        //Copy curve definition so that original def is not modified
-        List<StandardCurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
-        Curve newCurve = new(curveSections);
-        var segIndex = ground.SegmentList.IndexOf(segment);
-        GroundSegment newSeg;
-        if (segIndex >= ground.SegmentList.Count - 1)
-        {
-            newSeg = _groundSpawner.AddSegment(ground, newCurve);
-        }
-        else
-        {
-            newSeg = InsertSegment(ground, segIndex, newCurve);
-        }
-        newSeg.gameObject.name = SegmentName(newSeg);
+//        //Copy curve definition so that original def is not modified
+//        List<StandardCurveSection> curveSections = DeepCopy.CopyCurveSectionList(segment.Curve.CurveSections);
+//        Curve newCurve = new(curveSections);
+//        var segIndex = ground.SegmentList.IndexOf(segment);
+//        GroundSegment newSeg;
+//        if (segIndex >= ground.SegmentList.Count - 1)
+//        {
+//            newSeg = _groundSpawner.AddSegment(ground, newCurve);
+//        }
+//        else
+//        {
+//            newSeg = InsertSegment(ground, segIndex, newCurve);
+//        }
+//        newSeg.gameObject.name = SegmentName(newSeg);
 
-        return newSeg;
-    }
+//        return newSeg;
+//    }
 
     #endregion
 
@@ -143,160 +143,160 @@ public class GroundEditManager : MonoBehaviour
 
     }
 
-    public void RemoveSegment(GroundSegment segment)
-    {
-        var ground = segment.parentGround;
-        var isLast = segment.IsLastSegment;
+//    public void RemoveSegment(GroundSegment segment)
+//    {
+//        var ground = segment.parentGround;
+//        var isLast = segment.IsLastSegment;
 
-        if (segment.IsFinish) {
-#if UNITY_EDITOR
-            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Turn off finish");
-#endif
-            _groundManager.FinishLine.gameObject.SetActive(false);
-        }
+//        if (segment.IsFinish) {
+//#if UNITY_EDITOR
+//            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Turn off finish");
+//#endif
+//            _groundManager.FinishLine.gameObject.SetActive(false);
+//        }
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(ground, "Remove Segment");
-#endif
-        var index = ground.SegmentList.IndexOf(segment);
-        ground.SegmentList.Remove(segment);
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(ground, "Remove Segment");
+//#endif
+//        var index = ground.SegmentList.IndexOf(segment);
+//        ground.SegmentList.Remove(segment);
 
-        //Update previous segment of segment after removal
-        if (index == 0 && ground.SegmentList.Count > 0)
-        {
-            ground.SegmentList[index].NextLeftSegment = null;
-        }
-        else if (index < ground.SegmentList.Count)
-        {
-            ground.SegmentList[index].NextLeftSegment = ground.SegmentList[index - 1];
-        }
+//        //Update previous segment of segment after removal
+//        if (index == 0 && ground.SegmentList.Count > 0)
+//        {
+//            ground.SegmentList[index].NextLeftSegment = null;
+//        }
+//        else if (index < ground.SegmentList.Count)
+//        {
+//            ground.SegmentList[index].NextLeftSegment = ground.SegmentList[index - 1];
+//        }
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment, "Remove Segment");
-        Undo.DestroyObjectImmediate(segment.gameObject);
-#endif
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment, "Remove Segment");
+//        Undo.DestroyObjectImmediate(segment.gameObject);
+//#endif
 
-        //Rebuild collider from new last segment
-        if (isLast && ground.LastSegment != null)
-        {
-            _groundSpawner.BuildCollider(ground.LastSegment);
-        }
+//        //Rebuild collider from new last segment
+//        if (isLast && ground.LastSegment != null)
+//        {
+//            _groundSpawner.BuildCollider(ground.LastSegment);
+//        }
 
-        RecalculateSegments(ground, index);
+//        //RecalculateSegments(ground, index);
 
-    }
-    public void RemoveSegment(Ground ground)
-    {
-        if (ground.SegmentList.Count == 0)
-        {
-            return;
-        }
+//    }
+//    public void RemoveSegment(Ground ground)
+//    {
+//        if (ground.SegmentList.Count == 0)
+//        {
+//            return;
+//        }
 
-        RemoveSegment(ground.SegmentList[^1]);
-    }
+//        RemoveSegment(ground.SegmentList[^1]);
+//    }
 
     #endregion
 
     #region Recalculation
     //Recalculate segments beginning at startIndex
     //First segment to be recalculated also recalculates its curve.
-    public void RecalculateSegments(Ground ground, int startIndex)
-    {
-#if UNITY_EDITOR
-        if (startIndex < 0 || startIndex >= ground.SegmentList.Count)
-        {
-            return;
-        }
-        Undo.RegisterCompleteObjectUndo(ground, "Recalculate Segments");
-#endif
+//    public void RecalculateSegments(Ground ground, int startIndex)
+//    {
+//#if UNITY_EDITOR
+//        if (startIndex < 0 || startIndex >= ground.SegmentList.Count)
+//        {
+//            return;
+//        }
+//        Undo.RegisterCompleteObjectUndo(ground, "Recalculate Segments");
+//#endif
 
-        //Copy remaining elements of segmentList to temp list, remove from segmentList
-        var remainingSegments = ground.SegmentList.GetRange(startIndex, ground.SegmentList.Count - startIndex);
-        var groundPrefix = GroundPrefix(ground);
+//        //Copy remaining elements of segmentList to temp list, remove from segmentList
+//        var remainingSegments = ground.SegmentList.GetRange(startIndex, ground.SegmentList.Count - startIndex);
+//        var groundPrefix = GroundPrefix(ground);
 
 
-        for (int i = startIndex; i < ground.SegmentList.Count; i++)
-        {
-            //Set position of segment to end of previous segment or leave at current start position if first segment
-            Vector3 startPosition = ground.SegmentList[i].NextLeftSegment != null ? ground.SegmentList[i].NextLeftSegment.EndPosition : ground.SegmentList[i].StartPosition;
+//        for (int i = startIndex; i < ground.SegmentList.Count; i++)
+//        {
+//            //Set position of segment to end of previous segment or leave at current start position if first segment
+//            Vector3 startPosition = ground.SegmentList[i].NextLeftSegment != null ? ground.SegmentList[i].NextLeftSegment.EndPosition : ground.SegmentList[i].StartPosition;
 
-#if UNITY_EDITOR
-            Undo.RegisterFullObjectHierarchyUndo(ground.SegmentList[i].gameObject, "Recalculate Segment");
-#endif
+//#if UNITY_EDITOR
+//            Undo.RegisterFullObjectHierarchyUndo(ground.SegmentList[i].gameObject, "Recalculate Segment");
+//#endif
 
-            ground.SegmentList[i].gameObject.transform.position = startPosition;
-            ground.SegmentList[i].gameObject.name = SegmentName(ground.SegmentList[i], groundPrefix);
+//            ground.SegmentList[i].gameObject.transform.position = startPosition;
+//            ground.SegmentList[i].gameObject.name = SegmentName(ground.SegmentList[i], groundPrefix);
 
-            //Update curve for first segment to be recalculated and include tang from previous segment
-            if (i == startIndex)
-            {
-                RefreshCurve(ground.SegmentList[i], true);
-            }
-        }
-    }
-    public void RecalculateSegments(GroundSegment segment)
-    {
-        var ground = segment.parentGround;
-        int index = ground.SegmentList.IndexOf(segment);
-        if (index == -1)
-        {
-            return;
-        }
+//            //Update curve for first segment to be recalculated and include tang from previous segment
+//            if (i == startIndex)
+//            {
+//                RefreshCurve(ground.SegmentList[i], true);
+//            }
+//        }
+//    }
+//    public void RecalculateSegments(GroundSegment segment)
+//    {
+//        var ground = segment.parentGround;
+//        int index = ground.SegmentList.IndexOf(segment);
+//        if (index == -1)
+//        {
+//            return;
+//        }
 
-        RecalculateSegments(ground, index + 1);
-    }
+//        RecalculateSegments(ground, index + 1);
+//    }
 
-    public void RefreshCurve(GroundSegment segment, bool doUsePrevEndTang = false, bool doSetPrevSeg = false)
-    {
-        if (segment.LeftFloorHeight == 0)
-        {
-            segment.LeftFloorHeight = 100;
-        }
-        if (segment.RightFloorHeight == 0)
-        {
-            segment.RightFloorHeight = 100;
-        }
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
-#endif
-        Vector2? startTang = null;
+//    public void RefreshCurve(GroundSegment segment, bool doUsePrevEndTang = false, bool doSetPrevSeg = false)
+//    {
+//        if (segment.LeftFloorHeight == 0)
+//        {
+//            segment.LeftFloorHeight = 100;
+//        }
+//        if (segment.RightFloorHeight == 0)
+//        {
+//            segment.RightFloorHeight = 100;
+//        }
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment, "Refreshing segment");
+//#endif
+//        Vector2? startTang = null;
 
-        if (doUsePrevEndTang && segment.NextLeftSegment != null)
-        {
-            startTang = segment.NextLeftSegment.Curve.EndPoint.RightTangent;
-        }
+//        if (doUsePrevEndTang && segment.NextLeftSegment != null)
+//        {
+//            startTang = segment.NextLeftSegment.Curve.EndPoint.RightTangent;
+//        }
 
-        segment.Curve.UpdateCurveSections(startTang);
+//        segment.Curve.UpdateCurveSections(startTang);
 
-        if (segment.NextLeftSegment != null && (doSetPrevSeg || segment.Curve.CurveSections[0].Type == CurveDirection.Flat))
-        {
-            segment.NextLeftSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
-            segment.NextLeftSegment.Curve.UpdateCurveSections();
-            _groundSpawner.ApplyCurveToSegment(segment.NextLeftSegment, segment.NextLeftSegment.Curve);
-        }
+//        if (segment.NextLeftSegment != null && (doSetPrevSeg || segment.Curve.CurveSections[0].Type == CurveDirection.Flat))
+//        {
+//            segment.NextLeftSegment.Curve.CurveSections[^1].SetEndPointTangent(segment.Curve.CurveSections[0].StartPoint.LeftTangent);
+//            segment.NextLeftSegment.Curve.UpdateCurveSections();
+//            _groundSpawner.ApplyCurveToSegment(segment.NextLeftSegment, segment.NextLeftSegment.Curve);
+//        }
 
-        _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
+//        _groundSpawner.ApplyCurveToSegment(segment, segment.Curve);
 
-        segment.UpdateShadow();
+//        segment.UpdateShadow();
 
-        if (segment.IsStart)
-        {
-            SetStartPoint(segment, 1);
-        }
+//        if (segment.IsStart)
+//        {
+//            SetStartPoint(segment, 1);
+//        }
 
-        if (segment.IsFinish)
-        {
-            SetFinishLine(segment, _groundManager.FinishLine.Parameters);
-        }
+//        if (segment.IsFinish)
+//        {
+//            SetFinishLine(segment, _groundManager.FinishLine.Parameters);
+//        }
 
-    }
+//    }
 
-    public void ResetSegment(GroundSegment segment)
-    {
-        segment.Curve = CurveFactory.DefaultCurve(segment.PrevTangent);
-        RefreshCurve(segment);
-        RecalculateSegments(segment);
-    }
+//    public void ResetSegment(GroundSegment segment)
+//    {
+//        segment.Curve = CurveFactory.DefaultCurve(segment.PrevTangent);
+//        RefreshCurve(segment);
+//        RecalculateSegments(segment);
+//    }
 
     private void RenameAll(int groundIndex)
     {
@@ -330,17 +330,17 @@ public class GroundEditManager : MonoBehaviour
     {
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set start");
         segment.IsStart = true;
-        segment.SetLowPoint(curvePointIndex);
-        startPoint.transform.position = _groundSpawner.SetStartPoint(segment, curvePointIndex);
+        //segment.SetLowPoint(curvePointIndex);
+        //startPoint.transform.position = _groundSpawner.SetStartPoint(segment, curvePointIndex);
         return startPoint.transform.position;
     }
 
     public void SetFinishLine(GroundSegment segment, SerializedFinishLine finishParams)
     {
-        if (!ValidateFinishParameters(segment, finishParams))
-        {
-            return;
-        }
+        //if (!ValidateFinishParameters(segment, finishParams))
+        //{
+        //    return;
+        //}
                 
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
 
@@ -352,7 +352,7 @@ public class GroundEditManager : MonoBehaviour
 
         _groundManager.FinishSegment = segment;
         segment.IsFinish = true;
-        segment.SetLowPoint(finishParams.flagPointIndex);
+        //segment.SetLowPoint(finishParams.flagPointIndex);
 
         Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
         _groundManager.FinishLine.SetFinishLine(finishParams);
@@ -371,30 +371,30 @@ public class GroundEditManager : MonoBehaviour
         _groundManager.FinishLine.ClearFinishLine();
     }
 
-    private bool ValidateFinishParameters(GroundSegment segment, SerializedFinishLine parameters)
-    {
-        if (segment == null)
-        {
-            return false;
-        }
+    //private bool ValidateFinishParameters(GroundSegment segment, SerializedFinishLine parameters)
+    //{
+    //    if (segment == null)
+    //    {
+    //        return false;
+    //    }
 
-        if (parameters == null)
-        {
-            return false;
-        }
+    //    if (parameters == null)
+    //    {
+    //        return false;
+    //    }
 
-        if (parameters.flagPointIndex < 0 || parameters.flagPointIndex >= segment.Curve.Count)
-        { 
-            return false;
-        }
+    //    if (parameters.flagPointIndex < 0 || parameters.flagPointIndex >= segment.Curve.Count)
+    //    { 
+    //        return false;
+    //    }
 
-        if (parameters.backstopPointIndex < 0 || parameters.backstopPointIndex >= segment.Curve.Count)
-        { 
-            return false;
-        }
+    //    if (parameters.backstopPointIndex < 0 || parameters.backstopPointIndex >= segment.Curve.Count)
+    //    { 
+    //        return false;
+    //    }
 
-        return true;
-    }
+    //    return true;
+    //}
 
     #endregion
 

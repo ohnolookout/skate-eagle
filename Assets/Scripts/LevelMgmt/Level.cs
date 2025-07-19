@@ -106,18 +106,47 @@ public class Level
     //    Debug.Log("Serialized objects after reserialize: " + _serializedObjects.Count);
     //}
 
+    //Uncomment this method to populate curve points for serialized grounds
     public void PopulateGroundCurvePoints()
     {
         var count = 0;
-        foreach(var serializable in _serializedObjects)
+        var curvePointCount = 0;
+        foreach (var serializable in _serializedObjects)
         {
             if (serializable is SerializedGround serializedGround)
             {
-                serializedGround.curvePointList = SerializeLevelUtility.GenerateCurvePointListFromGround(serializedGround);
+                serializedGround.curvePoints = SerializeLevelUtility.GenerateCurvePointListFromGround(serializedGround);
+                curvePointCount += serializedGround.curvePoints.Count;
                 count++;
             }
         }
 
-        Debug.Log($"Level {Name}: Populated curve points for {count} serialized grounds.");
+        Debug.Log($"Level {Name}: Populated {curvePointCount} curve points for {count} serialized grounds.");
+    }
+
+    public void PopulateSegmentCurvePoints()
+    {
+        Debug.Log($"Populating segment curve points for level: {Name}");
+        var groundCount = 0;
+        foreach (var serializable in _serializedObjects)
+        {
+            if (serializable is SerializedGround serializedGround)
+            {
+                Debug.Log($"Populating segments for serialized ground: {serializedGround.name}");
+
+                if(serializedGround.curvePoints == null || serializedGround.curvePoints.Count == 0)
+                {
+                    Debug.LogWarning($"Serialized ground {serializedGround.name} has no curve points. Skipping segment population.");
+                    continue;
+                }
+
+                SerializeLevelUtility.SegmentsFromCurvePoints(serializedGround, out var editSegment, out var runtimeSegments);
+                serializedGround.editorSegment = editSegment;
+                serializedGround.segmentList = runtimeSegments;
+                groundCount++;
+
+                Debug.Log($"Populated {runtimeSegments.Count} runtime segments.");
+            }
+        }
     }
 }

@@ -7,12 +7,12 @@ using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
-public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
+public class GroundSegment : MonoBehaviour, ICameraTargetable
 {
     #region Declarations
     public List<GameObject> leftTargetObjects;
     public List<GameObject> rightTargetObjects;
-    public Curve curve;
+    //public Curve curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
     [SerializeField] private ShadowCaster2D _shadowCaster;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
@@ -42,15 +42,15 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     public GroundSegment NextRightSegment { get => _nextRightSegment; set => _nextRightSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
-    public Curve Curve { get => curve; set => curve = value; }
+    //public Curve Curve { get => curve; set => curve = value; }
     public Spline Spline { get => _fillShapeController.spline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
     public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
     public SpriteShapeController FillShapeController { get => _fillShapeController; }
-    public Vector3 StartPosition => transform.TransformPoint(curve.StartPoint.Position);
-    public Vector3 EndPosition => transform.TransformPoint(curve.EndPoint.Position);
-    public Vector3 PrevTangent => _nextLeftSegment != null ? _nextLeftSegment.Curve.EndPoint.LeftTangent : new(1, 1);
-    public Vector3 Position { get => transform.TransformPoint(curve.StartPoint.Position); set => transform.position = value; }
+    public Vector3 StartPosition => transform.TransformPoint(EdgeSpline.GetPosition(0));
+    public Vector3 EndPosition => transform.TransformPoint(EdgeSpline.GetPosition(EdgeSpline.GetPointCount()-1));
+    //public Vector3 PrevTangent => _nextLeftSegment != null ? _nextLeftSegment.Curve.EndPoint.LeftTangent : new(1, 1);
+    public Vector3 Position { get => transform.position; set => transform.position = value; }
     public int LeftFloorHeight { get => _leftFloorHeight; set => _leftFloorHeight = value; }
     public int RightFloorHeight { get => _rightFloorHeight; set => _rightFloorHeight = value; }
     public int LeftFloorAngle { get => _leftFloorAngle; set => _leftFloorAngle = value; }
@@ -113,16 +113,16 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region Positional List Utilities
     public bool StartsAfterX(float startX)
     {
-        return curve.StartPoint.Position.x >= startX;
+        return StartPosition.x >= startX;
     }
 
     public bool EndsBeforeX(float endX)
     {
-        return curve.EndPoint.Position.x <= endX;
+        return EndPosition.x <= endX;
     }
     public bool ContainsX(float targetX)
     {
-        return (targetX > curve.StartPoint.Position.x - _containmentBuffer && targetX < curve.EndPoint.Position.x + _containmentBuffer);
+        return (targetX > StartPosition.x - _containmentBuffer && targetX < EndPosition.x + _containmentBuffer);
     }
     #endregion
 
@@ -131,7 +131,7 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     {
         if (_nextLeftSegment == null)
         {
-            return curve.StartPoint.Position;
+            return StartPosition;
         }
 
         var worldPoint = _nextLeftSegment.transform.TransformPoint(_nextLeftSegment.Collider.points[^1]);
@@ -144,11 +144,11 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
     #region High/LowPoints
     public void PopulateDefaultTargets()
     {
-        if (UseDefaultHighLowPoints)
-        {
-            curve.DoDefaultHighLowPoints();
-            UpdateHighLowTransforms();
-        }
+        //if (UseDefaultHighLowPoints)
+        //{
+        //    curve.DoDefaultHighLowPoints();
+        //    UpdateHighLowTransforms();
+        //}
 
         _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
 
@@ -163,33 +163,33 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         }
     }
 
-    public void UpdateHighLowTransforms()
-    {
-        _highPoint.transform.position = curve.HighPoint + transform.position;
-        _lowPoint.transform.position = curve.LowPoint + transform.position;
-    }
+    //public void UpdateHighLowTransforms()
+    //{
+    //    _highPoint.transform.position = curve.HighPoint + transform.position;
+    //    _lowPoint.transform.position = curve.LowPoint + transform.position;
+    //}
 
-    public void SetLowPoint(int index)
-    {
-        curve.LowPoint = curve.CurvePoints[index].Position;
-        _lowPoint.transform.position = curve.LowPoint + transform.position;
-    }
+    //public void SetLowPoint(int index)
+    //{
+    //    curve.LowPoint = curve.CurvePoints[index].Position;
+    //    _lowPoint.transform.position = curve.LowPoint + transform.position;
+    //}
 
-    public void SetHighPoint(int index)
-    {
-        if(index >= curve.CurvePoints.Count)
-        {
-            index = curve.CurvePoints.Count - 1;
-        }
+    //public void SetHighPoint(int index)
+    //{
+    //    if(index >= curve.CurvePoints.Count)
+    //    {
+    //        index = curve.CurvePoints.Count - 1;
+    //    }
 
-        curve.HighPoint = curve.CurvePoints[index].Position;
-        _highPoint.transform.position = curve.HighPoint + transform.position;
-    }
+    //    curve.HighPoint = curve.CurvePoints[index].Position;
+    //    _highPoint.transform.position = curve.HighPoint + transform.position;
+    //}
     #endregion
 
     #region Serialization
 
-    public IDeserializable Serialize()
+    public SerializedGroundSegment Serialize()
     {
         SerializeLevelUtility.BuildLinkedCameraTarget(this);
 
@@ -212,10 +212,10 @@ public class GroundSegment : MonoBehaviour, IGroundSegment, ICameraTargetable
         serializedSegment.hasShadow = HasShadow;
         serializedSegment.useDefaultHighLowPoints = UseDefaultHighLowPoints;
 
-        //Curve
-        Curve.LowPoint = LowPoint.position - transform.position;
-        Curve.HighPoint = HighPoint.position - transform.position;
-        serializedSegment.curve = Curve;
+        ////Curve
+        //Curve.LowPoint = LowPoint.position - transform.position;
+        //Curve.HighPoint = HighPoint.position - transform.position;
+        //serializedSegment.curve = Curve;
 
 
         //Spline

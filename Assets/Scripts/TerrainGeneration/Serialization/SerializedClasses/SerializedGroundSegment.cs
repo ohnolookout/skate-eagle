@@ -7,7 +7,7 @@ using UnityEngine.U2D;
 using static UnityEngine.Rendering.HableCurve;
 
 [Serializable]
-public class SerializedGroundSegment: IDeserializable
+public class SerializedGroundSegment
 {
     //Transform contents
     public string name;
@@ -41,8 +41,28 @@ public class SerializedGroundSegment: IDeserializable
 
     //CameraTargetable contents
     public LinkedCameraTarget linkedCameraTarget;
+
     public SerializedGroundSegment()
     {
+
+    }
+    public SerializedGroundSegment(List<CurvePoint> curvePoints, SerializedGround serializedGround, int index)
+    {
+        //Position
+        name = serializedGround.name.Remove(1, serializedGround.name.Length - 2) + " Segment " + index;
+        position = serializedGround.position;
+        rotation = serializedGround.rotation;
+        leftFloorHeight = curvePoints[0].FloorHeight;
+        rightFloorHeight = curvePoints[^1].FloorHeight;
+        leftFloorAngle = curvePoints[0].FloorAngle;
+        rightFloorAngle = curvePoints[^1].FloorAngle;
+
+        //State
+        isStart = false;
+        isFinish = false;
+        isFloating = serializedGround.isFloating;
+        isInverted = serializedGround.isInverted;
+        hasShadow = serializedGround.hasShadow;
     }
 
     public SerializedGroundSegment(List<CurvePoint> curvePoints, Ground ground, int index)
@@ -65,7 +85,7 @@ public class SerializedGroundSegment: IDeserializable
 
     }
 
-    public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)
+    public GroundSegment Deserialize(GameObject targetObject, GameObject contextObject)
     {
         var segment = targetObject.GetComponent<GroundSegment>();
         var ground = contextObject.GetComponent<Ground>();
@@ -90,7 +110,7 @@ public class SerializedGroundSegment: IDeserializable
         segment.parentGround = ground;
         segment.NextLeftSegment = ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1];
 
-        segment.Curve = curve;
+        //segment.Curve = curve;
         segment.IsFinish = isFinish;
         segment.IsStart = isStart;
         segment.IsFloating = isFloating;
@@ -98,7 +118,7 @@ public class SerializedGroundSegment: IDeserializable
         segment.HasShadow = hasShadow;
         segment.UseDefaultHighLowPoints = useDefaultHighLowPoints;
         segment.UpdateShadow();
-        segment.UpdateHighLowTransforms();
+        //segment.UpdateHighLowTransforms();
 
         GroundSplineUtility.GenerateSpline(segment.Spline, fillSplinePoints, fillSpineIsOpen);
         GroundSplineUtility.GenerateSpline(segment.EdgeSpline, edgeSplinePoints, true);

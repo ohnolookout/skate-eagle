@@ -31,7 +31,7 @@ public class GroundSpawner : MonoBehaviour
     }
 
     //Add segment to start at last endpoint
-    public GroundSegment AddSegment(Ground ground, Curve curve)
+    public GroundSegment AddSegment(Ground ground, List<CurvePoint> curvePoints)
     {
 
 #if UNITY_EDITOR
@@ -44,7 +44,6 @@ public class GroundSpawner : MonoBehaviour
 #if UNITY_EDITOR
         Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
 #endif
-        newSegment.Curve = curve;
         newSegment.parentGround = ground;
         newSegment.NextLeftSegment = ground.LastSegment;
         Vector2 startPoint = new(0, 0);
@@ -61,7 +60,7 @@ public class GroundSpawner : MonoBehaviour
         newSegment.transform.position = startPoint;
         ground.SegmentList.Add(newSegment);
 
-        ApplyCurveToSegment(newSegment, newSegment.Curve);
+        ApplyCurvePointsToSegment(newSegment, curvePoints);
         newSegment.PopulateDefaultTargets();
 
         if (!newSegment.HasShadow)
@@ -76,7 +75,7 @@ public class GroundSpawner : MonoBehaviour
             Undo.RecordObject(newSegment.NextLeftSegment, "Remove collider end points");
 #endif
 
-            BuildCollider(newSegment.NextLeftSegment);
+            BuildCollider(newSegment.NextLeftSegment, curvePoints);
         }
 
         return newSegment;
@@ -85,7 +84,7 @@ public class GroundSpawner : MonoBehaviour
 
     #region Build Segments
 
-    public void ApplyCurveToSegment(GroundSegment segment, Curve curve)
+    public void ApplyCurvePointsToSegment(GroundSegment segment, List<CurvePoint> curvePoints)
     {
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set edge");
@@ -110,28 +109,26 @@ public class GroundSpawner : MonoBehaviour
         else
         {
             segment.GetComponent<SpriteShapeRenderer>().enabled = true;
-            GroundSplineUtility.GenerateSpline(segment.Spline, curve, 
-                segment.LeftFloorHeight, segment.LeftFloorAngle, 
-                segment.RightFloorHeight, segment.RightFloorAngle);
+            GroundSplineUtility.GenerateSpline(segment.Spline, curvePoints);
         }
 
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
 #endif
 
-        GroundSplineUtility.InsertCurveToOpenSpline(segment.EdgeSpline, curve);
+        GroundSplineUtility.InsertCurvePointsToOpenSpline(segment.EdgeSpline, curvePoints);
 
-        BuildCollider(segment);
+        BuildCollider(segment, curvePoints);
 
     }
-    public EdgeCollider2D BuildCollider(GroundSegment segment, float resolution = 10)
+    public EdgeCollider2D BuildCollider(GroundSegment segment, List<CurvePoint> curvePoints, float resolution = 10)
     {
 #if UNITY_EDITOR
         Undo.RegisterCompleteObjectUndo(segment.Collider, "Edge Collider");
         Undo.RegisterCompleteObjectUndo(segment.BottomCollider, "Bottom Collider");
 #endif
 
-        ColliderGenerator.BuildSegmentCollider(segment, segment.ColliderMaterial);
+        ColliderGenerator.BuildSegmentCollider(segment, curvePoints, segment.ColliderMaterial);
         return segment.Collider;
     }
 
@@ -142,10 +139,10 @@ public class GroundSpawner : MonoBehaviour
     #endregion
 
     #region Start/Finish
-    public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
+    public Vector2 SetStartPoint(Ground ground, CurvePoint curvePoint)
     {
-        segment.IsStart = true;
-        var startPoint = segment.transform.TransformPoint(segment.Curve.GetPoint(curvePointIndex).Position);
+        //segment.IsStart = true;
+        var startPoint = ground.transform.TransformPoint(curvePoint.Position);
         return startPoint;
     }
 

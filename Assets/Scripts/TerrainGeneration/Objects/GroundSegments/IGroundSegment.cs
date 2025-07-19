@@ -7,7 +7,7 @@ using System;
 #nullable enable
 public interface IGroundSegment : IDoublePosition, IPosition, ISerializable
 {
-    Curve Curve { get; }
+    //Curve Curve { get; }
     Spline Spline { get; }
     GameObject gameObject { get; }
     bool IsFinish { get; set; }
