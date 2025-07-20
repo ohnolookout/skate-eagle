@@ -62,8 +62,8 @@ public class SerializedGroundSegment
         isFinish = false;
 
         //Curve points
-        edgeSplineCurvePoints = new(curvePoints);
-        fillSplineCurvePoints = new(curvePoints);
+        edgeSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
+        fillSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
 
         if (!isFloating)
         {

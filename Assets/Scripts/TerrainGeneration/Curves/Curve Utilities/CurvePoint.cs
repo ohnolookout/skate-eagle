@@ -8,8 +8,7 @@ public class CurvePoint: ICameraTargetable
 {
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private ShapeTangentMode _mode;
-    [SerializeField] private bool _isSymmetrical;
-    [SerializeField] private bool _isCorner;
+    [SerializeField] private bool _isSymmetrical = true;
     [SerializeField] private bool _isStart = false;
     [SerializeField] private bool _isFinish = false;
     [SerializeField] private int _floorHeight;
@@ -30,7 +29,6 @@ public class CurvePoint: ICameraTargetable
     public bool IsStart { get => _isStart; set => _isStart = value; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
-    public bool IsCorner { get => _isCorner; set => _isCorner = value; }
     public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
     public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
     public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
@@ -47,7 +45,6 @@ public class CurvePoint: ICameraTargetable
         leftTangent = new(-1, 0);
         rightTangent = new(1, 0);
         _mode = ShapeTangentMode.Continuous;
-        _isCorner = false;
         _isSymmetrical = false;
         _floorHeight = 100;
         _floorAngle = 0;
@@ -60,7 +57,6 @@ public class CurvePoint: ICameraTargetable
         leftTangent = new(0, 0);
         rightTangent = new(0, 0);
         _mode = mode;
-        _isCorner = isCorner;
         _isSymmetrical = isSymmetrical;
         _floorHeight = 100;
         _floorAngle = 0;
@@ -75,7 +71,6 @@ public class CurvePoint: ICameraTargetable
         leftTangent = lTang;
         rightTangent = rTang;
         _mode = mode;
-        _isCorner = isCorner;
         _isSymmetrical = isSymmetrical;
         _floorHeight = 100;
         _floorAngle = 0;
@@ -166,5 +161,30 @@ public class CurvePoint: ICameraTargetable
     public void PopulateDefaultTargets()
     {
         throw new NotImplementedException();
+    }
+
+    public CurvePoint DeepCopy()
+    {
+        CurvePoint copy = new CurvePoint();
+        copy.position = position;
+        copy.leftTangent = leftTangent;
+        copy.rightTangent = rightTangent;
+        copy._mode = _mode;
+        copy._isSymmetrical = _isSymmetrical;
+        copy._isStart = _isStart;
+        copy._isFinish = _isFinish;
+        copy._floorHeight = _floorHeight;
+        copy._floorAngle = _floorAngle;
+        copy._forceNewSection = _forceNewSection;
+        copy._blockNewSection = _blockNewSection;
+        copy._doTargetHigh = _doTargetHigh;
+        copy._doTargetLow = _doTargetLow;
+        copy._linkedCameraTarget = _linkedCameraTarget;
+        copy.LeftTargetObjects = new List<GameObject>(LeftTargetObjects);
+        copy.RightTargetObjects = new List<GameObject>(RightTargetObjects);
+
+        return copy;
+
+
     }
 }

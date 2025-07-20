@@ -74,7 +74,7 @@ public class CurvePointObject : MonoBehaviour
         transform.position = localPosition;
     }
 
-    public void SettingsChanged(ShapeTangentMode mode, bool isSymmetrical, bool isCorner)
+    public void SettingsChanged(ShapeTangentMode mode, bool isSymmetrical)
     {
         _curvePoint.Mode = mode;
         _curvePoint.IsSymmetrical = isSymmetrical;
@@ -110,7 +110,7 @@ public class CurvePointObjectEditor : Editor
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Settings");
-            curvePointObject.SettingsChanged(mode, isSymmetrical, curvePointObject.CurvePoint.IsCorner);
+            curvePointObject.SettingsChanged(mode, isSymmetrical);
         }
 
         if (GUILayout.Button("Reset Tangents"))

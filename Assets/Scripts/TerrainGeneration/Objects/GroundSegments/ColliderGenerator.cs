@@ -67,7 +67,7 @@ public static class ColliderGenerator
             var p1 = curvePoints[i];
             var p2 = curvePoints[i + 1];
             resolution = Mathf.Max(resolutionMult * GetLength(p1, p2) / 20, 15);
-            Vector2[] newPoints = Calculate2DPoints(p1, p2, firstEdgeColliderPoint, isInverted);
+            Vector2[] newPoints = Calculate2DPoints(p1, p2, firstEdgeColliderPoint, !isInverted);
 
             if (i == 0)
             {
@@ -80,6 +80,7 @@ public static class ColliderGenerator
             }
         }
 
+
         return colliderPoints;
     }
 
@@ -89,7 +90,7 @@ public static class ColliderGenerator
 
         if (isFirstSegment)
         {
-            Vector2[] firstPointArray = new Vector2[2] { edgeColliderPoints[0], fillSplinePoints[0].Position };
+            Vector2[] firstPointArray = new Vector2[3] { edgeColliderPoints[0], fillSplinePoints[1].Position, fillSplinePoints[0].Position };
             colliderPoints = CombineArrays(firstPointArray, colliderPoints);
         }
         if (isLastSegment)
@@ -108,6 +109,9 @@ public static class ColliderGenerator
         if (firstVectorPoint != null)
         {
             points.Add((Vector3)firstVectorPoint);
+        } else
+        {
+            points.Add(firstPoint.Position);
         }
 
         //Skip curve calcs if points form a straight line, just add points

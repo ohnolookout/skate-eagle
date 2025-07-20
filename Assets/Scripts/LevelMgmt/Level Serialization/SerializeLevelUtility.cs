@@ -72,40 +72,7 @@ public static class SerializeLevelUtility
 
         return pointsList;
 
-    }
-
-    private const float MaxSectionDistance = 400f; // Maximum distance between points in a section
-
-    private static List<List<CurvePoint>> BreakDownSegments(List<CurvePoint> allCurvePoints)
-    {
-        List<List<CurvePoint>> sections = new();
-        if (allCurvePoints.Count < 3)
-        {
-            sections.Add(allCurvePoints);
-            return sections;
-        }
-
-        List<CurvePoint> currentSection = new();
-        var startPoint = allCurvePoints[0].Position;
-
-        for(int i = 0; i < allCurvePoints.Count; i++)
-        {
-            var curvePoint = allCurvePoints[i];
-            // Check if the distance from the start point exceeds the maximum section distance
-            // Also, check to make sure we are not at the last point
-            if (i < allCurvePoints.Count - 1 && 
-                (currentSection.Count > 4 || 
-                (currentSection.Count > 1 && Vector2.Distance(startPoint, curvePoint.Position) > MaxSectionDistance)))
-            {
-                sections.Add(currentSection);
-                currentSection = new List<CurvePoint>();
-                startPoint = curvePoint.Position;
-            }
-            currentSection.Add(curvePoint);
-        }
-
-        return sections;
-    }
+    }    
 
     public static void SerializeGroundSegments(SerializedGround serializedGround)
     {
@@ -135,6 +102,43 @@ public static class SerializeLevelUtility
             serializedGround.segmentList.Add(serializedSegment);
         }
 
+    }
+    
+    private const float MaxSectionDistance = 80; // Maximum distance between points in a section
+    private static List<List<CurvePoint>> BreakDownSegments(List<CurvePoint> allCurvePoints)
+    {
+        allCurvePoints = DeepCopyCurvePoints(allCurvePoints);
+
+        List<List<CurvePoint>> sections = new();
+        if (allCurvePoints.Count < 3)
+        {
+            sections.Add(allCurvePoints);
+            return sections;
+        }
+
+        List<CurvePoint> currentSection = new();
+        var startPoint = allCurvePoints[0].Position;
+
+        for (int i = 0; i < allCurvePoints.Count; i++)
+        {
+            var curvePoint = allCurvePoints[i];
+            // Check if the distance from the start point exceeds the maximum section distance
+            // Also, check to make sure we are not at the last point
+            if (i < allCurvePoints.Count - 1 &&
+                (currentSection.Count > 4 ||
+                (currentSection.Count > 0 && Vector2.Distance(startPoint, curvePoint.Position) > MaxSectionDistance)))
+            {
+                currentSection.Add(curvePoint);
+                sections.Add(currentSection);
+                currentSection = new List<CurvePoint>();
+                startPoint = curvePoint.Position;
+            }
+            currentSection.Add(curvePoint);
+        }
+
+        sections.Add(currentSection);
+
+        return sections;
     }
 
     public static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
@@ -185,6 +189,16 @@ public static class SerializeLevelUtility
         }
 
         return targetables;
+    }
+
+    public static List<CurvePoint> DeepCopyCurvePoints(List<CurvePoint> curvePoints)
+    {
+        List<CurvePoint> copiedCurvePoints = new();
+        foreach (var curvePoint in curvePoints)
+        {
+            copiedCurvePoints.Add(curvePoint.DeepCopy());
+        }
+        return copiedCurvePoints;
     }
 
     #endregion
