@@ -27,7 +27,7 @@ public class Ground : MonoBehaviour, ISerializable
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
-    public List<CurvePointObject> CurvePointEditObjects => _curvePointEditObjects;
+    public List<CurvePointObject> CurvePointObjects => _curvePointEditObjects;
     public List<LinkedCameraTarget> LinkedCameraTargets => _linkedCameraTargets;
     #endregion
 
@@ -38,8 +38,8 @@ public class Ground : MonoBehaviour, ISerializable
 #if UNITY_EDITOR
     public void AddCurvePointEditObject(CurvePoint curvePoint) 
     {
-        var point = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointObject>();
-        point.groundTransform = transform;
+        var point = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointObject>();        
+        point.ParentGround = this;
         CurvePoints.Add(curvePoint);
         _curvePointEditObjects.Add(point);
         point.SetCurvePoint(curvePoint);
@@ -67,7 +67,7 @@ public class GroundEditor : Editor
     {
         var ground = (Ground)target;
 
-        foreach(var point in ground.CurvePointEditObjects)
+        foreach(var point in ground.CurvePointObjects)
         {
             CurvePointObjectEditor.DrawCurvePointHandles(point);
         }

@@ -5,8 +5,8 @@ using Com.LuisPedroFonseca.ProCamera2D;
 
 public enum CameraTargetType
 {
-    GroundSegmentLowPoint,
-    GroundSegmentHighPoint,
+    CurvePointLow,
+    CurvePointHigh,
     Player,
     FinishFlag,
     Backstop
@@ -31,22 +31,22 @@ public static class CameraTargetUtility
 
     private static Dictionary<CameraTargetType, Vector2> InfluenceDict = new()
     {
-        { CameraTargetType.GroundSegmentLowPoint, GroundSegmentLowPointInfluence },
-        { CameraTargetType.GroundSegmentHighPoint, GroundSegmentHighPointInfluence },
+        { CameraTargetType.CurvePointLow, GroundSegmentLowPointInfluence },
+        { CameraTargetType.CurvePointHigh, GroundSegmentHighPointInfluence },
         { CameraTargetType.Player, PlayerInfluence }
     };
 
     private static Dictionary<CameraTargetType, float> DurationDict = new()
     {
-        { CameraTargetType.GroundSegmentLowPoint, GroundSegmentLowpointDuration },
-        { CameraTargetType.GroundSegmentHighPoint, GroundSegmentHighpointDuration },
+        { CameraTargetType.CurvePointLow, GroundSegmentLowpointDuration },
+        { CameraTargetType.CurvePointHigh, GroundSegmentHighpointDuration },
         { CameraTargetType.Player, PlayerDuration }
     };
 
     private static Dictionary<CameraTargetType, Vector2> OffsetDict = new()
     {
-        { CameraTargetType.GroundSegmentLowPoint, GroundSegmentLowPointOffset },
-        { CameraTargetType.GroundSegmentHighPoint, GroundSegmentHighPointOffset },
+        { CameraTargetType.CurvePointLow, GroundSegmentLowPointOffset },
+        { CameraTargetType.CurvePointHigh, GroundSegmentHighPointOffset },
         { CameraTargetType.Player, PlayerOffset }
     };
 

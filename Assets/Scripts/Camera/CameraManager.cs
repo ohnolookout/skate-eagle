@@ -86,7 +86,7 @@ public class CameraManager : MonoBehaviour
         var closestTarget = _currentTarget;
         if (_frameCount % 10 == 0)
         {
-            closestTarget = KDTreeBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
+            closestTarget = CameraTargetKDTreeBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
             _frameCount = 0;
         }
 
@@ -112,7 +112,7 @@ public class CameraManager : MonoBehaviour
         }
 
 
-        var duration = CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint);
+        var duration = CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow);
 
         bool playerTargetIsFound = false;
         bool currentTargetIsFound = false;
@@ -200,7 +200,7 @@ public class CameraManager : MonoBehaviour
             Debug.LogError("Start target is null");
             return;
         }
-        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.GroundSegmentLowPoint));
+        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
 
         _currentTarget = startTarget.LinkedCameraTarget;
 

@@ -56,4 +56,19 @@ public class LinkedCameraTarget
         Gizmos.DrawLine(pos, Target.TargetPosition);
     }
 
+    public LinkedCameraTarget DeepCopy()
+    {
+        LinkedCameraTarget copy = new LinkedCameraTarget
+        {
+            Target = Target,
+            LeftKDNode = LeftKDNode,
+            RightKDNode = RightKDNode,
+            TargetType = TargetType,
+            SerializedLocation = (int[])SerializedLocation.Clone(),
+            LeftTargets = new List<LinkedCameraTarget>(LeftTargets),
+            RightTargets = new List<LinkedCameraTarget>(RightTargets)
+        };
+        return copy;
+    }
+
 }

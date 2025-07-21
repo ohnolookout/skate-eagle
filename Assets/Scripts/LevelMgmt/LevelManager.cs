@@ -64,7 +64,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void InitializeLevel()
     {
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager, this);
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, null); //Fix with new start line class
 
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
@@ -150,7 +150,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Destroy(_player.gameObject);
         }
 
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, _groundManager.StartSegment);
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, null); //Fix with new start line class
         InstantiatePlayer();
         _groundManager.FinishLine.DoFinish += CrossFinish;
         _inputEvents.OnRestart += GoToStandby;

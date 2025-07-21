@@ -4,14 +4,33 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System.Linq;
 using System;
 
-public static class KDTreeBuilder
+public static class CameraTargetKDTreeBuilder
 {
-    public static LinkedCameraTarget BuildKdTree(List<LinkedCameraTarget> targets)
+    public static LinkedCameraTarget BuildKdTree(ICameraTargetable[] targetables)
     {
-        return BuildKdTreeRecursive(targets, 0);
+        if (targetables == null || targetables.Length == 0) 
+        { 
+            Debug.Log("CameraTargetKDTreeBuilder: No targetables found to build KD-Tree.");
+            return null;
+        }
+
+        List<LinkedCameraTarget> targets = new();
+
+        foreach (var targetable in targetables)
+        {
+            if (targetable.DoTargetLow)
+            {
+                SerializeLevelUtility.BuildLinkedCameraTarget(targetable);
+                targets.Add(targetable.LinkedCameraTarget.DeepCopy());
+            }
+        }
+
+        Debug.Log($"CameraTargetKDTreeBuilder: Found {targets.Count} targets to build KD-Tree.");
+
+        return BuildKdTreeRecursive(targets);
     }
 
-    private static LinkedCameraTarget BuildKdTreeRecursive(List<LinkedCameraTarget> targets, int depth)
+    private static LinkedCameraTarget BuildKdTreeRecursive(List<LinkedCameraTarget> targets, int depth = 0)
     {
         if (targets == null || targets.Count == 0)
             return null;

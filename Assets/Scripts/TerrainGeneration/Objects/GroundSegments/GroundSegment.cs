@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
-public class GroundSegment : MonoBehaviour, ICameraTargetable
+public class GroundSegment : MonoBehaviour
 {
     #region Declarations
     public List<GameObject> leftTargetObjects;
@@ -27,11 +27,11 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
     private int _containmentBuffer = 20;
     [SerializeField] private bool _isStart = false;
     [SerializeField] private bool _isFinish = false;
-    [SerializeField] private bool _isFloating = false;
-    [SerializeField] private bool _isInverted = false;
-    [SerializeField] private bool _hasShadow = true;
-    [SerializeField] private bool _doTarget = true;
-    [SerializeField] private bool _useDefaultHighLowPoints = true;
+    //[SerializeField] private bool _isFloating = false;
+    //[SerializeField] private bool _isInverted = false;
+    //[SerializeField] private bool _hasShadow = true;
+    //[SerializeField] private bool _doTarget = true;
+    //[SerializeField] private bool _useDefaultHighLowPoints = true;
     public Ground parentGround;
     [SerializeField] private GroundSegment _nextLeftSegment = null;
     [SerializeField] private GroundSegment _nextRightSegment = null;
@@ -60,15 +60,15 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
     public new GameObject gameObject { get => transform.gameObject; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsStart { get => _isStart; set => _isStart = value; }
-    public bool DoTargetHigh { get => _doTarget; set => _doTarget = value; }
-    public bool IsFirstSegment => parentGround.SegmentList[0] == this;
-    public bool IsLastSegment => parentGround.SegmentList[^1] == this;
-    public bool IsFloating { get => _isFloating; set => _isFloating = value; }
-    public bool IsInverted { get => _isInverted; set => _isInverted = value; }
-    public bool UseDefaultHighLowPoints { get => _useDefaultHighLowPoints; set => _useDefaultHighLowPoints = value; }
-    public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
-    public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
-    public Transform HighPoint => _highPoint.transform;
+    //public bool DoTargetHigh { get => _doTarget; set => _doTarget = value; }
+    //public bool IsFirstSegment => parentGround.SegmentList[0] == this;
+    //public bool IsLastSegment => parentGround.SegmentList[^1] == this;
+    //public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    //public bool IsInverted { get => _isInverted; set => _isInverted = value; }
+    //public bool UseDefaultHighLowPoints { get => _useDefaultHighLowPoints; set => _useDefaultHighLowPoints = value; }
+    //public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
+    //public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
+    //public Transform HighPoint => _highPoint.transform;
     public Transform LowPoint => _lowPoint.transform;
     public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
     public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
@@ -150,7 +150,7 @@ public class GroundSegment : MonoBehaviour, ICameraTargetable
         //    UpdateHighLowTransforms();
         //}
 
-        _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.GroundSegmentLowPoint, LowPoint.transform); 
+        _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, LowPoint.transform); 
 
         if (_nextLeftSegment != null && !LeftTargetObjects.Contains(_nextLeftSegment.gameObject))
         {

@@ -18,6 +18,7 @@ public class SerializedGround : IDeserializable
     public SerializedGroundSegment editorSegment; //Single segment for editing
     public List<SerializedGroundSegment> segmentList; //Divided segments for runtime
     public List<CurvePoint> curvePoints;
+    public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
     //public List<IDeserializable> serializedObjectList;
 
     public SerializedGround(Ground ground)

@@ -305,68 +305,15 @@ public class GroundEditManager : MonoBehaviour
         {
             var ground = _groundManager.Grounds[i];
             ground.gameObject.name = "Ground " + i;
-            var groundPrefix = GroundPrefix(ground);
-            for (int j = 0; j < ground.SegmentList.Count; j++)
-            {
-                ground.SegmentList[j].gameObject.name = SegmentName(ground.SegmentList[j], groundPrefix);
-            }
         }
     }
 
-    private string GroundPrefix(Ground ground)
-    {
-        return ground.gameObject.name.Remove(1, ground.gameObject.name.Length - 2);
-    }
-
-    private string SegmentName(GroundSegment segment, string groundPrefix = null)
-    {
-        groundPrefix = groundPrefix ?? GroundPrefix(segment.parentGround);
-        return groundPrefix + " Segment " + segment.parentGround.SegmentList.IndexOf(segment);
-    }
     #endregion
 
     #region Start/Finish
-    public Vector2 SetStartPoint(GroundSegment segment, int curvePointIndex)
-    {
-        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set start");
-        segment.IsStart = true;
-        //segment.SetLowPoint(curvePointIndex);
-        //startPoint.transform.position = _groundSpawner.SetStartPoint(segment, curvePointIndex);
-        return startPoint.transform.position;
-    }
-
-    public void SetFinishLine(GroundSegment segment, SerializedFinishLine finishParams)
-    {
-        //if (!ValidateFinishParameters(segment, finishParams))
-        //{
-        //    return;
-        //}
-                
-        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set finish line");
-
-        if (_groundManager.FinishSegment != null && _groundManager.FinishSegment != segment)
-        {
-            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishSegment.gameObject, "Remove finish line");
-            _groundManager.FinishSegment.IsFinish = false;
-        }
-
-        _groundManager.FinishSegment = segment;
-        segment.IsFinish = true;
-        //segment.SetLowPoint(finishParams.flagPointIndex);
-
-        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Set finish line");
-        _groundManager.FinishLine.SetFinishLine(finishParams);
-    }
 
     public void ClearFinishLine()
     {
-        if (_groundManager.FinishSegment != null)
-        {
-            Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishSegment.gameObject, "Clear finish line");
-            _groundManager.FinishSegment.IsFinish = false;
-            _groundManager.FinishSegment = null;
-        }
-
         Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Clear finish line");
         _groundManager.FinishLine.ClearFinishLine();
     }
@@ -399,38 +346,21 @@ public class GroundEditManager : MonoBehaviour
     #endregion
 
     #region CameraTargeting
-
-    public List<LinkedCameraTarget> GetAllCameraTargets()
+    public CurvePointObject FindNextCurvePoint(CurvePointObject curvePointObject, bool doLookRight, bool doLookUp, bool doLookDown)
     {
-        var targets = new List<LinkedCameraTarget>();
-        foreach (var ground in _groundManager.Grounds)
-        {
-            foreach (var segment in ground.SegmentList)
-            {
-                if (segment.LinkedCameraTarget != null)
-                {
-                    targets.Add(segment.LinkedCameraTarget);
-                }
-            }
-        }
-        return targets;
-    }
-
-    public GroundSegment FindNextSegment(GroundSegment segment, bool doLookRight, bool doLookUp, bool doLookDown)
-    {
-        if(doLookRight && segment.NextRightSegment != null)
+        if (doLookRight && curvePointObject.NextRightCurvePointObject != null)
         {
             Debug.Log("Right segment already exists!");
-            return segment.NextRightSegment;
+            return curvePointObject.NextRightCurvePointObject;
         }
-        else if (!doLookRight && segment.NextLeftSegment != null)
+        else if (!doLookRight && curvePointObject.NextLeftCurvePointObject != null)
         {
             Debug.Log("Left segment already exists!");
-            return segment.NextLeftSegment;
+            return curvePointObject.NextLeftCurvePointObject;
         }
 
-        var currentPos = segment.LowPoint.position;
-        GroundSegment nextSegment = null;
+        var currentPos = curvePointObject.CurvePoint.Position;
+        CurvePointObject nextCurvePointObject = null;
         var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
         var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
         Vector2 nextPos = new(nextStartX, nextStartY);
@@ -444,7 +374,8 @@ public class GroundEditManager : MonoBehaviour
         if ((doLookUp && doLookDown) || (!doLookUp && !doLookDown))
         {
             lookVertical = (Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos) => true;
-        } else if (doLookUp)
+        }
+        else if (doLookUp)
         {
             lookVertical = LookUp;
         }
@@ -455,19 +386,71 @@ public class GroundEditManager : MonoBehaviour
 
         foreach (var ground in _groundManager.Grounds)
         {
-            foreach (var seg in ground.SegmentList)
+            foreach (var obj in ground.CurvePointObjects)
             {
-                if(lookHorizontal(currentPos, nextPos, seg.LowPoint.position)
-                    && lookVertical(currentPos, nextPos, seg.LowPoint.position))
+                if (lookHorizontal(currentPos, nextPos, obj.CurvePoint.Position)
+                    && lookVertical(currentPos, nextPos, obj.CurvePoint.Position))
                 {
-                    nextSegment = seg;
-                    nextPos = seg.LowPoint.position;
+                    nextCurvePointObject = obj;
+                    nextPos = obj.CurvePoint.Position;
                 }
             }
         }
 
-        return nextSegment;
+        return nextCurvePointObject;
     }
+    //public GroundSegment FindNextSegment(GroundSegment segment, bool doLookRight, bool doLookUp, bool doLookDown)
+    //{
+    //    if(doLookRight && segment.NextRightSegment != null)
+    //    {
+    //        Debug.Log("Right segment already exists!");
+    //        return segment.NextRightSegment;
+    //    }
+    //    else if (!doLookRight && segment.NextLeftSegment != null)
+    //    {
+    //        Debug.Log("Left segment already exists!");
+    //        return segment.NextLeftSegment;
+    //    }
+
+    //    var currentPos = segment.LowPoint.position;
+    //    GroundSegment nextSegment = null;
+    //    var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
+    //    var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
+    //    Vector2 nextPos = new(nextStartX, nextStartY);
+
+    //    Func<Vector2, Vector2, Vector2, bool> lookHorizontal;
+
+    //    lookHorizontal = doLookRight ? LookRight : LookLeft;
+
+    //    Func<Vector2, Vector2, Vector2, bool> lookVertical;
+
+    //    if ((doLookUp && doLookDown) || (!doLookUp && !doLookDown))
+    //    {
+    //        lookVertical = (Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos) => true;
+    //    } else if (doLookUp)
+    //    {
+    //        lookVertical = LookUp;
+    //    }
+    //    else
+    //    {
+    //        lookVertical = LookDown;
+    //    }
+
+    //    foreach (var ground in _groundManager.Grounds)
+    //    {
+    //        foreach (var seg in ground.SegmentList)
+    //        {
+    //            if(lookHorizontal(currentPos, nextPos, seg.LowPoint.position)
+    //                && lookVertical(currentPos, nextPos, seg.LowPoint.position))
+    //            {
+    //                nextSegment = seg;
+    //                nextPos = seg.LowPoint.position;
+    //            }
+    //        }
+    //    }
+
+    //    return nextSegment;
+    //}
 
     private bool LookRight(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
     {

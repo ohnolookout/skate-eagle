@@ -8,16 +8,15 @@ public class GroundManager : MonoBehaviour
     #region Declarations
     [SerializeField] private GameObject _terrainPrefab;
     [SerializeField] private FinishLine _finishLine;
-    private GroundSegment _startSegment;
-    private GroundSegment _finishSegment;
+    [SerializeField] private StartLine _startLine;
     public GroundSpawner groundSpawner;
     private List<Ground> _grounds;
     public GameObject groundContainer;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     public List<Ground> Grounds { get => _grounds; set => _grounds = value; }
-    public FinishLine FinishLine { get => _finishLine;}
-    public GroundSegment StartSegment { get => _startSegment; set => _startSegment = value; }
-    public GroundSegment FinishSegment { get => _finishSegment; set => _finishSegment = value; }
+    public FinishLine FinishLine { get => _finishLine; }
+    public StartLine StartLine { get => _startLine; }
+    public ICameraTargetable[] CameraTargetables => GetComponentsInChildren<ICameraTargetable>();
     #endregion
 
     #region Monobehaviors

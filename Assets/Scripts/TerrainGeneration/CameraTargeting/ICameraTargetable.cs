@@ -13,6 +13,7 @@ public interface ICameraTargetable
     
     //Use LinkedCameraTarget for actual targeting, but only build from GameObjects on level save
     LinkedCameraTarget LinkedCameraTarget { get; set; }
+    bool DoTargetLow { get; set; }
     bool DoTargetHigh { get; set; }
 }
 

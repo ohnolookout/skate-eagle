@@ -11,52 +11,52 @@ public static class ColliderGenerator
 
     #region Generation
 
-    public static void BuildSegmentCollider(GroundSegment segment, List<CurvePoint> curvePoints, PhysicsMaterial2D material, float resolutionMult = 10)
-    {
-        segment.Collider.sharedMaterial = material;
-        var collider = segment.Collider;
-        Vector3? firstPoint = segment.FirstColliderPoint();
+    //public static void BuildSegmentCollider(GroundSegment segment, List<CurvePoint> curvePoints, PhysicsMaterial2D material, float resolutionMult = 10)
+    //{
+    //    segment.Collider.sharedMaterial = material;
+    //    var collider = segment.Collider;
+    //    Vector3? firstPoint = segment.FirstColliderPoint();
 
-        //Iterate through points that make up GroundSegment's curve.
-        for (int i = 0; i < curvePoints.Count - 1; i++)
-        {
-            var p1 = curvePoints[i];
-            var p2 = curvePoints[i + 1];
-            resolution = Mathf.Max(resolutionMult * GetLength(p1, p2) / 20, 15);
-            Vector2[] newPoints = Calculate2DPoints(p1, p2, firstPoint, !segment.IsInverted);
-            if (i == 0)
-            {
-                collider.points = newPoints;
-                firstPoint = null;
-            }
-            else
-            {
-                collider.points = CombineArrays(collider.points, newPoints);
-            }
-        }
+    //    //Iterate through points that make up GroundSegment's curve.
+    //    for (int i = 0; i < curvePoints.Count - 1; i++)
+    //    {
+    //        var p1 = curvePoints[i];
+    //        var p2 = curvePoints[i + 1];
+    //        resolution = Mathf.Max(resolutionMult * GetLength(p1, p2) / 20, 15);
+    //        Vector2[] newPoints = Calculate2DPoints(p1, p2, firstPoint, !segment.IsInverted);
+    //        if (i == 0)
+    //        {
+    //            collider.points = newPoints;
+    //            firstPoint = null;
+    //        }
+    //        else
+    //        {
+    //            collider.points = CombineArrays(collider.points, newPoints);
+    //        }
+    //    }
 
-        var bottomCollider = segment.BottomCollider;
+    //    var bottomCollider = segment.BottomCollider;
 
-        //Don't do edge collision if segment is floating;
-        if (segment.IsFloating)
-        {
-            bottomCollider.gameObject.SetActive(false);
-            return;
-        }
+    //    //Don't do edge collision if segment is floating;
+    //    if (segment.IsFloating)
+    //    {
+    //        bottomCollider.gameObject.SetActive(false);
+    //        return;
+    //    }
 
-        bottomCollider.gameObject.SetActive(true);
-        bottomCollider.points = new Vector2[2] { segment.Spline.GetPosition(0), segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
-        if (segment.IsFirstSegment)
-        {
-            Vector2[] firstPointArray = new Vector2[2] { segment.Spline.GetPosition(1), segment.Spline.GetPosition(0) };
-            bottomCollider.points = CombineArrays(firstPointArray, bottomCollider.points);
-        }
-        if (segment.IsLastSegment)
-        {
-            Vector2[] lastPointArray = new Vector2[3] { segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1), curvePoints[^1].Position, collider.points[^1] };
-            bottomCollider.points = CombineArrays(bottomCollider.points, lastPointArray);
-        }
-    }
+    //    bottomCollider.gameObject.SetActive(true);
+    //    bottomCollider.points = new Vector2[2] { segment.Spline.GetPosition(0), segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1) };
+    //    if (segment.IsFirstSegment)
+    //    {
+    //        Vector2[] firstPointArray = new Vector2[2] { segment.Spline.GetPosition(1), segment.Spline.GetPosition(0) };
+    //        bottomCollider.points = CombineArrays(firstPointArray, bottomCollider.points);
+    //    }
+    //    if (segment.IsLastSegment)
+    //    {
+    //        Vector2[] lastPointArray = new Vector2[3] { segment.Spline.GetPosition(segment.Spline.GetPointCount() - 1), curvePoints[^1].Position, collider.points[^1] };
+    //        bottomCollider.points = CombineArrays(bottomCollider.points, lastPointArray);
+    //    }
+    //}
 
     public static Vector2[] GetEdgeColliderPoints(List<CurvePoint> curvePoints, Vector3? firstEdgeColliderPoint, bool isInverted = false, float resolutionMult = 10)
     {

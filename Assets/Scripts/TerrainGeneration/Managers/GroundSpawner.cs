@@ -30,99 +30,99 @@ public class GroundSpawner : MonoBehaviour
         return groundObj.GetComponent<Ground>();
     }
 
-    //Add segment to start at last endpoint
-    public GroundSegment AddSegment(Ground ground, List<CurvePoint> curvePoints)
-    {
+//    //Add segment to start at last endpoint
+//    public GroundSegment AddSegment(Ground ground, List<CurvePoint> curvePoints)
+//    {
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(ground, "Add Segment");
-#endif
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(ground, "Add Segment");
+//#endif
 
-        //Create new segment, set start point to end of current segment, and add to _segmentList
-        var newSegment = Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
+//        //Create new segment, set start point to end of current segment, and add to _segmentList
+//        var newSegment = Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
 
-#if UNITY_EDITOR
-        Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
-#endif
-        newSegment.parentGround = ground;
-        newSegment.NextLeftSegment = ground.LastSegment;
-        Vector2 startPoint = new(0, 0);
+//#if UNITY_EDITOR
+//        Undo.RegisterCreatedObjectUndo(newSegment.gameObject, "Add Segment");
+//#endif
+//        newSegment.parentGround = ground;
+//        newSegment.NextLeftSegment = ground.LastSegment;
+//        Vector2 startPoint = new(0, 0);
 
-        if (newSegment.NextLeftSegment != null)
-        {
-            newSegment.NextLeftSegment.NextRightSegment = newSegment;
-            startPoint = newSegment.NextLeftSegment.EndPosition;
-        } else
-        {
-            startPoint = ground.transform.position;
-        }
+//        if (newSegment.NextLeftSegment != null)
+//        {
+//            newSegment.NextLeftSegment.NextRightSegment = newSegment;
+//            startPoint = newSegment.NextLeftSegment.EndPosition;
+//        } else
+//        {
+//            startPoint = ground.transform.position;
+//        }
 
-        newSegment.transform.position = startPoint;
-        ground.SegmentList.Add(newSegment);
+//        newSegment.transform.position = startPoint;
+//        ground.SegmentList.Add(newSegment);
 
-        ApplyCurvePointsToSegment(newSegment, curvePoints);
-        newSegment.PopulateDefaultTargets();
+//        ApplyCurvePointsToSegment(newSegment, curvePoints);
+//        newSegment.PopulateDefaultTargets();
 
-        if (!newSegment.HasShadow)
-        {
-            newSegment.GetComponent<ShadowCaster2D>().enabled = false;
-        }
+//        if (!newSegment.HasShadow)
+//        {
+//            newSegment.GetComponent<ShadowCaster2D>().enabled = false;
+//        }
 
-        if(newSegment.NextLeftSegment != null)
-        {
+//        if(newSegment.NextLeftSegment != null)
+//        {
 
-#if UNITY_EDITOR
-            Undo.RecordObject(newSegment.NextLeftSegment, "Remove collider end points");
-#endif
+//#if UNITY_EDITOR
+//            Undo.RecordObject(newSegment.NextLeftSegment, "Remove collider end points");
+//#endif
 
-            BuildCollider(newSegment.NextLeftSegment, curvePoints);
-        }
+//            BuildCollider(newSegment.NextLeftSegment, curvePoints);
+//        }
 
-        return newSegment;
-    }
+//        return newSegment;
+//    }
     #endregion
 
     #region Build Segments
 
-    public void ApplyCurvePointsToSegment(GroundSegment segment, List<CurvePoint> curvePoints)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set edge");
-#endif
-        //Set splines to default formatting
-        GroundSplineUtility.FormatSpline(segment.Spline, segment.IsFloating);
+//    public void ApplyCurvePointsToSegment(GroundSegment segment, List<CurvePoint> curvePoints)
+//    {
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment.gameObject, "Set edge");
+//#endif
+//        //Set splines to default formatting
+//        GroundSplineUtility.FormatSpline(segment.Spline, segment.IsFloating);
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
-#endif
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
+//#endif
 
-        GroundSplineUtility.FormatSpline(segment.EdgeSpline, true);
+//        GroundSplineUtility.FormatSpline(segment.EdgeSpline, true);
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment, "Generating segment");
-#endif
-        segment.GetComponent<SpriteShapeRenderer>().enabled = !segment.IsFloating;
-        GroundSplineUtility.GenerateSpline(segment.Spline, curvePoints, segment.IsFloating);
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment, "Generating segment");
+//#endif
+//        segment.GetComponent<SpriteShapeRenderer>().enabled = !segment.IsFloating;
+//        GroundSplineUtility.GenerateSpline(segment.Spline, curvePoints, segment.IsFloating);
 
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
-#endif
-        //GroundSplineUtility.InsertCurvePointsToOpenSpline(segment.EdgeSpline, curvePoints);
-        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, curvePoints, true);
+//#if UNITY_EDITOR
+//        Undo.RegisterFullObjectHierarchyUndo(segment.EdgeShapeController.gameObject, "Set edge");
+//#endif
+//        //GroundSplineUtility.InsertCurvePointsToOpenSpline(segment.EdgeSpline, curvePoints);
+//        GroundSplineUtility.GenerateSpline(segment.EdgeSpline, curvePoints, true);
 
-        BuildCollider(segment, curvePoints);
+//        BuildCollider(segment, curvePoints);
 
-    }
-    public EdgeCollider2D BuildCollider(GroundSegment segment, List<CurvePoint> curvePoints, float resolution = 10)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterCompleteObjectUndo(segment.Collider, "Edge Collider");
-        Undo.RegisterCompleteObjectUndo(segment.BottomCollider, "Bottom Collider");
-#endif
+//    }
+//    public EdgeCollider2D BuildCollider(GroundSegment segment, List<CurvePoint> curvePoints, float resolution = 10)
+//    {
+//#if UNITY_EDITOR
+//        Undo.RegisterCompleteObjectUndo(segment.Collider, "Edge Collider");
+//        Undo.RegisterCompleteObjectUndo(segment.BottomCollider, "Bottom Collider");
+//#endif
 
-        ColliderGenerator.BuildSegmentCollider(segment, curvePoints, segment.ColliderMaterial);
-        return segment.Collider;
-    }
+//        ColliderGenerator.BuildSegmentCollider(segment, curvePoints, segment.ColliderMaterial);
+//        return segment.Collider;
+//    }
 
     public GroundSegment AddEmptySegment(Ground ground)
     {

@@ -17,24 +17,19 @@ public static class SerializeLevelUtility
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager)
     {
         GenerateGroundIndices(groundManager.Grounds);
-        var serializables = new List<ISerializable>();
-        for (int i = 0; i < groundManager.transform.childCount; i++)
+
+        if (groundManager.StartLine.StartPoint == null)
         {
-            var child = groundManager.transform.GetChild(i);
-            if (child.TryGetComponent(out ISerializable serializable))
+            if (groundManager.Grounds == null || groundManager.Grounds.Count == 0 || groundManager.Grounds[0].CurvePoints.Count == 0)
             {
-                serializables.Add(serializable);
+                groundManager.StartLine.SetStartLine(new CurvePoint());
+            } else
+            {
+                groundManager.StartLine.SetStartLine(groundManager.Grounds[0].CurvePoints[0]);
             }
         }
 
-        for (int i = 0; i < groundManager.groundContainer.transform.childCount; i++)
-        {
-            var child = groundManager.groundContainer.transform.GetChild(i);
-            if (child.TryGetComponent(out ISerializable serializable))
-            {
-                serializables.Add(serializable);
-            }
-        }
+        var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
         List<IDeserializable> serializedObjects = new();
 
@@ -50,9 +45,9 @@ public static class SerializeLevelUtility
         for (int i = 0; i < grounds.Count; i++)
         {
             var ground = grounds[i];
-            for (int j = 0; j < ground.SegmentList.Count; j++)
+            for (int j = 0; j < ground.CurvePointObjects.Count; j++)
             {
-                ground.SegmentList[j].LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
+                ground.CurvePointObjects[j].LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
             }
         }
     }
@@ -76,7 +71,6 @@ public static class SerializeLevelUtility
 
     public static void SerializeGroundSegments(SerializedGround serializedGround)
     {
-        Debug.Log($"Populating segments from {serializedGround.curvePoints.Count} curve points for serialized ground: {serializedGround.name}");
 
         serializedGround.segmentList = new();
         var groundNamePrefix = serializedGround.name.Remove(1, serializedGround.name.Length - 2);
@@ -159,7 +153,12 @@ public static class SerializeLevelUtility
             targetable.LinkedCameraTarget = new();
         }
 
+        Debug.Log($"Building LinkedCameraTarget for {targetable}");
         targetable.PopulateDefaultTargets();
+
+        Debug.Log($"Left target objects: {targetable.LeftTargetObjects.Count}");
+        Debug.Log($"Right target objects: {targetable.RightTargetObjects.Count}");
+
         targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
         targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
     }
@@ -176,7 +175,7 @@ public static class SerializeLevelUtility
                 i--;
                 continue;
             }
-            var linkedTarget = targetObjects[i].GetComponent<ICameraTargetable>();
+            var linkedTarget = targetObjects[i].GetComponentInChildren<ICameraTargetable>();
             if (linkedTarget != null)
             {
                 targetables.Add(linkedTarget.LinkedCameraTarget);
@@ -260,7 +259,7 @@ public static class SerializeLevelUtility
         {
             foreach (var segment in ground.SegmentList)
             {
-                targetables.Add(segment);
+                //targetables.Add(segment);
             }
         }
 

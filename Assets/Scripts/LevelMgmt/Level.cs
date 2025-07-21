@@ -33,12 +33,10 @@ public class Level
     {
         _name = name;
         _medalTimes = medalTimes;
-
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager);
-
         _rootCameraTarget = rootCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
-        _startPoint = startPoint;
+        _startPoint = groundManager.StartLine.StartPosition;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = killPlaneY;
     }

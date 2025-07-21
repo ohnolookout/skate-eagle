@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.U2D;
 
 [Serializable]
-public class CurvePoint: ICameraTargetable
+public class CurvePoint
 {
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private ShapeTangentMode _mode;
@@ -15,11 +15,9 @@ public class CurvePoint: ICameraTargetable
     [SerializeField] private int _floorAngle;
     [SerializeField] private bool _forceNewSection;
     [SerializeField] private bool _blockNewSection;
-    [SerializeField] private bool _doTargetHigh = false;
-    [SerializeField] private bool _doTargetLow = true;
-    [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
-    public List<GameObject> LeftTargetObjects = new();
-    public List<GameObject> RightTargetObjects = new();
+    [SerializeField] private CurvePointObject _object;
+    
+    public CurvePointObject Object { get => _object; set => _object = value; }
     public Vector3 Position { get => position; set => position = value; }
     public Vector3 LeftTangent { get => leftTangent; set => leftTangent = value; }
     public Vector3 RightTangent { get => rightTangent; set => rightTangent = value; }
@@ -33,11 +31,6 @@ public class CurvePoint: ICameraTargetable
     public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
     public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
-    public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
-    public bool DoTargetHigh { get => _doTargetHigh; set => _doTargetHigh = value; }
-    public bool DoTargetLow { get => _doTargetLow; set => _doTargetLow = value; }
-    List<GameObject> ICameraTargetable.LeftTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    List<GameObject> ICameraTargetable.RightTargetObjects { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public CurvePoint()
     {
@@ -158,30 +151,20 @@ public class CurvePoint: ICameraTargetable
         return direction * magnitude;
     }
 
-    public void PopulateDefaultTargets()
-    {
-        throw new NotImplementedException();
-    }
-
     public CurvePoint DeepCopy()
     {
         CurvePoint copy = new CurvePoint();
-        copy.position = position;
-        copy.leftTangent = leftTangent;
-        copy.rightTangent = rightTangent;
-        copy._mode = _mode;
-        copy._isSymmetrical = _isSymmetrical;
-        copy._isStart = _isStart;
-        copy._isFinish = _isFinish;
-        copy._floorHeight = _floorHeight;
-        copy._floorAngle = _floorAngle;
-        copy._forceNewSection = _forceNewSection;
-        copy._blockNewSection = _blockNewSection;
-        copy._doTargetHigh = _doTargetHigh;
-        copy._doTargetLow = _doTargetLow;
-        copy._linkedCameraTarget = _linkedCameraTarget;
-        copy.LeftTargetObjects = new List<GameObject>(LeftTargetObjects);
-        copy.RightTargetObjects = new List<GameObject>(RightTargetObjects);
+        copy.Position = position;
+        copy.LeftTangent = leftTangent;
+        copy.RightTangent = rightTangent;
+        copy.Mode = _mode;
+        copy.IsSymmetrical = _isSymmetrical;
+        copy.IsStart = _isStart;
+        copy.IsFinish = _isFinish;
+        copy.FloorHeight = _floorHeight;
+        copy.FloorAngle = _floorAngle;
+        copy.ForceNewSection = _forceNewSection;
+        copy.BlockNewSection = _blockNewSection;
 
         return copy;
 

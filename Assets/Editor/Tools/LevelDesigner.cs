@@ -19,7 +19,7 @@ public class LevelDesigner : EditorWindow
     private GroundSegment _segment;
     private Ground _ground;
     private LevelLoadWindow _loadWindow;
-    private FindAdjacentSegmentWindow _findAdjacentWindow;
+    private FindAdjacentCurvePointWindow _findAdjacentWindow;
     private FinishLineCreatorWindow _finishWindow;
     private Vector2 _scrollPosition;
     private LevelDatabase _levelDB;
@@ -540,18 +540,8 @@ public class LevelDesigner : EditorWindow
         MedalTimes medalTimes = new(medalTimeBronze, medalTimeSilver, medalTimeGold, medalTimeBlue, medalTimeRed);
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
-        
-        if(_groundManager.StartSegment != null)
-        {
-            _groundEditor.SetStartPoint(_groundManager.StartSegment, 1);
-        }
 
-        if (_groundManager.FinishSegment != null)
-        {
-            _groundEditor.SetFinishLine(_groundManager.FinishSegment, _groundManager.FinishLine.Parameters);
-        }
-
-        var rootCameraTarget = KDTreeBuilder.BuildKdTree(_groundEditor.GetAllCameraTargets());
+        var rootCameraTarget = CameraTargetKDTreeBuilder.BuildKdTree(_groundManager.CameraTargetables);
 
         return new Level(levelName, medalTimes, _groundManager, _groundEditor.startPoint.transform.position, 
             cameraStartPosition, killPlaneY, rootCameraTarget);
