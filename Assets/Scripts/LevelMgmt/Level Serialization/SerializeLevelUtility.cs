@@ -149,15 +149,10 @@ public static class SerializeLevelUtility
     {
         if(targetable.LinkedCameraTarget == null)
         {
-            Debug.LogWarning("LinkedCameraTarget is null, creating new one");
             targetable.LinkedCameraTarget = new();
         }
 
-        Debug.Log($"Building LinkedCameraTarget for {targetable}");
         targetable.PopulateDefaultTargets();
-
-        Debug.Log($"Left target objects: {targetable.LeftTargetObjects.Count}");
-        Debug.Log($"Right target objects: {targetable.RightTargetObjects.Count}");
 
         targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
         targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);

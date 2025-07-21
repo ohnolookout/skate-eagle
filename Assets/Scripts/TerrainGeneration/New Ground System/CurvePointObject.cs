@@ -25,7 +25,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
     [SerializeField] private bool _doTargetHigh = false;
     public CurvePoint CurvePoint => curvePoint;
     public Ground ParentGround { get => _parentGround; set => _parentGround = value; }
-    public Vector3 WorldPosition => transform.position + ParentGround.transform.position;
     public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
     public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
@@ -39,11 +38,18 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
             
             if (index != 0)
             {
-                return ParentGround.CurvePointObjects[index - 1];
+                for(int i = index - 1; i >= 0; i--)
+                {
+                    if (ParentGround.CurvePointObjects[i].DoTargetLow)
+                    {
+                        return ParentGround.CurvePointObjects[i];
+                    }
+                }
             }
 
             return _nextLeftCurvePointObject;
         }
+
         set => _nextLeftCurvePointObject = value; 
     }
     public CurvePointObject NextRightCurvePointObject
@@ -52,9 +58,12 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
         {
             var index = ParentGround.CurvePointObjects.IndexOf(this);
 
-            if (index != ParentGround.CurvePointObjects.Count - 1)
+            for(int i = index + 1; i < ParentGround.CurvePointObjects.Count; i++)
             {
-                return ParentGround.CurvePointObjects[index + 1];
+                if (ParentGround.CurvePointObjects[i].DoTargetLow)
+                {
+                    return ParentGround.CurvePointObjects[i];
+                }
             }
 
             return _nextRightCurvePointObject;
@@ -74,20 +83,20 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
     {
         this.curvePoint = curvePoint;
         this.curvePoint.Object = this; // Set the object reference in the CurvePoint
-        transform.position = this.curvePoint.Position;
+        transform.position = this.curvePoint.Position + ParentGround.transform.position;
     }
 
     public void TangentsChanged(Vector3 updatedleftTang, Vector3 updatedRightTang)
     {
-        curvePoint.LeftTangent = updatedleftTang - WorldPosition;
-        curvePoint.RightTangent = updatedRightTang - WorldPosition;
+        curvePoint.LeftTangent = updatedleftTang - transform.position;
+        curvePoint.RightTangent = updatedRightTang - transform.position;
 
         _onCurvePointChange?.Invoke(this);
     }
 
     public void LeftTangentChanged(Vector3 updatedTang)
     {
-        curvePoint.LeftTangent = updatedTang - WorldPosition;
+        curvePoint.LeftTangent = updatedTang - transform.position;
 
         if (curvePoint.IsSymmetrical)
         {
@@ -105,7 +114,7 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
     public void RightTangentChanged(Vector3 updatedTang)
     {
 
-        curvePoint.RightTangent = updatedTang - WorldPosition;
+        curvePoint.RightTangent = updatedTang - transform.position;
 
         if(curvePoint.IsSymmetrical)
         {
@@ -144,7 +153,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
 
     public void PopulateDefaultTargets()
     {
-        Debug.Log("Populating default targets for CurvePointObject: " + name);
         _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
 
         if (NextLeftCurvePointObject != null && !leftTargetObjects.Contains(NextLeftCurvePointObject.gameObject))
@@ -251,17 +259,28 @@ public class CurvePointObjectEditor : Editor
     {
         var objectPosition = curvePointObject.transform.position;
         var groundPosition = curvePointObject.ParentGround.transform.position;
-        var worldPosition = curvePointObject.WorldPosition;
+        //var worldPosition = curvePointObject.WorldPosition;
 
 
         //Position handle
 
-        Handles.color = Color.green;
+        if (curvePointObject.DoTargetLow)
+        {
+            Handles.color = Color.blue;
+        }
+        else if (curvePointObject.DoTargetHigh)
+        {
+            Handles.color = Color.green;
+        }
+        else
+        {
+            Handles.color = Color.white;
+        }
         EditorGUI.BeginChangeCheck();
 
         var positionHandle = Handles.FreeMoveHandle(
-            worldPosition,
-            HandleUtility.GetHandleSize(worldPosition) * .1f,
+            objectPosition,
+            HandleUtility.GetHandleSize(objectPosition) * .1f,
             Vector3.zero,
             Handles.SphereHandleCap);
 
@@ -274,8 +293,8 @@ public class CurvePointObjectEditor : Editor
 
         Handles.color = Color.red;
 
-        Handles.DrawLine(worldPosition, curvePointObject.CurvePoint.LeftTangentPosition + groundPosition);
-        Handles.DrawLine(worldPosition, curvePointObject.CurvePoint.RightTangentPosition + groundPosition);
+        Handles.DrawLine(objectPosition, curvePointObject.CurvePoint.LeftTangentPosition + groundPosition);
+        Handles.DrawLine(objectPosition, curvePointObject.CurvePoint.RightTangentPosition + groundPosition);
 
         Handles.color = Color.yellow;
 

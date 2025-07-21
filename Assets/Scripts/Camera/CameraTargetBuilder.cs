@@ -4,7 +4,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System.Linq;
 using System;
 
-public static class CameraTargetKDTreeBuilder
+public static class CameraTargetBuilder
 {
     public static LinkedCameraTarget BuildKdTree(ICameraTargetable[] targetables)
     {

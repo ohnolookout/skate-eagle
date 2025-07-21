@@ -541,7 +541,7 @@ public class LevelDesigner : EditorWindow
         var groundsArray = GroundsArray();
         var killPlaneY = GetKillPlaneY(groundsArray);
 
-        var rootCameraTarget = CameraTargetKDTreeBuilder.BuildKdTree(_groundManager.CameraTargetables);
+        var rootCameraTarget = CameraTargetBuilder.BuildKdTree(_groundManager.CameraTargetables);
 
         return new Level(levelName, medalTimes, _groundManager, _groundEditor.startPoint.transform.position, 
             cameraStartPosition, killPlaneY, rootCameraTarget);

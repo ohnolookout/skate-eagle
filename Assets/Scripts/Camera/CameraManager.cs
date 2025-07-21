@@ -86,7 +86,7 @@ public class CameraManager : MonoBehaviour
         var closestTarget = _currentTarget;
         if (_frameCount % 10 == 0)
         {
-            closestTarget = CameraTargetKDTreeBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
+            closestTarget = CameraTargetBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
             _frameCount = 0;
         }
 
