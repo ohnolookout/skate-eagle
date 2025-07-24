@@ -235,6 +235,9 @@ public static class SerializeLevelUtility
             case SerializedFinishLine:
                 deserializable.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
                 break;
+            case SerializedStartLine:
+                deserializable.Deserialize(groundManager.StartLine.gameObject, groundManager.gameObject);
+                break;
             case SerializedTutorialSign:
                 var isSquare = ((SerializedTutorialSign)deserializable).IsSquare;
                 var tutorialSign = groundManager.groundSpawner.AddTutorialSign(isSquare);

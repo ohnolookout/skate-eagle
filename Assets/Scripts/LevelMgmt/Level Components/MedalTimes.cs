@@ -18,6 +18,7 @@ public struct MedalTimes
         _redTime = redTime;
     }
 
+
     public float Bronze { get => _bronzeTime; set => _bronzeTime = value; }
 
     public float Silver { get => _silverTime; set => _silverTime = value; }

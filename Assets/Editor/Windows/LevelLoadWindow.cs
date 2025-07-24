@@ -4,19 +4,14 @@ using System;
 
 public class LevelLoadWindow : EditorWindow
 {
-    private LevelDesigner _groundDesigner;
+    private LevelEditManager _editManager;
     private LevelDatabase _levelDB;
     private string[] _levelNames;
     private int _nameIndex;
-    public static void ShowWindow()
-    {
-        GetWindow<LevelLoadWindow>();
-    }
 
-
-    public void Init(LevelDesigner groundDesigner, LevelDatabase levelDB)
+    public void Init(LevelEditManager editManager, LevelDatabase levelDB)
     {
-        _groundDesigner = groundDesigner;
+        _editManager = editManager;
         _levelDB = levelDB;
         _levelNames = _levelDB.LevelNames();
         if (_levelDB.UIDExists(_levelDB.lastLevelLoadedUID))
@@ -32,7 +27,7 @@ public class LevelLoadWindow : EditorWindow
 
         if (GUILayout.Button("Load Level"))
         {
-            _groundDesigner.LoadLevelByName(_levelNames[_nameIndex]);
+            _editManager.LoadLevel(_levelNames[_nameIndex]);
             Close();
         }
         if(GUILayout.Button("Delete Level"))

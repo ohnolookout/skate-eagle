@@ -131,7 +131,7 @@ public class PlayFabTester : MonoBehaviour
             yield return new WaitForSeconds(playFabWaitTime/2);
             foreach (var name in levelDB.LevelOrder)
             {
-                var level = levelDB.GetLevelByName(name);
+                var level = levelDB.LoadByName(name);
                 _isAwaitingLeaderboard = true;
                 AddLeaderboardRecord(level);
                 yield return new WaitWhile(() => _isAwaitingLeaderboard);

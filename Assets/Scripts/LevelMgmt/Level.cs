@@ -21,48 +21,35 @@ public class Level
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
-    public List<IDeserializable> SerializedObjects => _serializedObjects;
+    public List<IDeserializable> SerializedObjects { get => _serializedObjects; set => _serializedObjects = value; }
     public string LeaderboardKey { get => _leaderboardKey; set => _leaderboardKey = value; }
     public int GoldRequired => _goldRequired;
-    public Vector2 StartPoint => _startPoint;
+    public Vector2 StartPoint {get => _startPoint; set => _startPoint = value; }
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
 
-    public Level(string name, MedalTimes medalTimes, GroundManager groundManager, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, LinkedCameraTarget rootCameraTarget = null, string UID = null)
+    public Level(string name, MedalTimes medalTimes, GroundManager groundManager, Vector2 cameraStartPosition = new())
     {
         _name = name;
         _medalTimes = medalTimes;
+        _rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager);
-        _rootCameraTarget = rootCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
         _startPoint = groundManager.StartLine.StartPosition;
         _cameraStartPosition = cameraStartPosition;
-        _killPlaneY = killPlaneY;
+        _killPlaneY = GetKillPlaneY(groundManager.Grounds);
     }
-    public Level(string name, MedalTimes medalTimes, List<IDeserializable> serializedObjects, Vector2 startPoint = new(), Vector2 cameraStartPosition = new(), float killPlaneY = -100, LinkedCameraTarget rootCameraTarget = null, string UID = null)
+    public Level(string name)
     {
         _name = name;
-        _medalTimes = medalTimes;
-        _serializedObjects = serializedObjects;
-        _rootCameraTarget = rootCameraTarget;
+        _medalTimes = new();
+        _serializedObjects = new();
+        _rootCameraTarget = null;
         _leaderboardKey = _name + "_leaderboard";
-        _startPoint = startPoint;
-        _cameraStartPosition = cameraStartPosition;
-        _killPlaneY = killPlaneY;
-    }
-
-    public Level(Level level)
-    {
-        _UID = level.UID;
-        _name = level.Name;
-        _medalTimes = level.MedalTimes; 
-        _serializedObjects = level.SerializedObjects;
-        _leaderboardKey = level.LeaderboardKey;
-        _startPoint = level.StartPoint;
-        _cameraStartPosition = level.CameraStartPosition;
-        _killPlaneY = level.KillPlaneY;
-        _rootCameraTarget = level.RootCameraTarget;
+        _startPoint = new();
+        _cameraStartPosition = new();
+        _killPlaneY = 0;
     }
 
     //Reserialization utility for old level system
@@ -144,5 +131,24 @@ public class Level
                 Debug.Log($"Populated {serializedGround.segmentList.Count} runtime segments.");
             }
         }
+    }
+
+    private float GetKillPlaneY(List<Ground> grounds)
+    {
+        float lowY = float.PositiveInfinity;
+        foreach (var ground in grounds)
+        {
+            foreach (var segment in ground.SegmentList)
+            {
+                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
+                if (newY < lowY)
+                {
+                    lowY = newY;
+                }
+            }
+        }
+
+        return lowY - 10;
+
     }
 }

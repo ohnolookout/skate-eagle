@@ -37,7 +37,7 @@ public class SessionData
     //Ignores records that don't have nodes, which means they are editor levels
     public void BuildRecordsAndMedals(SaveData loadedGame)
     {
-        Level currentLevel = _levelDB.GetLevelByIndex(0);
+        Level currentLevel = _levelDB.LoadByIndex(0);
 
         if(currentLevel == null)
         {
@@ -145,7 +145,7 @@ public class SessionData
         
         //If previous level is complete and player has enough gold, set to incomplete. Otherwise, set locked.
         if (previousRecord.status == CompletionStatus.Complete
-            && _levelDB.GetLevelByUID(record.levelUID).GoldRequired <= GoldPlusCount)
+            && _levelDB.LoadByUID(record.levelUID).GoldRequired <= GoldPlusCount)
         {
             record.status = CompletionStatus.Incomplete;
         } else
@@ -200,7 +200,7 @@ public class SessionData
 
     public PlayerRecord PreviousLevelRecord(string UID)
     {
-        var currentLevel = _levelDB.GetLevelByUID(UID);
+        var currentLevel = _levelDB.LoadByUID(UID);
         var previouslevel = _levelDB.GetPreviousLevel(currentLevel);
         return previouslevel != null ? GetRecordByUID(previouslevel.UID) : null;
     }

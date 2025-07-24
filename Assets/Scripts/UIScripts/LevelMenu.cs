@@ -68,7 +68,7 @@ public class LevelMenu : MonoBehaviour
                 break;
             }
 
-            var isLastUnlockedButton = SetUpButton(_levelButtons[i], _sessionData.LevelDB.GetLevelByIndex(i), i);
+            var isLastUnlockedButton = SetUpButton(_levelButtons[i], _sessionData.LevelDB.LoadByIndex(i), i);
             if (isLastUnlockedButton)
             {
                 _selectIndex = i;

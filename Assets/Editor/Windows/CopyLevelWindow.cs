@@ -49,7 +49,7 @@ public class CopyLevelWindow : EditorWindow
 
         if (GUILayout.Button("Copy Level"))
         {
-            var levelToCopy = _copyFromDB.GetLevelByName(_levelNames[_nameIndex]);
+            var levelToCopy = _copyFromDB.LoadByName(_levelNames[_nameIndex]);
             bool copySuccessful = _copyToDB.CopyLevel(levelToCopy, _levelNameToCopy);
             
             string message = copySuccessful ? "Level copied successfully." : "Failed to copy level.";

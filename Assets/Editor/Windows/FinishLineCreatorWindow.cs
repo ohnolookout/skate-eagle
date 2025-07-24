@@ -8,7 +8,7 @@ public class FinishLineCreatorWindow : EditorWindow
 {
     private GroundManager _groundManager;
     private GroundSegment _segment;
-    private GroundEditManager _groundEditor;
+    private LevelEditManager _groundEditor;
     private int _flagPointIndex = 2;
     private int _backstopPointIndex = 3;
     private int _flagXOffset = 50;

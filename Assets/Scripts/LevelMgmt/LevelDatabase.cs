@@ -23,14 +23,14 @@ public class LevelDatabase : ScriptableObject
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
     public List<string> LevelOrder => _levelOrder;
-    public Level EditorLevel {get => _editorLevel; set => _editorLevel = value; }
+    public Level EditorLevel => _editorLevel;
     public bool LevelIsDirty { get => _levelIsDirty; set => _levelIsDirty = value; }
     public bool LevelOrderIsDirty { get => _levelOrderIsDirty; set => _levelOrderIsDirty = value; }
 
     public LevelDatabase()
     {
         _levelDictionary = new();
-        _editorLevel = new("Editor Level", new(), new List<IDeserializable>());
+        _editorLevel = new("Editor Level");
     }
     #endregion
 
@@ -59,37 +59,51 @@ public class LevelDatabase : ScriptableObject
         }
         UpdateDictionaries(level);
         lastLevelLoadedUID = level.UID;
+        _editorLevel = level;
 
         EditorUtility.SetDirty(this);
+        _levelIsDirty = false;
         return true;        
     }
 
     public bool CopyLevel(Level levelToCopy, string name)
     {
         var overwrite = false;
-        levelToCopy = new(levelToCopy); // Create a copy of the level to avoid modifying the original
-        levelToCopy.Name = name;
 
-        if (UIDExists(levelToCopy.UID))
+        // Create a copy of the level to avoid modifying the original
+        Level copiedLevel = new(name)
         {
-            overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Level with UID {levelToCopy.UID} already exists in the target DB. Do you want to overwrite it?", "Yes", "No");
+            UID = levelToCopy.UID,
+            MedalTimes = levelToCopy.MedalTimes,
+            SerializedObjects = levelToCopy.SerializedObjects,
+            LeaderboardKey = levelToCopy.LeaderboardKey,
+            StartPoint = levelToCopy.StartPoint,
+            KillPlaneY = levelToCopy.KillPlaneY,
+            CameraStartPosition = levelToCopy.CameraStartPosition,
+            RootCameraTarget = levelToCopy.RootCameraTarget
+        };
+
+        if (UIDExists(copiedLevel.UID))
+        {
+            overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Level with UID {copiedLevel.UID} already exists in the target DB. Do you want to overwrite it?", "Yes", "No");
             if (!overwrite)
             {
                 return false;
             }
             else
             {
-                levelToCopy.UID = Guid.NewGuid().ToString();
+                copiedLevel.UID = Guid.NewGuid().ToString();
             }
         }
 
-        if (!overwrite && LevelNameExists(levelToCopy.Name))
+        if (!overwrite && LevelNameExists(copiedLevel.Name))
         {
             EditorUtility.DisplayDialog("Duplicate Level Name", "Level name already exists. Pick unique level name to continue.", "OK");
             return false;
         }
 
-        UpdateDictionaries(levelToCopy);
+        UpdateDictionaries(copiedLevel);
+        EditorUtility.SetDirty(this);
         return true;
     }
 
@@ -149,9 +163,79 @@ public class LevelDatabase : ScriptableObject
         EditorUtility.SetDirty(this);
     }
     #endregion
+
+    #region Level Editing
+    public Level LoadInEditModeByName(string name)
+    {
+        var level = GetLevelByName(name);
+        LoadInEditMode(level);
+        return level;
+    }
+
+    public Level LoadInEditModeByUID(string uid)
+    {
+        var level = GetLevelByUID(uid);
+        LoadInEditMode(level);
+        return level;
+    }
+
+    public void LoadInEditMode(Level level)
+    {
+        _editorLevel = level;
+        LoadLevel(level);
+    }
+
+    public void UpdateEditorLevel(string name, GroundManager groundManager, MedalTimes medalTimes, Vector3 cameraStartPosition = new())
+    {
+        _editorLevel = new(name, medalTimes, groundManager, cameraStartPosition);
+        _levelIsDirty = true;
+    }
+    #endregion
 #endif
 
-    #region Get Level Methods
+    #region Load Level
+    public Level LoadByName(string name)
+    {
+        var level = GetLevelByName(name);
+        LoadLevel(level);
+        return level;
+    }
+
+    public Level LoadByUID(string uid)
+    {
+        var level = GetLevelByUID(uid);
+        LoadLevel(level);
+        return level;
+    }
+
+    public Level LoadByIndex(int index)
+    {
+        var level = GetLevelByIndex(index);
+        LoadLevel(level);
+        return level;
+    }
+
+    public void LoadLevel(Level level)
+    {
+        lastLevelLoadedUID = level.UID;
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+#endif
+
+    }
+    #endregion
+
+    #region Get Level
+    public Level GetLevelByIndex(int index)
+    {
+        if (index < 0 || index >= _levelOrder.Count)
+        {
+            return null;
+        }
+        var uid = _nameToUIDDictionary[_levelOrder[index]];
+        return _levelDictionary[uid];
+    }
 
     public Level GetLevelByName(string name)
     {
@@ -159,14 +243,7 @@ public class LevelDatabase : ScriptableObject
         {
             return null;
         }
-
-        var uid = _nameToUIDDictionary[name];
-        lastLevelLoadedUID = uid;
-
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-#endif
-
+        var uid = GetUIDByName(name);
         return _levelDictionary[uid];
     }
 
@@ -176,33 +253,12 @@ public class LevelDatabase : ScriptableObject
         {
             return null;
         }
-        lastLevelLoadedUID = uid;
         return _levelDictionary[uid];
     }
 
-    public Level GetLevelByIndex(int index)
-    {
-        if (index < 0 || index >= _levelOrder.Count)
-        {
-            return null;
-        }
-        return GetLevelByName(_levelOrder[index]);
-    }
+    #endregion
 
-    public int GetLevelIndex(string name)
-    {
-        if (name == null || !LevelNameExists(name) || !_levelOrder.Contains(name))
-        {
-            return -1;
-        }
-
-        return _levelOrder.IndexOf(name);
-    }
-
-    public int GetLevelIndex(Level level)
-    {
-        return GetLevelIndex(level.Name);
-    }
+    #region GetNext/Previous Level
 
     public Level GetNextLevel(Level currentLevel)
     {
@@ -246,25 +302,18 @@ public class LevelDatabase : ScriptableObject
 
         return GetLevelByIndex(index - 1);
     }
-
-    public string GetUID(string name)
+    public int GetLevelIndex(string name)
     {
-        if (name == null || !LevelNameExists(name))
+        if (name == null || !LevelNameExists(name) || !_levelOrder.Contains(name))
         {
-            return null;
+            return -1;
         }
-        return _nameToUIDDictionary[name];
-    }
 
-    public string GetName(string uid)
-    {
-        if (uid == null || !UIDExists(uid))
-        {
-            return null;
-        }
-        return _uidToNameDictionary[uid];
+        return _levelOrder.IndexOf(name);
     }
+    #endregion
 
+    #region Name/UID Exists
     public string[] LevelNames()
     {
         return _nameToUIDDictionary.Keys.ToArray();
@@ -286,6 +335,24 @@ public class LevelDatabase : ScriptableObject
             return false;
         }
         return _uidToNameDictionary.ContainsKey(uid);
+    }
+
+    private string GetUIDByName(string name)
+    {
+        if (name == null || !LevelNameExists(name))
+        {
+            return null;
+        }
+        return _nameToUIDDictionary[name];
+    }
+
+    private string GetNameByUID(string uid)
+    {
+        if (uid == null || !UIDExists(uid))
+        {
+            return null;
+        }
+        return _uidToNameDictionary[uid];
     }
 
     #endregion
