@@ -38,12 +38,12 @@ public class Ground : MonoBehaviour, ISerializable
 #if UNITY_EDITOR
     public void AddCurvePointEditObject(CurvePoint curvePoint) 
     {
-        var point = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointObject>();        
-        point.ParentGround = this;
-        point.SetCurvePoint(curvePoint);
-        _curvePointEditObjects.Add(point);
+        var pointObject = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointObject>();        
+        pointObject.ParentGround = this;
+        pointObject.SetCurvePoint(curvePoint);
+        _curvePointEditObjects.Add(pointObject);
         CurvePoints.Add(curvePoint);
-        point.OnCurvePointChange += OnCurvePointChanged;
+        pointObject.OnCurvePointChange += OnCurvePointChanged;
     }
 
     private void OnCurvePointChanged(CurvePointObject point)

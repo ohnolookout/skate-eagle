@@ -4,11 +4,16 @@ public class SerializedStartLine : IDeserializable
 {
     public CurvePoint curvePoint;
     public float xOffset;
+    private Vector3 _startPosition;
+    public Vector3 StartPosition => _startPosition;
+    public Vector3 StartPositionWithOffset => StartPosition + new Vector3(xOffset, 0, 0);
 
-    public SerializedStartLine(CurvePoint curvePoint, float xOffset)
+    public SerializedStartLine(StartLine startLine)
     {
-        this.curvePoint = curvePoint;
-        this.xOffset = xOffset;
+        curvePoint = startLine.StartPoint;
+        xOffset = startLine.XOffset;
+
+        _startPosition = curvePoint.Object.transform.position;
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

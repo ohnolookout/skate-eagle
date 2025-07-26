@@ -1,21 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.U2D;
 
 public static class SerializeLevelUtility
 {
     #region Serialization
 
-    public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager)
+    public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager, out SerializedStartLine startLine)
     {
         GenerateGroundIndices(groundManager.Grounds);
 
         if (groundManager.StartLine.StartPoint == null)
         {
+            Debug.Log("StartPoint is null, setting to default.");
             if (groundManager.Grounds == null || groundManager.Grounds.Count == 0 || groundManager.Grounds[0].CurvePoints.Count == 0)
             {
                 groundManager.StartLine.SetStartLine(new CurvePoint());
@@ -24,6 +21,8 @@ public static class SerializeLevelUtility
                 groundManager.StartLine.SetStartLine(groundManager.Grounds[0].CurvePoints[0]);
             }
         }
+
+        startLine = (SerializedStartLine) groundManager.StartLine.Serialize();
 
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
@@ -166,6 +165,8 @@ public static class SerializeLevelUtility
             ProcessSerializedObject(serializedObject, groundManager);
         }
 
+#if UNITY_EDITOR
+
         if (Application.isPlaying)
         {
             return;
@@ -173,6 +174,7 @@ public static class SerializeLevelUtility
 
         CameraTargetBuilder.DeserializeCameraTargets(groundManager);
 
+#endif
     }
 
     private static void ProcessSerializedObject(IDeserializable deserializable, GroundManager groundManager)

@@ -18,6 +18,7 @@ public class Level
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
     [SerializeField] private LinkedCameraTarget _rootCameraTarget;
     [SerializeField] private LinkedCameraTarget _startTarget;
+    [SerializeField] private SerializedStartLine _serializedStartLine;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
@@ -28,13 +29,14 @@ public class Level
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
     public LinkedCameraTarget StartTarget { get => _startTarget; set => _startTarget = value; }
+    public SerializedStartLine SerializedStartLine => _serializedStartLine;
 
     public Level(string name, MedalTimes medalTimes, GroundManager groundManager, Vector2 cameraStartPosition = new())
     {
         _name = name;
         _medalTimes = medalTimes;
         _rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
-        _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager);
+        _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager, out _serializedStartLine);
         _startTarget = groundManager.StartLine.StartPoint.LinkedCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
         _cameraStartPosition = cameraStartPosition;

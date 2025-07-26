@@ -66,8 +66,9 @@ public class Player : MonoBehaviour, IPlayer
 
         if (GameManager.Instance != null)
         {
-            _killPlaneY = GameManager.Instance.CurrentLevel.KillPlaneY;
-            transform.position = GameManager.Instance.CurrentLevel.StartTarget.Target.SerializedPosition + new Vector3(0, HalfPlayerHeight + 1.2f);
+            _killPlaneY = GameManager.Instance.CurrentLevel.KillPlaneY;            
+            transform.position = GameManager.Instance.CurrentLevel.SerializedStartLine.StartPositionWithOffset
+                + new Vector3(0, HalfPlayerHeight + 1.2f);
         }
 
         _cameraTargets.Add(CameraTargetUtility.GetTarget(CameraTargetType.Player, transform));
