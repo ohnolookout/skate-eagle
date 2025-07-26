@@ -13,7 +13,7 @@ public class LevelEditManager : MonoBehaviour
     private GroundManager _groundManager;
     public string levelName = "New Level";
     public MedalTimes medalTimes = new();
-    public Vector3 cameraStartPosition = new Vector3();
+    public Vector3 cameraStartPosition = new Vector3(116, 6);
 
     private GroundSpawner _groundSpawner;
     private LevelDatabase _levelDB;

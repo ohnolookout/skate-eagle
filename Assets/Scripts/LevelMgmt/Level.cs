@@ -15,7 +15,7 @@ public class Level
     [SerializeReference][HideInInspector] private List<IDeserializable> _serializedObjects;
     [SerializeField] private string _leaderboardKey = "None";
     [SerializeField] private float _killPlaneY;
-    [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
+    [SerializeField] private Vector2 _cameraStartPosition = new(116, 6);
     [SerializeField] private LinkedCameraTarget _rootCameraTarget;
     [SerializeField] private LinkedCameraTarget _startTarget;
     [SerializeField] private SerializedStartLine _serializedStartLine;
@@ -39,7 +39,15 @@ public class Level
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager, out _serializedStartLine);
         _startTarget = groundManager.StartLine.StartPoint.LinkedCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
-        _cameraStartPosition = cameraStartPosition;
+        if (cameraStartPosition == new Vector2(0,0))
+        {
+            Debug.Log("Setting camera start position to serialized start line position.");
+            cameraStartPosition = _serializedStartLine.StartPositionWithOffset;
+        }
+        else
+        {
+            _cameraStartPosition = cameraStartPosition;
+        }
         _killPlaneY = GetKillPlaneY(groundManager.Grounds);
     }
     public Level(string name)

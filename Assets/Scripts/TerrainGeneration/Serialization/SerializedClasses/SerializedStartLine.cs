@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class SerializedStartLine : IDeserializable
 {
-    public CurvePoint curvePoint;
     public float xOffset;
     private Vector3 _startPosition;
     public Vector3 StartPosition => _startPosition;
@@ -10,10 +11,9 @@ public class SerializedStartLine : IDeserializable
 
     public SerializedStartLine(StartLine startLine)
     {
-        curvePoint = startLine.StartPoint;
         xOffset = startLine.XOffset;
 
-        _startPosition = curvePoint.Object.transform.position;
+        _startPosition = startLine.StartPoint.Object.transform.position;
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

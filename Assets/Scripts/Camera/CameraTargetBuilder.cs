@@ -75,6 +75,11 @@ public static class CameraTargetBuilder
             }
         }
 
+        foreach(var targetable in targetables)
+        {
+            targetable.PopulateDefaultTargets();
+        }
+
         return targetables;
     }
 

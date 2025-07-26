@@ -10,8 +10,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
     public CurvePoint curvePoint;
     private Ground _parentGround;
     private Action<CurvePointObject> _onCurvePointChange;
-    private CurvePointObject _nextLeftCurvePointObject;
-    private CurvePointObject _nextRightCurvePointObject;
     public Action<CurvePointObject> OnCurvePointChange;
     public List<GameObject> rightTargetObjects = new();
     public List<GameObject> leftTargetObjects = new();
@@ -79,12 +77,18 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
         transform.position = this.curvePoint.Position + ParentGround.transform.position;
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
 
+        if (Application.isPlaying)
+        {
+            return;
+        }
+
         if (curvePoint.IsStart)
         {
+            Debug.Log($"Startpoint found. Adding to startline.");
             var groundManager = FindFirstObjectByType<GroundManager>();
             if (groundManager != null)
             {
-                FindFirstObjectByType<GroundManager>().StartLine.StartPoint = curvePoint;
+                FindFirstObjectByType<StartLine>().StartPoint = this.curvePoint;
             }
             else
             {

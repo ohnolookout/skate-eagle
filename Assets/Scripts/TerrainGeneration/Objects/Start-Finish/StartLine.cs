@@ -13,7 +13,7 @@ public class StartLine : MonoBehaviour, ISerializable
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        if (_startPoint != null)
+        if (_startPoint != null && _startPoint.Object != null)
         {
             Gizmos.DrawSphere(_startPoint.Object.transform.position + new Vector3(XOffset, 0), 2f);
         }
@@ -21,7 +21,6 @@ public class StartLine : MonoBehaviour, ISerializable
 
     public void SetStartLine(SerializedStartLine serializedStartLine)
     {
-        _startPoint = serializedStartLine.curvePoint;
         _xOffset = serializedStartLine.xOffset;
         _startPosition = serializedStartLine.StartPosition;
     }
