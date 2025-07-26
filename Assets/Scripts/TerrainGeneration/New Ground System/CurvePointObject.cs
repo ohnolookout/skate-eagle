@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using UnityEngine.U2D;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CurvePointObject : MonoBehaviour, ICameraTargetable
 {
@@ -14,14 +15,13 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
     public Action<CurvePointObject> OnCurvePointChange;
     public List<GameObject> rightTargetObjects = new();
     public List<GameObject> leftTargetObjects = new();
-    private LinkedCameraTarget _linkedCameraTarget = new();
     public CurvePoint CurvePoint => curvePoint;
     public Ground ParentGround { get => _parentGround; set => _parentGround = value; }
     public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
     public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => curvePoint.LinkedCameraTarget; set => curvePoint.LinkedCameraTarget = value; }
-    public bool DoTargetLow { get => curvePoint.DoTargetLow; set => curvePoint.DoTargetLow = value; }
-    public bool DoTargetHigh { get => curvePoint.DoTargetHigh; set => curvePoint.DoTargetHigh = value; }
+    public bool DoTargetLow { get => LinkedCameraTarget.doTargetLow; set => LinkedCameraTarget.doTargetLow = value; }
+    public bool DoTargetHigh { get => LinkedCameraTarget.doTargetHigh; set => LinkedCameraTarget.doTargetHigh = value; }
     public CurvePointObject NextLeftCurvePointObject 
     { 
         get  
@@ -39,10 +39,8 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
                 }
             }
 
-            return _nextLeftCurvePointObject;
+            return null;
         }
-
-        set => _nextLeftCurvePointObject = value; 
     }
     public CurvePointObject NextRightCurvePointObject
     {
@@ -58,15 +56,18 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
                 }
             }
 
-            return _nextRightCurvePointObject;
+            return null;
         }
-        set => _nextRightCurvePointObject = value;
     }
     #endregion
 
     #region Monobehaviors
     void OnDrawGizmosSelected()
     {
+        if (!DoTargetLow && !DoTargetHigh)
+        {
+            return;
+        }
         LinkedCameraTarget.DrawTargets();
     }
 
@@ -76,6 +77,7 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
         this.curvePoint = curvePoint;
         this.curvePoint.Object = this; // Set the object reference in the CurvePoint
         transform.position = this.curvePoint.Position + ParentGround.transform.position;
+        LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
     }
 
     public void TangentsChanged(Vector3 updatedleftTang, Vector3 updatedRightTang)
@@ -145,7 +147,16 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
 
     public void PopulateDefaultTargets()
     {
-        _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
+        LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
+
+        if (!LinkedCameraTarget.doTargetLow && !LinkedCameraTarget.doTargetHigh)
+        {
+            leftTargetObjects = new();
+            rightTargetObjects = new();
+            LinkedCameraTarget.LeftTargets = new();
+            LinkedCameraTarget.RightTargets = new();
+            return;
+        }
 
         if (NextLeftCurvePointObject != null && !leftTargetObjects.Contains(NextLeftCurvePointObject.gameObject))
         {
@@ -156,6 +167,26 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
         {
             rightTargetObjects.Add(NextRightCurvePointObject.gameObject);
         }
+
+        leftTargetObjects = CleanTargetObjectList(leftTargetObjects);
+        rightTargetObjects = CleanTargetObjectList(rightTargetObjects);
+    }
+
+    private List<GameObject> CleanTargetObjectList(List<GameObject> targetObjects)
+    {
+        targetObjects = targetObjects.Distinct().ToList(); // Remove duplicates
+
+        for (int i = 0; i < targetObjects.Count; i++)
+        {
+            var targetable = targetObjects[i].GetComponentInChildren<ICameraTargetable>();
+            if (targetable == null || !targetable.DoTargetLow)
+            {
+                targetObjects.RemoveAt(i);
+                i--; // Adjust index after removal
+            }
+        }
+
+        return targetObjects;
     }
 }
 

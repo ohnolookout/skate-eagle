@@ -61,7 +61,7 @@ public class Timer : MonoBehaviour, IOverlayScreen
         StopTimer(false);
     }
 
-    public void Restart(Level _, PlayerRecord __, ICameraTargetable ___)
+    public void Restart(Level _, PlayerRecord __)
     {
         StopTimer(false);
     }

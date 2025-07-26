@@ -126,7 +126,9 @@ public class GroundSpawner : MonoBehaviour
 
     public GroundSegment AddEmptySegment(Ground ground)
     {
-        return Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
+        var segment = Instantiate(_groundSegmentPrefab, ground.transform, true).GetComponent<GroundSegment>();
+        ground.SegmentList.Add(segment);
+        return segment;
     }
     #endregion
 

@@ -58,7 +58,7 @@ public class BackgroundContainer : MonoBehaviour
         return returnSequence;
     }
 
-    public void GenerateSequence(Level _, PlayerRecord __, ICameraTargetable ___)
+    public void GenerateSequence(Level _, PlayerRecord __)
     {
         BgPanelSequence = RandomIndexOrder(_bgPanelPoolCount, _bgPanelSequenceCount);
     }

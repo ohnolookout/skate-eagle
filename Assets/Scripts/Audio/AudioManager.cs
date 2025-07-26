@@ -245,7 +245,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void ClearLoops(Level _, PlayerRecord __, ICameraTargetable ___)
+    public void ClearLoops(Level _, PlayerRecord __)
     {
         ClearLoops();
     }

@@ -53,7 +53,7 @@ public class BigBgManger : MonoBehaviour
 
         LevelManager.OnLanding += OnLanding;
     }
-    private void OnLanding(Level _, PlayerRecord __, ICameraTargetable ___)
+    private void OnLanding(Level _, PlayerRecord __)
     {
         _panelPositionalList = null;
         ArrangePanels();

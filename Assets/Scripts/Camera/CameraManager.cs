@@ -1,8 +1,6 @@
 using Com.LuisPedroFonseca.ProCamera2D;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CameraManager : MonoBehaviour
 {
@@ -185,24 +183,24 @@ public class CameraManager : MonoBehaviour
         _doUpdate = true;
     }
 
-    private void GoToStartPosition(Level level, PlayerRecord _, ICameraTargetable startTarget)
+    private void GoToStartPosition(Level level, PlayerRecord _)
     {
         FreezeCamera();
         _rootKDTarget = level.RootCameraTarget;
-        _camera.MoveCameraInstantlyToPosition(level.StartPoint);
-        SetFirstTarget(startTarget);
+        _camera.MoveCameraInstantlyToPosition(level.CameraStartPosition);
+        SetFirstTarget(level.StartTarget);
     }
 
-    private void SetFirstTarget(ICameraTargetable startTarget)
+    private void SetFirstTarget(LinkedCameraTarget startTarget)
     {
         if (startTarget == null)
         {
             Debug.LogError("Start target is null");
             return;
         }
-        _camera.AddCameraTarget(startTarget.LinkedCameraTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
+        _camera.AddCameraTarget(startTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
 
-        _currentTarget = startTarget.LinkedCameraTarget;
+        _currentTarget = startTarget;
 
         _targetsToTrack = _currentTarget.RightTargets;
     }

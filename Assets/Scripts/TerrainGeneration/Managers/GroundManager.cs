@@ -52,7 +52,7 @@ public class GroundManager : MonoBehaviour
                 return _grounds[targetIndices[0]].gameObject;
             }
 
-            return _grounds[targetIndices[0]].SegmentList[targetIndices[1]].gameObject;
+            return _grounds[targetIndices[0]].CurvePointObjects[targetIndices[1]].gameObject;
         }
 
         //Add more types to reflect serialization/deserialization order as needed

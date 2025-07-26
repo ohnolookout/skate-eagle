@@ -6,6 +6,118 @@ using System;
 
 public static class CameraTargetBuilder
 {
+    #region Build Targets
+    public static void BuildLinkedCameraTarget(ICameraTargetable targetable)
+    {
+        if (targetable.LinkedCameraTarget == null)
+        {
+            targetable.LinkedCameraTarget = new();
+        }
+
+        targetable.PopulateDefaultTargets();
+
+        targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
+        targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
+    }
+    private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
+    {
+        targetObjects = targetObjects.Distinct().ToList(); //Remove duplicates
+        var targetables = new List<LinkedCameraTarget>();
+        for (int i = 0; i < targetObjects.Count; i++)
+        {
+            if (targetObjects[i] == null)
+            {
+                targetObjects.RemoveAt(i);
+                i--;
+                continue;
+            }
+            var linkedTarget = targetObjects[i].GetComponentInChildren<ICameraTargetable>();
+            if (linkedTarget != null && linkedTarget.DoTargetLow)
+            {
+                targetables.Add(linkedTarget.LinkedCameraTarget);
+            }
+            else
+            {
+                targetObjects.RemoveAt(i);
+                i--;
+            }
+        }
+
+        return targetables;
+    }
+    #endregion
+
+    #region Deserialize Target GameObjects
+    public static void DeserializeCameraTargets(GroundManager groundManager)
+    {
+        if (groundManager == null || groundManager.Grounds == null)
+        {
+            Debug.Log("GroundManager is null or has no grounds.");
+            return;
+        }
+        var targetables = GetAllTargetables(groundManager);
+        foreach (var targetable in targetables)
+        {
+            ReassociateGameObjects(targetable, groundManager);
+        }
+    }
+
+
+    private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
+    {
+        var targetables = new List<ICameraTargetable>();
+
+        foreach (var ground in groundManager.Grounds)
+        {
+            foreach (var curvePointObj in ground.CurvePointObjects)
+            {
+                targetables.Add(curvePointObj);
+            }
+        }
+
+        return targetables;
+    }
+
+    private static void ReassociateGameObjects(ICameraTargetable targetable, GroundManager groundManager)
+    {
+        //Iterate through all objects of groundManager and relink gameObjects in left and right target objects
+        //by using indices in serialized left and right targets
+
+        if (targetable == null)
+        {
+            Debug.Log("Targetable is null");
+            return;
+        }
+
+        if (!targetable.LinkedCameraTarget.doTargetLow)
+        {
+            return;
+        }
+
+        targetable.LeftTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.LeftTargets, groundManager);
+        targetable.RightTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.RightTargets, groundManager);
+
+    }
+
+    private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
+    {
+        List<GameObject> gameObjects = new();
+
+        foreach (var target in linkedTargets)
+        {
+            var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
+
+            if (obj != null)
+            {
+                gameObjects.Add(obj);
+            }
+        }
+        return gameObjects;
+    }
+
+    #endregion
+
+    #region KD Tree
     public static LinkedCameraTarget BuildKdTree(ICameraTargetable[] targetables)
     {
         if (targetables == null || targetables.Length == 0) 
@@ -20,8 +132,8 @@ public static class CameraTargetBuilder
         {
             if (targetable.DoTargetLow)
             {
-                SerializeLevelUtility.BuildLinkedCameraTarget(targetable);
-                targets.Add(targetable.LinkedCameraTarget.DeepCopy());
+                BuildLinkedCameraTarget(targetable);
+                targets.Add(targetable.LinkedCameraTarget);
             }
         }
 
@@ -89,4 +201,5 @@ public static class CameraTargetBuilder
     {
         return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
     }
+    #endregion
 }

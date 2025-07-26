@@ -5,85 +5,94 @@ using UnityEngine.U2D;
 [CustomEditor(typeof(CurvePointObject))]
 public class CurvePointObjectInspector : Editor
 {
+    private CurvePointObject _curvePointObject;
     private SerializedObject _so;
     private SerializedProperty _serializedLeftTargetObjects;
     private SerializedProperty _serializedRightTargetObjects;
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
+    private GroundManager _groundManager;
     public override void OnInspectorGUI()
     {
-        var curvePointObject = (CurvePointObject)target;
-        _so = new SerializedObject(curvePointObject);
+        _curvePointObject = (CurvePointObject)target;
+        _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
         _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
+        _groundManager = FindFirstObjectByType<GroundManager>();
 
 
         //Curvepoint settings
         EditorGUI.BeginChangeCheck();
 
-        var isSymmetrical = GUILayout.Toggle(curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
-        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", curvePointObject.CurvePoint.Mode);
+        var isSymmetrical = GUILayout.Toggle(_curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
+        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", _curvePointObject.CurvePoint.Mode);
 
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Settings");
-            curvePointObject.SettingsChanged(mode, isSymmetrical);
+            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Settings");
+            _curvePointObject.SettingsChanged(mode, isSymmetrical);
         }
 
         if (GUILayout.Button("Reset Tangents"))
         {
-            Undo.RecordObject(curvePointObject, "Reset Curve Point Tangents");
-            curvePointObject.TangentsChanged(
-                curvePointObject.CurvePoint.Position + new Vector3(-1, 0),
-                curvePointObject.CurvePoint.Position + new Vector3(-1, 0));
+            Undo.RecordObject(_curvePointObject, "Reset Curve Point Tangents");
+            _curvePointObject.TangentsChanged(
+                _curvePointObject.CurvePoint.Position + new Vector3(-1, 0),
+                _curvePointObject.CurvePoint.Position + new Vector3(-1, 0));
         }
 
         //Camera targetting
         EditorGUI.BeginChangeCheck();
 
-        var doTargetLow = GUILayout.Toggle(curvePointObject.DoTargetLow, "Do Target Low");
+        var doTargetLow = GUILayout.Toggle(_curvePointObject.DoTargetLow, "Do Target Low");
 
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Target Settings");
-            curvePointObject.DoTargetLow = doTargetLow;
-            //Need to purge from any other lists where it appears
+            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+            _curvePointObject.DoTargetLow = doTargetLow;
+            _curvePointObject.PopulateDefaultTargets();
         }
 
-        if (curvePointObject.DoTargetLow)
+        if (_curvePointObject.DoTargetLow)
         {
             //Show linked camera target settings
         }
 
         EditorGUI.BeginChangeCheck();
 
-        var doTargetHigh = GUILayout.Toggle(curvePointObject.DoTargetHigh, "Do Target High");
+        var doTargetHigh = GUILayout.Toggle(_curvePointObject.DoTargetHigh, "Do Target High");
 
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RegisterFullObjectHierarchyUndo(curvePointObject, "Curve Point Target Settings");
-            curvePointObject.DoTargetHigh = doTargetHigh;
-            //Need to purge from any other lists where it appears
+            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+            _curvePointObject.DoTargetHigh = doTargetHigh;
+            _curvePointObject.PopulateDefaultTargets();
         }
 
-        if (curvePointObject.DoTargetHigh)
+        if (_curvePointObject.DoTargetLow || _curvePointObject.DoTargetHigh)
         {
-            //Show linked camera target settings
+
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
+            EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                _so.ApplyModifiedProperties();
+                _so.Update();
+            }
         }
 
-        EditorGUI.BeginChangeCheck();
-
-        EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
-        EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
-
-        if (EditorGUI.EndChangeCheck())
+        if (GUILayout.Button("Set as Start Point", GUILayout.ExpandWidth(false)))
         {
-            _so.ApplyModifiedProperties();
-            _so.Update();
+            _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
         }
+
 
         if (GUILayout.Button("Find Next CurvePoints", GUILayout.ExpandWidth(false)))
         {
             _findAdjacentCurvePointWindow = EditorWindow.GetWindow<FindAdjacentCurvePointWindow>();
+            _findAdjacentCurvePointWindow.Init(_curvePointObject);
         }
     }
     public void OnSceneGUI()

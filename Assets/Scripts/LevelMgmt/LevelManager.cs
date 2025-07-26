@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private Player _player;
     private Rigidbody2D _playerBody;
     private Transform _playerTransform;
-    public static Action<Level, PlayerRecord, ICameraTargetable> OnLanding { get; set; }
+    public static Action<Level, PlayerRecord> OnLanding { get; set; }
     public static Action OnGameOver { get; set; }
     public static Action<FinishData> OnFinish { get; set; }
     public static Action OnAttempt { get; set; }
@@ -57,14 +57,14 @@ public class LevelManager : MonoBehaviour, ILevelManager
         if (_gameManager != null && _gameManager.CurrentLevel != null)
         {         
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(_gameManager.CurrentLevel.StartPoint, 1);
+            Gizmos.DrawSphere(_gameManager.CurrentLevel.StartTarget.Target.TargetPosition, 1);
         }
     }
 
     private void InitializeLevel()
     {
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager, this);
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, null); //Fix with new start line class
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord); //Fix with new start line class
 
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(false);
         _groundManager.Grounds[0].SegmentList[0].gameObject.SetActive(true);
@@ -150,7 +150,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
             Destroy(_player.gameObject);
         }
 
-        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord, null); //Fix with new start line class
+        OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord); //Fix with new start line class
         InstantiatePlayer();
         _groundManager.FinishLine.DoFinish += CrossFinish;
         _inputEvents.OnRestart += GoToStandby;

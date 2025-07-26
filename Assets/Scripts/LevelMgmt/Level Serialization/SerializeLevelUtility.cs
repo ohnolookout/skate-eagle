@@ -5,10 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.U2D;
-using UnityEngine.UIElements;
-using Com.LuisPedroFonseca.ProCamera2D;
-using System.Linq;
-using System;
 
 public static class SerializeLevelUtility
 {
@@ -145,45 +141,7 @@ public static class SerializeLevelUtility
         return pointsList;
     }
 
-    public static void BuildLinkedCameraTarget(ICameraTargetable targetable)
-    {
-        if(targetable.LinkedCameraTarget == null)
-        {
-            targetable.LinkedCameraTarget = new();
-        }
-
-        targetable.PopulateDefaultTargets();
-
-        targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
-        targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
-    }
-
-    private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
-    {
-        targetObjects = targetObjects.Distinct().ToList(); //Remove duplicates
-        var targetables = new List<LinkedCameraTarget>();
-        for (int i = 0; i < targetObjects.Count; i++)
-        {
-            if(targetObjects[i] == null)
-            {
-                targetObjects.RemoveAt(i);
-                i--;
-                continue;
-            }
-            var linkedTarget = targetObjects[i].GetComponentInChildren<ICameraTargetable>();
-            if (linkedTarget != null)
-            {
-                targetables.Add(linkedTarget.LinkedCameraTarget);
-            }
-            else
-            {
-                targetObjects.RemoveAt(i);
-                i--;
-            }
-        }
-
-        return targetables;
-    }
+    
 
     public static List<CurvePoint> DeepCopyCurvePoints(List<CurvePoint> curvePoints)
     {
@@ -213,13 +171,7 @@ public static class SerializeLevelUtility
             return;
         }
 
-        //Retrieve targetable objects from groundManager and reassociate targeted game objects for editing in inspector
-        var targetables = GetAllTargetables(groundManager);
-
-        foreach (var targetable in targetables)
-        {
-            ReassociateGameObjects(targetable, groundManager);
-        }
+        CameraTargetBuilder.DeserializeCameraTargets(groundManager);
 
     }
 
@@ -249,52 +201,6 @@ public static class SerializeLevelUtility
         }
     }
 
-    private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
-    {
-        var targetables = new List<ICameraTargetable>();
-
-        foreach (var ground in groundManager.Grounds)
-        {
-            foreach (var segment in ground.SegmentList)
-            {
-                //targetables.Add(segment);
-            }
-        }
-
-        return targetables;
-    }
-
-    private static void ReassociateGameObjects(ICameraTargetable targetable, GroundManager groundManager)
-    {
-        //Iterate through all objects of groundManager and relink gameObjects in left and right target objects
-        //by using indices in serialized left and right targets
-
-        if (targetable == null)
-        {
-            Debug.Log("Targetable is null");
-            return;
-        }
-
-        targetable.LeftTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.LeftTargets, groundManager);
-        targetable.RightTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.RightTargets, groundManager);    
-
-    }
-
-    private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
-    {
-        List<GameObject> gameObjects = new();
-
-        foreach (var target in linkedTargets)
-        {
-            var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
-
-            if (obj != null)
-            {
-                gameObjects.Add(obj);
-            }
-        }
-        return gameObjects;
-    }
 
     public static List<CurvePoint> GenerateCurvePointListFromGround(SerializedGround serializedGround)
     {

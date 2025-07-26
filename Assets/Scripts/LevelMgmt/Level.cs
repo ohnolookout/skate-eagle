@@ -14,20 +14,20 @@ public class Level
     [SerializeField] private MedalTimes _medalTimes;
     [SerializeReference][HideInInspector] private List<IDeserializable> _serializedObjects;
     [SerializeField] private string _leaderboardKey = "None";
-    [SerializeField] private Vector2 _startPoint;
     [SerializeField] private float _killPlaneY;
     [SerializeField] private Vector2 _cameraStartPosition = new(-35, 15);
     [SerializeField] private LinkedCameraTarget _rootCameraTarget;
+    [SerializeField] private LinkedCameraTarget _startTarget;
     public string UID { get => _UID; set => _UID = value; }
     public string Name { get => _name; set => _name = value; }
     public MedalTimes MedalTimes { get => _medalTimes; set => _medalTimes = value; }
     public List<IDeserializable> SerializedObjects { get => _serializedObjects; set => _serializedObjects = value; }
     public string LeaderboardKey { get => _leaderboardKey; set => _leaderboardKey = value; }
     public int GoldRequired => _goldRequired;
-    public Vector2 StartPoint {get => _startPoint; set => _startPoint = value; }
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public Vector2 CameraStartPosition { get => _cameraStartPosition; set => _cameraStartPosition = value; }
     public LinkedCameraTarget RootCameraTarget { get => _rootCameraTarget; set => _rootCameraTarget = value; }
+    public LinkedCameraTarget StartTarget { get => _startTarget; set => _startTarget = value; }
 
     public Level(string name, MedalTimes medalTimes, GroundManager groundManager, Vector2 cameraStartPosition = new())
     {
@@ -35,8 +35,8 @@ public class Level
         _medalTimes = medalTimes;
         _rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager);
+        _startTarget = groundManager.StartLine.StartPoint.LinkedCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
-        _startPoint = groundManager.StartLine.StartPosition;
         _cameraStartPosition = cameraStartPosition;
         _killPlaneY = GetKillPlaneY(groundManager.Grounds);
     }
@@ -46,8 +46,8 @@ public class Level
         _medalTimes = new();
         _serializedObjects = new();
         _rootCameraTarget = null;
+        _startTarget = null;
         _leaderboardKey = _name + "_leaderboard";
-        _startPoint = new();
         _cameraStartPosition = new();
         _killPlaneY = 0;
     }

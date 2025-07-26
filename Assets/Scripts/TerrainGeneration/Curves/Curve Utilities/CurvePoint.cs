@@ -9,8 +9,6 @@ public class CurvePoint
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical = true;
-    [SerializeField] private bool _doTargetLow = true;
-    [SerializeField] private bool _doTargetHigh = false;
     [SerializeField] private bool _isStart = false;
     [SerializeField] private bool _isFinish = false;
     [SerializeField] private int _floorHeight;
@@ -28,8 +26,6 @@ public class CurvePoint
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
-    public bool DoTargetLow { get => _doTargetLow; set => _doTargetLow = value; }
-    public bool DoTargetHigh { get => _doTargetHigh; set => _doTargetHigh = value; }
     public bool IsStart { get => _isStart; set => _isStart = value; }
     public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }

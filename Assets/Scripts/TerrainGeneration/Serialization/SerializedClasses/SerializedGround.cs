@@ -19,7 +19,6 @@ public class SerializedGround : IDeserializable
     public List<SerializedGroundSegment> segmentList; //Divided segments for runtime
     public List<CurvePoint> curvePoints;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
-    //public List<IDeserializable> serializedObjectList;
 
     public SerializedGround(Ground ground)
     {
@@ -57,36 +56,7 @@ public class SerializedGround : IDeserializable
             DeserializeEditSegment(groundManager, ground);
         }
 
-        //ground.SegmentList = new();
-
-        //foreach (var serializedSegment in segmentList)
-        //{
-        //    var segment = groundManager.groundSpawner.AddEmptySegment(ground);
-        //    serializedSegment.Deserialize(segment.gameObject, ground.gameObject);
-
-        //    if (segment.NextLeftSegment != null)
-        //    {
-        //        segment.NextLeftSegment.NextRightSegment = segment;
-        //    }
-        //    ground.SegmentList.Add(segment);
-
-        //    if (segment.IsStart)
-        //    {
-        //        groundManager.StartSegment = segment;
-        //    }
-
-        //    if (segment.IsFinish)
-        //    {
-        //        groundManager.FinishSegment = segment;
-        //    }
-
-
-        //    segment.gameObject.SetActive(false);
-        //    segment.gameObject.SetActive(true);
-        //}
-
 #if UNITY_EDITOR
-        //curvePointList = SerializeLevelUtility.GenerateCurvePointListFromGround(this);
 
         foreach (var curvePoint in curvePoints)
         {

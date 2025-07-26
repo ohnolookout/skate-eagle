@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 public class FindAdjacentCurvePointWindow : EditorWindow
 {
     private LevelEditManager _editManager;
@@ -26,38 +27,38 @@ public class FindAdjacentCurvePointWindow : EditorWindow
 
         if (GUILayout.Button("Find Right Curve Point Neutral"))
         {
-            _curvePointObject.NextRightCurvePointObject = FindNextCurvePoint(_curvePointObject, true, false, false);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, true, false, false);
+            AddNewTarget(curvePointObj, true);
         }
 
         if (GUILayout.Button("Find Right Curve Point Up"))
         {
-            _curvePointObject.NextRightCurvePointObject = FindNextCurvePoint(_curvePointObject, true, true, false);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, true, true, false);
+            AddNewTarget(curvePointObj, true);
         }
 
         if (GUILayout.Button("Find Right Curve Point Down"))
         {
-            _curvePointObject.NextRightCurvePointObject = FindNextCurvePoint(_curvePointObject, true, false, true);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, true, false, true);
+            AddNewTarget(curvePointObj, true);
         }
 
         if (GUILayout.Button("Find Left Curve Point Neutral"))
         {
-            _curvePointObject.NextLeftCurvePointObject = FindNextCurvePoint(_curvePointObject, false, false, false);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, false, false, false);
+            AddNewTarget(curvePointObj, false);
         }
 
         if (GUILayout.Button("Find Left Curve Point Up"))
         {
-            _curvePointObject.NextLeftCurvePointObject = FindNextCurvePoint(_curvePointObject, false, true, false);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, false, true, false);
+            AddNewTarget(curvePointObj, false);
         }
 
         if (GUILayout.Button("Find Left Curve Point Down"))
         {
-            _curvePointObject.NextLeftCurvePointObject = FindNextCurvePoint(_curvePointObject, false, false, true);
-            _editManager.UpdateEditorLevel();
+            var curvePointObj = FindNextCurvePoint(_curvePointObject, false, false, true);
+            AddNewTarget(curvePointObj, false);
         }
 
         GUILayout.Space(20);
@@ -110,6 +111,10 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         {
             foreach (var obj in ground.CurvePointObjects)
             {
+                if (!obj.DoTargetLow)
+                {
+                    continue;
+                }
                 if (lookHorizontal(currentPos, nextPos, obj.CurvePoint.Position)
                     && lookVertical(currentPos, nextPos, obj.CurvePoint.Position))
                 {
@@ -121,59 +126,6 @@ public class FindAdjacentCurvePointWindow : EditorWindow
 
         return nextCurvePointObject;
     }
-
-    //public GroundSegment FindNextSegment(GroundSegment segment, bool doLookRight, bool doLookUp, bool doLookDown)
-    //{
-    //    if(doLookRight && segment.NextRightSegment != null)
-    //    {
-    //        Debug.Log("Right segment already exists!");
-    //        return segment.NextRightSegment;
-    //    }
-    //    else if (!doLookRight && segment.NextLeftSegment != null)
-    //    {
-    //        Debug.Log("Left segment already exists!");
-    //        return segment.NextLeftSegment;
-    //    }
-
-    //    var currentPos = segment.LowPoint.position;
-    //    GroundSegment nextSegment = null;
-    //    var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
-    //    var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
-    //    Vector2 nextPos = new(nextStartX, nextStartY);
-
-    //    Func<Vector2, Vector2, Vector2, bool> lookHorizontal;
-
-    //    lookHorizontal = doLookRight ? LookRight : LookLeft;
-
-    //    Func<Vector2, Vector2, Vector2, bool> lookVertical;
-
-    //    if ((doLookUp && doLookDown) || (!doLookUp && !doLookDown))
-    //    {
-    //        lookVertical = (Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos) => true;
-    //    } else if (doLookUp)
-    //    {
-    //        lookVertical = LookUp;
-    //    }
-    //    else
-    //    {
-    //        lookVertical = LookDown;
-    //    }
-
-    //    foreach (var ground in _groundManager.Grounds)
-    //    {
-    //        foreach (var seg in ground.SegmentList)
-    //        {
-    //            if(lookHorizontal(currentPos, nextPos, seg.LowPoint.position)
-    //                && lookVertical(currentPos, nextPos, seg.LowPoint.position))
-    //            {
-    //                nextSegment = seg;
-    //                nextPos = seg.LowPoint.position;
-    //            }
-    //        }
-    //    }
-
-    //    return nextSegment;
-    //}
 
     private static bool LookRight(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
     {
@@ -211,6 +163,41 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         }
         return false;
     }
+
+    #endregion
+
+    #region Add Targets
+    private void AddNewTarget(CurvePointObject newCurvePoint, bool isRight)
+    {
+        var targetObjList = isRight ? _curvePointObject.RightTargetObjects : _curvePointObject.LeftTargetObjects;
+        var linkedCameraTargetList = isRight ? _curvePointObject.LinkedCameraTarget.RightTargets : _curvePointObject.LinkedCameraTarget.LeftTargets;
+
+        if (newCurvePoint == null)
+        {
+            Debug.LogWarning("FindAdjacentCurvePoint: No target found.");
+            return;
+        }
+        if (targetObjList.Contains(newCurvePoint.gameObject))
+        {
+            Debug.LogWarning("FindAdjacentCurvePoint: Curve point already exists in the target list.");
+        }
+        else
+        {
+            targetObjList.Add(newCurvePoint.gameObject);
+        }
+
+        if(linkedCameraTargetList.Contains(newCurvePoint.LinkedCameraTarget))
+        {
+            Debug.LogWarning("FindAdjacentCurvePoint: Linked camera target already exists in the target list.");
+        }
+        else
+        {
+            linkedCameraTargetList.Add(newCurvePoint.LinkedCameraTarget);
+        }
+
+            _editManager.UpdateEditorLevel();
+    }
+
 
     #endregion
 }

@@ -8,14 +8,16 @@ using UnityEngine;
 [Serializable]
 public class LinkedCameraTarget
 {
-    public CameraTarget Target { get => _target; set => _target = value; }
     [SerializeReference] public List<LinkedCameraTarget> LeftTargets = new();
     [SerializeReference] public List<LinkedCameraTarget> RightTargets = new();
     [SerializeReference] public LinkedCameraTarget LeftKDNode;
     [SerializeReference] public LinkedCameraTarget RightKDNode;
+    public bool doTargetHigh = false;
+    public bool doTargetLow = false;
     public CameraTargetType TargetType;
     public int[] SerializedLocation;
     [SerializeField] private CameraTarget _target;
+    public CameraTarget Target { get => _target; set => _target = value; }
     public LinkedCameraTarget()
     {
         LeftTargets = new();

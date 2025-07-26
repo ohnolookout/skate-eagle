@@ -45,7 +45,9 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             get
             {
                 if (TargetTransform != null)
+                {
                     return SerializedPosition = TargetTransform.position;
+                }
                 else
                     return SerializedPosition;
             }

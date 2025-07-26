@@ -77,9 +77,9 @@ public class LevelDatabase : ScriptableObject
             MedalTimes = levelToCopy.MedalTimes,
             SerializedObjects = levelToCopy.SerializedObjects,
             LeaderboardKey = levelToCopy.LeaderboardKey,
-            StartPoint = levelToCopy.StartPoint,
-            KillPlaneY = levelToCopy.KillPlaneY,
             CameraStartPosition = levelToCopy.CameraStartPosition,
+            KillPlaneY = levelToCopy.KillPlaneY,
+            StartTarget = levelToCopy.StartTarget,
             RootCameraTarget = levelToCopy.RootCameraTarget
         };
 
