@@ -148,9 +148,9 @@ public class Level
         float lowY = float.PositiveInfinity;
         foreach (var ground in grounds)
         {
-            foreach (var segment in ground.SegmentList)
+            foreach (var curvePointObj in ground.CurvePointObjects)
             {
-                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
+                var newY = curvePointObj.transform.position.y;
                 if (newY < lowY)
                 {
                     lowY = newY;
