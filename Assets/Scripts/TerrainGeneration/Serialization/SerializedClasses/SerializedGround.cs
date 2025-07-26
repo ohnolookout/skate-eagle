@@ -24,7 +24,7 @@ public class SerializedGround : IDeserializable
     {
         name = ground.gameObject.name;
         position = ground.transform.position;
-        curvePoints = new(ground.CurvePoints);
+        curvePoints = ground.CurvePoints;
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
 
@@ -60,7 +60,7 @@ public class SerializedGround : IDeserializable
 
         foreach (var curvePoint in curvePoints)
         {
-            ground.AddCurvePointEditObject(curvePoint);
+            ground.AddCurvePoint(curvePoint);
         }
 #endif
 

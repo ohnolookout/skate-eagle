@@ -37,7 +37,7 @@ public class Level
         _medalTimes = medalTimes;
         _rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager, out _serializedStartLine);
-        _startTarget = groundManager.StartLine.StartPoint.LinkedCameraTarget;
+        _startTarget = groundManager.StartLine.CurvePoint.LinkedCameraTarget;
         _leaderboardKey = _name + "_leaderboard";
         if (cameraStartPosition == new Vector2(0,0))
         {

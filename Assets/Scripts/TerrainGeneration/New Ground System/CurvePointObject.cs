@@ -77,24 +77,24 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable
         transform.position = this.curvePoint.Position + ParentGround.transform.position;
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
 
-        if (Application.isPlaying)
-        {
-            return;
-        }
+        //if (Application.isPlaying)
+        //{
+        //    return;
+        //}
 
-        if (curvePoint.IsStart)
-        {
-            Debug.Log($"Startpoint found. Adding to startline.");
-            var groundManager = FindFirstObjectByType<GroundManager>();
-            if (groundManager != null)
-            {
-                FindFirstObjectByType<StartLine>().StartPoint = this.curvePoint;
-            }
-            else
-            {
-                Debug.LogWarning("GroundManager not found in the scene. Cannot set start line.");
-            }
-        }
+        //if (curvePoint.IsStart)
+        //{
+        //    Debug.Log($"Startpoint found. Adding to startline.");
+        //    var groundManager = FindFirstObjectByType<GroundManager>();
+        //    if (groundManager != null)
+        //    {
+        //        FindFirstObjectByType<StartLine>().CurvePoint = this.curvePoint;
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning("GroundManager not found in the scene. Cannot set start line.");
+        //    }
+        //}
     }
 
     public void TangentsChanged(Vector3 updatedleftTang, Vector3 updatedRightTang)
