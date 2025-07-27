@@ -7,6 +7,7 @@ using UnityEngine.U2D;
 public class CurvePoint
 {
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
+    [SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical = true;
     [SerializeField] private bool _isStart = false;
@@ -21,6 +22,18 @@ public class CurvePoint
     public CurvePointObject Object { get => _object; set => _object = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
+    public Vector3 WorldPosition
+    {
+        get
+        {
+            if(_object != null)
+            {
+                return _object.transform.position;
+            }
+            return _serializedWorldPosition;
+        }
+        set { _serializedWorldPosition = value; }
+    }
     public Vector3 LeftTangent { get => leftTangent; set => leftTangent = value; }
     public Vector3 RightTangent { get => rightTangent; set => rightTangent = value; }
     public Vector3 LeftTangentPosition => position + leftTangent;

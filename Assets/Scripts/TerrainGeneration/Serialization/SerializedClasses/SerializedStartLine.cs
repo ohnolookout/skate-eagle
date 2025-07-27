@@ -5,32 +5,18 @@ using UnityEngine;
 public class SerializedStartLine : IDeserializable
 {
     public float xOffset;
-    [SerializeField] private Vector3 _serializedPosition;
     [SerializeField] private CurvePoint _curvePoint;
-    public Vector3 StartPosition => _serializedPosition;
+    public Vector3 StartPosition => _curvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(xOffset, 0, 0);
     public CurvePoint CurvePoint => _curvePoint;
 
     public SerializedStartLine(StartLine startLine)
     {
         xOffset = startLine.XOffset;
+        startLine.CurvePoint.LinkedCameraTarget.doTargetLow = true;
 
-        if (!startLine.CurvePoint.LinkedCameraTarget.doTargetLow)
-        {
-            startLine.CurvePoint.LinkedCameraTarget.doTargetLow = true;
-        }
-
-        Debug.Log("Setting start line curve point in serialized start line.");
         _curvePoint = startLine.CurvePoint;
-
-        if (startLine.CurvePoint.Object != null)
-        {
-            Debug.Log("CurvePointObject found for StartLine, updating position.");
-            _serializedPosition = startLine.CurvePoint.Object.transform.position;
-        } else
-        {
-            Debug.Log("No CurvePointObject found for StartLine, position not updated.");
-        }
+        Debug.Log("Creating SerializedStartLine with CurvePoint: " + _curvePoint.WorldPosition);
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

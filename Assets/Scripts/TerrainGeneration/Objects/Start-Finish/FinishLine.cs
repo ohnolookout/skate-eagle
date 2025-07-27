@@ -108,6 +108,38 @@ public class FinishLine : MonoBehaviour, ISerializable
         }
     }
 
+    public void SetFinishLine(CurvePoint flagPoint, float flagXOffset, bool backstopIsActive, CurvePoint backstopPoint, float backstopXOffset, bool isForward)
+    {
+        if (flagPoint == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        gameObject.SetActive(true);
+        _flagPosition = flagPoint.Position + new Vector3(flagXOffset, 0);
+        _backstopPosition = backstopIsActive ? backstopPoint.Position + new Vector3(backstopXOffset, 0) : Vector2.zero;
+        _flag.transform.position = _flagPosition + _flagOffset;
+        if (backstopIsActive)
+        {
+            _backstop.transform.position = _backstopPosition;
+            _backstop.SetActive(true);
+        }
+        else
+        {
+            _backstop.SetActive(false);
+        }
+        _lowerY = _flagPosition.y - _lowerYTolerance;
+        _upperY = _flagPosition.y + _upperYTolerance;
+        if (isForward)
+        {
+            _isXBetween = x => x > _flagPosition.x && x < _backstopPosition.x;
+        }
+        else
+        {
+            _isXBetween = x => x < _flagPosition.x && x > _backstopPosition.x;
+        }
+    }
+
     public void ClearFinishLine()
     {
         gameObject.SetActive(false);

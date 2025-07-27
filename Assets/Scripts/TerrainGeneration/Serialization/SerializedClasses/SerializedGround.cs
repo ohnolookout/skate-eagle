@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.HableCurve;
 
 [Serializable]
 public class SerializedGround : IDeserializable
@@ -22,9 +18,17 @@ public class SerializedGround : IDeserializable
 
     public SerializedGround(Ground ground)
     {
+        //Save world position for each curve point
+        foreach (var curvePointObj in ground.CurvePointObjects)
+        {
+            curvePointObj.CurvePoint.WorldPosition = curvePointObj.transform.position;
+        }
+
         name = ground.gameObject.name;
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
+
+
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
 

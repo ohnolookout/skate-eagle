@@ -5,8 +5,10 @@ using UnityEngine;
 public class SerializedFinishLine: IDeserializable
 {
     //public int flagPointIndex;
+    public CurvePoint flagPoint;
     public int flagPointXOffset;
     //public int backstopPointIndex;
+    public CurvePoint backstopPoint;
     public int backstopPointXOffset;
     public bool backstopIsActive;
     public Vector2 flagPosition;
