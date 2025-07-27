@@ -85,7 +85,20 @@ public class CurvePointObjectInspector : Editor
 
         if (GUILayout.Button("Set as Start Point", GUILayout.ExpandWidth(false)))
         {
+            Undo.RecordObject(_groundManager.StartLine, "Set Start Point");
             _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
+        }
+
+        if (GUILayout.Button("Set as Finish Flag Point", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag Point");
+            _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
+        }
+
+        if (GUILayout.Button("Set as Finish Backstop Point", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(_groundManager.FinishLine, "Set Backstop Point");
+            _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
         }
 
 

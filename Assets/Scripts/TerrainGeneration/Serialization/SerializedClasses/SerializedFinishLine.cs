@@ -11,22 +11,14 @@ public class SerializedFinishLine: IDeserializable
     public CurvePoint backstopPoint;
     public int backstopPointXOffset;
     public bool backstopIsActive;
-    public Vector2 flagPosition;
-    public Vector2 backstopPosition;
-    public bool isForward;
 
-    public SerializedFinishLine(int flagPointIndex, int flagPointXOffset,
-                                int backstopPointIndex, int backstopPointXOffset,
-                                bool backstopIsActive, Vector2 flagPosition, Vector2 backstopPosition)
+    public SerializedFinishLine(FinishLine finishLine)
     {
-        //this.flagPointIndex = flagPointIndex;
-        this.flagPointXOffset = flagPointXOffset;
-        //this.backstopPointIndex = backstopPointIndex;
-        this.backstopPointXOffset = backstopPointXOffset;
-        this.backstopIsActive = backstopIsActive;
-        this.flagPosition = flagPosition;
-        this.backstopPosition = backstopPosition;
-        isForward = flagPosition.x < backstopPosition.x;
+        flagPoint = finishLine.FlagPoint;
+        flagPointXOffset = finishLine.FlagXOffset;
+        backstopPoint = finishLine.BackstopPoint;
+        backstopPointXOffset = finishLine.BackstopXOffset;
+        backstopIsActive = finishLine.BackstopIsActive;
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

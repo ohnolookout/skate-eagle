@@ -164,7 +164,7 @@ public class LevelEditManager : MonoBehaviour
     public void ClearFinishLine()
     {
         Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Clear finish line");
-        _groundManager.FinishLine.ClearFinishLine();
+        _groundManager.FinishLine.Clear();
     }
 
     //private bool ValidateFinishParameters(GroundSegment segment, SerializedFinishLine parameters)

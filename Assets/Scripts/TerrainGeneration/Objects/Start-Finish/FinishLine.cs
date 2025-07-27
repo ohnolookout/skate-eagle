@@ -7,25 +7,27 @@ public class FinishLine : MonoBehaviour, ISerializable
 {
     #region Declarations
     [SerializeField] private GameObject _flag;
+    [SerializeField] private SpriteRenderer _flagRenderer;
     [SerializeField] private GameObject _backstop;
-    private Vector2 _flagPosition;
-    private Vector2 _backstopPosition;
+    private CurvePoint _flagPoint;
+    private CurvePoint _backstopPoint;
+    private int _flagXOffset = 50;
+    private int _backstopXOffset = 0;
+    private static Vector3 _flagSpriteOffset = new(1.5f, 1f);
     public Action DoFinish;
     private const float _upperYTolerance = 10;
     private const float _lowerYTolerance = 2f;
     private float _upperY = float.PositiveInfinity;
     private float _lowerY = float.NegativeInfinity;
     private Func<float, bool> _isXBetween;
-    private SerializedFinishLine _parameters;
-    private static Vector2 _flagOffset = new(1.5f, 1f);
     private IPlayer _player;
     private Rigidbody2D _playerBody;
 
-    public Vector2 FlagPosition => _flagPosition;
-    public Vector2 BackstopPosition => _backstopPosition;
-    public GameObject Backstop => _backstop;
-    public GameObject Flag => _flag;
-    public SerializedFinishLine Parameters { get => _parameters; set => _parameters = value; }
+    public CurvePoint FlagPoint => _flagPoint;
+    public CurvePoint BackstopPoint => _backstopPoint;
+    public int FlagXOffset => _flagXOffset;
+    public int BackstopXOffset => _backstopXOffset;
+    public bool BackstopIsActive => _backstop.activeSelf;
     #endregion
 
     #region Monobehaviours
@@ -57,10 +59,18 @@ public class FinishLine : MonoBehaviour, ISerializable
     {
         Gizmos.color = Color.red;
 
-        var lowerLeftPoint = new Vector2(_flagPosition.x, _flagPosition.y - _lowerYTolerance);
-        var upperLeftPoint = new Vector2(_flagPosition.x, _flagPosition.y + _upperYTolerance);
-        var lowerRightPoint = new Vector2(_backstopPosition.x, _flagPosition.y - _lowerYTolerance);
-        var upperRightPoint = new Vector2(_backstopPosition.x, _flagPosition.y + _upperYTolerance);
+        if(_flagPoint == null || _backstopPoint == null)
+        {
+            return;
+        }
+
+        var flagPosition = _flagPoint.WorldPosition + new Vector3(_flagXOffset, 0);
+        var backstopPosition = _backstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
+
+        var lowerLeftPoint = new Vector2(flagPosition.x, flagPosition.y - _lowerYTolerance);
+        var upperLeftPoint = new Vector2(flagPosition.x, flagPosition.y + _upperYTolerance);
+        var lowerRightPoint = new Vector2(backstopPosition.x, flagPosition.y - _lowerYTolerance);
+        var upperRightPoint = new Vector2(backstopPosition.x, flagPosition.y + _upperYTolerance);
         
         Gizmos.DrawLine(lowerLeftPoint, upperLeftPoint);
         Gizmos.DrawLine(upperLeftPoint, upperRightPoint);
@@ -72,101 +82,146 @@ public class FinishLine : MonoBehaviour, ISerializable
     #region Construction
     public void SetFinishLine(SerializedFinishLine parameters)
     {
-    
+#if UNITY_EDITOR
         if (parameters == null)
         {
-            gameObject.SetActive(false);
+            if(Application.isPlaying)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
             return;
         }
 
-        gameObject.SetActive(true);
-
-        _parameters = parameters;
-        _flagPosition = parameters.flagPosition;
-        _backstopPosition = parameters.backstopPosition;
-        _flag.transform.position = parameters.flagPosition + _flagOffset;
-
-        if (parameters.backstopIsActive)
-        {            
-            _backstop.transform.position = parameters.backstopPosition;
-            _backstop.SetActive(true);
-        } else
+        if (Application.isPlaying && (parameters.flagPoint == null || parameters.backstopPoint == null))
         {
-            _backstop.SetActive(false);
-        }
-
-        _lowerY = _flagPosition.y - _lowerYTolerance;
-        _upperY = _flagPosition.y + _upperYTolerance;
-
-        if (parameters.isForward)
-        {
-            _isXBetween = x => x > _flagPosition.x && x < _backstopPosition.x;
-        }
-        else
-        {
-            _isXBetween = x => x < _flagPosition.x && x > _backstopPosition.x;
-        }
-    }
-
-    public void SetFinishLine(CurvePoint flagPoint, float flagXOffset, bool backstopIsActive, CurvePoint backstopPoint, float backstopXOffset, bool isForward)
-    {
-        if (flagPoint == null)
-        {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
             return;
         }
+#endif
+
         gameObject.SetActive(true);
-        _flagPosition = flagPoint.Position + new Vector3(flagXOffset, 0);
-        _backstopPosition = backstopIsActive ? backstopPoint.Position + new Vector3(backstopXOffset, 0) : Vector2.zero;
-        _flag.transform.position = _flagPosition + _flagOffset;
-        if (backstopIsActive)
-        {
-            _backstop.transform.position = _backstopPosition;
-            _backstop.SetActive(true);
-        }
-        else
-        {
-            _backstop.SetActive(false);
-        }
-        _lowerY = _flagPosition.y - _lowerYTolerance;
-        _upperY = _flagPosition.y + _upperYTolerance;
-        if (isForward)
-        {
-            _isXBetween = x => x > _flagPosition.x && x < _backstopPosition.x;
-        }
-        else
-        {
-            _isXBetween = x => x < _flagPosition.x && x > _backstopPosition.x;
-        }
+
+        _flagXOffset = parameters.flagPointXOffset;
+        _backstopXOffset = parameters.backstopPointXOffset;
+
+        SetFlagPoint(parameters.flagPoint);
+        SetBackstopPoint(parameters.backstopPoint);
+
+        _backstop.SetActive(parameters.backstopIsActive);
+
+        UpdateIsForward();
     }
 
-    public void ClearFinishLine()
-    {
-        gameObject.SetActive(false);
-
-        _parameters = null;
-        _flagPosition = Vector2.zero;
-        _backstopPosition = Vector2.zero;
-
-        _flag.transform.position = Vector2.zero;
-        _backstop.transform.position = Vector2.zero;
-
-    }
 
     private void OnPlayerCreated(IPlayer player)
     {
         _player = player;
         _playerBody = player.NormalBody;
     }
-    #endregion
+#endregion
 
     public IDeserializable Serialize()
     {
-        if (_parameters == null)
-        {
-            return null;
-        }
-
-        return _parameters;
+        return new SerializedFinishLine(this);
     }
+
+    public void SetFlagPoint(CurvePoint flagPoint)
+    {
+        _flagPoint = flagPoint;
+        _flag.SetActive(true);
+        UpdateFlagPosition();
+
+#if UNITY_EDITOR
+        UpdateIsForward();
+#endif
+    }
+
+    public void SetFlagOffset(int flagXOffset)
+    {
+        _flagXOffset = flagXOffset;
+        UpdateFlagPosition();
+    }
+
+
+    public void UpdateFlagPosition()
+    {
+        _flag.transform.position = _flagPoint.WorldPosition + new Vector3(_flagXOffset, 0) + _flagSpriteOffset;
+    }
+
+    public void SetBackstopPoint(CurvePoint backstopPoint)
+    {
+        _backstopPoint = backstopPoint;
+        _backstop.SetActive(true);
+        UpdateBackstopPosition();
+
+#if UNITY_EDITOR
+        UpdateIsForward();
+#endif
+    }
+
+    public void SetBackstopOffset(int backstopXOffset)
+    {
+        _backstopXOffset = backstopXOffset;
+        UpdateBackstopPosition();
+    }
+
+    public void UpdateBackstopPosition()
+    {
+        _backstop.transform.position = _backstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
+    }
+
+    public void UpdateIsForward()
+    {
+#if UNITY_EDITOR
+        if(_flagPoint == null || _backstopPoint == null)
+        {
+            return;
+        }
+#endif
+        var flagX = _flagPoint.WorldPosition.x + _flagXOffset;
+        var backstopX = _backstopPoint.WorldPosition.x + _backstopXOffset;
+        bool isForward = flagX < backstopX;
+        _isXBetween = isForward 
+            ? (x => x > flagX && x < backstopX) 
+            : (x => x < flagX && x > backstopX);
+
+        _flagRenderer.flipX = !isForward;
+    }
+
+    public void ActivateBackstop(bool doActivate)
+    {
+        if (_backstopPoint == null)
+        {
+            doActivate = false;
+            Debug.LogWarning("FinishLine: Attempted to activate backstop without a backstop point set.");
+        }
+        _backstop.SetActive(doActivate);
+    }
+#if UNITY_EDITOR
+
+    public void Clear()
+    {
+        ClearFlag();
+        ClearBackstop();
+    }
+    public void ClearBackstop()
+    {
+        _backstopPoint = null;
+        _backstopXOffset = 0;
+        _backstop.transform.position = Vector2.zero;
+        _backstop.SetActive(false);
+    }
+
+    public void ClearFlag()
+    {
+        _flagPoint = null;
+        _flagXOffset = 50;
+        _flagRenderer.flipX = false;
+        _flag.transform.position = Vector2.zero;
+    }
+#endif
 }
