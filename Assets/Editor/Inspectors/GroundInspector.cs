@@ -26,7 +26,6 @@ public class GroundEditor : Editor
 
         if (ground.gameObject.transform.hasChanged)
         {
-            Debug.Log("Ground transform has changed, updating targets...");
             ground.gameObject.transform.hasChanged = false;
             var editManager = FindFirstObjectByType<LevelEditManager>();
             editManager.OnUpdateTransform();

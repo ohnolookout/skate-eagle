@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -178,6 +179,7 @@ public static class SerializeLevelUtility
         }
 
         CameraTargetBuilder.DeserializeCameraTargets(groundManager);
+        ResyncCurvePoints(groundManager);
 
 #endif
     }
@@ -240,5 +242,54 @@ public static class SerializeLevelUtility
         return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
     }
 
+    private static void ResyncCurvePoints(GroundManager groundManager)
+    {
+        var iResyncObjects = groundManager.GetComponentsInChildren<ICurvePointResync>();
+
+        List<CurvePointResync> curvePointResyncs = new();
+        foreach(var resyncObject in iResyncObjects) { 
+
+            var resyncs = resyncObject.GetCurvePointResyncs();
+            if (resyncs != null && resyncs.Count > 0)
+            {
+                curvePointResyncs.AddRange(resyncs);
+            }
+        }
+
+        foreach(var resync in curvePointResyncs)
+        {
+            var gameObject = groundManager.GetGameObjectByIndices(resync.curvePointToResync.LinkedCameraTarget.SerializedLocation);
+
+            if (gameObject == null)
+            {
+                continue;
+            }
+
+            var curvePointObject = gameObject.GetComponent<CurvePointObject>();
+            if (curvePointObject == null)
+            {
+                continue;
+            }
+
+            var repopulatedCurvePoint = curvePointObject.curvePoint;
+
+            if (repopulatedCurvePoint != null)
+            {
+                resync.resyncFunc(repopulatedCurvePoint);
+            }
+        }
+    }
+
     #endregion
+}
+
+public class CurvePointResync
+{
+    public CurvePoint curvePointToResync;
+    public Action<CurvePoint> resyncFunc;
+
+    public CurvePointResync(CurvePoint curvePoint)
+    {
+        curvePointToResync = curvePoint;
+    }
 }

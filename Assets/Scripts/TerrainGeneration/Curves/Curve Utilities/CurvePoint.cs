@@ -28,6 +28,7 @@ public class CurvePoint
             {
                 return _object.transform.position;
             }
+
             return _serializedWorldPosition;
         }
         set { _serializedWorldPosition = value; }

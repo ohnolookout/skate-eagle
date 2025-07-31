@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class FinishLine : MonoBehaviour, ISerializable
+public class FinishLine : MonoBehaviour, ISerializable, ICurvePointResync
 {
     #region Declarations
     [SerializeField] private GameObject _flag;
@@ -37,7 +38,7 @@ public class FinishLine : MonoBehaviour, ISerializable
     }
     void Update()
     {
-        if(_playerBody == null || _player == null)
+        if (_playerBody == null || _player == null)
         {
             return;
         }
@@ -59,7 +60,7 @@ public class FinishLine : MonoBehaviour, ISerializable
     {
         Gizmos.color = Color.red;
 
-        if(_flagPoint == null || _backstopPoint == null)
+        if (_flagPoint == null || _backstopPoint == null)
         {
             return;
         }
@@ -71,7 +72,7 @@ public class FinishLine : MonoBehaviour, ISerializable
         var upperLeftPoint = new Vector2(flagPosition.x, flagPosition.y + _upperYTolerance);
         var lowerRightPoint = new Vector2(backstopPosition.x, flagPosition.y - _lowerYTolerance);
         var upperRightPoint = new Vector2(backstopPosition.x, flagPosition.y + _upperYTolerance);
-        
+
         Gizmos.DrawLine(lowerLeftPoint, upperLeftPoint);
         Gizmos.DrawLine(upperLeftPoint, upperRightPoint);
         Gizmos.DrawLine(upperRightPoint, lowerRightPoint);
@@ -82,10 +83,11 @@ public class FinishLine : MonoBehaviour, ISerializable
     #region Construction
     public void SetFinishLine(SerializedFinishLine parameters)
     {
+        Debug.Log("Setting Finish Line...");
 #if UNITY_EDITOR
         if (parameters == null)
         {
-            if(Application.isPlaying)
+            if (Application.isPlaying)
             {
                 Destroy(gameObject);
             }
@@ -122,15 +124,38 @@ public class FinishLine : MonoBehaviour, ISerializable
         _player = player;
         _playerBody = player.NormalBody;
     }
-#endregion
+    #endregion
 
+    #region Edit Utilities
     public IDeserializable Serialize()
     {
         return new SerializedFinishLine(this);
     }
 
+    public List<CurvePointResync> GetCurvePointResyncs()
+    {
+        List<CurvePointResync> resyncs = new();
+        if(_flagPoint != null)
+        {
+            var resync = new CurvePointResync(_flagPoint);
+            resync.resyncFunc = (point) => { _flagPoint = point; };
+            resyncs.Add(resync);
+        }
+
+        if (_backstop != null)
+        {
+            var resync = new CurvePointResync(_backstopPoint);
+            resync.resyncFunc = (point) => { _backstopPoint = point; };
+            resyncs.Add(resync);
+        }
+
+        return resyncs;
+        
+    }
+
     public void SetFlagPoint(CurvePoint flagPoint)
     {
+        Debug.Log("Setting Flag Point");
         flagPoint.LinkedCameraTarget.doTargetLow = true;
         _flagPoint = flagPoint;
 
@@ -226,10 +251,12 @@ public class FinishLine : MonoBehaviour, ISerializable
 
     public void ClearFlag()
     {
+        Debug.Log("Clearing flag point.");
         _flagPoint = null;
         _flagXOffset = 50;
         _flagRenderer.flipX = false;
         _flag.transform.position = Vector2.zero;
     }
 #endif
+    #endregion
 }

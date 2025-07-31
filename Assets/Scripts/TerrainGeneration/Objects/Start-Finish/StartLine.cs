@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class StartLine : MonoBehaviour, ISerializable
+public class StartLine : MonoBehaviour, ISerializable, ICurvePointResync
 {
     [SerializeField] private CurvePoint _curvePoint;
     [SerializeField] private float _xOffset = 0;
@@ -27,6 +28,19 @@ public class StartLine : MonoBehaviour, ISerializable
         _xOffset = xOffset;
     }
 
+    public List<CurvePointResync> GetCurvePointResyncs()
+    {
+        List<CurvePointResync> resyncs = new();
+
+        if (_curvePoint != null)
+        {
+            var resync = new CurvePointResync(_curvePoint);
+            resync.resyncFunc = (point) => { _curvePoint = point; };
+            resyncs.Add(resync);
+        }
+
+        return resyncs;
+    }
 
     public IDeserializable Serialize()
     {

@@ -65,15 +65,16 @@ public static class CameraTargetBuilder
 
     private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
     {
-        var targetables = new List<ICameraTargetable>();
+        var targetables = groundManager.GetComponentsInChildren<ICameraTargetable>().ToList();
+        //var targetables = new List<ICameraTargetable>();
 
-        foreach (var ground in groundManager.Grounds)
-        {
-            foreach (var curvePointObj in ground.CurvePointObjects)
-            {
-                targetables.Add(curvePointObj);
-            }
-        }
+        //foreach (var ground in groundManager.Grounds)
+        //{
+        //    foreach (var curvePointObj in ground.CurvePointObjects)
+        //    {
+        //        targetables.Add(curvePointObj);
+        //    }
+        //}
 
         foreach(var targetable in targetables)
         {
@@ -115,7 +116,7 @@ public static class CameraTargetBuilder
             if (obj != null)
             {
                 gameObjects.Add(obj);
-                target.Target.TargetTransform = obj.transform;
+                target.Target.TargetTransform = obj.transform; //Replace with ICurvePointResync
             }
         }
         return gameObjects;

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-public class CurvePointObject : MonoBehaviour, ICameraTargetable
+public class CurvePointObject : MonoBehaviour, ICameraTargetable //Add CurvePointResync for LinkedTarget left and right targets
 {
     #region Declarations
     public CurvePoint curvePoint;
