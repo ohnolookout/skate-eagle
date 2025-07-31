@@ -17,9 +17,13 @@ public class CurvePointObjectInspector : Editor
         _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
         _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
+        
         _groundManager = FindFirstObjectByType<GroundManager>();
 
-
+        if (_curvePointObject.LinkedCameraTarget.RightTargets.Count > 0)
+        {
+            GUILayout.Label($"First right target transform != null: {_curvePointObject.LinkedCameraTarget.RightTargets[0].Target.TargetTransform != null}");
+        }
         //Curvepoint settings
         EditorGUI.BeginChangeCheck();
 
@@ -50,11 +54,6 @@ public class CurvePointObjectInspector : Editor
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetLow = doTargetLow;
             _curvePointObject.PopulateDefaultTargets();
-        }
-
-        if (_curvePointObject.DoTargetLow)
-        {
-            //Show linked camera target settings
         }
 
         EditorGUI.BeginChangeCheck();
@@ -101,9 +100,29 @@ public class CurvePointObjectInspector : Editor
             _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
         }
 
+        if(GUILayout.Button("Set Finish Flag and Backstop", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag and Backstop");
+            _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
+
+            var nextCurvePoint = NextCurvePoint(_curvePointObject);
+            if (nextCurvePoint != null)
+            {
+                _groundManager.FinishLine.SetBackstopPoint(nextCurvePoint.CurvePoint);
+            }
+            else
+            {
+                Debug.LogWarning("No next curve point found to set as backstop.");
+            }
+        }
 
         if (GUILayout.Button("Find Next CurvePoints", GUILayout.ExpandWidth(false)))
         {
+            if (!_curvePointObject.DoTargetLow)
+            {
+                Debug.LogWarning("Curve point not set as camera target. Cannot find adjacent curve points.");
+                return;
+            }
             _findAdjacentCurvePointWindow = EditorWindow.GetWindow<FindAdjacentCurvePointWindow>();
             _findAdjacentCurvePointWindow.Init(_curvePointObject);
         }
@@ -188,5 +207,29 @@ public class CurvePointObjectInspector : Editor
             curvePointObject.RightTangentChanged(rightTangentHandle);
         }
     }
-    
+
+    private static CurvePointObject NextCurvePoint(CurvePointObject currentCurvePoint)
+    {
+        var curvePointObjects = currentCurvePoint.ParentGround.CurvePointObjects;
+        var index = curvePointObjects.IndexOf(currentCurvePoint);
+
+        if (index < curvePointObjects.Count - 1)
+        {
+            return curvePointObjects[index + 1];
+        }
+
+        return null;
+    }
+
+    private static CurvePointObject PreviousCurvePoint(CurvePointObject currentCurvePoint)
+    {
+        var curvePointObjects = currentCurvePoint.ParentGround.CurvePointObjects;
+        var index = curvePointObjects.IndexOf(currentCurvePoint);
+        if (index > 0)
+        {
+            return curvePointObjects[index - 1];
+        }
+        return null;
+    }
+
 }

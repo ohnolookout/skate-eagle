@@ -102,7 +102,6 @@ public class SerializedGroundSegment
         segment.RightFloorAngle = rightFloorAngle;
 
         segment.parentGround = ground;
-        segment.NextLeftSegment = ground.SegmentList.Count == 0 ? null : ground.SegmentList[^1];
 
         segment.ActivateShadow(ground.HasShadow);
         //segment.UpdateHighLowTransforms();
@@ -124,8 +123,6 @@ public class SerializedGroundSegment
             segment.BottomCollider.gameObject.SetActive(false);
         }
 
-        //Camera targets
-        segment.LinkedCameraTarget = linkedCameraTarget;
 
         return segment;
     }

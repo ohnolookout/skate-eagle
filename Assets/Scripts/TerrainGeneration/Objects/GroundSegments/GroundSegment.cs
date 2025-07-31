@@ -10,46 +10,28 @@ using static UnityEngine.Rendering.HableCurve;
 public class GroundSegment : MonoBehaviour
 {
     #region Declarations
-    public List<GameObject> leftTargetObjects;
-    public List<GameObject> rightTargetObjects;
     //public Curve curve;
     [SerializeField] private SpriteShapeController _fillShapeController, _edgeShapeController;
     [SerializeField] private ShadowCaster2D _shadowCaster;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
     [SerializeField] private EdgeCollider2D _collider;
     [SerializeField] private EdgeCollider2D _bottomCollider;
-    [SerializeField] private GameObject _highPoint;
-    [SerializeField] private GameObject _lowPoint;
     [SerializeField] private int _leftFloorHeight = 100;
     [SerializeField] private int _leftFloorAngle = 0;
     [SerializeField] private int _rightFloorHeight = 100;
     [SerializeField] private int _rightFloorAngle = 0;
     private int _containmentBuffer = 20;
-    [SerializeField] private bool _isStart = false;
-    [SerializeField] private bool _isFinish = false;
-    //[SerializeField] private bool _isFloating = false;
-    //[SerializeField] private bool _isInverted = false;
-    //[SerializeField] private bool _hasShadow = true;
-    //[SerializeField] private bool _doTarget = true;
-    //[SerializeField] private bool _useDefaultHighLowPoints = true;
     public Ground parentGround;
-    [SerializeField] private GroundSegment _nextLeftSegment = null;
-    [SerializeField] private GroundSegment _nextRightSegment = null;
-    [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
 
     private List<CurvePointObject> _curvePointEditObjects = new();
-    public GroundSegment NextLeftSegment { get => _nextLeftSegment; set => _nextLeftSegment = value; }
-    public GroundSegment NextRightSegment { get => _nextRightSegment; set => _nextRightSegment = value; }
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
-    //public Curve Curve { get => curve; set => curve = value; }
     public Spline Spline { get => _fillShapeController.spline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
     public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
     public SpriteShapeController FillShapeController { get => _fillShapeController; }
     public Vector3 StartPosition => transform.TransformPoint(EdgeSpline.GetPosition(0));
     public Vector3 EndPosition => transform.TransformPoint(EdgeSpline.GetPosition(EdgeSpline.GetPointCount()-1));
-    //public Vector3 PrevTangent => _nextLeftSegment != null ? _nextLeftSegment.Curve.EndPoint.LeftTangent : new(1, 1);
     public Vector3 Position { get => transform.position; set => transform.position = value; }
     public int LeftFloorHeight { get => _leftFloorHeight; set => _leftFloorHeight = value; }
     public int RightFloorHeight { get => _rightFloorHeight; set => _rightFloorHeight = value; }
@@ -58,21 +40,6 @@ public class GroundSegment : MonoBehaviour
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
-    public bool IsFinish { get => _isFinish; set => _isFinish = value; }
-    public bool IsStart { get => _isStart; set => _isStart = value; }
-    //public bool DoTargetHigh { get => _doTarget; set => _doTarget = value; }
-    //public bool IsFirstSegment => parentGround.SegmentList[0] == this;
-    //public bool IsLastSegment => parentGround.SegmentList[^1] == this;
-    //public bool IsFloating { get => _isFloating; set => _isFloating = value; }
-    //public bool IsInverted { get => _isInverted; set => _isInverted = value; }
-    //public bool UseDefaultHighLowPoints { get => _useDefaultHighLowPoints; set => _useDefaultHighLowPoints = value; }
-    //public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
-    //public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; }
-    //public Transform HighPoint => _highPoint.transform;
-    public Transform LowPoint => _lowPoint.transform;
-    public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
-    public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
-    public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     #endregion
 
     #region Monobehaviors
@@ -94,13 +61,6 @@ public class GroundSegment : MonoBehaviour
     void OnBecameInvisible()
     {
         OnSegmentBecomeInvisible?.Invoke(this);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-
-        LinkedCameraTarget.DrawTargets();
-
     }
 
     public void ActivateShadow(bool doActivate)
@@ -126,112 +86,4 @@ public class GroundSegment : MonoBehaviour
     }
     #endregion
 
-    #region Collider Utilities
-    public Vector3 FirstColliderPoint()
-    {
-        if (_nextLeftSegment == null)
-        {
-            return StartPosition;
-        }
-
-        var worldPoint = _nextLeftSegment.transform.TransformPoint(_nextLeftSegment.Collider.points[^1]);
-        var colliderPoint = transform.InverseTransformPoint(worldPoint);
-
-        return colliderPoint;
-    }
-    #endregion
-
-    #region High/LowPoints
-    public void PopulateDefaultTargets()
-    {
-        //if (UseDefaultHighLowPoints)
-        //{
-        //    curve.DoDefaultHighLowPoints();
-        //    UpdateHighLowTransforms();
-        //}
-
-        _linkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, LowPoint.transform); 
-
-        if (_nextLeftSegment != null && !LeftTargetObjects.Contains(_nextLeftSegment.gameObject))
-        {
-            LeftTargetObjects.Add(_nextLeftSegment.gameObject);
-        }
-
-        if (_nextRightSegment != null && !RightTargetObjects.Contains(_nextRightSegment.gameObject))
-        {
-            RightTargetObjects.Add(_nextRightSegment.gameObject);
-        }
-    }
-
-    //public void UpdateHighLowTransforms()
-    //{
-    //    _highPoint.transform.position = curve.HighPoint + transform.position;
-    //    _lowPoint.transform.position = curve.LowPoint + transform.position;
-    //}
-
-    //public void SetLowPoint(int index)
-    //{
-    //    curve.LowPoint = curve.CurvePoints[index].Position;
-    //    _lowPoint.transform.position = curve.LowPoint + transform.position;
-    //}
-
-    //public void SetHighPoint(int index)
-    //{
-    //    if(index >= curve.CurvePoints.Count)
-    //    {
-    //        index = curve.CurvePoints.Count - 1;
-    //    }
-
-    //    curve.HighPoint = curve.CurvePoints[index].Position;
-    //    _highPoint.transform.position = curve.HighPoint + transform.position;
-    //}
-    #endregion
-
-    #region Serialization
-
-    //public SerializedGroundSegment Serialize()
-    //{
-    //    SerializeLevelUtility.BuildLinkedCameraTarget(this);
-
-    //    SerializedGroundSegment serializedSegment = new();
-
-    //    //Transform
-    //    serializedSegment.name = gameObject.name;
-    //    serializedSegment.position =transform.position;
-    //    serializedSegment.rotation = transform.rotation;
-    //    serializedSegment.leftFloorHeight = LeftFloorHeight;
-    //    serializedSegment.rightFloorHeight = RightFloorHeight;
-    //    serializedSegment.leftFloorAngle = LeftFloorAngle;
-    //    serializedSegment.rightFloorAngle = RightFloorAngle;
-
-    //    //Segment
-    //    serializedSegment.isStart = IsStart;
-    //    serializedSegment.isFinish = IsFinish;
-    //    serializedSegment.isFloating = IsFloating;
-    //    serializedSegment.isInverted = IsInverted;
-    //    serializedSegment.hasShadow = HasShadow;
-    //    serializedSegment.useDefaultHighLowPoints = UseDefaultHighLowPoints;
-
-    //    ////Curve
-    //    //Curve.LowPoint = LowPoint.position - transform.position;
-    //    //Curve.HighPoint = HighPoint.position - transform.position;
-    //    //serializedSegment.curve = Curve;
-
-
-    //    //Spline
-    //    //serializedSegment.fillSplinePoints = SerializeLevelUtility.CopySplinePoints(Spline);
-    //    //serializedSegment.fillSpineIsOpen = Spline.isOpenEnded;
-    //    //serializedSegment.edgeSplinePoints = SerializeLevelUtility.CopySplinePoints(EdgeSpline);
-
-    //    //Collider
-    //    serializedSegment.colliderPoints = SerializeLevelUtility.CopyColliderPoints(Collider);
-    //    serializedSegment.bottomColliderPoints = SerializeLevelUtility.CopyColliderPoints(BottomCollider);
-
-    //    //CameraTargetable
-    //    serializedSegment.linkedCameraTarget = LinkedCameraTarget;
-
-    //    return serializedSegment;
-    //}
-
-    #endregion
 }

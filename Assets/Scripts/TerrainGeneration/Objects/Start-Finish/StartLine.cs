@@ -22,13 +22,7 @@ public class StartLine : MonoBehaviour, ISerializable
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)
     {
-        if(_curvePoint != null)
-        {
-            _curvePoint.IsStart = false; // Reset previous start point
-        }
-
         startPoint.LinkedCameraTarget.doTargetLow = true;
-        startPoint.IsStart = true; // Set new start point
         _curvePoint = startPoint;
         _xOffset = xOffset;
     }

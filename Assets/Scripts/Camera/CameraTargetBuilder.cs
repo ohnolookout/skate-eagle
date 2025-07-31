@@ -115,6 +115,7 @@ public static class CameraTargetBuilder
             if (obj != null)
             {
                 gameObjects.Add(obj);
+                target.Target.TargetTransform = obj.transform;
             }
         }
         return gameObjects;

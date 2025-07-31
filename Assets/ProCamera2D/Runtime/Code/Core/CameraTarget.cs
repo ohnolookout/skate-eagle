@@ -49,7 +49,9 @@ namespace Com.LuisPedroFonseca.ProCamera2D
                     return SerializedPosition = TargetTransform.position;
                 }
                 else
+                {
                     return SerializedPosition;
+                }
             }
         }
 

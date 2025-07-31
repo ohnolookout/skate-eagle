@@ -10,8 +10,6 @@ public class CurvePoint
     [SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical = true;
-    [SerializeField] private bool _isStart = false;
-    [SerializeField] private bool _isFinish = false;
     [SerializeField] private int _floorHeight;
     [SerializeField] private int _floorAngle;
     [SerializeField] private bool _forceNewSection;
@@ -39,8 +37,6 @@ public class CurvePoint
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
-    public bool IsStart { get => _isStart; set => _isStart = value; }
-    public bool IsFinish { get => _isFinish; set => _isFinish = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
     public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
@@ -174,8 +170,6 @@ public class CurvePoint
         copy.RightTangent = rightTangent;
         copy.Mode = _mode;
         copy.IsSymmetrical = _isSymmetrical;
-        copy.IsStart = _isStart;
-        copy.IsFinish = _isFinish;
         copy.FloorHeight = _floorHeight;
         copy.FloorAngle = _floorAngle;
         copy.ForceNewSection = _forceNewSection;

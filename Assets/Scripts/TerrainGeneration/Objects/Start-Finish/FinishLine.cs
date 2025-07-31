@@ -131,13 +131,21 @@ public class FinishLine : MonoBehaviour, ISerializable
 
     public void SetFlagPoint(CurvePoint flagPoint)
     {
+        flagPoint.LinkedCameraTarget.doTargetLow = true;
         _flagPoint = flagPoint;
+
         _flag.SetActive(true);
         UpdateFlagPosition();
 
 #if UNITY_EDITOR
         UpdateIsForward();
 #endif
+    }
+
+    public void UpdateFinish()
+    {
+        UpdateFlagPosition();
+        UpdateBackstopPosition();
     }
 
     public void SetFlagOffset(int flagXOffset)

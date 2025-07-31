@@ -64,16 +64,6 @@ public class LevelEditManagerInspector : Editor
             _levelEditManager.NewLevel();
         }
 
-        if (GUILayout.Button("Clear Finish Line", GUILayout.ExpandWidth(false)))
-        {
-            if (!EditorUtility.DisplayDialog("Warning", "This will clear the current finish line.", "OK", "Cancel"))
-            {
-                return;
-            }
-
-            _levelEditManager.ClearFinishLine();
-        }
-
         debugMode = EditorGUILayout.Toggle("Debug Mode", debugMode, GUILayout.ExpandWidth(false));
     }
 }

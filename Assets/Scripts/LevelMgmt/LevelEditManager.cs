@@ -146,7 +146,10 @@ public class LevelEditManager : MonoBehaviour
     #endregion
 
     #region Recalculation
-
+    public void OnUpdateTransform()
+    {
+        GroundManager.FinishLine.UpdateFinish();
+    }
     private void RenameAll(int groundIndex)
     {
         Debug.Log("Renaming " + groundIndex + " to " + _groundManager.Grounds.Count);
@@ -211,25 +214,6 @@ public class LevelEditManager : MonoBehaviour
     public Level CreateLevel(string name, MedalTimes medalTimes, GroundManager manager, Vector3? cameraStartPoint = null)
     {
         return new Level(name, medalTimes, _groundManager);
-    }
-
-    private float GetKillPlaneY(Ground[] groundsArray)
-    {
-        float lowY = float.PositiveInfinity;
-        foreach (var ground in groundsArray)
-        {
-            foreach (var segment in ground.SegmentList)
-            {
-                var newY = segment.transform.TransformPoint(segment.LowPoint.position).y;
-                if (newY < lowY)
-                {
-                    lowY = newY;
-                }
-            }
-        }
-
-        return lowY - 10;
-
     }
 }
 
