@@ -48,7 +48,7 @@ public class Level
         {
             _cameraStartPosition = cameraStartPosition;
         }
-        _killPlaneY = GetKillPlaneY(groundManager.Grounds);
+        _killPlaneY = GetKillPlaneY(groundManager);
     }
     public Level(string name)
     {
@@ -143,8 +143,9 @@ public class Level
         }
     }
 
-    private float GetKillPlaneY(List<Ground> grounds)
+    private float GetKillPlaneY(GroundManager groundManager)
     {
+        Ground[] grounds = groundManager.groundContainer.GetComponentsInChildren<Ground>();
         float lowY = float.PositiveInfinity;
         foreach (var ground in grounds)
         {

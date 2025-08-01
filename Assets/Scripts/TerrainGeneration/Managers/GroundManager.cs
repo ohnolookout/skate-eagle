@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Com.LuisPedroFonseca.ProCamera2D;
+using System.Linq;
 public class GroundManager : MonoBehaviour
 {
     #region Declarations
@@ -10,10 +11,8 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private FinishLine _finishLine;
     [SerializeField] private StartLine _startLine;
     public GroundSpawner groundSpawner;
-    private List<Ground> _grounds;
     public GameObject groundContainer;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
-    public List<Ground> Grounds { get => _grounds; set => _grounds = value; }
     public FinishLine FinishLine { get => _finishLine; }
     public StartLine StartLine { get => _startLine; }
     public ICameraTargetable[] CameraTargetables => GetComponentsInChildren<ICameraTargetable>();
@@ -29,7 +28,6 @@ public class GroundManager : MonoBehaviour
     public void ClearGround()
     {
         _finishLine.gameObject.SetActive(false);
-        _grounds = new();
 
         while (groundContainer.transform.childCount > 0)
         {
@@ -39,26 +37,32 @@ public class GroundManager : MonoBehaviour
 
     public GameObject GetGameObjectByIndices(int[] targetIndices)
     {
+        var grounds = GetGrounds();
         if (targetIndices == null || targetIndices.Length == 0)
         {
             Debug.LogWarning($"GetGameObjectByIndices: No GameObject found due to empty indices");
             return null;
         }
 
-        if (targetIndices[0] < _grounds.Count)
+        if (targetIndices[0] < grounds.Length)
         {
             if(targetIndices.Length == 1)
             {
-                return _grounds[targetIndices[0]].gameObject;
+                return grounds[targetIndices[0]].gameObject;
             }
 
-            return _grounds[targetIndices[0]].CurvePointObjects[targetIndices[1]].gameObject;
+            return grounds[targetIndices[0]].CurvePointObjects[targetIndices[1]].gameObject;
         }
 
         //Add more types to reflect serialization/deserialization order as needed
 
         Debug.LogWarning($"GetGameObjectByIndices: No GameObject found for indices {string.Join(", ", targetIndices)}");
         return null;
+    }
+
+    public Ground[] GetGrounds()
+    {
+        return groundContainer.GetComponentsInChildren<Ground>();
     }
     #endregion
 }

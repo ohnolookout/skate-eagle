@@ -107,7 +107,8 @@ public class FindAdjacentCurvePointWindow : EditorWindow
             lookVertical = LookDown;
         }
 
-        foreach (var ground in _editManager.GroundManager.Grounds)
+        var grounds = _editManager.GroundManager.GetGrounds();
+        foreach (var ground in grounds)
         {
             foreach (var obj in ground.CurvePointObjects)
             {

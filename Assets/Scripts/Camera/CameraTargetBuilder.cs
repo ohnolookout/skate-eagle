@@ -50,7 +50,7 @@ public static class CameraTargetBuilder
     #region Deserialize Target GameObjects
     public static void DeserializeCameraTargets(GroundManager groundManager)
     {
-        if (groundManager == null || groundManager.Grounds == null)
+        if (groundManager == null)
         {
             Debug.Log("GroundManager is null or has no grounds.");
             return;

@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -134,12 +136,11 @@ public class LevelEditManager : MonoBehaviour
     #region Remove
     public void RemoveGround(Ground ground)
     {
-        var index = _groundManager.Grounds.IndexOf(ground);
+        var grounds = _groundManager.GetGrounds();
+        var index = Array.IndexOf(grounds, ground);
 
-        Undo.RegisterFullObjectHierarchyUndo(_groundManager, "Remove ground");
-        _groundManager.Grounds.Remove(ground);
         Undo.DestroyObjectImmediate(ground.gameObject);
-        RenameAll(index);
+        RenameAll(index, grounds);
 
     }
 
@@ -150,12 +151,11 @@ public class LevelEditManager : MonoBehaviour
     {
         GroundManager.FinishLine.UpdateFinish();
     }
-    private void RenameAll(int groundIndex)
+    private void RenameAll(int startIndex, Ground[] grounds)
     {
-        Debug.Log("Renaming " + groundIndex + " to " + _groundManager.Grounds.Count);
-        for (int i = groundIndex; i < _groundManager.Grounds.Count; i++)
+        for (int i = startIndex; i < grounds.Length; i++)
         {
-            var ground = _groundManager.Grounds[i];
+            var ground = grounds[i];
             ground.gameObject.name = "Ground " + i;
         }
     }

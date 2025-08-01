@@ -9,21 +9,22 @@ public static class SerializeLevelUtility
 
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager, out SerializedStartLine startLine)
     {
-        GenerateGroundIndices(groundManager.Grounds);
+        var grounds = groundManager.GetGrounds();
+        GenerateGroundIndices(grounds);
 
         if (groundManager.StartLine.CurvePoint == null)
         {
             Debug.Log("StartPoint is null, setting to default.");
-            if (groundManager.Grounds == null || groundManager.Grounds.Count == 0 || groundManager.Grounds[0].CurvePoints.Count == 0)
+            if (grounds == null || grounds.Length == 0 || grounds[0].CurvePoints.Count == 0)
             {
                 groundManager.StartLine.SetStartLine(new CurvePoint());
-            } else if (groundManager.Grounds[0].CurvePoints.Count > 1)
+            } else if (grounds[0].CurvePoints.Count > 1)
             {
-                groundManager.StartLine.SetStartLine(groundManager.Grounds[0].CurvePoints[1]);
+                groundManager.StartLine.SetStartLine(grounds[0].CurvePoints[1]);
             }
             else
             {
-                groundManager.StartLine.SetStartLine(groundManager.Grounds[0].CurvePoints[0]);
+                groundManager.StartLine.SetStartLine(grounds[0].CurvePoints[0]);
             }
         }
 
@@ -40,9 +41,9 @@ public static class SerializeLevelUtility
 
         return serializedObjects;
     }
-    private static void GenerateGroundIndices(List<Ground> grounds)
+    private static void GenerateGroundIndices(Ground[] grounds)
     {
-        for (int i = 0; i < grounds.Count; i++)
+        for (int i = 0; i < grounds.Length; i++)
         {
             var ground = grounds[i];
             for (int j = 0; j < ground.CurvePointObjects.Count; j++)
@@ -191,7 +192,6 @@ public static class SerializeLevelUtility
             case SerializedGround:
                 var ground = groundManager.groundSpawner.AddGround();
                 deserializable.Deserialize(ground.gameObject, groundManager.gameObject);
-                groundManager.Grounds.Add(ground);
                 break;
             case SerializedFinishLine:
                 deserializable.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
