@@ -46,8 +46,8 @@ public static class CameraTargetBuilder
         return targetables;
     }
     #endregion
-
     #region Deserialize Target GameObjects
+    /*
     public static void DeserializeCameraTargets(GroundManager groundManager)
     {
         if (groundManager == null)
@@ -121,7 +121,7 @@ public static class CameraTargetBuilder
         }
         return gameObjects;
     }
-
+    */
     #endregion
 
     #region KD Tree

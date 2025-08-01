@@ -179,7 +179,7 @@ public static class SerializeLevelUtility
             return;
         }
 
-        CameraTargetBuilder.DeserializeCameraTargets(groundManager);
+        //CameraTargetBuilder.DeserializeCameraTargets(groundManager);
         ResyncObjects(groundManager);
 
 #endif
@@ -260,9 +260,13 @@ public static class SerializeLevelUtility
         {
             var gameObject = groundManager.GetGameObjectByIndices(resync.serializedLocation);
 
-            if (gameObject == null)
+            if (gameObject != null)
             {
                 resync.resyncFunc(gameObject);
+            }
+            else
+            {
+                Debug.Log("Gameobject is null. Skipping resync...");
             }
         }
     }

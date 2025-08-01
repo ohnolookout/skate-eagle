@@ -203,10 +203,25 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
         targets.AddRange(LinkedCameraTarget.LeftTargets);
         targets.AddRange(LinkedCameraTarget.RightTargets);
 
+        Debug.Log($"Creating resync funcs for {targets.Count} targets");
         foreach (var target in targets)
         {
             var resync = new ObjectResync(target.SerializedLocation);
-            resync.resyncFunc = (obj) => { target.Target.TargetTransform = obj.transform; };
+            resync.resyncFunc = (obj) => 
+            {
+                Debug.Log("Setting linked camera target transform to: " + obj);
+                target.Target.TargetTransform = obj.transform;
+
+                if (LinkedCameraTarget.LeftTargets.Contains(target))
+                {
+                    LeftTargetObjects.Add(obj);
+                }
+
+                if (LinkedCameraTarget.RightTargets.Contains(target))
+                {
+                    RightTargetObjects.Add(obj);
+                }
+            };
             resyncs.Add(resync);
         }
 
