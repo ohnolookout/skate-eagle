@@ -1,11 +1,12 @@
-using UnityEngine;
+using JetBrains.Annotations;
 using System;
-using UnityEngine.U2D;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.U2D;
 
-public class CurvePointObject : MonoBehaviour, ICameraTargetable //Add CurvePointResync for LinkedTarget left and right targets
+public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync //Add CurvePointResync for LinkedTarget left and right targets
 {
     #region Declarations
     public CurvePoint curvePoint;
@@ -74,7 +75,7 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable //Add CurvePoin
     public void SetCurvePoint(CurvePoint curvePoint)
     {
         this.curvePoint = curvePoint;
-        this.curvePoint.Object = this; // Set the object reference in the CurvePoint
+        this.curvePoint.Object = gameObject; // Set the object reference in the CurvePoint
         transform.position = this.curvePoint.Position + ParentGround.transform.position;
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
     }
@@ -144,7 +145,7 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable //Add CurvePoin
         _onCurvePointChange?.Invoke(this);
     }
 
-    public void PopulateDefaultTargets()
+    public void PopulateDefaultTargets() //Figure out if I need to run this on deserialization
     {
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
 
@@ -186,6 +187,30 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable //Add CurvePoin
         }
 
         return targetObjects;
+    }
+
+    public List<ObjectResync> GetObjectResyncs()
+    {
+        List<ObjectResync> resyncs = new();
+
+        if (!LinkedCameraTarget.doTargetLow)
+        {
+            return resyncs;
+        }
+
+        var targets = new List<LinkedCameraTarget>();
+
+        targets.AddRange(LinkedCameraTarget.LeftTargets);
+        targets.AddRange(LinkedCameraTarget.RightTargets);
+
+        foreach (var target in targets)
+        {
+            var resync = new ObjectResync(target.SerializedLocation);
+            resync.resyncFunc = (obj) => { target.Target.TargetTransform = obj.transform; };
+            resyncs.Add(resync);
+        }
+
+        return resyncs;
     }
 }
 

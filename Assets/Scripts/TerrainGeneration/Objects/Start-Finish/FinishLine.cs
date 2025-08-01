@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class FinishLine : MonoBehaviour, ISerializable, ICurvePointResync
+public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 {
     #region Declarations
     [SerializeField] private GameObject _flag;
@@ -132,20 +132,20 @@ public class FinishLine : MonoBehaviour, ISerializable, ICurvePointResync
         return new SerializedFinishLine(this);
     }
 
-    public List<CurvePointResync> GetCurvePointResyncs()
+    public List<ObjectResync> GetObjectResyncs()
     {
-        List<CurvePointResync> resyncs = new();
+        List<ObjectResync> resyncs = new();
         if(_flagPoint != null)
         {
-            var resync = new CurvePointResync(_flagPoint);
-            resync.resyncFunc = (point) => { _flagPoint = point; };
+            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.SerializedLocation);
+            resync.resyncFunc = (obj) => { _flagPoint.Object = obj; };
             resyncs.Add(resync);
         }
 
         if (_backstop != null)
         {
-            var resync = new CurvePointResync(_backstopPoint);
-            resync.resyncFunc = (point) => { _backstopPoint = point; };
+            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.SerializedLocation);
+            resync.resyncFunc = (obj) => { _backstopPoint.Object = obj; };
             resyncs.Add(resync);
         }
 

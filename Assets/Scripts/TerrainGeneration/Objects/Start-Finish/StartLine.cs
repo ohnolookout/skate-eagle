@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StartLine : MonoBehaviour, ISerializable, ICurvePointResync
+public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 {
     [SerializeField] private CurvePoint _curvePoint;
     [SerializeField] private float _xOffset = 0;
@@ -28,14 +28,14 @@ public class StartLine : MonoBehaviour, ISerializable, ICurvePointResync
         _xOffset = xOffset;
     }
 
-    public List<CurvePointResync> GetCurvePointResyncs()
+    public List<ObjectResync> GetObjectResyncs()
     {
-        List<CurvePointResync> resyncs = new();
+        List<ObjectResync> resyncs = new();
 
         if (_curvePoint != null)
         {
-            var resync = new CurvePointResync(_curvePoint);
-            resync.resyncFunc = (point) => { _curvePoint = point; };
+            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.SerializedLocation);
+            resync.resyncFunc = (obj) => { _curvePoint.Object = obj; };
             resyncs.Add(resync);
         }
 

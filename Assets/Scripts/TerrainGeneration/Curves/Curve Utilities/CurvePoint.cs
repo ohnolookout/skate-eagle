@@ -14,10 +14,10 @@ public class CurvePoint
     [SerializeField] private int _floorAngle;
     [SerializeField] private bool _forceNewSection;
     [SerializeField] private bool _blockNewSection;
-    [SerializeField] private CurvePointObject _object;
+    [SerializeField] private GameObject _object;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
 
-    public CurvePointObject Object { get => _object; set => _object = value; }
+    public GameObject Object { get => _object; set => _object = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
     public Vector3 WorldPosition

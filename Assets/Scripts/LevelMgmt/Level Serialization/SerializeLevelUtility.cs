@@ -179,7 +179,7 @@ public static class SerializeLevelUtility
         }
 
         CameraTargetBuilder.DeserializeCameraTargets(groundManager);
-        ResyncCurvePoints(groundManager);
+        ResyncObjects(groundManager);
 
 #endif
     }
@@ -242,40 +242,27 @@ public static class SerializeLevelUtility
         return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
     }
 
-    private static void ResyncCurvePoints(GroundManager groundManager)
+    private static void ResyncObjects(GroundManager groundManager)
     {
-        var iResyncObjects = groundManager.GetComponentsInChildren<ICurvePointResync>();
+        var iResyncObjects = groundManager.GetComponentsInChildren<IObjectResync>();
 
-        List<CurvePointResync> curvePointResyncs = new();
+        List<ObjectResync> objectResyncs = new();
         foreach(var resyncObject in iResyncObjects) { 
 
-            var resyncs = resyncObject.GetCurvePointResyncs();
+            var resyncs = resyncObject.GetObjectResyncs();
             if (resyncs != null && resyncs.Count > 0)
             {
-                curvePointResyncs.AddRange(resyncs);
+                objectResyncs.AddRange(resyncs);
             }
         }
 
-        foreach(var resync in curvePointResyncs)
+        foreach(var resync in objectResyncs)
         {
-            var gameObject = groundManager.GetGameObjectByIndices(resync.curvePointToResync.LinkedCameraTarget.SerializedLocation);
+            var gameObject = groundManager.GetGameObjectByIndices(resync.serializedLocation);
 
             if (gameObject == null)
             {
-                continue;
-            }
-
-            var curvePointObject = gameObject.GetComponent<CurvePointObject>();
-            if (curvePointObject == null)
-            {
-                continue;
-            }
-
-            var repopulatedCurvePoint = curvePointObject.curvePoint;
-
-            if (repopulatedCurvePoint != null)
-            {
-                resync.resyncFunc(repopulatedCurvePoint);
+                resync.resyncFunc(gameObject);
             }
         }
     }
@@ -283,13 +270,13 @@ public static class SerializeLevelUtility
     #endregion
 }
 
-public class CurvePointResync
+public class ObjectResync
 {
-    public CurvePoint curvePointToResync;
-    public Action<CurvePoint> resyncFunc;
+    public int[] serializedLocation;
+    public Action<GameObject> resyncFunc;
 
-    public CurvePointResync(CurvePoint curvePoint)
+    public ObjectResync(int[] serializedLocation)
     {
-        curvePointToResync = curvePoint;
+        this.serializedLocation = serializedLocation;
     }
 }
