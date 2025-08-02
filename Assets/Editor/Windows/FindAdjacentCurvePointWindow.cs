@@ -86,6 +86,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         CurvePointObject nextCurvePointObject = null;
         var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
         var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
+        nextStartY = doLookDown ? float.NegativeInfinity : float.PositiveInfinity;
         Vector2 nextPos = new(nextStartX, nextStartY);
 
         Func<Vector2, Vector2, Vector2, bool> lookHorizontal;
@@ -150,7 +151,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
 
     private static bool LookUp(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
     {
-        if (candidatePos.y >= currentPos.y && candidatePos.y < nextPos.y)
+        if (candidatePos.y >= currentPos.y)
         {
             return true;
         }
@@ -158,7 +159,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
     }
     private static bool LookDown(Vector2 currentPos, Vector2 nextPos, Vector2 candidatePos)
     {
-        if (candidatePos.y <= currentPos.y && candidatePos.y > nextPos.y)
+        if (candidatePos.y <= currentPos.y)
         {
             return true;
         }
