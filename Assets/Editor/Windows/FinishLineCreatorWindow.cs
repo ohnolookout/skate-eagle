@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using static UnityEngine.Rendering.HableCurve;
-
+/*
 public class FinishLineCreatorWindow : EditorWindow
 {
     private GroundManager _groundManager;
@@ -82,3 +82,4 @@ public class FinishLineCreatorWindow : EditorWindow
     //    }
     //}
 }
+*/

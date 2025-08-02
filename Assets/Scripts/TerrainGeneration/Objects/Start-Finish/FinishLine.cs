@@ -83,7 +83,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     #region Construction
     public void SetFinishLine(SerializedFinishLine parameters)
     {
-        Debug.Log("Setting Finish Line...");
 #if UNITY_EDITOR
         if (parameters == null)
         {
@@ -155,7 +154,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void SetFlagPoint(CurvePoint flagPoint)
     {
-        Debug.Log("Setting Flag Point");
         flagPoint.LinkedCameraTarget.doTargetLow = true;
         _flagPoint = flagPoint;
 
@@ -251,7 +249,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void ClearFlag()
     {
-        Debug.Log("Clearing flag point.");
         _flagPoint = null;
         _flagXOffset = 50;
         _flagRenderer.flipX = false;
