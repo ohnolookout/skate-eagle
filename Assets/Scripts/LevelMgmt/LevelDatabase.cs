@@ -18,7 +18,7 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private Level _editorLevel;
     [SerializeField] private bool _levelIsDirty = false;
     [SerializeField] private bool _levelOrderIsDirty = false;
-    public string lastLevelLoadedUID;
+    public Level lastLevelLoaded;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary; //Levels stored by UID
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
@@ -58,7 +58,7 @@ public class LevelDatabase : ScriptableObject
             level.UID = Guid.NewGuid().ToString();
         }
         UpdateDictionaries(level);
-        lastLevelLoadedUID = level.UID;
+        lastLevelLoaded = level;
         _editorLevel = level;
 
         EditorUtility.SetDirty(this);
@@ -135,9 +135,9 @@ public class LevelDatabase : ScriptableObject
         _uidToNameDictionary.Remove(uid);
         _levelOrder.Remove(name);
 
-        if (lastLevelLoadedUID == uid)
+        if (lastLevelLoaded != null && lastLevelLoaded.UID == uid)
         {
-            lastLevelLoadedUID = null;
+            lastLevelLoaded = null;
         }
 
         EditorUtility.SetDirty(this);
@@ -217,7 +217,7 @@ public class LevelDatabase : ScriptableObject
 
     public void LoadLevel(Level level)
     {
-        lastLevelLoadedUID = level.UID;
+        lastLevelLoaded = level;
 
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);

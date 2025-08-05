@@ -13,7 +13,6 @@ public class LevelEditManager : MonoBehaviour
 {
     //Level editing parameters
     private GroundManager _groundManager;
-    public string levelName = "New Level";
     public MedalTimes medalTimes = new();
     public Vector3 cameraStartPosition = new Vector3(116, 6);
 
@@ -56,16 +55,16 @@ public class LevelEditManager : MonoBehaviour
     #region Save/Load Level
     public void SaveLevel()
     {
-        var levelToSave = new Level(levelName, medalTimes, _groundManager, cameraStartPosition);
+        var levelToSave = new Level(_levelDB.lastLevelLoaded.Name, medalTimes, _groundManager, cameraStartPosition);
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
         {
-            Debug.Log($"Level {levelName} saved");
+            Debug.Log($"Level {_levelDB.lastLevelLoaded.Name} saved");
         }
         else
         {
-            Debug.Log($"Level {levelName} failed to save");
+            Debug.Log($"Level {_levelDB.lastLevelLoaded.Name} failed to save");
         }
 
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
@@ -80,19 +79,33 @@ public class LevelEditManager : MonoBehaviour
     public void LoadLevel(Level level)
     {
         _levelDB.LoadInEditMode(level);
-        levelName = level.Name;
         medalTimes = level.MedalTimes;
         cameraStartPosition = level.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(level, _groundManager);
     }
 
-    public void NewLevel()
+    public void NewLevel(string levelName = "New Level")
     {
-        levelName = "New Level";
+        //Clear level params
         DefaultMedalTimes();
         _groundManager.ClearGround();
-        UpdateEditorLevel();
+
+        var newLevel = new Level(levelName, medalTimes, _groundManager);
+
+        _levelDB.SaveLevel(newLevel);
+    }
+
+    public void RenameLevel(Level level, string newName)
+    {
+        var levelToSave = new Level(newName, medalTimes, _groundManager, cameraStartPosition);
+        _levelDB.ChangeLevelName(level, newName);
+    }
+
+    public void SaveLevelAsNew(Level level, string name)
+    {
+        var levelToSave = new Level(name, medalTimes, _groundManager, cameraStartPosition);
+        _levelDB.SaveLevel(levelToSave);
     }
 
     public bool DoDiscardChanges()
@@ -105,7 +118,7 @@ public class LevelEditManager : MonoBehaviour
 
         if (_levelDB.LevelIsDirty)
         {
-            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {levelName}?", "Yes", "No");
+            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {_levelDB.lastLevelLoaded.Name}?", "Yes", "No");
             if (!discardChanges)
             {
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
@@ -117,6 +130,11 @@ public class LevelEditManager : MonoBehaviour
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
 
         return true;
+    }
+
+    public bool LevelNameExists(string name)
+    {
+        return _levelDB.LevelNameExists(name);
     }
 
     #endregion
@@ -199,7 +217,7 @@ public class LevelEditManager : MonoBehaviour
 
     public void UpdateEditorLevel()
     {
-        _levelDB.UpdateEditorLevel(levelName, _groundManager, medalTimes, cameraStartPosition);
+        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
     }
 
     public void DefaultMedalTimes()

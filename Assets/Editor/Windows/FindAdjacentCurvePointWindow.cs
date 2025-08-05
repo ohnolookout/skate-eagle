@@ -19,6 +19,11 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         _curvePointObject = curvePointObject;
     }
 
+    private void OnLostFocus()
+    {
+        Focus();
+    }
+
     private void OnGUI()
     {
         GUILayout.Label("Find Adjacent Curve Point", EditorStyles.boldLabel);

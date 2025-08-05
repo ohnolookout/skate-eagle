@@ -26,7 +26,10 @@ public class CopyLevelWindow : EditorWindow
 
         _initialized = true;
     }
-
+    private void OnLostFocus()
+    {
+        Focus();
+    }
     private void OnGUI()
     {
         if (!_initialized)

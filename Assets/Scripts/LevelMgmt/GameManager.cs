@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            _currentLevel = _levelDB.LoadByUID(_levelDB.lastLevelLoadedUID);
+            _currentLevel = _levelDB.lastLevelLoaded;
         }
         
         OnLoading += ActivateLoadingScreen;
