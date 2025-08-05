@@ -27,7 +27,9 @@ public class SerializedGround : IDeserializable
         name = ground.gameObject.name;
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
-
+        isInverted = ground.IsInverted;
+        isFloating = ground.IsFloating;
+        hasShadow = ground.HasShadow;
 
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
@@ -50,6 +52,9 @@ public class SerializedGround : IDeserializable
         }
 
         ground.name = name;
+        ground.IsInverted = isInverted;
+        ground.IsFloating = isFloating;
+        ground.HasShadow = hasShadow;
         
         if (Application.isPlaying)
         {

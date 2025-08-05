@@ -104,7 +104,6 @@ public class SerializedGroundSegment
         segment.parentGround = ground;
 
         segment.ActivateShadow(ground.HasShadow);
-        //segment.UpdateHighLowTransforms();
 
         GroundSplineUtility.GenerateSpline(segment.Spline, fillSplineCurvePoints, ground.IsFloating);
         GroundSplineUtility.GenerateSpline(segment.EdgeSpline, edgeSplineCurvePoints, true);

@@ -220,6 +220,12 @@ public class LevelEditManager : MonoBehaviour
         _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
     }
 
+    public void RefreshLevelGeneration()
+    {
+        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        SerializeLevelUtility.DeserializeLevel(_levelDB.EditorLevel, _groundManager);
+    }
+
     public void DefaultMedalTimes()
     {
         medalTimes.Red = 6;

@@ -5,9 +5,26 @@ using UnityEngine;
 [CustomEditor(typeof(Ground))]
 public class GroundEditor : Editor
 {
+    private LevelEditManager _levelEditManager;
     public override void OnInspectorGUI()
     {
+        if(_levelEditManager == null)
+        {
+            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+        }
+
         var ground = (Ground)target;
+
+        EditorGUI.BeginChangeCheck();
+
+        ground.IsInverted = GUILayout.Toggle(ground.IsInverted, "Inverted");
+        ground.IsFloating = GUILayout.Toggle(ground.IsFloating, "Floating");
+        ground.HasShadow = GUILayout.Toggle(ground.HasShadow, "Shadow");
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            _levelEditManager.RefreshLevelGeneration();
+        }
 
         if(GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
         {
