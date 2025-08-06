@@ -22,6 +22,7 @@ public class SerializedGround : IDeserializable
         foreach (var curvePointObj in ground.CurvePointObjects)
         {
             curvePointObj.CurvePoint.WorldPosition = curvePointObj.transform.position;
+            curvePointObj.CurvePoint.name = curvePointObj.name;
         }
 
         name = ground.gameObject.name;

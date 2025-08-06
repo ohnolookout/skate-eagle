@@ -6,6 +6,7 @@ using UnityEngine.U2D;
 [Serializable]
 public class CurvePoint
 {
+    public string name = "CP";
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
