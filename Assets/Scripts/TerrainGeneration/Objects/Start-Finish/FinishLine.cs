@@ -29,6 +29,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public int FlagXOffset => _flagXOffset;
     public int BackstopXOffset => _backstopXOffset;
     public bool BackstopIsActive => _backstop.activeSelf;
+    public GameObject GameObject => gameObject;
     #endregion
 
     #region Monobehaviours

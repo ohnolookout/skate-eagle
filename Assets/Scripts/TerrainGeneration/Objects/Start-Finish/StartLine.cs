@@ -5,6 +5,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 {
     [SerializeField] private CurvePoint _curvePoint;
     [SerializeField] private float _xOffset = 0;
+    public GameObject GameObject => gameObject;
 
     public CurvePoint CurvePoint { get => _curvePoint; set => _curvePoint = value; }
     public float XOffset {get => _xOffset; set => _xOffset = value; }

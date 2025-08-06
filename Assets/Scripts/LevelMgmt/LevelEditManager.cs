@@ -187,10 +187,21 @@ public class LevelEditManager : MonoBehaviour
 
     public void RefreshSerializable(ISerializable serializable)
     {
+        string selectedObjName = Selection.activeGameObject.name;
+
         _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
         var deserializable = serializable.Serialize();
 
+        var gameObject = serializable.GameObject;
 
+        if (serializable.GetType() == typeof(Ground)){
+            var ground = (Ground)serializable;
+            ground.Clear();
+        }
+
+        deserializable.Deserialize(gameObject, _groundManager.gameObject);
+
+        Selection.activeGameObject = GameObject.Find(selectedObjName);
     }
     private void RenameAll(int startIndex, Ground[] grounds)
     {

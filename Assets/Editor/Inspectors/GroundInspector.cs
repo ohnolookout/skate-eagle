@@ -23,7 +23,8 @@ public class GroundInspector : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
-            _levelEditManager.RefreshLevelGeneration();
+            _levelEditManager.RefreshSerializable(ground);
+            //_levelEditManager.RefreshLevelGeneration();
         }
 
         if(GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))

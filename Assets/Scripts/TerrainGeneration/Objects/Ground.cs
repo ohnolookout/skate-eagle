@@ -30,6 +30,7 @@ public class Ground : MonoBehaviour, ISerializable
     public List<CurvePoint> CurvePoints => _curvePoints;
     public List<CurvePointObject> CurvePointObjects => _curvePointEditObjects;
     public List<LinkedCameraTarget> LinkedCameraTargets => _linkedCameraTargets;
+    public GameObject GameObject => gameObject;
     #endregion
 
     public IDeserializable Serialize()
@@ -51,6 +52,29 @@ public class Ground : MonoBehaviour, ISerializable
     private void OnCurvePointChanged(CurvePointObject point)
     {
         //Update corresponding splinepoints on curvePoint change
+    }
+
+    public void Clear()
+    {
+        _curvePoints = new();
+
+        foreach (var point in _curvePointEditObjects)
+        {
+            DestroyImmediate(point.gameObject);
+        }
+
+        _curvePointEditObjects = new();
+
+        foreach(var seg in _segmentList)
+        {
+            DestroyImmediate(seg.gameObject);
+        }
+
+        _segmentList = new();
+
+        _isFloating = false;
+        _isInverted = false;
+        _hasShadow = true;
     }
 #endif
 }

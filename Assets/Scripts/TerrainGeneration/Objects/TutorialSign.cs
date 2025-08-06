@@ -7,6 +7,7 @@ public class TutorialSign: MonoBehaviour, ISerializable
     [SerializeField] private TMP_Text _signText;
     [SerializeField] private bool _isSquare = false;
     [SerializeField] private Transform _imageTransform;
+    public GameObject GameObject => gameObject;
 
     public TMP_Text SignText
     {
