@@ -26,4 +26,11 @@ public class TutorialSign: MonoBehaviour, ISerializable
 
         return new SerializedTutorialSign(gameObject.name, _signText.text, new Vector2(transform.position.x, transform.position.y), _imageTransform.rotation.eulerAngles.z, _isSquare);
     }
+
+    public void Clear()
+    {
+        _signText.text = string.Empty;
+        _isSquare = false;
+        _imageTransform.rotation = Quaternion.Euler(0, 0, 0);
+    }
 }

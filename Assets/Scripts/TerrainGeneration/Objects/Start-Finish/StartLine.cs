@@ -47,4 +47,10 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     {
         return new SerializedStartLine(this);
     }
+
+    public void Clear()
+    {
+        _curvePoint = null;
+        _xOffset = 0;
+    }
 }
