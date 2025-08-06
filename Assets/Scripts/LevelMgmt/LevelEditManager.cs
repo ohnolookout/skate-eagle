@@ -169,6 +169,28 @@ public class LevelEditManager : MonoBehaviour
     {
         GroundManager.FinishLine.UpdateFinish();
     }
+    public void UpdateEditorLevel()
+    {
+        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+    }
+
+    public void RefreshLevelGeneration()
+    {
+        string selectedObjName = Selection.activeGameObject.name;
+
+        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        SerializeLevelUtility.DeserializeLevel(_levelDB.EditorLevel, _groundManager);
+
+        Selection.activeGameObject = GameObject.Find(selectedObjName);
+    }
+
+    public void RefreshSerializable(ISerializable serializable)
+    {
+        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        var deserializable = serializable.Serialize();
+
+
+    }
     private void RenameAll(int startIndex, Ground[] grounds)
     {
         for (int i = startIndex; i < grounds.Length; i++)
@@ -215,16 +237,7 @@ public class LevelEditManager : MonoBehaviour
 
     #endregion
 
-    public void UpdateEditorLevel()
-    {
-        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
-    }
-
-    public void RefreshLevelGeneration()
-    {
-        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
-        SerializeLevelUtility.DeserializeLevel(_levelDB.EditorLevel, _groundManager);
-    }
+    
 
     public void DefaultMedalTimes()
     {
@@ -235,10 +248,6 @@ public class LevelEditManager : MonoBehaviour
         medalTimes.Bronze = 20;
     }
 
-    public Level CreateLevel(string name, MedalTimes medalTimes, GroundManager manager, Vector3? cameraStartPoint = null)
-    {
-        return new Level(name, medalTimes, _groundManager);
-    }
 }
 
 #endif

@@ -144,8 +144,6 @@ public static class CameraTargetBuilder
             }
         }
 
-        Debug.Log($"CameraTargetKDTreeBuilder: Found {targets.Count} targets to build KD-Tree.");
-
         return BuildKdTreeRecursive(targets);
     }
 
