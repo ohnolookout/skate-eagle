@@ -3,7 +3,7 @@ using UnityEditor.UI;
 using UnityEngine;
 
 [CustomEditor(typeof(Ground))]
-public class GroundEditor : Editor
+public class GroundInspector : Editor
 {
     private LevelEditManager _levelEditManager;
     public override void OnInspectorGUI()
@@ -29,7 +29,13 @@ public class GroundEditor : Editor
         if(GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
         {
             Undo.RecordObject(ground, "Clear Curve Point Targets");
-            ClearCurvePointTargets(ground);
+            ClearCurvePointTargets(ground, _levelEditManager);
+        }
+
+        if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(ground, "Clear Curve Point Targets");
+            PopulateDefaultTargets(ground, _levelEditManager);
         }
     }
     public void OnSceneGUI()
@@ -51,7 +57,7 @@ public class GroundEditor : Editor
     }
 
 
-    private static void ClearCurvePointTargets(Ground ground)
+    private static void ClearCurvePointTargets(Ground ground, LevelEditManager levelEditManager)
     {
         foreach(var curvePointObj in ground.CurvePointObjects)
         {
@@ -59,6 +65,23 @@ public class GroundEditor : Editor
             curvePointObj.LeftTargetObjects = new();
             curvePointObj.LinkedCameraTarget.LeftTargets = new();
             curvePointObj.LinkedCameraTarget.RightTargets = new();
+        }
+
+        if (levelEditManager != null)
+        {
+            levelEditManager.UpdateEditorLevel();
+        }
+    }
+
+    public static void PopulateDefaultTargets(Ground ground, LevelEditManager levelEditManager)
+    {
+        foreach(var point in ground.CurvePointObjects)
+        {
+            point.PopulateDefaultTargets();
+        }
+        if (levelEditManager != null)
+        {
+            levelEditManager.UpdateEditorLevel();
         }
     }
 }

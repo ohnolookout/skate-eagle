@@ -145,9 +145,14 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
         _onCurvePointChange?.Invoke(this);
     }
 
-    public void PopulateDefaultTargets() //Figure out if I need to run this on deserialization
+    public void GenerateTarget()
     {
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
+    }
+
+    public void PopulateDefaultTargets() //Figure out if I need to run this on deserialization
+    {
+        GenerateTarget();
 
         if (!LinkedCameraTarget.doTargetLow && !LinkedCameraTarget.doTargetHigh)
         {

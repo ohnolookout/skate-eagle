@@ -14,7 +14,7 @@ public static class CameraTargetBuilder
             targetable.LinkedCameraTarget = new();
         }
 
-        targetable.PopulateDefaultTargets();
+        targetable.GenerateTarget();
 
         targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
         targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
@@ -45,83 +45,6 @@ public static class CameraTargetBuilder
 
         return targetables;
     }
-    #endregion
-    #region Deserialize Target GameObjects
-    /*
-    public static void DeserializeCameraTargets(GroundManager groundManager)
-    {
-        if (groundManager == null)
-        {
-            Debug.Log("GroundManager is null or has no grounds.");
-            return;
-        }
-        var targetables = GetAllTargetables(groundManager);
-        foreach (var targetable in targetables)
-        {
-            ReassociateGameObjects(targetable, groundManager);
-        }
-    }
-
-
-    private static List<ICameraTargetable> GetAllTargetables(GroundManager groundManager)
-    {
-        var targetables = groundManager.GetComponentsInChildren<ICameraTargetable>().ToList();
-        //var targetables = new List<ICameraTargetable>();
-
-        //foreach (var ground in groundManager.Grounds)
-        //{
-        //    foreach (var curvePointObj in ground.CurvePointObjects)
-        //    {
-        //        targetables.Add(curvePointObj);
-        //    }
-        //}
-
-        foreach(var targetable in targetables)
-        {
-            targetable.PopulateDefaultTargets();
-        }
-
-        return targetables;
-    }
-
-    private static void ReassociateGameObjects(ICameraTargetable targetable, GroundManager groundManager)
-    {
-        //Iterate through all objects of groundManager and relink gameObjects in left and right target objects
-        //by using indices in serialized left and right targets
-
-        if (targetable == null)
-        {
-            Debug.Log("Targetable is null");
-            return;
-        }
-
-        if (!targetable.LinkedCameraTarget.doTargetLow)
-        {
-            return;
-        }
-
-        targetable.LeftTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.LeftTargets, groundManager);
-        targetable.RightTargetObjects = BuildTargetObjectList(targetable.LinkedCameraTarget.RightTargets, groundManager);
-
-    }
-
-    private static List<GameObject> BuildTargetObjectList(List<LinkedCameraTarget> linkedTargets, GroundManager groundManager)
-    {
-        List<GameObject> gameObjects = new();
-
-        foreach (var target in linkedTargets)
-        {
-            var obj = groundManager.GetGameObjectByIndices(target.SerializedLocation);
-
-            if (obj != null)
-            {
-                gameObjects.Add(obj);
-                target.Target.TargetTransform = obj.transform; //Replace with ICurvePointResync
-            }
-        }
-        return gameObjects;
-    }
-    */
     #endregion
 
     #region KD Tree

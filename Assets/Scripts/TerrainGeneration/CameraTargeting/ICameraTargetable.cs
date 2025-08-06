@@ -6,7 +6,7 @@ using System;
 
 public interface ICameraTargetable
 {
-    void PopulateDefaultTargets();
+    void GenerateTarget();
     //Use objects for assigning targets in the editor
     List<GameObject> LeftTargetObjects { get; set; }
     List<GameObject> RightTargetObjects { get; set; }

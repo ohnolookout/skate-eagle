@@ -11,19 +11,24 @@ public class CurvePointObjectInspector : Editor
     private SerializedProperty _serializedRightTargetObjects;
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
+    private LevelEditManager _levelEditManager;
     public override void OnInspectorGUI()
     {
         _curvePointObject = (CurvePointObject)target;
         _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
         _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
-        
-        _groundManager = FindFirstObjectByType<GroundManager>();
 
-        if (_curvePointObject.LinkedCameraTarget.RightTargets.Count > 0)
+        if (_groundManager == null)
         {
-            GUILayout.Label($"First right target transform != null: {_curvePointObject.LinkedCameraTarget.RightTargets[0].Target.TargetTransform != null}");
+            _groundManager = FindFirstObjectByType<GroundManager>();
         }
+
+        if (_levelEditManager == null)
+        {
+            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+        }
+
         //Curvepoint settings
         EditorGUI.BeginChangeCheck();
 
@@ -53,7 +58,7 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetLow = doTargetLow;
-            _curvePointObject.PopulateDefaultTargets();
+            _curvePointObject.GenerateTarget();
         }
 
         EditorGUI.BeginChangeCheck();
@@ -64,7 +69,7 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetHigh = doTargetHigh;
-            _curvePointObject.PopulateDefaultTargets();
+            _curvePointObject.GenerateTarget();
         }
 
         if (_curvePointObject.DoTargetLow || _curvePointObject.DoTargetHigh)
@@ -116,6 +121,12 @@ public class CurvePointObjectInspector : Editor
             }
         }
 
+        if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(_curvePointObject, "Reseting targets to default");
+            _curvePointObject.PopulateDefaultTargets();
+            _levelEditManager.UpdateEditorLevel();
+        }
         if (GUILayout.Button("Find Next CurvePoints", GUILayout.ExpandWidth(false)))
         {
             if (!_curvePointObject.DoTargetLow)

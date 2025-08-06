@@ -171,6 +171,7 @@ public class LevelEditManager : MonoBehaviour
     }
     public void UpdateEditorLevel()
     {
+        Undo.RecordObject(_levelDB, "Updated editor level");
         _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
     }
 

@@ -87,6 +87,19 @@ public class LevelEditManagerInspector : Editor
             newLevelWindow.Init(_levelEditManager);
         }
 
+        if (GUILayout.Button("Popualte Default Targets", GUILayout.ExpandWidth(false)))
+        {
+            var grounds = _levelEditManager.GroundManager.GetGrounds();
+
+            foreach (var ground in grounds)
+            {
+                Undo.RecordObject(ground, "Populating default targets.");
+                GroundInspector.PopulateDefaultTargets(ground, _levelEditManager);
+            }
+
+            _levelEditManager.UpdateEditorLevel();
+        }
+
         debugMode = EditorGUILayout.Toggle("Debug Mode", debugMode, GUILayout.ExpandWidth(false));
     }
 
@@ -147,7 +160,7 @@ public class LevelEditManagerInspector : Editor
 
             GUILayout.Space(20);
 
-            if(GUILayout.Button("Camcel", GUILayout.ExpandWidth(false)))
+            if(GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
             {
                 Close();
             }
