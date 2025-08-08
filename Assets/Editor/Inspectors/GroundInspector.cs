@@ -6,6 +6,7 @@ using UnityEngine;
 public class GroundInspector : Editor
 {
     private LevelEditManager _levelEditManager;
+    public static bool DebugSegments = false;
     public override void OnInspectorGUI()
     {
         if(_levelEditManager == null)
@@ -14,6 +15,8 @@ public class GroundInspector : Editor
         }
 
         var ground = (Ground)target;
+
+        GUILayout.Label("Settings", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
 
@@ -26,7 +29,11 @@ public class GroundInspector : Editor
             _levelEditManager.RefreshSerializable(ground);
         }
 
-        if(GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
+        GUILayout.Space(20);
+        GUILayout.Label("Targeting", EditorStyles.boldLabel);
+
+
+        if (GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
         {
             Undo.RecordObject(ground, "Clear Curve Point Targets");
             ClearCurvePointTargets(ground, _levelEditManager);
@@ -37,12 +44,31 @@ public class GroundInspector : Editor
             Undo.RecordObject(ground, "Clear Curve Point Targets");
             PopulateDefaultTargets(ground, _levelEditManager);
         }
+
+        GUILayout.Label("Segments", EditorStyles.boldLabel);
+        GUILayout.Space(20);
+        DebugSegments = GUILayout.Toggle(DebugSegments, "Debug Segments");
     }
     public void OnSceneGUI()
     {
-        var ground = (Ground)target;
-        var curvePointChanged = false;
+        if (_levelEditManager == null)
+        {
+            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+        }
 
+        var ground = (Ground)target;
+        DrawCurvePoints(ground, _levelEditManager);
+
+        if (ground.gameObject.transform.hasChanged)
+        {
+            ground.gameObject.transform.hasChanged = false;
+            _levelEditManager.OnUpdateTransform();
+        }
+    }
+
+    public static void DrawCurvePoints(Ground ground, LevelEditManager levelEditManager)
+    {
+        var curvePointChanged = false;
         foreach (var point in ground.CurvePointObjects)
         {
             if (CurvePointObjectInspector.DrawCurvePointHandles(point))
@@ -51,18 +77,11 @@ public class GroundInspector : Editor
             }
         }
 
-        if (ground.gameObject.transform.hasChanged)
-        {
-            ground.gameObject.transform.hasChanged = false;
-            _levelEditManager.OnUpdateTransform();
-        }
-
         if (curvePointChanged)
         {
-            _levelEditManager.RefreshSerializable(ground);
+            levelEditManager.RefreshSerializable(ground);
         }
     }
-
 
     private static void ClearCurvePointTargets(Ground ground, LevelEditManager levelEditManager)
     {

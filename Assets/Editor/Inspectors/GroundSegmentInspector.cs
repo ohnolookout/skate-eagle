@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [CustomEditor(typeof(GroundSegment))]
-public class GroundSegmentEditor: Editor
+public class GroundSegmentInspector: Editor
 {
     private Tool lastTool = Tool.None;
     public void OnEnable()
@@ -23,6 +23,17 @@ public class GroundSegmentEditor: Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
+    }
+
+    public void OnSceneGUI()
+    {
+        var segment = (GroundSegment)target;
+
+        if (!GroundInspector.DebugSegments)
+        {
+            Selection.activeObject = segment.parentGround;
+        }
+
     }
 
 }

@@ -17,7 +17,6 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private GameObject _curvePointParent;
     [SerializeField] private List<CurvePoint> _curvePoints = new();
     [SerializeField] private List<LinkedCameraTarget> _linkedCameraTargets = new();
-    //Add dictionary that maps CurvePointObjects to Splinepoints
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
