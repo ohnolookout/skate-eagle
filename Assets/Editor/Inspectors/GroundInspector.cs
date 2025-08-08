@@ -24,7 +24,6 @@ public class GroundInspector : Editor
         if (EditorGUI.EndChangeCheck())
         {
             _levelEditManager.RefreshSerializable(ground);
-            //_levelEditManager.RefreshLevelGeneration();
         }
 
         if(GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
@@ -42,18 +41,25 @@ public class GroundInspector : Editor
     public void OnSceneGUI()
     {
         var ground = (Ground)target;
+        var curvePointChanged = false;
 
         foreach (var point in ground.CurvePointObjects)
         {
-            CurvePointObjectInspector.DrawCurvePointHandles(point);
+            if (CurvePointObjectInspector.DrawCurvePointHandles(point))
+            {
+                curvePointChanged = true;
+            }
         }
 
         if (ground.gameObject.transform.hasChanged)
         {
             ground.gameObject.transform.hasChanged = false;
-            var editManager = FindFirstObjectByType<LevelEditManager>();
-            editManager.OnUpdateTransform();
+            _levelEditManager.OnUpdateTransform();
+        }
 
+        if (curvePointChanged)
+        {
+            _levelEditManager.RefreshSerializable(ground);
         }
     }
 

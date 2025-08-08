@@ -166,7 +166,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
     }
 
-    public void UpdateFinish()
+    public void Refresh(GroundManager _ = null)
     {
         UpdateFlagPosition();
         UpdateBackstopPosition();

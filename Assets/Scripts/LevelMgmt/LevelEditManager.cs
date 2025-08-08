@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
+using NUnit.Framework.Constraints;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -167,36 +168,20 @@ public class LevelEditManager : MonoBehaviour
     #region Recalculation
     public void OnUpdateTransform()
     {
-        GroundManager.FinishLine.UpdateFinish();
+        GroundManager.FinishLine.Refresh();
     }
     public void UpdateEditorLevel()
     {
-        Undo.RecordObject(_levelDB, "Updated editor level");
         _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
-    }
-
-    public void RefreshLevelGeneration()
-    {
-        string selectedObjName = Selection.activeGameObject.name;
-
-        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
-        SerializeLevelUtility.DeserializeLevel(_levelDB.EditorLevel, _groundManager);
-
-        Selection.activeGameObject = GameObject.Find(selectedObjName);
     }
 
     public void RefreshSerializable(ISerializable serializable)
     {
-        string selectedObjName = Selection.activeGameObject.name;
-
         _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
-        var deserializable = serializable.Serialize();
 
-        serializable.Clear();
+        Undo.RegisterFullObjectHierarchyUndo(serializable.GameObject, "Update ISerializable");
+        serializable.Refresh(_groundManager);
 
-        deserializable.Deserialize(serializable.GameObject, _groundManager.gameObject);
-
-        Selection.activeGameObject = GameObject.Find(selectedObjName);
     }
     private void RenameAll(int startIndex, Ground[] grounds)
     {
@@ -244,7 +229,6 @@ public class LevelEditManager : MonoBehaviour
 
     #endregion
 
-    
 
     public void DefaultMedalTimes()
     {

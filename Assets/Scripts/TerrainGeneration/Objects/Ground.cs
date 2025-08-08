@@ -46,12 +46,6 @@ public class Ground : MonoBehaviour, ISerializable
         pointObject.SetCurvePoint(curvePoint);
         _curvePointEditObjects.Add(pointObject);
         CurvePoints.Add(curvePoint);
-        pointObject.OnCurvePointChange += OnCurvePointChanged;
-    }
-
-    private void OnCurvePointChanged(CurvePointObject point)
-    {
-        //Update corresponding splinepoints on curvePoint change
     }
 
     public void Clear()
@@ -75,6 +69,22 @@ public class Ground : MonoBehaviour, ISerializable
         _isFloating = false;
         _isInverted = false;
         _hasShadow = true;
+    }
+
+    public void Refresh(GroundManager groundManager)
+    {
+
+        //Serialize ground then only deserialize ground segment, don't fuck with curvepointobjects
+        var serializedGround = (SerializedGround)Serialize();
+
+        foreach (var seg in _segmentList)
+        {
+            DestroyImmediate(seg.gameObject);
+        }
+
+        _segmentList = new();
+
+        serializedGround.DeserializeEditSegment(groundManager, this);
     }
 #endif
 }

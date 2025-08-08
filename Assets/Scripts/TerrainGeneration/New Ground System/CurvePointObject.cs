@@ -11,8 +11,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
     #region Declarations
     public CurvePoint curvePoint;
     private Ground _parentGround;
-    private Action<CurvePointObject> _onCurvePointChange;
-    public Action<CurvePointObject> OnCurvePointChange;
     public List<GameObject> rightTargetObjects = new();
     public List<GameObject> leftTargetObjects = new();
     public CurvePoint CurvePoint => curvePoint;
@@ -85,7 +83,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
         curvePoint.LeftTangent = updatedleftTang - transform.position;
         curvePoint.RightTangent = updatedRightTang - transform.position;
 
-        _onCurvePointChange?.Invoke(this);
     }
 
     public void LeftTangentChanged(Vector3 updatedTang)
@@ -102,7 +99,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
             curvePoint.RightTangent = -curvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
         }
 
-        _onCurvePointChange?.Invoke(this);
     }
 
     public void RightTangentChanged(Vector3 updatedTang)
@@ -119,17 +115,15 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
             curvePoint.LeftTangent = -curvePoint.RightTangent.normalized * leftMagnitude; // Maintain the same magnitude for the left tangent
         }
         
-        _onCurvePointChange?.Invoke(this);
     }
 
     public void PositionChanged(Vector3 updatedPosition)
     {
-        var localPosition = updatedPosition - ParentGround.transform.position;
-        curvePoint.Position = localPosition;
-        transform.position = localPosition;
+        transform.position = updatedPosition;
+        curvePoint.Position = updatedPosition - ParentGround.transform.position;
     }
 
-    public void SettingsChanged(ShapeTangentMode mode, bool isSymmetrical)
+    public void TangentSettingsChanged(ShapeTangentMode mode, bool isSymmetrical)
     {
         curvePoint.Mode = mode;
         curvePoint.IsSymmetrical = isSymmetrical;
@@ -142,7 +136,6 @@ public class CurvePointObject : MonoBehaviour, ICameraTargetable, IObjectResync 
             var rightMagnitude = curvePoint.RightTangent.magnitude;
             curvePoint.RightTangent = -curvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
         }
-        _onCurvePointChange?.Invoke(this);
     }
 
     public void GenerateTarget()

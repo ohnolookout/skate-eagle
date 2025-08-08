@@ -77,7 +77,7 @@ public class SerializedGround : IDeserializable
         return ground;
     }
 
-    private void DeserializeEditSegment(GroundManager groundManager, Ground ground)
+    public void DeserializeEditSegment(GroundManager groundManager, Ground ground)
     {
         var segment = groundManager.groundSpawner.AddEmptySegment(ground);
         editorSegment.Deserialize(segment, ground);

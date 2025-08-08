@@ -33,4 +33,9 @@ public class TutorialSign: MonoBehaviour, ISerializable
         _isSquare = false;
         _imageTransform.rotation = Quaternion.Euler(0, 0, 0);
     }
+
+    public void Refresh(GroundManager _)
+    {
+        return;
+    }
 }

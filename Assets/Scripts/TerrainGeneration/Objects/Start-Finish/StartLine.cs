@@ -53,4 +53,9 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _curvePoint = null;
         _xOffset = 0;
     }
+
+    public void Refresh(GroundManager _)
+    {
+        return;
+    }
 }

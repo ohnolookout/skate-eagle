@@ -41,7 +41,6 @@ public class Level
         _leaderboardKey = _name + "_leaderboard";
         if (cameraStartPosition == new Vector2(0,0))
         {
-            Debug.Log("Setting camera start position to serialized start line position.");
             cameraStartPosition = _serializedStartLine.StartPositionWithOffset;
         }
         else
