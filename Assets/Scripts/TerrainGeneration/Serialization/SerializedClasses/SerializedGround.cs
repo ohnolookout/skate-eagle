@@ -89,8 +89,8 @@ public class SerializedGround : IDeserializable
         {
             var segment = groundManager.groundSpawner.AddEmptySegment(ground);
             serializedSegment.Deserialize(segment, ground);
-            //segment.gameObject.SetActive(false);
-            //segment.gameObject.SetActive(true);
+            segment.gameObject.SetActive(false);
+            segment.gameObject.SetActive(true);
         }
     }
 

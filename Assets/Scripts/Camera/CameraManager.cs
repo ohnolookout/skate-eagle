@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+#if UNITY_EDITOR
+    public bool doSetStartPosition = false;
+    private StartPositionSetter positionSetter;
+#endif
     private ProCamera2D _camera;
     private ProCamera2DForwardFocus _forwardFocus;
     private LinkedCameraTarget _currentTarget;
@@ -35,6 +39,13 @@ public class CameraManager : MonoBehaviour
         LevelManager.OnFall += FreezeCamera;
         LevelManager.OnCrossFinish += FreezeCamera;
         LevelManager.OnGameOver += FreezeCamera;
+
+#if UNITY_EDITOR
+        if (doSetStartPosition)
+        {
+            positionSetter = new();
+        }
+#endif
     }
 
     void FixedUpdate()
@@ -43,6 +54,13 @@ public class CameraManager : MonoBehaviour
         {
             CheckCurrentTarget();
         }
+
+#if UNITY_EDITOR
+        if (_doUpdate & doSetStartPosition)
+        {
+            doSetStartPosition = !positionSetter.CheckPosition(_camera.transform.position);
+        }
+#endif
     }
 
     private void OnDrawGizmosSelected()
@@ -208,5 +226,41 @@ public class CameraManager : MonoBehaviour
     private void TurnOnDuration()
     {
         _doDuration = true;
+
+#if UNITY_EDITOR
+        doSetStartPosition = false;
+#endif
     }
+
+#if UNITY_EDITOR
+    private class StartPositionSetter
+    {
+        private float _startPositionTimer = 0;
+        private Vector3 _lastPosition;
+        private const int TimeLimit = 1;
+
+//Update returns true if camera has stayed in place for time limit
+        public bool CheckPosition(Vector3 currentPosition)
+        {
+            if (currentPosition != _lastPosition)
+            {
+                _lastPosition = currentPosition;
+                _startPositionTimer = 0;
+            }
+
+            else if(_startPositionTimer >= TimeLimit)
+            {
+                GameManager.Instance.CurrentLevel.CameraStartPosition = currentPosition;
+                Debug.Log("Camera start position for level " + GameManager.Instance.CurrentLevel.Name + 
+                    " set to " + GameManager.Instance.CurrentLevel.CameraStartPosition);
+                return true;
+            } else
+            {
+                _startPositionTimer += Time.deltaTime;
+            }
+
+            return false;
+        }
+    }
+#endif
 }
