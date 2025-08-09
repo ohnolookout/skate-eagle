@@ -52,14 +52,21 @@ public class SerializedGroundSegment
         this.name = name;
         this.position = position;
         this.rotation = rotation;
-        leftFloorHeight = curvePoints[0].FloorHeight;
-        rightFloorHeight = curvePoints[^1].FloorHeight;
-        leftFloorAngle = curvePoints[0].FloorAngle;
-        rightFloorAngle = curvePoints[^1].FloorAngle;
 
         //State
         isStart = false;
         isFinish = false;
+
+        if (curvePoints == null || curvePoints.Count < 2)
+        {
+            return;
+        }
+
+        //Floor
+        leftFloorHeight = curvePoints[0].FloorHeight;
+        rightFloorHeight = curvePoints[^1].FloorHeight;
+        leftFloorAngle = curvePoints[0].FloorAngle;
+        rightFloorAngle = curvePoints[^1].FloorAngle;
 
         //Curve points
         edgeSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
@@ -102,6 +109,11 @@ public class SerializedGroundSegment
         segment.RightFloorAngle = rightFloorAngle;
 
         segment.parentGround = ground;
+
+        if (fillSplineCurvePoints == null || fillSplineCurvePoints.Count < 2)
+        {
+            return segment;
+        }
 
         segment.ActivateShadow(ground.HasShadow);
 

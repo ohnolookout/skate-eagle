@@ -215,6 +215,10 @@ public class CurvePointObjectInspector : Editor
             handlesChanged = true;
         }
 
+        if (curvePointObject.CurvePoint.Mode == ShapeTangentMode.Linear)
+        {
+            return handlesChanged;
+        }
 
         Handles.color = Color.red;
 

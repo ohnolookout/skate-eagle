@@ -87,7 +87,7 @@ public class LevelEditManagerInspector : Editor
             newLevelWindow.Init(_levelEditManager);
         }
 
-        if (GUILayout.Button("Popualte Default Targets", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
         {
             var grounds = _levelEditManager.GroundManager.GetGrounds();
 

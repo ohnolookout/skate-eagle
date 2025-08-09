@@ -12,6 +12,7 @@ using NUnit.Framework.Constraints;
 [ExecuteInEditMode]
 public class LevelEditManager : MonoBehaviour
 {
+    #region Declarations
     //Level editing parameters
     private GroundManager _groundManager;
     public MedalTimes medalTimes = new();
@@ -23,6 +24,7 @@ public class LevelEditManager : MonoBehaviour
 
     public GroundManager GroundManager => _groundManager;
     public GroundSpawner GroundSpawner => _groundSpawner;
+    #endregion
 
     #region Monobehaviors
     private void Awake()
@@ -150,6 +152,26 @@ public class LevelEditManager : MonoBehaviour
         return ground;
     }
 
+    public CurvePointObject AddCurvePoint(Ground ground)
+    {
+        var hasCPs = ground.CurvePoints.Count > 0;
+        var newPointPos = hasCPs ? ground.CurvePoints[^1].Position + new Vector3(40, 0): ground.transform.position;
+        var lastRightTang = hasCPs ? ground.CurvePoints[^1].RightTangent : new Vector3(10, 8);
+        var newPointLeftTang = new Vector3(-lastRightTang.x, lastRightTang.y);
+
+        CurvePoint newPoint = new(newPointPos, newPointLeftTang, -newPointLeftTang);
+        ground.AddCurvePoint(newPoint);
+        RefreshSerializable(ground);
+
+        return ground.CurvePointObjects[^1];
+
+    }
+
+    public CurvePointObject InsertCurvePoint(Ground ground, int index)
+    {
+        return null;
+    }
+
     #endregion
 
     #region Remove
@@ -191,45 +213,7 @@ public class LevelEditManager : MonoBehaviour
             ground.gameObject.name = "Ground " + i;
         }
     }
-
-    #endregion
-
-    #region Start/Finish
-
-    public void ClearFinishLine()
-    {
-        Undo.RegisterFullObjectHierarchyUndo(_groundManager.FinishLine.gameObject, "Clear finish line");
-        _groundManager.FinishLine.Clear();
-    }
-
-    //private bool ValidateFinishParameters(GroundSegment segment, SerializedFinishLine parameters)
-    //{
-    //    if (segment == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (parameters == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (parameters.flagPointIndex < 0 || parameters.flagPointIndex >= segment.Curve.Count)
-    //    { 
-    //        return false;
-    //    }
-
-    //    if (parameters.backstopPointIndex < 0 || parameters.backstopPointIndex >= segment.Curve.Count)
-    //    { 
-    //        return false;
-    //    }
-
-    //    return true;
-    //}
-
-    #endregion
-
-
+    
     public void DefaultMedalTimes()
     {
         medalTimes.Red = 6;
@@ -238,6 +222,8 @@ public class LevelEditManager : MonoBehaviour
         medalTimes.Silver = 14;
         medalTimes.Bronze = 20;
     }
+
+    #endregion
 
 }
 

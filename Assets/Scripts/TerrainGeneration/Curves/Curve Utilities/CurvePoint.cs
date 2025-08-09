@@ -34,8 +34,30 @@ public class CurvePoint
         }
         set { _serializedWorldPosition = value; }
     }
-    public Vector3 LeftTangent { get => leftTangent; set => leftTangent = value; }
-    public Vector3 RightTangent { get => rightTangent; set => rightTangent = value; }
+    public Vector3 LeftTangent 
+    { 
+        get 
+        {
+            if(_mode == ShapeTangentMode.Linear)
+            {
+                return new(0, 0);
+            }
+            return leftTangent;
+        }
+        set => leftTangent = value; 
+    }
+    public Vector3 RightTangent 
+    {
+        get
+        {
+            if (_mode == ShapeTangentMode.Linear)
+            {
+                return new(0, 0);
+            }
+            return rightTangent;
+        }
+        set => rightTangent = value; 
+    }
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
@@ -56,6 +78,7 @@ public class CurvePoint
         _floorAngle = 0;
         _forceNewSection = false;
         _blockNewSection = false;
+        _linkedCameraTarget = new();
     }
     public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
     {
@@ -68,6 +91,7 @@ public class CurvePoint
         _floorAngle = 0;
         _forceNewSection = false;
         _blockNewSection = false;
+        _linkedCameraTarget = new();
 
     }
 
@@ -82,6 +106,7 @@ public class CurvePoint
         _floorAngle = 0;
         _forceNewSection = false;
         _blockNewSection = false;
+        _linkedCameraTarget = new();
     }
 
 

@@ -127,9 +127,6 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         ResetSaveData();
         Start();
-        //_sessionData = _saveLoadUtility.NewGame();
-        //_onAccountReset?.Invoke();
-        // StartCoroutine(_playFabManager.Initialize(this, true));
     }
 
     public void UpdateRecord(FinishData finishData)

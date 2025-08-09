@@ -9,13 +9,20 @@ public class GroundInspector : Editor
     public static bool DebugSegments = false;
     public override void OnInspectorGUI()
     {
-        if(_levelEditManager == null)
+        if (_levelEditManager == null)
         {
             _levelEditManager = FindFirstObjectByType<LevelEditManager>();
         }
 
         var ground = (Ground)target;
 
+        GUILayout.Label("Curve Points", EditorStyles.boldLabel);
+        if(GUILayout.Button("Add Curve Point", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeObject = _levelEditManager.AddCurvePoint(ground);            
+        }
+
+        GUILayout.Space(20);
         GUILayout.Label("Settings", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
@@ -45,8 +52,8 @@ public class GroundInspector : Editor
             PopulateDefaultTargets(ground, _levelEditManager);
         }
 
-        GUILayout.Label("Segments", EditorStyles.boldLabel);
         GUILayout.Space(20);
+        GUILayout.Label("Segments", EditorStyles.boldLabel);
         DebugSegments = GUILayout.Toggle(DebugSegments, "Debug Segments");
     }
     public void OnSceneGUI()
