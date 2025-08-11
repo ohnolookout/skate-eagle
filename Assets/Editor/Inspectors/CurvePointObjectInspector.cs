@@ -1,11 +1,12 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-[CustomEditor(typeof(CurvePointObject))]
+[CustomEditor(typeof(CurvePointEditObject))]
 public class CurvePointObjectInspector : Editor
 {
-    private CurvePointObject _curvePointObject;
+    private CurvePointEditObject _curvePointObject;
     private SerializedObject _so;
     private SerializedProperty _serializedLeftTargetObjects;
     private SerializedProperty _serializedRightTargetObjects;
@@ -14,7 +15,7 @@ public class CurvePointObjectInspector : Editor
     private LevelEditManager _levelEditManager;
     public override void OnInspectorGUI()
     {
-        _curvePointObject = (CurvePointObject)target;
+        _curvePointObject = (CurvePointEditObject)target;
         _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
         _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
@@ -69,6 +70,27 @@ public class CurvePointObjectInspector : Editor
             _curvePointObject.CurvePoint.FloorAngle = floorAngle;
 
             RefreshGround();
+        }
+
+
+        GUILayout.Space(20);
+
+        GUILayout.Label("Add/Remove", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Add Point After"))
+        {
+            var ground = _curvePointObject.ParentGround;
+            var index = _curvePointObject.transform.GetSiblingIndex() + 1;
+
+            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
+        }
+
+        if (GUILayout.Button("Add Point Before"))
+        {
+            var ground = _curvePointObject.ParentGround;
+            var index = _curvePointObject.transform.GetSiblingIndex() - 1;
+
+            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
         }
 
 
@@ -171,16 +193,22 @@ public class CurvePointObjectInspector : Editor
     }
     public void OnSceneGUI()
     {
-        var curvePointEditObject = (CurvePointObject)target;
+        var curvePointEditObject = (CurvePointEditObject)target;
+
+        var startPos = curvePointEditObject.transform.position;
 
         var handlesChanged = DrawCurvePointHandles(curvePointEditObject);
         if (handlesChanged)
         {
+            if (_levelEditManager.doShiftEdits)
+            {
+                _levelEditManager.ShiftCurvePoints(curvePointEditObject, curvePointEditObject.transform.position - startPos);
+            }
             RefreshGround();
         }
     }
 
-    public static bool DrawCurvePointHandles(CurvePointObject curvePointObject)
+    public static bool DrawCurvePointHandles(CurvePointEditObject curvePointObject)
     {
         var objectPosition = curvePointObject.transform.position;
         var groundPosition = curvePointObject.ParentGround.transform.position;
@@ -263,12 +291,12 @@ public class CurvePointObjectInspector : Editor
         return handlesChanged;
     }
 
-    private static CurvePointObject NextCurvePoint(CurvePointObject currentCurvePoint)
+    private static CurvePointEditObject NextCurvePoint(CurvePointEditObject currentCurvePoint)
     {
         var curvePointObjects = currentCurvePoint.ParentGround.CurvePointObjects;
-        var index = curvePointObjects.IndexOf(currentCurvePoint);
+        var index = currentCurvePoint.transform.GetSiblingIndex();
 
-        if (index < curvePointObjects.Count - 1)
+        if (index < curvePointObjects.Length - 1)
         {
             return curvePointObjects[index + 1];
         }
@@ -276,10 +304,10 @@ public class CurvePointObjectInspector : Editor
         return null;
     }
 
-    private static CurvePointObject PreviousCurvePoint(CurvePointObject currentCurvePoint)
+    private static CurvePointEditObject PreviousCurvePoint(CurvePointEditObject currentCurvePoint)
     {
         var curvePointObjects = currentCurvePoint.ParentGround.CurvePointObjects;
-        var index = curvePointObjects.IndexOf(currentCurvePoint);
+        var index = currentCurvePoint.transform.GetSiblingIndex();
         if (index > 0)
         {
             return curvePointObjects[index - 1];

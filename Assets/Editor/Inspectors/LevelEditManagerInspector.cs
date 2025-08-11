@@ -100,6 +100,7 @@ public class LevelEditManagerInspector : Editor
             _levelEditManager.UpdateEditorLevel();
         }
 
+        _levelEditManager.doShiftEdits = EditorGUILayout.Toggle("Shift Mode", _levelEditManager.doShiftEdits, GUILayout.ExpandWidth(false));
         debugMode = EditorGUILayout.Toggle("Debug Mode", debugMode, GUILayout.ExpandWidth(false));
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 
 public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
@@ -85,6 +86,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public void SetFinishLine(SerializedFinishLine parameters)
     {
 #if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
         if (parameters == null)
         {
             if (Application.isPlaying)
@@ -168,12 +170,18 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void Refresh(GroundManager _ = null)
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         UpdateFlagPosition();
         UpdateBackstopPosition();
     }
 
     public void SetFlagOffset(int flagXOffset)
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _flagXOffset = flagXOffset;
         UpdateFlagPosition();
     }
@@ -181,11 +189,17 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void UpdateFlagPosition()
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _flag.transform.position = _flagPoint.WorldPosition + new Vector3(_flagXOffset, 0) + _flagSpriteOffset;
     }
 
     public void SetBackstopPoint(CurvePoint backstopPoint)
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _backstopPoint = backstopPoint;
         _backstop.SetActive(true);
         UpdateBackstopPosition();
@@ -197,12 +211,18 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void SetBackstopOffset(int backstopXOffset)
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _backstopXOffset = backstopXOffset;
         UpdateBackstopPosition();
     }
 
     public void UpdateBackstopPosition()
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _backstop.transform.position = _backstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
     }
 
@@ -237,11 +257,17 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void Clear()
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         ClearFlag();
         ClearBackstop();
     }
     public void ClearBackstop()
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _backstopPoint = null;
         _backstopXOffset = 0;
         _backstop.transform.position = Vector2.zero;
@@ -250,6 +276,9 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void ClearFlag()
     {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
         _flagPoint = null;
         _flagXOffset = 50;
         _flagRenderer.flipX = false;

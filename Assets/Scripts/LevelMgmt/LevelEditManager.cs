@@ -4,9 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using System;
-using NUnit.Framework.Constraints;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
@@ -21,6 +19,7 @@ public class LevelEditManager : MonoBehaviour
     private GroundSpawner _groundSpawner;
     private LevelDatabase _levelDB;
     private bool _debugMode = false;
+    public bool doShiftEdits = false;
 
     public GroundManager GroundManager => _groundManager;
     public GroundSpawner GroundSpawner => _groundSpawner;
@@ -86,6 +85,7 @@ public class LevelEditManager : MonoBehaviour
         cameraStartPosition = level.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(level, _groundManager);
+        Undo.ClearAll();
     }
 
     public void NewLevel(string levelName = "New Level")
@@ -152,24 +152,43 @@ public class LevelEditManager : MonoBehaviour
         return ground;
     }
 
-    public CurvePointObject AddCurvePoint(Ground ground)
-    {
-        var hasCPs = ground.CurvePoints.Count > 0;
-        var newPointPos = hasCPs ? ground.CurvePoints[^1].Position + new Vector3(40, 0): ground.transform.position;
-        var lastRightTang = hasCPs ? ground.CurvePoints[^1].RightTangent : new Vector3(10, 8);
-        var newPointLeftTang = new Vector3(-lastRightTang.x, lastRightTang.y);
+    private readonly Vector3 _cpDelta = new(40, 0);
 
-        CurvePoint newPoint = new(newPointPos, newPointLeftTang, -newPointLeftTang);
-        ground.AddCurvePoint(newPoint);
+    public CurvePointEditObject InsertCurvePoint(Ground ground, int index)
+    {
+        var cpCount = ground.CurvePoints.Count;
+        Vector3 pos;
+        Vector3 leftTang;
+
+        if (cpCount == 0)
+        {
+            index = 0;
+            pos = ground.transform.position;
+            leftTang = new(-10, 8);
+        } else if (index == 0) {
+            var cp = ground.CurvePoints[0];
+            pos = cp.Position - _cpDelta;
+            leftTang = new(cp.LeftTangent.x, -cp.LeftTangent.y);
+        } else
+        {
+            index = Math.Min(index, cpCount);
+            var cp = ground.CurvePoints[index - 1];
+            pos = cp.Position + _cpDelta;
+            leftTang = new Vector3(-cp.RightTangent.x, cp.RightTangent.y);
+        }
+
+        CurvePoint newPoint = new(pos, leftTang, -leftTang);
+        Undo.RegisterFullObjectHierarchyUndo(ground.gameObject, "Inserted point");
+        var cpObj = ground.SetCurvePoint(newPoint, index);
+
+        if (doShiftEdits)
+        {
+            ShiftCurvePoints(cpObj, _cpDelta);
+        }
+
         RefreshSerializable(ground);
 
-        return ground.CurvePointObjects[^1];
-
-    }
-
-    public CurvePointObject InsertCurvePoint(Ground ground, int index)
-    {
-        return null;
+        return cpObj;
     }
 
     #endregion
@@ -221,6 +240,17 @@ public class LevelEditManager : MonoBehaviour
         medalTimes.Gold = 10;
         medalTimes.Silver = 14;
         medalTimes.Bronze = 20;
+    }
+
+    public void ShiftCurvePoints(CurvePointEditObject editedCP, Vector3 delta)
+    {
+        var index = editedCP.transform.GetSiblingIndex() + 1;
+        var groundCPs = editedCP.ParentGround.CurvePointObjects;
+
+        for (int i = index; i < groundCPs.Length; i++)
+        {
+            groundCPs[i].PositionChanged(groundCPs[i].transform.position + delta);
+        }
     }
 
     #endregion

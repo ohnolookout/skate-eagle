@@ -70,7 +70,7 @@ public class SerializedGround : IDeserializable
 
         foreach (var curvePoint in curvePoints)
         {
-            ground.AddCurvePoint(curvePoint);
+            ground.SetCurvePoint(curvePoint);
         }
 #endif
 

@@ -12,11 +12,9 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private bool _isFloating = false;
     [SerializeField] private bool _isInverted = false;
     [SerializeField] private bool _hasShadow = true;
-    private List<CurvePointObject> _curvePointEditObjects = new();    
     [SerializeField] private GameObject _curvePointEditObjectPrefab;
-    [SerializeField] private GameObject _curvePointParent;
+    [SerializeField] private GameObject _curvePointContainer;
     [SerializeField] private List<CurvePoint> _curvePoints = new();
-    [SerializeField] private List<LinkedCameraTarget> _linkedCameraTargets = new();
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
@@ -27,8 +25,7 @@ public class Ground : MonoBehaviour, ISerializable
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
-    public List<CurvePointObject> CurvePointObjects => _curvePointEditObjects;
-    public List<LinkedCameraTarget> LinkedCameraTargets => _linkedCameraTargets;
+    public CurvePointEditObject[] CurvePointObjects => _curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
     #endregion
 
@@ -37,26 +34,35 @@ public class Ground : MonoBehaviour, ISerializable
         return new SerializedGround(this);
     }
 #if UNITY_EDITOR
-    public void AddCurvePoint(CurvePoint curvePoint)
+    public CurvePointEditObject SetCurvePoint(CurvePoint curvePoint, int index = -1)
     {
-        var pointObject = Instantiate(_curvePointEditObjectPrefab, _curvePointParent.transform).GetComponent<CurvePointObject>();        
+
+        var pointObject = Instantiate(_curvePointEditObjectPrefab, _curvePointContainer.transform).GetComponent<CurvePointEditObject>();
         pointObject.ParentGround = this;
         pointObject.name = curvePoint.name;
         pointObject.SetCurvePoint(curvePoint);
-        _curvePointEditObjects.Add(pointObject);
-        CurvePoints.Add(curvePoint);
+        
+        if (index == -1)
+        {
+            CurvePoints.Add(curvePoint);
+        } else
+        {
+            index = Math.Min(index, CurvePoints.Count);
+            CurvePoints.Insert(index, curvePoint);
+            pointObject.transform.SetSiblingIndex(index);
+        }
+
+        return pointObject;
     }
 
     public void Clear()
     {
         _curvePoints = new();
 
-        foreach (var point in _curvePointEditObjects)
+        foreach (var point in CurvePointObjects)
         {
             DestroyImmediate(point.gameObject);
         }
-
-        _curvePointEditObjects = new();
 
         foreach(var seg in _segmentList)
         {
@@ -72,8 +78,6 @@ public class Ground : MonoBehaviour, ISerializable
 
     public void Refresh(GroundManager groundManager)
     {
-
-        //Serialize ground then only deserialize ground segment, don't fuck with curvepointobjects
         var serializedGround = (SerializedGround)Serialize();
 
         foreach (var seg in _segmentList)

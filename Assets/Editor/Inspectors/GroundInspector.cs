@@ -6,6 +6,7 @@ using UnityEngine;
 public class GroundInspector : Editor
 {
     private LevelEditManager _levelEditManager;
+    private bool _showSettings = false;
     public static bool DebugSegments = false;
     public override void OnInspectorGUI()
     {
@@ -19,7 +20,11 @@ public class GroundInspector : Editor
         GUILayout.Label("Curve Points", EditorStyles.boldLabel);
         if(GUILayout.Button("Add Curve Point", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeObject = _levelEditManager.AddCurvePoint(ground);            
+            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, ground.CurvePoints.Count);
+        }
+        if (GUILayout.Button("Add Curve Point To Front", GUILayout.ExpandWidth(false)))
+        {
+            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, 0);
         }
 
         GUILayout.Space(20);
@@ -54,7 +59,16 @@ public class GroundInspector : Editor
 
         GUILayout.Space(20);
         GUILayout.Label("Segments", EditorStyles.boldLabel);
-        DebugSegments = GUILayout.Toggle(DebugSegments, "Debug Segments");
+        DebugSegments = GUILayout.Toggle(DebugSegments, "Debug Segments");    
+
+        GUILayout.Space(20);
+        GUILayout.Label("Settings", EditorStyles.boldLabel);
+        _showSettings = GUILayout.Toggle(_showSettings, "Show Settings");
+
+        if (_showSettings)
+        {
+            DrawDefaultInspector();
+        }
     }
     public void OnSceneGUI()
     {
@@ -75,18 +89,17 @@ public class GroundInspector : Editor
 
     public static void DrawCurvePoints(Ground ground, LevelEditManager levelEditManager)
     {
-        var curvePointChanged = false;
         foreach (var point in ground.CurvePointObjects)
         {
+            var startPos = point.transform.position;
             if (CurvePointObjectInspector.DrawCurvePointHandles(point))
             {
-                curvePointChanged = true;
+                if (levelEditManager.doShiftEdits)
+                {
+                    levelEditManager.ShiftCurvePoints(point, point.transform.position - startPos);
+                }
+                levelEditManager.RefreshSerializable(ground);
             }
-        }
-
-        if (curvePointChanged)
-        {
-            levelEditManager.RefreshSerializable(ground);
         }
     }
 

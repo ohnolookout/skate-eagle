@@ -23,7 +23,7 @@ public class GroundSegment : MonoBehaviour
     private int _containmentBuffer = 20;
     public Ground parentGround;
 
-    private List<CurvePointObject> _curvePointEditObjects = new();
+    private List<CurvePointEditObject> _curvePointEditObjects = new();
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Spline Spline { get => _fillShapeController.spline; }

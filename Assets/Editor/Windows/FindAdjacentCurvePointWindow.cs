@@ -5,9 +5,9 @@ using System.Collections.Generic;
 public class FindAdjacentCurvePointWindow : EditorWindow
 {
     private LevelEditManager _editManager;
-    private CurvePointObject _curvePointObject;
+    private CurvePointEditObject _curvePointObject;
 
-    public void Init(CurvePointObject curvePointObject)
+    public void Init(CurvePointEditObject curvePointObject)
     {
         _editManager = FindFirstObjectByType<LevelEditManager>();
         if (_editManager == null)
@@ -74,7 +74,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         }
     }
     #region CameraTargeting
-    private CurvePointObject FindNextCurvePoint(CurvePointObject curvePointObject, bool doLookRight, bool doLookUp, bool doLookDown)
+    private CurvePointEditObject FindNextCurvePoint(CurvePointEditObject curvePointObject, bool doLookRight, bool doLookUp, bool doLookDown)
     {
         if (doLookRight && curvePointObject.NextRightCurvePointObject != null)
         {
@@ -88,7 +88,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
         }
 
         var currentPos = curvePointObject.CurvePoint.Position;
-        CurvePointObject nextCurvePointObject = null;
+        CurvePointEditObject nextCurvePointObject = null;
         var nextStartX = doLookRight ? float.PositiveInfinity : float.NegativeInfinity;
         var nextStartY = doLookUp ? float.PositiveInfinity : float.NegativeInfinity;
         nextStartY = doLookDown ? float.NegativeInfinity : float.PositiveInfinity;
@@ -174,7 +174,7 @@ public class FindAdjacentCurvePointWindow : EditorWindow
     #endregion
 
     #region Add Targets
-    private void AddNewTarget(CurvePointObject newCurvePoint, bool isRight)
+    private void AddNewTarget(CurvePointEditObject newCurvePoint, bool isRight)
     {
         var targetObjList = isRight ? _curvePointObject.RightTargetObjects : _curvePointObject.LeftTargetObjects;
         var linkedCameraTargetList = isRight ? _curvePointObject.LinkedCameraTarget.RightTargets : _curvePointObject.LinkedCameraTarget.LeftTargets;
