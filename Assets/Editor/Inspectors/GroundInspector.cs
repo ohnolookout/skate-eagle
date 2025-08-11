@@ -83,7 +83,7 @@ public class GroundInspector : Editor
         if (ground.gameObject.transform.hasChanged)
         {
             ground.gameObject.transform.hasChanged = false;
-            _levelEditManager.OnUpdateTransform();
+            _levelEditManager.OnUpdateTransform(ground.gameObject);
         }
     }
 

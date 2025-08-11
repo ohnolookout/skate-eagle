@@ -285,5 +285,19 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _flag.transform.position = Vector2.zero;
     }
 #endif
-    #endregion
+
+#if UNITY_EDITOR
+    public bool IsParentGround(GameObject obj)
+    {
+        if(_flagPoint.Object == null)
+        {
+            return false;
+        }
+
+        var cpObj = _flagPoint.Object.GetComponent<CurvePointEditObject>();
+        return obj.GetComponent<Ground>() == cpObj.ParentGround;
+    }
+
+#endif
+#endregion
 }

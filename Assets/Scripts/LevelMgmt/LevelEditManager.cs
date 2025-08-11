@@ -207,9 +207,12 @@ public class LevelEditManager : MonoBehaviour
     #endregion
 
     #region Recalculation
-    public void OnUpdateTransform()
+    public void OnUpdateTransform(GameObject obj)
     {
-        GroundManager.FinishLine.Refresh();
+        if (GroundManager.FinishLine.IsParentGround(obj))
+        {
+            GroundManager.FinishLine.Refresh();
+        }
     }
     public void UpdateEditorLevel()
     {
@@ -222,6 +225,11 @@ public class LevelEditManager : MonoBehaviour
 
         Undo.RegisterFullObjectHierarchyUndo(serializable.GameObject, "Update ISerializable");
         serializable.Refresh(_groundManager);
+
+        if (GroundManager.FinishLine.IsParentGround(serializable.GameObject))
+        {
+            GroundManager.FinishLine.Refresh();
+        }
 
     }
     private void RenameAll(int startIndex, Ground[] grounds)
