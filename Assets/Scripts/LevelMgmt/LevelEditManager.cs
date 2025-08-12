@@ -213,6 +213,11 @@ public class LevelEditManager : MonoBehaviour
         {
             GroundManager.FinishLine.Refresh();
         }
+
+        if (GroundManager.StartLine.IsParentGround(obj))
+        {
+            GroundManager.StartLine.Refresh();
+        }
     }
     public void UpdateEditorLevel()
     {

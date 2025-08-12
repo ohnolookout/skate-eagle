@@ -13,6 +13,8 @@ public class CurvePointObjectInspector : Editor
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
     private LevelEditManager _levelEditManager;
+    private bool _showTargetObjects = false;
+    private bool _showFloorOptions = false;
     public override void OnInspectorGUI()
     {
         _curvePointObject = (CurvePointEditObject)target;
@@ -35,8 +37,8 @@ public class CurvePointObjectInspector : Editor
         //Curvepoint settings
         EditorGUI.BeginChangeCheck();
 
+        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", _curvePointObject.CurvePoint.Mode, GUILayout.ExpandWidth(true));
         var isSymmetrical = GUILayout.Toggle(_curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
-        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", _curvePointObject.CurvePoint.Mode);
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -45,7 +47,7 @@ public class CurvePointObjectInspector : Editor
             RefreshGround();
         }
 
-        if (GUILayout.Button("Reset Tangents"))
+        if (GUILayout.Button("Reset Tangents", GUILayout.ExpandWidth(false)))
         {
             Undo.RecordObject(_curvePointObject, "Reset Curve Point Tangents");
             _curvePointObject.TangentsChanged(
@@ -54,30 +56,14 @@ public class CurvePointObjectInspector : Editor
 
             RefreshGround();
         }
-        GUILayout.Space(20);
-
-        GUILayout.Label("Floor Options", EditorStyles.boldLabel);
-
-        EditorGUI.BeginChangeCheck();
-
-        var floorHeight = EditorGUILayout.IntField("Floor Height", _curvePointObject.CurvePoint.FloorHeight);
-        var floorAngle = EditorGUILayout.IntField("Floor Angle", _curvePointObject.CurvePoint.FloorAngle);
-
-        if (EditorGUI.EndChangeCheck())
-        {
-            Undo.RecordObject(_curvePointObject, "Change height and angle.");
-            _curvePointObject.CurvePoint.FloorHeight = floorHeight;
-            _curvePointObject.CurvePoint.FloorAngle = floorAngle;
-
-            RefreshGround();
-        }
-
 
         GUILayout.Space(20);
 
         GUILayout.Label("Add/Remove", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("Add Point After"))
+        EditorGUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("Add After", GUILayout.ExpandWidth(true)))
         {
             var ground = _curvePointObject.ParentGround;
             var index = _curvePointObject.transform.GetSiblingIndex() + 1;
@@ -85,13 +71,20 @@ public class CurvePointObjectInspector : Editor
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
         }
 
-        if (GUILayout.Button("Add Point Before"))
+        if (GUILayout.Button("Add Before", GUILayout.ExpandWidth(true)))
         {
             var ground = _curvePointObject.ParentGround;
             var index = _curvePointObject.transform.GetSiblingIndex() - 1;
 
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
         }
+
+        if (GUILayout.Button("Remove", GUILayout.ExpandWidth(true)))
+        {
+
+        }
+
+        EditorGUILayout.EndHorizontal();
 
 
         GUILayout.Space(20);
@@ -100,7 +93,9 @@ public class CurvePointObjectInspector : Editor
         //Camera targetting
         EditorGUI.BeginChangeCheck();
 
-        var doTargetLow = GUILayout.Toggle(_curvePointObject.DoTargetLow, "Do Target Low");
+        EditorGUILayout.BeginHorizontal();
+
+        var doTargetLow = GUILayout.Toggle(_curvePointObject.DoTargetLow, "Target Low", GUILayout.ExpandWidth(false));
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -111,7 +106,7 @@ public class CurvePointObjectInspector : Editor
 
         EditorGUI.BeginChangeCheck();
 
-        var doTargetHigh = GUILayout.Toggle(_curvePointObject.DoTargetHigh, "Do Target High");
+        var doTargetHigh = GUILayout.Toggle(_curvePointObject.DoTargetHigh, "Target High", GUILayout.ExpandWidth(false));
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -120,61 +115,60 @@ public class CurvePointObjectInspector : Editor
             _curvePointObject.GenerateTarget();
         }
 
+        EditorGUILayout.EndHorizontal();
+
         if (_curvePointObject.DoTargetLow || _curvePointObject.DoTargetHigh)
         {
+            EditorGUILayout.BeginHorizontal();
 
-            EditorGUI.BeginChangeCheck();
-
-            EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
-            EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
-
-            if (EditorGUI.EndChangeCheck())
+            if (GUILayout.Button("Populate Defaults", GUILayout.ExpandWidth(true)))
             {
-                _so.ApplyModifiedProperties();
-                _so.Update();
+                Undo.RecordObject(_curvePointObject, "Reseting targets to default");
+                _curvePointObject.PopulateDefaultTargets();
+                _levelEditManager.UpdateEditorLevel();
+            }
+            if (GUILayout.Button("Find Next", GUILayout.ExpandWidth(true)))
+            {
+                if (!_curvePointObject.DoTargetLow)
+                {
+                    Debug.LogWarning("Curve point not set as camera target. Cannot find adjacent curve points.");
+                    return;
+                }
+                _findAdjacentCurvePointWindow = EditorWindow.GetWindow<FindAdjacentCurvePointWindow>();
+                _findAdjacentCurvePointWindow.Init(_curvePointObject);
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+            _showTargetObjects = EditorGUILayout.Foldout(_showTargetObjects, "Target Objects");
+            if (_showTargetObjects)
+            {
+                EditorGUI.BeginChangeCheck();
+
+                EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
+                EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    _so.ApplyModifiedProperties();
+                    _so.Update();
+                }
             }
         }
 
-        if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
-        {
-            Undo.RecordObject(_curvePointObject, "Reseting targets to default");
-            _curvePointObject.PopulateDefaultTargets();
-            _levelEditManager.UpdateEditorLevel();
-        }
-        if (GUILayout.Button("Find Next CurvePoints", GUILayout.ExpandWidth(false)))
-        {
-            if (!_curvePointObject.DoTargetLow)
-            {
-                Debug.LogWarning("Curve point not set as camera target. Cannot find adjacent curve points.");
-                return;
-            }
-            _findAdjacentCurvePointWindow = EditorWindow.GetWindow<FindAdjacentCurvePointWindow>();
-            _findAdjacentCurvePointWindow.Init(_curvePointObject);
-        }
 
         GUILayout.Space(20);
 
-        GUILayout.Label("Start/Finish Options", EditorStyles.boldLabel);
+        GUILayout.Label("Set Start/Finish", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
 
-        if (GUILayout.Button("Set as Start Point", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("Start", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(_groundManager.StartLine, "Set Start Point");
             _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
         }
 
-        if (GUILayout.Button("Set as Finish Flag Point", GUILayout.ExpandWidth(false)))
-        {
-            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag Point");
-            _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
-        }
-
-        if (GUILayout.Button("Set as Finish Backstop Point", GUILayout.ExpandWidth(false)))
-        {
-            Undo.RecordObject(_groundManager.FinishLine, "Set Backstop Point");
-            _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
-        }
-
-        if(GUILayout.Button("Set Finish Flag and Backstop", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("Finish", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag and Backstop");
             _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
@@ -187,6 +181,41 @@ public class CurvePointObjectInspector : Editor
             else
             {
                 Debug.LogWarning("No next curve point found to set as backstop.");
+            }
+        }
+
+        if (GUILayout.Button("Flag", GUILayout.ExpandWidth(true)))
+        {
+            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag Point");
+            _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
+        }
+
+        if (GUILayout.Button("Backstop", GUILayout.ExpandWidth(true)))
+        {
+            Undo.RecordObject(_groundManager.FinishLine, "Set Backstop Point");
+            _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
+        }
+
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(20);
+        _showFloorOptions = EditorGUILayout.Foldout(_showFloorOptions, "Floor Options");
+
+        if (_showFloorOptions)
+        {
+            EditorGUI.BeginChangeCheck();
+
+            var floorHeight = EditorGUILayout.IntField("Floor Height", _curvePointObject.CurvePoint.FloorHeight);
+            var floorAngle = EditorGUILayout.IntField("Floor Angle", _curvePointObject.CurvePoint.FloorAngle);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_curvePointObject, "Change height and angle.");
+                _curvePointObject.CurvePoint.FloorHeight = floorHeight;
+                _curvePointObject.CurvePoint.FloorAngle = floorAngle;
+
+                RefreshGround();
             }
         }
 

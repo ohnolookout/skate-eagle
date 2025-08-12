@@ -252,6 +252,7 @@ public class EditorToolbar : EditorWindow
 {
     private LevelEditManager _levelEditManager;
     private LevelDatabase _levelDB;
+    private CameraManager _cameraManager;
 
     [MenuItem("Window/Editor Toolbar")]
     public static void ShowWindow()
@@ -283,9 +284,15 @@ public class EditorToolbar : EditorWindow
             return;
         }
 
+        if (_cameraManager == null)
+        {
+            _cameraManager = FindFirstObjectByType<CameraManager>();
+        }
+
+
         LevelEditManagerInspector.SaveLoadBar(_levelEditManager, _levelDB);
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
         GUILayout.Label("Edit Mode", EditorStyles.boldLabel);
         _levelEditManager.doShiftEdits = EditorGUILayout.Toggle("Shift Mode", _levelEditManager.doShiftEdits, GUILayout.ExpandWidth(false));
 
@@ -294,13 +301,21 @@ public class EditorToolbar : EditorWindow
             _levelEditManager.UpdateEditorLevel();
         }
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
         GUILayout.Label("Add/Remove", EditorStyles.boldLabel);
 
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
             Selection.activeGameObject = _levelEditManager.AddGround().gameObject;
             _levelEditManager.UpdateEditorLevel();
+        }
+
+        if (_cameraManager != null)
+        {
+            GUILayout.Space(10);
+            GUILayout.Label("Camera Management", EditorStyles.boldLabel);
+
+            _cameraManager.doSetStartPosition = EditorGUILayout.Toggle("Set Camera Start Position", _cameraManager.doSetStartPosition, GUILayout.ExpandWidth(false));
         }
 
     }

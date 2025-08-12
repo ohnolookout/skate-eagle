@@ -54,8 +54,22 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _xOffset = 0;
     }
 
-    public void Refresh(GroundManager _)
+    public void Refresh(GroundManager _ = null)
     {
         return;
     }
+
+#if UNITY_EDITOR
+    public bool IsParentGround(GameObject obj)
+    {
+        if (_curvePoint.Object == null)
+        {
+            return false;
+        }
+
+        var cpObj = _curvePoint.Object.GetComponent<CurvePointEditObject>();
+        return obj.GetComponent<Ground>() == cpObj.ParentGround;
+    }
+
+#endif
 }
