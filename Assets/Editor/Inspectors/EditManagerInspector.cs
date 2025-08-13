@@ -2,18 +2,20 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-[CustomEditor(typeof(LevelEditManager))]
-public class LevelEditManagerInspector : Editor
+[CustomEditor(typeof(EditManager))]
+public class EditManagerInspector : Editor
 {
-    private LevelEditManager _levelEditManager;
+    private EditManager _editManager;
     private LevelDatabase _levelDB;
     private bool _showMedals = false;
     private bool _showCamStart = false;
 
     public bool debugMode = false;
+    public static string[] editModeStrings = { "Insert", "Shift" };
+    public static int editMode = 0;
     public override void OnInspectorGUI()
     {
-        _levelEditManager = (LevelEditManager)target;
+        _editManager = (EditManager)target;
 
         if (_levelDB == null)
         {
@@ -31,7 +33,7 @@ public class LevelEditManagerInspector : Editor
         }
 
         GUILayout.Space(20);
-        SaveLoadBar(_levelEditManager, _levelDB);
+        SaveLoadBar(_editManager, _levelDB);
 
 
         if (_levelDB.lastLevelLoaded != null)
@@ -43,22 +45,22 @@ public class LevelEditManagerInspector : Editor
             _showMedals = EditorGUILayout.Foldout(_showMedals, "Medal Times");
             if (_showMedals)
             {
-                _levelEditManager.medalTimes.Red = EditorGUILayout.FloatField("Red", _levelEditManager.medalTimes.Red, GUILayout.ExpandWidth(false));
-                _levelEditManager.medalTimes.Blue = EditorGUILayout.FloatField("Blue", _levelEditManager.medalTimes.Blue, GUILayout.ExpandWidth(false));
-                _levelEditManager.medalTimes.Gold = EditorGUILayout.FloatField("Gold", _levelEditManager.medalTimes.Gold, GUILayout.ExpandWidth(false));
-                _levelEditManager.medalTimes.Silver = EditorGUILayout.FloatField("Silver", _levelEditManager.medalTimes.Silver, GUILayout.ExpandWidth(false));
-                _levelEditManager.medalTimes.Bronze = EditorGUILayout.FloatField("Bronze", _levelEditManager.medalTimes.Bronze, GUILayout.ExpandWidth(false));
+                _editManager.medalTimes.Red = EditorGUILayout.FloatField("Red", _editManager.medalTimes.Red, GUILayout.ExpandWidth(false));
+                _editManager.medalTimes.Blue = EditorGUILayout.FloatField("Blue", _editManager.medalTimes.Blue, GUILayout.ExpandWidth(false));
+                _editManager.medalTimes.Gold = EditorGUILayout.FloatField("Gold", _editManager.medalTimes.Gold, GUILayout.ExpandWidth(false));
+                _editManager.medalTimes.Silver = EditorGUILayout.FloatField("Silver", _editManager.medalTimes.Silver, GUILayout.ExpandWidth(false));
+                _editManager.medalTimes.Bronze = EditorGUILayout.FloatField("Bronze", _editManager.medalTimes.Bronze, GUILayout.ExpandWidth(false));
             }
 
             _showCamStart = EditorGUILayout.Foldout(_showCamStart, "Camera Start Position");
             if (_showCamStart)
             {
-                _levelEditManager.cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", _levelEditManager.cameraStartPosition);
+                _editManager.cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", _editManager.cameraStartPosition);
             }
 
             if (EditorGUI.EndChangeCheck())
             {
-                _levelEditManager.UpdateEditorLevel();
+                _editManager.UpdateEditorLevel();
             }
 
             GUILayout.Space(20);
@@ -66,21 +68,21 @@ public class LevelEditManagerInspector : Editor
 
             if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
             {
-                Selection.activeGameObject = _levelEditManager.AddGround().gameObject;
-                _levelEditManager.UpdateEditorLevel();
+                Selection.activeGameObject = _editManager.AddGround().gameObject;
+                _editManager.UpdateEditorLevel();
             }
 
             if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
             {
-                var grounds = _levelEditManager.GroundManager.GetGrounds();
+                var grounds = _editManager.GroundManager.GetGrounds();
 
                 foreach (var ground in grounds)
                 {
                     Undo.RecordObject(ground, "Populating default targets.");
-                    GroundInspector.PopulateDefaultTargets(ground, _levelEditManager);
+                    GroundInspector.PopulateDefaultTargets(ground, _editManager);
                 }
 
-                _levelEditManager.UpdateEditorLevel();
+                _editManager.UpdateEditorLevel();
             }
 
         }
@@ -89,12 +91,18 @@ public class LevelEditManagerInspector : Editor
             GUILayout.Label("No Level Found. Save, load, or create new level to edit.", EditorStyles.boldLabel);
         }
 
+        EditorGUI.BeginChangeCheck();
+        editMode = GUILayout.Toolbar(editMode, editModeStrings);
+        if (EditorGUI.EndChangeCheck())
+        {
+            _editManager.doShiftEdits = editMode == 1;
+        }
+
         debugMode = EditorGUILayout.Toggle("Debug Mode", debugMode, GUILayout.ExpandWidth(false));
-        _levelEditManager.doShiftEdits = EditorGUILayout.Toggle("Shift Mode", _levelEditManager.doShiftEdits, GUILayout.ExpandWidth(false));
     }
 
 
-    public static void SaveLoadBar(LevelEditManager levelEditManager, LevelDatabase levelDB)
+    public static void SaveLoadBar(EditManager levelEditManager, LevelDatabase levelDB)
     {
         GUILayout.Label("Save/Load", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
@@ -144,11 +152,11 @@ public class LevelEditManagerInspector : Editor
 #region Editor Windows
 public class RenameLevelWindow : EditorWindow
 {
-    private LevelEditManager _levelEditManager;
+    private EditManager _levelEditManager;
     private string _newName;
     private Level _level;
 
-    public void Init(LevelEditManager levelEditManager, Level level)
+    public void Init(EditManager levelEditManager, Level level)
     {
         _levelEditManager = levelEditManager;
         _level = level;
@@ -207,10 +215,10 @@ public class RenameLevelWindow : EditorWindow
 
 public class NewLevelWindow : EditorWindow
 {
-    private LevelEditManager _levelEditManager;
+    private EditManager _levelEditManager;
     private string _newName;
 
-    public void Init(LevelEditManager levelEditManager)
+    public void Init(EditManager levelEditManager)
     {
         _levelEditManager = levelEditManager;
         _newName = "New Level";
@@ -250,7 +258,7 @@ public class NewLevelWindow : EditorWindow
 
 public class EditorToolbar : EditorWindow
 {
-    private LevelEditManager _levelEditManager;
+    private EditManager _editManager;
     private LevelDatabase _levelDB;
     private CameraManager _cameraManager;
 
@@ -262,12 +270,12 @@ public class EditorToolbar : EditorWindow
 
     private void OnGUI()
     {
-        if (_levelEditManager == null)
+        if (_editManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<LevelEditManager>();            
+            _editManager = FindFirstObjectByType<EditManager>();
         }
 
-        if (_levelEditManager == null)
+        if (_editManager == null)
         {
             GUILayout.Label("Edit manager not found. Add edit manager to use toolbar.");
             return;
@@ -290,15 +298,21 @@ public class EditorToolbar : EditorWindow
         }
 
 
-        LevelEditManagerInspector.SaveLoadBar(_levelEditManager, _levelDB);
+        EditManagerInspector.SaveLoadBar(_editManager, _levelDB);
 
         GUILayout.Space(10);
         GUILayout.Label("Edit Mode", EditorStyles.boldLabel);
-        _levelEditManager.doShiftEdits = EditorGUILayout.Toggle("Shift Mode", _levelEditManager.doShiftEdits, GUILayout.ExpandWidth(false));
+
+        EditorGUI.BeginChangeCheck();
+        EditManagerInspector.editMode = GUILayout.Toolbar(EditManagerInspector.editMode, EditManagerInspector.editModeStrings);
+        if (EditorGUI.EndChangeCheck())
+        {
+            _editManager.doShiftEdits = EditManagerInspector.editMode == 1;
+        }        
 
         if (GUILayout.Button("Refresh Level", GUILayout.ExpandWidth(false)))
         {
-            _levelEditManager.UpdateEditorLevel();
+            _editManager.UpdateEditorLevel();
         }
 
         GUILayout.Space(10);
@@ -306,8 +320,8 @@ public class EditorToolbar : EditorWindow
 
         if (GUILayout.Button("Add Ground", GUILayout.ExpandWidth(false)))
         {
-            Selection.activeGameObject = _levelEditManager.AddGround().gameObject;
-            _levelEditManager.UpdateEditorLevel();
+            Selection.activeGameObject = _editManager.AddGround().gameObject;
+            _editManager.UpdateEditorLevel();
         }
 
         if (_cameraManager != null)

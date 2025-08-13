@@ -12,7 +12,7 @@ public class CurvePointObjectInspector : Editor
     private SerializedProperty _serializedRightTargetObjects;
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
-    private LevelEditManager _levelEditManager;
+    private EditManager _levelEditManager;
     private bool _showTargetObjects = false;
     private bool _showFloorOptions = false;
     public override void OnInspectorGUI()
@@ -29,7 +29,7 @@ public class CurvePointObjectInspector : Editor
 
         if (_levelEditManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+            _levelEditManager = FindFirstObjectByType<EditManager>();
         }
 
 
@@ -37,16 +37,18 @@ public class CurvePointObjectInspector : Editor
         //Curvepoint settings
         EditorGUI.BeginChangeCheck();
 
-        var mode = (ShapeTangentMode)EditorGUILayout.EnumPopup("Tangent Mode", _curvePointObject.CurvePoint.Mode, GUILayout.ExpandWidth(true));
+        var currentMode = (int)_curvePointObject.CurvePoint.Mode;
+        var mode = GUILayout.Toolbar(currentMode, Enum.GetNames(typeof(ShapeTangentMode)));
         var isSymmetrical = GUILayout.Toggle(_curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
 
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(_curvePointObject, "Curve Point Settings");
-            _curvePointObject.TangentSettingsChanged(mode, isSymmetrical);
+            _curvePointObject.TangentSettingsChanged((ShapeTangentMode)mode, isSymmetrical);
             RefreshGround();
         }
 
+        GUILayout.Space(10);
         if (GUILayout.Button("Reset Tangents", GUILayout.ExpandWidth(false)))
         {
             Undo.RecordObject(_curvePointObject, "Reset Curve Point Tangents");

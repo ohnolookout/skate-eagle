@@ -8,7 +8,7 @@ using System;
 
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
-public class LevelEditManager : MonoBehaviour
+public class EditManager : MonoBehaviour
 {
     #region Declarations
     //Level editing parameters

@@ -5,27 +5,30 @@ using UnityEngine;
 [CustomEditor(typeof(Ground))]
 public class GroundInspector : Editor
 {
-    private LevelEditManager _levelEditManager;
+    private EditManager _levelEditManager;
     private bool _showSettings = false;
     public static bool DebugSegments = false;
     public override void OnInspectorGUI()
     {
         if (_levelEditManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+            _levelEditManager = FindFirstObjectByType<EditManager>();
         }
 
         var ground = (Ground)target;
 
         GUILayout.Label("Curve Points", EditorStyles.boldLabel);
-        if(GUILayout.Button("Add Curve Point", GUILayout.ExpandWidth(false)))
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Add To Back", GUILayout.ExpandWidth(true)))
         {
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, ground.CurvePoints.Count);
         }
-        if (GUILayout.Button("Add Curve Point To Front", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("Add To Front", GUILayout.ExpandWidth(true)))
         {
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, 0);
         }
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(20);
         GUILayout.Label("Settings", EditorStyles.boldLabel);
@@ -44,26 +47,25 @@ public class GroundInspector : Editor
         GUILayout.Space(20);
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
 
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Populate Defaults", GUILayout.ExpandWidth(true)))
+        {
+            Undo.RecordObject(ground, "Populate default targets");
+            PopulateDefaultTargets(ground, _levelEditManager);
+        }
 
-        if (GUILayout.Button("Reset Point Targets", GUILayout.ExpandWidth(false)))
+        if (GUILayout.Button("Clear", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Clear Curve Point Targets");
             ClearCurvePointTargets(ground, _levelEditManager);
         }
 
-        if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
-        {
-            Undo.RecordObject(ground, "Clear Curve Point Targets");
-            PopulateDefaultTargets(ground, _levelEditManager);
-        }
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(20);
-        GUILayout.Label("Segments", EditorStyles.boldLabel);
-        DebugSegments = GUILayout.Toggle(DebugSegments, "Debug Segments");    
-
-        GUILayout.Space(20);
-        GUILayout.Label("Settings", EditorStyles.boldLabel);
-        _showSettings = GUILayout.Toggle(_showSettings, "Show Settings");
+        GUILayout.Label("View Options", EditorStyles.boldLabel);
+        _showSettings = GUILayout.Toggle(_showSettings, "Show Default Inspector");
+        DebugSegments = GUILayout.Toggle(DebugSegments, "Show Segment Inspector");
 
         if (_showSettings)
         {
@@ -74,7 +76,7 @@ public class GroundInspector : Editor
     {
         if (_levelEditManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<LevelEditManager>();
+            _levelEditManager = FindFirstObjectByType<EditManager>();
         }
 
         var ground = (Ground)target;
@@ -87,7 +89,7 @@ public class GroundInspector : Editor
         }
     }
 
-    public static void DrawCurvePoints(Ground ground, LevelEditManager levelEditManager)
+    public static void DrawCurvePoints(Ground ground, EditManager levelEditManager)
     {
         foreach (var point in ground.CurvePointObjects)
         {
@@ -103,7 +105,7 @@ public class GroundInspector : Editor
         }
     }
 
-    private static void ClearCurvePointTargets(Ground ground, LevelEditManager levelEditManager)
+    private static void ClearCurvePointTargets(Ground ground, EditManager levelEditManager)
     {
         foreach(var curvePointObj in ground.CurvePointObjects)
         {
@@ -119,7 +121,7 @@ public class GroundInspector : Editor
         }
     }
 
-    public static void PopulateDefaultTargets(Ground ground, LevelEditManager levelEditManager)
+    public static void PopulateDefaultTargets(Ground ground, EditManager levelEditManager)
     {
         foreach(var point in ground.CurvePointObjects)
         {

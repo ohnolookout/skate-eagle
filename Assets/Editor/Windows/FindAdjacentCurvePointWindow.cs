@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 public class FindAdjacentCurvePointWindow : EditorWindow
 {
-    private LevelEditManager _editManager;
+    private EditManager _editManager;
     private CurvePointEditObject _curvePointObject;
 
     public void Init(CurvePointEditObject curvePointObject)
     {
-        _editManager = FindFirstObjectByType<LevelEditManager>();
+        _editManager = FindFirstObjectByType<EditManager>();
         if (_editManager == null)
         {
             Debug.LogWarning("No GroundEditManager found in the scene. Closeing curve point window.");

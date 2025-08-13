@@ -4,12 +4,12 @@ using System;
 
 public class LevelLoadWindow : EditorWindow
 {
-    private LevelEditManager _editManager;
+    private EditManager _editManager;
     private LevelDatabase _levelDB;
     private string[] _levelNames;
     private int _nameIndex;
 
-    public void Init(LevelEditManager editManager, LevelDatabase levelDB)
+    public void Init(EditManager editManager, LevelDatabase levelDB)
     {
         _editManager = editManager;
         _levelDB = levelDB;
