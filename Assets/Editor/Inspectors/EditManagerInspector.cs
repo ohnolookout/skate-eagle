@@ -16,6 +16,7 @@ public class EditManagerInspector : Editor
     public override void OnInspectorGUI()
     {
         _editManager = (EditManager)target;
+        var defaultColor = GUI.backgroundColor;
 
         if (_levelDB == null)
         {
@@ -104,13 +105,17 @@ public class EditManagerInspector : Editor
 
     public static void SaveLoadBar(EditManager levelEditManager, LevelDatabase levelDB)
     {
+        var defaultColor = GUI.backgroundColor;
         GUILayout.Label("Save/Load", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
+
+        GUI.backgroundColor = Color.lightGreen;
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(true)))
         {
             levelEditManager.SaveLevel();
         }
 
+        GUI.backgroundColor = Color.orange;
         if (GUILayout.Button("Load", GUILayout.ExpandWidth(true)))
         {
             if (!levelEditManager.DoDiscardChanges())
@@ -120,7 +125,8 @@ public class EditManagerInspector : Editor
             var loadWindow = EditorWindow.GetWindow<LevelLoadWindow>();
             loadWindow.Init(levelEditManager, levelDB);
         }
-
+        
+        GUI.backgroundColor = Color.softYellow;
         if (GUILayout.Button("Rename", GUILayout.ExpandWidth(true)))
         {
             if (!levelEditManager.DoDiscardChanges())
@@ -131,6 +137,7 @@ public class EditManagerInspector : Editor
             renameWindow.Init(levelEditManager, levelDB.lastLevelLoaded);
         }
 
+        GUI.backgroundColor = Color.skyBlue;
         if (GUILayout.Button("New", GUILayout.ExpandWidth(true)))
         {
             if (!levelEditManager.DoDiscardChanges())
@@ -141,6 +148,8 @@ public class EditManagerInspector : Editor
             var newLevelWindow = EditorWindow.GetWindow<NewLevelWindow>();
             newLevelWindow.Init(levelEditManager);
         }
+
+        GUI.backgroundColor = defaultColor;
         GUILayout.EndHorizontal();
     }
 

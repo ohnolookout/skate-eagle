@@ -12,7 +12,7 @@ public class CurvePointObjectInspector : Editor
     private SerializedProperty _serializedRightTargetObjects;
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
-    private EditManager _levelEditManager;
+    private EditManager _editManager;
     private bool _showTargetObjects = false;
     private bool _showFloorOptions = false;
     public override void OnInspectorGUI()
@@ -21,15 +21,16 @@ public class CurvePointObjectInspector : Editor
         _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
         _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
+        var originalColor = GUI.backgroundColor;
 
         if (_groundManager == null)
         {
             _groundManager = FindFirstObjectByType<GroundManager>();
         }
 
-        if (_levelEditManager == null)
+        if (_editManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<EditManager>();
+            _editManager = FindFirstObjectByType<EditManager>();
         }
 
 
@@ -49,6 +50,8 @@ public class CurvePointObjectInspector : Editor
         }
 
         GUILayout.Space(10);
+
+        GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Reset Tangents", GUILayout.ExpandWidth(false)))
         {
             Undo.RecordObject(_curvePointObject, "Reset Curve Point Tangents");
@@ -58,6 +61,7 @@ public class CurvePointObjectInspector : Editor
 
             RefreshGround();
         }
+        GUI.backgroundColor = originalColor;
 
         GUILayout.Space(20);
 
@@ -65,12 +69,13 @@ public class CurvePointObjectInspector : Editor
 
         EditorGUILayout.BeginHorizontal();
 
+        GUI.backgroundColor = Color.skyBlue;
         if (GUILayout.Button("Add After", GUILayout.ExpandWidth(true)))
         {
             var ground = _curvePointObject.ParentGround;
             var index = _curvePointObject.transform.GetSiblingIndex() + 1;
 
-            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
+            Selection.activeObject = _editManager.InsertCurvePoint(ground, index);
         }
 
         if (GUILayout.Button("Add Before", GUILayout.ExpandWidth(true)))
@@ -78,13 +83,19 @@ public class CurvePointObjectInspector : Editor
             var ground = _curvePointObject.ParentGround;
             var index = _curvePointObject.transform.GetSiblingIndex() - 1;
 
-            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, index);
+            Selection.activeObject = _editManager.InsertCurvePoint(ground, index);
         }
 
+        GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Remove", GUILayout.ExpandWidth(true)))
         {
-
+            var ground = _curvePointObject.ParentGround;
+            //Undo.RegisterFullObjectHierarchyUndo(ground, "Curve point destroyed.");
+            Undo.DestroyObjectImmediate(_curvePointObject.gameObject);
+            Selection.activeGameObject = ground.gameObject;
+            return;
         }
+        GUI.backgroundColor = originalColor;
 
         EditorGUILayout.EndHorizontal();
 
@@ -127,7 +138,7 @@ public class CurvePointObjectInspector : Editor
             {
                 Undo.RecordObject(_curvePointObject, "Reseting targets to default");
                 _curvePointObject.PopulateDefaultTargets();
-                _levelEditManager.UpdateEditorLevel();
+                _editManager.UpdateEditorLevel();
             }
             if (GUILayout.Button("Find Next", GUILayout.ExpandWidth(true)))
             {
@@ -164,12 +175,14 @@ public class CurvePointObjectInspector : Editor
         GUILayout.Label("Set Start/Finish", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
 
+        GUI.backgroundColor = Color.lightGreen;
         if (GUILayout.Button("Start", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(_groundManager.StartLine, "Set Start Point");
             _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
         }
 
+        GUI.backgroundColor = Color.orange;
         if (GUILayout.Button("Finish", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag and Backstop");
@@ -186,6 +199,7 @@ public class CurvePointObjectInspector : Editor
             }
         }
 
+        GUI.backgroundColor = Color.softYellow;
         if (GUILayout.Button("Flag", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag Point");
@@ -197,6 +211,7 @@ public class CurvePointObjectInspector : Editor
             Undo.RecordObject(_groundManager.FinishLine, "Set Backstop Point");
             _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
         }
+        GUI.backgroundColor = originalColor;
 
 
         GUILayout.EndHorizontal();
@@ -231,9 +246,9 @@ public class CurvePointObjectInspector : Editor
         var handlesChanged = DrawCurvePointHandles(curvePointEditObject);
         if (handlesChanged)
         {
-            if (_levelEditManager.doShiftEdits)
+            if (_editManager.doShiftEdits)
             {
-                _levelEditManager.ShiftCurvePoints(curvePointEditObject, curvePointEditObject.transform.position - startPos);
+                _editManager.ShiftCurvePoints(curvePointEditObject, curvePointEditObject.transform.position - startPos);
             }
             RefreshGround();
         }
@@ -349,7 +364,7 @@ public class CurvePointObjectInspector : Editor
     private void RefreshGround()
     {
         Undo.RecordObject(_curvePointObject.gameObject, "Refresh ground.");
-        _levelEditManager.RefreshSerializable(_curvePointObject.ParentGround);
+        _editManager.RefreshSerializable(_curvePointObject.ParentGround);
     }
 
 }

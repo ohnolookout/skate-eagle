@@ -16,10 +16,13 @@ public class GroundInspector : Editor
         }
 
         var ground = (Ground)target;
+        var defaultColor = GUI.backgroundColor;
 
         GUILayout.Label("Curve Points", EditorStyles.boldLabel);
 
         GUILayout.BeginHorizontal();
+
+        GUI.backgroundColor = Color.skyBlue;
         if (GUILayout.Button("Add To Back", GUILayout.ExpandWidth(true)))
         {
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, ground.CurvePoints.Count);
@@ -28,6 +31,8 @@ public class GroundInspector : Editor
         {
             Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, 0);
         }
+        GUI.backgroundColor = defaultColor;
+
         GUILayout.EndHorizontal();
 
         GUILayout.Space(20);
@@ -54,11 +59,13 @@ public class GroundInspector : Editor
             PopulateDefaultTargets(ground, _levelEditManager);
         }
 
+        GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Clear", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Clear Curve Point Targets");
             ClearCurvePointTargets(ground, _levelEditManager);
         }
+        GUI.backgroundColor = defaultColor;
 
         GUILayout.EndHorizontal();
 
@@ -80,6 +87,13 @@ public class GroundInspector : Editor
         }
 
         var ground = (Ground)target;
+
+        if(ground.lastCPObjCount != ground.curvePointContainer.transform.childCount)
+        {
+            ground.lastCPObjCount = ground.curvePointContainer.transform.childCount;
+            _levelEditManager.RefreshSerializable(ground);
+        }
+
         DrawCurvePoints(ground, _levelEditManager);
 
         if (ground.gameObject.transform.hasChanged)

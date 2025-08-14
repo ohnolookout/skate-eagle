@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class Ground : MonoBehaviour, ISerializable
 {
@@ -12,9 +13,10 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private bool _isFloating = false;
     [SerializeField] private bool _isInverted = false;
     [SerializeField] private bool _hasShadow = true;
-    [SerializeField] private GameObject _curvePointEditObjectPrefab;
-    [SerializeField] private GameObject _curvePointContainer;
+    [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
+    public GameObject curvePointContainer;
+    public int lastCPObjCount = 0;
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
@@ -25,7 +27,7 @@ public class Ground : MonoBehaviour, ISerializable
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
-    public CurvePointEditObject[] CurvePointObjects => _curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
+    public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
     #endregion
 
@@ -34,10 +36,11 @@ public class Ground : MonoBehaviour, ISerializable
         return new SerializedGround(this);
     }
 #if UNITY_EDITOR
+    #region Curve Points
     public CurvePointEditObject SetCurvePoint(CurvePoint curvePoint, int index = -1)
     {
 
-        var pointObject = Instantiate(_curvePointEditObjectPrefab, _curvePointContainer.transform).GetComponent<CurvePointEditObject>();
+        var pointObject = Instantiate(_curvePointEditObjectPrefab, curvePointContainer.transform).GetComponent<CurvePointEditObject>();
         pointObject.ParentGround = this;
         pointObject.name = curvePoint.name;
         pointObject.SetCurvePoint(curvePoint);
@@ -55,6 +58,17 @@ public class Ground : MonoBehaviour, ISerializable
         return pointObject;
     }
 
+    public void RemoveCurvePoint(CurvePoint cp)
+    {
+        Undo.RecordObject(this, "Curve point removed.");
+        _curvePoints.Remove(cp);
+        var groundManager = FindFirstObjectByType<GroundManager>();
+        Refresh(groundManager);
+    }
+
+    #endregion
+
+    #region Refresh Utilities
     public void Clear()
     {
         _curvePoints = new();
@@ -76,8 +90,14 @@ public class Ground : MonoBehaviour, ISerializable
         _hasShadow = true;
     }
 
+    public void Refresh()
+    {
+        Refresh(FindFirstObjectByType<GroundManager>());
+    }
+
     public void Refresh(GroundManager groundManager)
     {
+        _curvePoints = _curvePoints.Where( cp => cp.Object != null).ToList();
         var serializedGround = (SerializedGround)Serialize();
 
         foreach (var seg in _segmentList)
@@ -88,6 +108,8 @@ public class Ground : MonoBehaviour, ISerializable
         _segmentList = new();
 
         serializedGround.DeserializeEditSegment(groundManager, this);
+        lastCPObjCount = curvePointContainer.transform.childCount;
     }
+    #endregion
 #endif
 }

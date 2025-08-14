@@ -1,8 +1,5 @@
-using JetBrains.Annotations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -13,7 +10,16 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public List<GameObject> rightTargetObjects = new();
     public List<GameObject> leftTargetObjects = new();
     public CurvePoint CurvePoint => _parentGround.CurvePoints[transform.GetSiblingIndex()];
-    public Ground ParentGround { get => _parentGround; set => _parentGround = value; }
+    public Ground ParentGround {
+        get
+        {
+            if(_parentGround == null)
+            {
+                _parentGround = transform.parent.parent.GetComponent<Ground>();
+            }
+            return _parentGround;
+        }
+        set => _parentGround = value; }
     public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
     public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
@@ -69,6 +75,8 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     }
 
     #endregion
+
+    #region Set Values
     public void SetCurvePoint(CurvePoint curvePoint)
     {
         curvePoint.Object = gameObject; // Set the object reference in the CurvePoint
@@ -135,7 +143,9 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
             CurvePoint.RightTangent = -CurvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
         }
     }
+    #endregion
 
+    #region Targeting
     public void GenerateTarget()
     {
         LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
@@ -221,6 +231,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
         return resyncs;
     }
+    #endregion
 }
 
 
