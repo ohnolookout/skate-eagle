@@ -39,10 +39,10 @@ public static class BezierMath
 
     public static Vector3 GetMidpoint(CurvePoint startPoint, CurvePoint endPoint)
     {
-        return GetPointAtT(startPoint, endPoint, 0.5f);
+        return Lerp(startPoint, endPoint, 0.5f);
     }
 
-    public static Vector3 GetPointAtT(CurvePoint startPoint, CurvePoint endPoint, float t)
+    public static Vector3 Lerp(CurvePoint startPoint, CurvePoint endPoint, float t)
     {
 
         Vector3 p0 = startPoint.Position;

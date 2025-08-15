@@ -169,15 +169,27 @@ public class EditManager : MonoBehaviour
             var cp = ground.CurvePoints[0];
             pos = cp.Position - _cpDelta;
             leftTang = new(cp.LeftTangent.x, -cp.LeftTangent.y);
-        } else
+        } else if(index >= cpCount)
         {
             index = Math.Min(index, cpCount);
             var cp = ground.CurvePoints[index - 1];
             pos = cp.Position + _cpDelta;
             leftTang = new Vector3(-cp.RightTangent.x, cp.RightTangent.y);
+        } else
+        {
+            var prevCP = ground.CurvePoints[index - 1];
+            var nextCP = ground.CurvePoints[index];
+            pos = BezierMath.Lerp(prevCP, nextCP, 0.5f);
+            var prevRightTang = (prevCP.RightTangent.magnitude / 2) * prevCP.RightTangent.normalized;
+            prevCP.Object.GetComponent<CurvePointEditObject>().RightTangentChanged(prevCP.Position + prevRightTang);
+            var nextLeftTang = (nextCP.LeftTangent.magnitude / 2) * nextCP.LeftTangent.normalized;
+            nextCP.Object.GetComponent<CurvePointEditObject>().LeftTangentChanged(nextCP.Position + nextLeftTang);
+            leftTang = (prevCP.Position - pos) / 4;
+            var invertedRightTang = (pos - nextCP.Position) / 4;
+            leftTang = (leftTang + invertedRightTang) / 2;
         }
 
-        CurvePoint newPoint = new(pos, leftTang, -leftTang);
+            CurvePoint newPoint = new(pos, leftTang, -leftTang);
         Undo.RegisterFullObjectHierarchyUndo(ground.gameObject, "Inserted point");
         var cpObj = ground.SetCurvePoint(newPoint, index);
 

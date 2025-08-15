@@ -81,7 +81,7 @@ public class CurvePointObjectInspector : Editor
         if (GUILayout.Button("Add Before", GUILayout.ExpandWidth(true)))
         {
             var ground = _curvePointObject.ParentGround;
-            var index = _curvePointObject.transform.GetSiblingIndex() - 1;
+            var index = _curvePointObject.transform.GetSiblingIndex();
 
             Selection.activeObject = _editManager.InsertCurvePoint(ground, index);
         }

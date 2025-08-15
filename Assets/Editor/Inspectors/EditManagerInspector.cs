@@ -306,7 +306,7 @@ public class EditorToolbar : EditorWindow
             _cameraManager = FindFirstObjectByType<CameraManager>();
         }
 
-
+        GUILayout.Label("Level: " + (_levelDB.lastLevelLoaded != null ? _levelDB.lastLevelLoaded.Name : "None"), EditorStyles.boldLabel);
         EditManagerInspector.SaveLoadBar(_editManager, _levelDB);
 
         GUILayout.Space(10);
