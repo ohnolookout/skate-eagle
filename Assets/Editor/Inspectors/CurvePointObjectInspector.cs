@@ -33,13 +33,70 @@ public class CurvePointObjectInspector : Editor
             _editManager = FindFirstObjectByType<EditManager>();
         }
 
+        GUILayout.Label("Transform Controls", EditorStyles.boldLabel);
 
+        EditorGUI.BeginChangeCheck();
+        var position = EditorGUILayout.Vector2Field("Position", _curvePointObject.transform.position);
+        if(EditorGUI.EndChangeCheck())
+        {
+            _curvePointObject.PositionChanged(position);
+            RefreshGround();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        var leftTangent = EditorGUILayout.Vector2Field("Left Tangent", _curvePointObject.CurvePoint.LeftTangent);
+        if (EditorGUI.EndChangeCheck())
+        {
+            _curvePointObject.LeftTangentChanged(leftTangent + (Vector2)_curvePointObject.CurvePoint.Position);
+            RefreshGround();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        var rightTangent = EditorGUILayout.Vector2Field("Right Tangent", _curvePointObject.CurvePoint.RightTangent);
+        if (EditorGUI.EndChangeCheck())
+        {
+            _curvePointObject.LeftTangentChanged(rightTangent + (Vector2)_curvePointObject.CurvePoint.Position);
+            RefreshGround();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        var leftTangAngle = EditorGUILayout.FloatField("Left Angle", 1, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            RefreshGround();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        var leftTangMag = EditorGUILayout.FloatField("Left Magnitude", 1, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            RefreshGround();
+        }
+        EditorGUI.BeginChangeCheck();
+        var rightTangAngle = EditorGUILayout.FloatField("Right Angle", 1, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            RefreshGround();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        var rightTangMag = EditorGUILayout.FloatField("Right Magnitude", 1, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            RefreshGround();
+        }
+
+
+        GUILayout.Space(10);
         GUILayout.Label("Tangent Options", EditorStyles.boldLabel);
-        //Curvepoint settings
+
+        //Tangent settings
         EditorGUI.BeginChangeCheck();
 
         var currentMode = (int)_curvePointObject.CurvePoint.Mode;
         var mode = GUILayout.Toolbar(currentMode, Enum.GetNames(typeof(ShapeTangentMode)));
+
+        GUILayout.BeginHorizontal();
         var isSymmetrical = GUILayout.Toggle(_curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
 
         if (EditorGUI.EndChangeCheck())
@@ -48,8 +105,6 @@ public class CurvePointObjectInspector : Editor
             _curvePointObject.TangentSettingsChanged((ShapeTangentMode)mode, isSymmetrical);
             RefreshGround();
         }
-
-        GUILayout.Space(10);
 
         GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Reset Tangents", GUILayout.ExpandWidth(false)))
@@ -62,9 +117,9 @@ public class CurvePointObjectInspector : Editor
             RefreshGround();
         }
         GUI.backgroundColor = originalColor;
+        GUILayout.EndHorizontal();
 
-        GUILayout.Space(20);
-
+        GUILayout.Space(10);
         GUILayout.Label("Add/Remove", EditorStyles.boldLabel);
 
         EditorGUILayout.BeginHorizontal();
@@ -100,7 +155,7 @@ public class CurvePointObjectInspector : Editor
         EditorGUILayout.EndHorizontal();
 
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
 
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
         //Camera targetting

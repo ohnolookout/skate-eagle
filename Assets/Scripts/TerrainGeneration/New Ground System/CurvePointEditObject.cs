@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -93,6 +94,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
     public void LeftTangentChanged(Vector3 updatedTang)
     {
+        Undo.RecordObject(this, "Tangent Changed");
         CurvePoint.LeftTangent = updatedTang - transform.position;
 
         if (CurvePoint.IsSymmetrical)
@@ -109,7 +111,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
     public void RightTangentChanged(Vector3 updatedTang)
     {
-
+        Undo.RecordObject(this, "Tangent Changed");
         CurvePoint.RightTangent = updatedTang - transform.position;
 
         if(CurvePoint.IsSymmetrical)
@@ -125,12 +127,14 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
     public void PositionChanged(Vector3 updatedPosition)
     {
+        Undo.RecordObject(this, "Curve Point Position Changed");
         transform.position = updatedPosition;
         CurvePoint.Position = updatedPosition - ParentGround.transform.position;
     }
 
     public void TangentSettingsChanged(ShapeTangentMode mode, bool isSymmetrical)
     {
+        Undo.RecordObject(this, "Tangents Changed");
         CurvePoint.Mode = mode;
         CurvePoint.IsSymmetrical = isSymmetrical;
         if (isSymmetrical)
