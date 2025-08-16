@@ -359,7 +359,7 @@ public class CurvePointObjectInspector : Editor
     {
         var objectPosition = curvePointObject.transform.position;
         var objectRotation = curvePointObject.transform.rotation;
-        var handleScale = HandleUtility.GetHandleSize(objectPosition) * .01f;
+        var handleScale = HandleUtility.GetHandleSize(objectPosition) * .005f;
         var groundPosition = curvePointObject.ParentGround.transform.position;
 
         var handlesChanged = false;
