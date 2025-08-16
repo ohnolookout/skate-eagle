@@ -79,6 +79,7 @@ public static class GroundSplineUtility
         }
     }
 
+
     private static void AddCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index, bool doInsert) //Inserts curvePoint at a given index
     {
         if (doInsert)

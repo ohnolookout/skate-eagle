@@ -212,5 +212,25 @@ public static class BezierMath
 
         return angle * (180 / Mathf.PI); // Convert angle to degrees
     }
+    public static Vector3 ConvertAngleToVector(float angle, float magnitude)
+    {
+        float radians = (angle % 360) * Mathf.Deg2Rad;
+        return new Vector3(Mathf.Cos(radians) * magnitude, Mathf.Sin(radians) * magnitude, 0);
+    }
+
+    public static void ConvertVectorToAngleAndMagnitude(Vector3 vector, out float angle, out float magnitude)
+    {
+        magnitude = vector.magnitude;
+        if (magnitude == 0)
+        {
+            angle = 0;
+            return;
+        }
+        angle = (Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg) % 360;
+        if (angle < 0)
+        {
+            angle += 360; // Ensure angle is in the range [0, 360)
+        }
+    }
 
 }

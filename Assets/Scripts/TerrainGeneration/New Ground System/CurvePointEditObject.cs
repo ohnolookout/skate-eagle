@@ -26,6 +26,12 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
     public bool DoTargetLow { get => LinkedCameraTarget.doTargetLow; set => LinkedCameraTarget.doTargetLow = value; }
     public bool DoTargetHigh { get => LinkedCameraTarget.doTargetHigh; set => LinkedCameraTarget.doTargetHigh = value; }
+
+    public float LeftTangentMagnitude => CurvePoint.LeftTangent.magnitude;
+    public float RightTangentMagnitude => CurvePoint.RightTangent.magnitude;
+    public float LeftTangentAngle => CurvePoint.LeftTangent == Vector3.zero ? 0 : Vector3.SignedAngle(Vector3.right, CurvePoint.LeftTangent, Vector3.forward);
+    public float RightTangentAngle => CurvePoint.RightTangent == Vector3.zero ? 0 : Vector3.SignedAngle(Vector3.right, CurvePoint.RightTangent, Vector3.forward);
+
     public CurvePointEditObject NextLeftCurvePointObject 
     { 
         get  

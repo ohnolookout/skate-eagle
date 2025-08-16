@@ -17,6 +17,7 @@ public class CurvePointObjectInspector : Editor
     private bool _showFloorOptions = false;
     public override void OnInspectorGUI()
     {
+        #region Inspector Declarations
         _curvePointObject = (CurvePointEditObject)target;
         _so = new SerializedObject(_curvePointObject);
         _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
@@ -32,8 +33,13 @@ public class CurvePointObjectInspector : Editor
         {
             _editManager = FindFirstObjectByType<EditManager>();
         }
+        #endregion
+
+        #region Transform Controls
 
         GUILayout.Label("Transform Controls", EditorStyles.boldLabel);
+
+        //Vector transform controls
 
         EditorGUI.BeginChangeCheck();
         var position = EditorGUILayout.Vector2Field("Position", _curvePointObject.transform.position);
@@ -55,38 +61,71 @@ public class CurvePointObjectInspector : Editor
         var rightTangent = EditorGUILayout.Vector2Field("Right Tangent", _curvePointObject.CurvePoint.RightTangent);
         if (EditorGUI.EndChangeCheck())
         {
-            _curvePointObject.LeftTangentChanged(rightTangent + (Vector2)_curvePointObject.CurvePoint.Position);
+            _curvePointObject.RightTangentChanged(rightTangent + (Vector2)_curvePointObject.CurvePoint.Position);
+            RefreshGround();
+        }
+
+        // Angle and magnitude controls
+
+        GUILayout.Space(10);
+        var defaultLabelWidth = EditorGUIUtility.labelWidth;
+        EditorGUIUtility.labelWidth = 50;
+        GUILayout.BeginHorizontal();
+
+        EditorGUI.BeginChangeCheck();
+        var leftTangAngle = 180 - EditorGUILayout.FloatField("L Angle", 180 - _curvePointObject.LeftTangentAngle, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            var newTang = BezierMath.ConvertAngleToVector(leftTangAngle, _curvePointObject.LeftTangentMagnitude);
+            _curvePointObject.LeftTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
             RefreshGround();
         }
 
         EditorGUI.BeginChangeCheck();
-        var leftTangAngle = EditorGUILayout.FloatField("Left Angle", 1, GUILayout.ExpandWidth(false));
+        var leftTangMag = EditorGUILayout.FloatField("L Mag", _curvePointObject.LeftTangentMagnitude, GUILayout.ExpandWidth(false));
         if (EditorGUI.EndChangeCheck())
         {
+            if (Math.Abs(leftTangMag) < .5f)
+            {
+                leftTangMag = leftTangMag < 0 ? -0.5f : 0.5f;
+            }
+            var newTang = BezierMath.ConvertAngleToVector(leftTangAngle, leftTangMag);
+            _curvePointObject.LeftTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
+            RefreshGround();
+        }
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+
+        EditorGUI.BeginChangeCheck();
+        var rightTangAngle = EditorGUILayout.FloatField("R Angle", _curvePointObject.RightTangentAngle, GUILayout.ExpandWidth(false));
+        if (EditorGUI.EndChangeCheck())
+        {
+            var newTang = BezierMath.ConvertAngleToVector(rightTangAngle, _curvePointObject.RightTangentMagnitude);
+            _curvePointObject.RightTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
             RefreshGround();
         }
 
         EditorGUI.BeginChangeCheck();
-        var leftTangMag = EditorGUILayout.FloatField("Left Magnitude", 1, GUILayout.ExpandWidth(false));
+        var rightTangMag = EditorGUILayout.FloatField("R Mag", _curvePointObject.RightTangentMagnitude, GUILayout.ExpandWidth(false));
         if (EditorGUI.EndChangeCheck())
         {
-            RefreshGround();
-        }
-        EditorGUI.BeginChangeCheck();
-        var rightTangAngle = EditorGUILayout.FloatField("Right Angle", 1, GUILayout.ExpandWidth(false));
-        if (EditorGUI.EndChangeCheck())
-        {
-            RefreshGround();
-        }
-
-        EditorGUI.BeginChangeCheck();
-        var rightTangMag = EditorGUILayout.FloatField("Right Magnitude", 1, GUILayout.ExpandWidth(false));
-        if (EditorGUI.EndChangeCheck())
-        {
+            if(Math.Abs(rightTangMag) < .5f)
+            {
+                rightTangMag = rightTangMag < 0 ? -0.5f : 0.5f;
+            }
+            var newTang = BezierMath.ConvertAngleToVector(rightTangAngle, rightTangMag);
+            _curvePointObject.RightTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
             RefreshGround();
         }
 
+        GUILayout.EndHorizontal();
 
+        EditorGUIUtility.labelWidth = defaultLabelWidth;
+        #endregion
+
+        #region Tangent Options
         GUILayout.Space(10);
         GUILayout.Label("Tangent Options", EditorStyles.boldLabel);
 
@@ -118,7 +157,9 @@ public class CurvePointObjectInspector : Editor
         }
         GUI.backgroundColor = originalColor;
         GUILayout.EndHorizontal();
+        #endregion
 
+        #region Add/Remove Buttons
         GUILayout.Space(10);
         GUILayout.Label("Add/Remove", EditorStyles.boldLabel);
 
@@ -153,10 +194,11 @@ public class CurvePointObjectInspector : Editor
         GUI.backgroundColor = originalColor;
 
         EditorGUILayout.EndHorizontal();
+        #endregion
 
+        #region Targeting Options
 
         GUILayout.Space(10);
-
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
         //Camera targetting
         EditorGUI.BeginChangeCheck();
@@ -224,10 +266,12 @@ public class CurvePointObjectInspector : Editor
             }
         }
 
+        #endregion
 
-        GUILayout.Space(20);
-
+        #region Start/Finish Options
+        GUILayout.Space(10);
         GUILayout.Label("Set Start/Finish", EditorStyles.boldLabel);
+
         GUILayout.BeginHorizontal();
 
         GUI.backgroundColor = Color.lightGreen;
@@ -268,10 +312,11 @@ public class CurvePointObjectInspector : Editor
         }
         GUI.backgroundColor = originalColor;
 
-
         GUILayout.EndHorizontal();
+        #endregion
 
-        GUILayout.Space(20);
+        #region Floor Options
+        GUILayout.Space(10);
         _showFloorOptions = EditorGUILayout.Foldout(_showFloorOptions, "Floor Options");
 
         if (_showFloorOptions)
@@ -290,6 +335,7 @@ public class CurvePointObjectInspector : Editor
                 RefreshGround();
             }
         }
+        #endregion
 
     }
     public void OnSceneGUI()
