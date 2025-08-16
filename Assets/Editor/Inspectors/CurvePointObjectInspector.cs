@@ -358,6 +358,8 @@ public class CurvePointObjectInspector : Editor
     public static bool DrawCurvePointHandles(CurvePointEditObject curvePointObject)
     {
         var objectPosition = curvePointObject.transform.position;
+        var objectRotation = curvePointObject.transform.rotation;
+        var handleScale = HandleUtility.GetHandleSize(objectPosition) * .01f;
         var groundPosition = curvePointObject.ParentGround.transform.position;
 
         var handlesChanged = false;
@@ -377,16 +379,14 @@ public class CurvePointObjectInspector : Editor
         }
         EditorGUI.BeginChangeCheck();
 
-        var positionHandle = Handles.FreeMoveHandle(
+        var handlePosition = Handles.PositionHandle(
             objectPosition,
-            HandleUtility.GetHandleSize(objectPosition) * .1f,
-            Vector3.zero,
-            Handles.SphereHandleCap);
+            objectRotation);
 
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(curvePointObject, "Curve Point Edit");
-            curvePointObject.PositionChanged(positionHandle);
+            curvePointObject.PositionChanged(handlePosition);
             handlesChanged = true;
         }
 
