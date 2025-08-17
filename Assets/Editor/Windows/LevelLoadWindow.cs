@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using log4net.Core;
 using System;
+using UnityEditor;
+using UnityEngine;
 
 public class LevelLoadWindow : EditorWindow
 {
@@ -25,10 +26,20 @@ public class LevelLoadWindow : EditorWindow
         GUILayout.Label("Select Level to Load", EditorStyles.boldLabel);
         _nameIndex = EditorGUILayout.Popup("Level to load", _nameIndex, _levelNames);
 
-        if (GUILayout.Button("Load Level"))
+        if (GUILayout.Button("Load"))
         {
             _editManager.LoadLevel(_levelNames[_nameIndex]);
             Close();
+        }
+
+        if (GUILayout.Button("Delete"))
+        {
+            var isDeleted = _editManager.DeleteLevel(_levelDB.lastLevelLoaded);
+
+            if (isDeleted)
+            {
+                _nameIndex = 0;
+            }
         }
         if (GUILayout.Button("Cancel"))
         {

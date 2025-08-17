@@ -1,7 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.U2D;
-using static Codice.CM.WorkspaceServer.DataStore.WkTree.WriteWorkspaceTree;
 
 [CustomEditor(typeof(EditManager))]
 public class EditManagerInspector : Editor
@@ -153,13 +151,10 @@ public class EditManagerInspector : Editor
         GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true)))
         {
-            var isDeleted = levelDB.DeleteLevel(levelDB.lastLevelLoaded);
+            var isDeleted = editManager.DeleteLevel(levelDB.lastLevelLoaded);
 
             if (isDeleted)
             {
-                editManager.GroundManager.ClearGround();
-                levelDB.LevelIsDirty = false;
-
                 var doLoad = EditorUtility.DisplayDialog("Level Deleted", $"Level deleted. What now?",
                     "Load Level", "New Level");
                 if (doLoad)

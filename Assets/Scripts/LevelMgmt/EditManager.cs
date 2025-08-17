@@ -99,6 +99,29 @@ public class EditManager : MonoBehaviour
         _levelDB.SaveLevel(newLevel);
     }
 
+    public bool DeleteLevel(Level level)
+    {
+        if (level == null)
+        {
+            Debug.LogWarning("Cannot delete a null level.");
+            return false;
+        }
+        if (!_levelDB.LevelDictionary.ContainsKey(level.UID))
+        {
+            Debug.LogWarning($"Level {level.Name} does not exist in the database.");
+            return false;
+        }
+
+        var isDeleted = _levelDB.DeleteLevel(level);
+
+        if (isDeleted)
+        {
+            GroundManager.ClearGround();
+            _levelDB.LevelIsDirty = false;
+        }
+        return isDeleted;
+    }
+
     public void RenameLevel(Level level, string newName)
     {
         var levelToSave = new Level(newName, medalTimes, _groundManager, cameraStartPosition);

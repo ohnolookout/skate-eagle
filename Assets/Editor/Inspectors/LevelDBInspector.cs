@@ -19,21 +19,38 @@ public class LevelDBInspector : Editor
         _levelOrder = _so.FindProperty("_levelOrder");
         _levelDB = (LevelDatabase)target;
         BuildDoPublishDict();
+
+        foreach(var entry in _levelDB.LevelDictionary)
+        {
+            if (!_levelDB.NameToUIDDictionary.ContainsKey(entry.Value.Name))
+            {
+                Debug.LogWarning("Level " + entry.Value.Name + " does not have a UID in the NameToUIDDictionary. Entry added.");
+                _levelDB.NameToUIDDictionary[entry.Value.Name] = entry.Key;
+            }
+        }
+
+        foreach(var entry in _levelDB.NameToUIDDictionary)
+        {
+            if (!_levelDB.LevelDictionary.ContainsKey(entry.Value))
+            {
+                Debug.LogWarning("LevelDB: " + entry.Key + " in NameToUIDDict does not have a UID in the LevelDictionary.");
+            }
+        }
     }
 
     public override void OnInspectorGUI()
     {
-        _so = new SerializedObject(target);
+        _so = new SerializedObject(target); 
         _levelOrder = _so.FindProperty("_levelOrder");
         _levelDB = (LevelDatabase)target;
 
+        GUILayout.Label("DB Stats", EditorStyles.boldLabel);
         GUILayout.Label("Level Dict Entries: " + _levelDB.LevelDictionary.Count);
         GUILayout.Label("Name to UID Entries: " + _levelDB.NameToUIDDictionary.Count);
 
         GUILayout.Space(10);
 
         EditorGUI.BeginChangeCheck();
-        GUILayout.Label("Level Order", EditorStyles.boldLabel);
 
         EditorGUILayout.PropertyField(_levelOrder, true);
 
@@ -71,12 +88,12 @@ public class LevelDBInspector : Editor
         GUILayout.Label("Utilities", EditorStyles.boldLabel);
 
 
-        if (GUILayout.Button("Clean Up DB", GUILayout.ExpandWidth(false)))
-        {
-            CleanUpDicts();
-            BuildDoPublishDict();
-            UpdateLevelOrder();
-        }
+        //if (GUILayout.Button("Clean Up DB", GUILayout.ExpandWidth(false)))
+        //{
+        //    CleanUpDicts();
+        //    BuildDoPublishDict();
+        //    UpdateLevelOrder();
+        //}
 
         if (GUILayout.Button("Copy Level", GUILayout.ExpandWidth(false)))
         {
@@ -111,10 +128,10 @@ public class LevelDBInspector : Editor
         //{
         //    FixMedalDefaults();
         //}
-        if (GUILayout.Button("Purge Deleted Levels", GUILayout.ExpandWidth(false)))
-        {
-            PurgeDeletedLevels();
-        }
+        //if (GUILayout.Button("Purge Deleted Levels", GUILayout.ExpandWidth(false)))
+        //{
+        //    PurgeDeletedLevels();
+        //}
 
         _levelDB.LevelOrderIsDirty = EditorGUILayout.Toggle("Level Order Dirty", _levelDB.LevelOrderIsDirty);
 
