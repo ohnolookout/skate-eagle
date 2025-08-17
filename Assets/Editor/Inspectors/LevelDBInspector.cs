@@ -10,7 +10,6 @@ public class LevelDBInspector : Editor
     private SerializedObject _so;
     private Dictionary<string, bool> _doPublishDictionary;
     private SerializedProperty _levelOrder;
-    private SerializedProperty _levelDict;
     private LevelDatabase _levelDB;
     private CopyLevelWindow _copyLevelWindow;
 
@@ -18,7 +17,6 @@ public class LevelDBInspector : Editor
     {
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
-        _levelDict = _so.FindProperty("_levelDictionary");
         _levelDB = (LevelDatabase)target;
         BuildDoPublishDict();
     }
@@ -27,12 +25,21 @@ public class LevelDBInspector : Editor
     {
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
-        _levelDict = _so.FindProperty("_levelDictionary");
         _levelDB = (LevelDatabase)target;
-        EditorGUI.BeginChangeCheck();
-        GUILayout.Label("Level Dict", EditorStyles.boldLabel);
 
-        EditorGUILayout.PropertyField(_levelDict, false);
+        GUILayout.Label("Level Dict Entries: " + _levelDB.LevelDictionary.Count);
+        GUILayout.Label("Name to UID Entries: " + _levelDB.NameToUIDDictionary.Count);
+        GUILayout.Label("UID to Name Entries: " + _levelDB.UIDToNameDictionary.Count);
+
+        GUILayout.Space(10);
+        foreach(var entry in _levelDB.LevelDictionary)
+        {
+            GUILayout.Label("Level: " + entry.Value.Name + " | UID: " + entry.Key);
+        }
+
+        GUILayout.Space(10);
+
+        EditorGUI.BeginChangeCheck();
         GUILayout.Label("Level Order", EditorStyles.boldLabel);
 
         EditorGUILayout.PropertyField(_levelOrder, true);
@@ -161,9 +168,15 @@ public class LevelDBInspector : Editor
         foreach (var uid in dictUIDs)
         {
             if (!_levelDB.UIDToNameDictionary.ContainsKey(uid) 
-                && !_levelDB.NameToUIDDictionary.ContainsKey(_levelDB.LevelDictionary[uid].Name))
+                || !_levelDB.NameToUIDDictionary.ContainsValue(uid))
             {
                 _levelDB.LevelDictionary.Remove(uid);
+                
+                if(_levelDB.UIDToNameDictionary.ContainsKey(uid))
+                {
+                    _levelDB.UIDToNameDictionary.Remove(uid);
+                }
+
                 deletedCount++;
                 EditorUtility.SetDirty(_levelDB);
             }

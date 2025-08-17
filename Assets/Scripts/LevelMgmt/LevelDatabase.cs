@@ -321,7 +321,14 @@ public class LevelDatabase : ScriptableObject
     #region Name/UID Exists
     public string[] LevelNames()
     {
-        return _nameToUIDDictionary.Keys.ToArray();
+        var names = new string[_levelDictionary.Count];
+        int i = 0;
+        foreach (var entry in _levelDictionary)
+        {
+            names[i] = entry.Value.Name;
+            i++;
+        }
+        return names;
     }
 
     public bool LevelNameExists(string name)
