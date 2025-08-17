@@ -29,13 +29,6 @@ public class LevelDBInspector : Editor
 
         GUILayout.Label("Level Dict Entries: " + _levelDB.LevelDictionary.Count);
         GUILayout.Label("Name to UID Entries: " + _levelDB.NameToUIDDictionary.Count);
-        GUILayout.Label("UID to Name Entries: " + _levelDB.UIDToNameDictionary.Count);
-
-        GUILayout.Space(10);
-        foreach(var entry in _levelDB.LevelDictionary)
-        {
-            GUILayout.Label("Level: " + entry.Value.Name + " | UID: " + entry.Key);
-        }
 
         GUILayout.Space(10);
 
@@ -167,15 +160,10 @@ public class LevelDBInspector : Editor
         var dictUIDs = _levelDB.LevelDictionary.Keys.ToList();
         foreach (var uid in dictUIDs)
         {
-            if (!_levelDB.UIDToNameDictionary.ContainsKey(uid) 
+            if (!_levelDB.NameToUIDDictionary.ContainsKey(_levelDB.LevelDictionary[uid].Name) 
                 || !_levelDB.NameToUIDDictionary.ContainsValue(uid))
             {
                 _levelDB.LevelDictionary.Remove(uid);
-                
-                if(_levelDB.UIDToNameDictionary.ContainsKey(uid))
-                {
-                    _levelDB.UIDToNameDictionary.Remove(uid);
-                }
 
                 deletedCount++;
                 EditorUtility.SetDirty(_levelDB);
@@ -196,7 +184,6 @@ public class LevelDBInspector : Editor
             if (level == null || level.Name == null)
             {
                 _levelDB.LevelDictionary.Remove(UID);
-                _levelDB.UIDToNameDictionary.Remove(UID);
                 EditorUtility.SetDirty(_levelDB);
                 continue;
             }
@@ -213,11 +200,6 @@ public class LevelDBInspector : Editor
                 EditorUtility.SetDirty(_levelDB);
             }
 
-            if (!_levelDB.UIDToNameDictionary.ContainsKey(UID))
-            {
-                _levelDB.UIDToNameDictionary[UID] = level.Name;
-                EditorUtility.SetDirty(_levelDB);
-            }
         }
 
         var namesDictNames = _levelDB.NameToUIDDictionary.Keys.ToList();
@@ -226,20 +208,7 @@ public class LevelDBInspector : Editor
         {
             if (!activeNames.Contains(name))
             {
-                _levelDB.UIDToNameDictionary.Remove(_levelDB.NameToUIDDictionary[name]);
                 _levelDB.NameToUIDDictionary.Remove(name);
-                EditorUtility.SetDirty(_levelDB);
-            }
-        }
-
-        var UIDsDictUIDs = _levelDB.UIDToNameDictionary.Keys.ToList();
-
-        foreach (var uid in UIDsDictUIDs)
-        {
-            if (!_levelDB.LevelDictionary.ContainsKey(uid))
-            {
-                _levelDB.NameToUIDDictionary.Remove(_levelDB.UIDToNameDictionary[uid]);
-                _levelDB.UIDToNameDictionary.Remove(uid);
                 EditorUtility.SetDirty(_levelDB);
             }
         }

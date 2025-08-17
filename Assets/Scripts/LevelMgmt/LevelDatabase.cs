@@ -13,7 +13,6 @@ public class LevelDatabase : ScriptableObject
     #region Declarations
     [SerializeField] private SerializableDictionaryBase<string, Level> _levelDictionary;
     [SerializeField] private SerializableDictionaryBase<string, string> _nameToUIDDictionary;
-    [SerializeField] private SerializableDictionaryBase<string, string> _uidToNameDictionary;
     [SerializeField] private List<string> _levelOrder;
     [SerializeField] private Level _editorLevel;
     [SerializeField] private bool _levelIsDirty = false;
@@ -21,7 +20,6 @@ public class LevelDatabase : ScriptableObject
     public Level lastLevelLoaded;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary; //Levels stored by UID
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
-    public SerializableDictionaryBase<string, string> UIDToNameDictionary => _uidToNameDictionary;
     public List<string> LevelOrder => _levelOrder;
     public Level EditorLevel => _editorLevel;
     public bool LevelIsDirty { get => _levelIsDirty; set => _levelIsDirty = value; }
@@ -111,7 +109,6 @@ public class LevelDatabase : ScriptableObject
     {
         _levelDictionary[level.UID] = level;
         _nameToUIDDictionary[level.Name] = level.UID;
-        _uidToNameDictionary[level.UID] = level.Name;
     }
 
     public bool DeleteLevel(Level level)
@@ -137,7 +134,6 @@ public class LevelDatabase : ScriptableObject
 
         _levelDictionary.Remove(uid);
         _nameToUIDDictionary.Remove(name);
-        _uidToNameDictionary.Remove(uid);
         _levelOrder.Remove(name);
 
         if (lastLevelLoaded != null && lastLevelLoaded.UID == uid)
@@ -157,7 +153,6 @@ public class LevelDatabase : ScriptableObject
 
         _nameToUIDDictionary.Remove(oldName);
         _nameToUIDDictionary[newName] = uid;
-        _uidToNameDictionary[uid] = newName;
         _levelDictionary[uid] = level; 
 
         if (_levelOrder.Contains(oldName))
@@ -346,7 +341,7 @@ public class LevelDatabase : ScriptableObject
         {
             return false;
         }
-        return _uidToNameDictionary.ContainsKey(uid);
+        return _levelDictionary.ContainsKey(uid);
     }
 
     private string GetUIDByName(string name)
@@ -364,7 +359,7 @@ public class LevelDatabase : ScriptableObject
         {
             return null;
         }
-        return _uidToNameDictionary[uid];
+        return _levelDictionary[uid].Name;
     }
 
     #endregion
