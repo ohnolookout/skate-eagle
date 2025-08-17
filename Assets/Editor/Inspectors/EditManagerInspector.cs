@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
+using static Codice.CM.WorkspaceServer.DataStore.WkTree.WriteWorkspaceTree;
 
 [CustomEditor(typeof(EditManager))]
 public class EditManagerInspector : Editor
@@ -103,7 +104,7 @@ public class EditManagerInspector : Editor
     }
 
 
-    public static void SaveLoadBar(EditManager levelEditManager, LevelDatabase levelDB)
+    public static void SaveLoadBar(EditManager editManager, LevelDatabase levelDB)
     {
         var defaultColor = GUI.backgroundColor;
         GUILayout.Label("Save/Load", EditorStyles.boldLabel);
@@ -112,41 +113,66 @@ public class EditManagerInspector : Editor
         GUI.backgroundColor = Color.lightGreen;
         if (GUILayout.Button("Save", GUILayout.ExpandWidth(true)))
         {
-            levelEditManager.SaveLevel();
+            editManager.SaveLevel();
         }
 
         GUI.backgroundColor = Color.orange;
         if (GUILayout.Button("Load", GUILayout.ExpandWidth(true)))
         {
-            if (!levelEditManager.DoDiscardChanges())
+            if (!editManager.DoDiscardChanges())
             {
                 return;
             }
             var loadWindow = EditorWindow.GetWindow<LevelLoadWindow>();
-            loadWindow.Init(levelEditManager, levelDB);
+            loadWindow.Init(editManager, levelDB);
         }
         
         GUI.backgroundColor = Color.softYellow;
         if (GUILayout.Button("Rename", GUILayout.ExpandWidth(true)))
         {
-            if (!levelEditManager.DoDiscardChanges())
+            if (!editManager.DoDiscardChanges())
             {
                 return;
             }
             var renameWindow = EditorWindow.GetWindow<RenameLevelWindow>();
-            renameWindow.Init(levelEditManager, levelDB.lastLevelLoaded);
+            renameWindow.Init(editManager, levelDB.lastLevelLoaded);
         }
 
         GUI.backgroundColor = Color.skyBlue;
         if (GUILayout.Button("New", GUILayout.ExpandWidth(true)))
         {
-            if (!levelEditManager.DoDiscardChanges())
+            if (!editManager.DoDiscardChanges())
             {
                 return;
             }
 
             var newLevelWindow = EditorWindow.GetWindow<NewLevelWindow>();
-            newLevelWindow.Init(levelEditManager);
+            newLevelWindow.Init(editManager, true);
+        }
+
+        GUI.backgroundColor = Color.orangeRed;
+        if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true)))
+        {
+            var isDeleted = levelDB.DeleteLevel(levelDB.lastLevelLoaded);
+
+            if (isDeleted)
+            {
+                editManager.GroundManager.ClearGround();
+                levelDB.LevelIsDirty = false;
+
+                var doLoad = EditorUtility.DisplayDialog("Level Deleted", $"Level deleted. What now?",
+                    "Load Level", "New Level");
+                if (doLoad)
+                {
+                    var loadLevelWindow = EditorWindow.GetWindow<LevelLoadWindow>();
+                    loadLevelWindow.Init(editManager, levelDB);
+                }
+                else
+                {
+                    var newLevelWindow = EditorWindow.GetWindow<NewLevelWindow>();
+                    newLevelWindow.Init(editManager, false);
+                }
+            }
         }
 
         GUI.backgroundColor = defaultColor;
@@ -226,11 +252,13 @@ public class NewLevelWindow : EditorWindow
 {
     private EditManager _levelEditManager;
     private string _newName;
+    private bool _doAllowClose = true;
 
-    public void Init(EditManager levelEditManager)
+    public void Init(EditManager levelEditManager, bool doAllowClose)
     {
         _levelEditManager = levelEditManager;
         _newName = "New Level";
+        _doAllowClose = doAllowClose;
     }
 
     private void OnLostFocus()
@@ -255,10 +283,12 @@ public class NewLevelWindow : EditorWindow
                 Close();
             }
         }
-
-        if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
+        if (_doAllowClose)
         {
-            Close();
+            if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
+            {
+                Close();
+            }
         }
     }
 

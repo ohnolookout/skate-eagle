@@ -14,7 +14,7 @@ public class LevelLoadWindow : EditorWindow
         _editManager = editManager;
         _levelDB = levelDB;
         _levelNames = _levelDB.LevelNames();
-        if (_levelDB.UIDExists(_levelDB.lastLevelLoaded.UID))
+        if (_levelDB.lastLevelLoaded != null && _levelDB.UIDExists(_levelDB.lastLevelLoaded.UID))
         {
             _nameIndex = Array.IndexOf(_levelNames, _levelDB.lastLevelLoaded.Name);
         }
@@ -29,16 +29,6 @@ public class LevelLoadWindow : EditorWindow
         {
             _editManager.LoadLevel(_levelNames[_nameIndex]);
             Close();
-        }
-        if(GUILayout.Button("Delete Level"))
-        {
-            var isDeleted = _levelDB.DeleteLevel(_levelNames[_nameIndex]);
-
-            if(isDeleted)
-            {
-                _levelNames = _levelDB.LevelNames();
-                _nameIndex = 0;
-            }
         }
         if (GUILayout.Button("Cancel"))
         {

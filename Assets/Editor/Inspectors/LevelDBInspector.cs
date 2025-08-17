@@ -10,6 +10,7 @@ public class LevelDBInspector : Editor
     private SerializedObject _so;
     private Dictionary<string, bool> _doPublishDictionary;
     private SerializedProperty _levelOrder;
+    private SerializedProperty _levelDict;
     private LevelDatabase _levelDB;
     private CopyLevelWindow _copyLevelWindow;
 
@@ -17,15 +18,22 @@ public class LevelDBInspector : Editor
     {
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
+        _levelDict = _so.FindProperty("_levelDictionary");
         _levelDB = (LevelDatabase)target;
         BuildDoPublishDict();
     }
 
     public override void OnInspectorGUI()
     {
-        GUILayout.Label("Level Order", EditorStyles.boldLabel);
-
+        _so = new SerializedObject(target);
+        _levelOrder = _so.FindProperty("_levelOrder");
+        _levelDict = _so.FindProperty("_levelDictionary");
+        _levelDB = (LevelDatabase)target;
         EditorGUI.BeginChangeCheck();
+        GUILayout.Label("Level Dict", EditorStyles.boldLabel);
+
+        EditorGUILayout.PropertyField(_levelDict, false);
+        GUILayout.Label("Level Order", EditorStyles.boldLabel);
 
         EditorGUILayout.PropertyField(_levelOrder, true);
 
@@ -45,6 +53,10 @@ public class LevelDBInspector : Editor
         var levelNames = _levelDB.NameToUIDDictionary.Keys.ToList();
         foreach (var name in levelNames)
         {
+            if (!_doPublishDictionary.ContainsKey(name))
+            {
+                _doPublishDictionary[name] = false; // Initialize if not present
+            }
             _doPublishDictionary[name] = EditorGUILayout.Toggle(name, _doPublishDictionary[name]);
         }
 
@@ -81,23 +93,27 @@ public class LevelDBInspector : Editor
 
 
         //Curve points utility for old ground system
-        if (GUILayout.Button("Populate Curve Points", GUILayout.ExpandWidth(false)))
-        {
-            PopulateGroundCurvePoints();
-        }
+        //if (GUILayout.Button("Populate Curve Points", GUILayout.ExpandWidth(false)))
+        //{
+        //    PopulateGroundCurvePoints();
+        //}
 
-        if (GUILayout.Button("Populate Segment Curve Points", GUILayout.ExpandWidth(false)))
-        {
-            foreach (var level in _levelDB.LevelDictionary.Values)
-            {
-                level.PopulateSegmentCurvePoints();
-            }
-            EditorUtility.SetDirty(_levelDB);
-        }
+        //if (GUILayout.Button("Populate Segment Curve Points", GUILayout.ExpandWidth(false)))
+        //{
+        //    foreach (var level in _levelDB.LevelDictionary.Values)
+        //    {
+        //        level.PopulateSegmentCurvePoints();
+        //    }
+        //    EditorUtility.SetDirty(_levelDB);
+        //}
 
-        if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))
+        //if (GUILayout.Button("Fix Medal Defaults", GUILayout.ExpandWidth(false)))
+        //{
+        //    FixMedalDefaults();
+        //}
+        if (GUILayout.Button("Purge Deleted Levels", GUILayout.ExpandWidth(false)))
         {
-            FixMedalDefaults();
+            PurgeDeletedLevels();
         }
 
         _levelDB.LevelOrderIsDirty = EditorGUILayout.Toggle("Level Order Dirty", _levelDB.LevelOrderIsDirty);
@@ -137,7 +153,26 @@ public class LevelDBInspector : Editor
 
         _levelDB.LevelOrderIsDirty = true;
     }
-    public void CleanUpDicts()
+
+    private void PurgeDeletedLevels()
+    {
+        var deletedCount = 0;
+        var dictUIDs = _levelDB.LevelDictionary.Keys.ToList();
+        foreach (var uid in dictUIDs)
+        {
+            if (!_levelDB.UIDToNameDictionary.ContainsKey(uid) 
+                && !_levelDB.NameToUIDDictionary.ContainsKey(_levelDB.LevelDictionary[uid].Name))
+            {
+                _levelDB.LevelDictionary.Remove(uid);
+                deletedCount++;
+                EditorUtility.SetDirty(_levelDB);
+            }
+        }
+
+        Debug.Log("Purged " + deletedCount + " deleted levels from the database.");
+    }
+
+    private void CleanUpDicts()
     {
         var activeUIDs = _levelDB.LevelDictionary.Keys.ToList();
         List<string> activeNames = new();

@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Com.LuisPedroFonseca.ProCamera2D;
-using System.Linq;
 public class GroundManager : MonoBehaviour
 {
     #region Declarations

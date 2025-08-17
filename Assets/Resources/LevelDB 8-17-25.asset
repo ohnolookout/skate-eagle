@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 344a43f33074d484780b8fa3cb59317c, type: 3}
-  m_Name: LevelDB
+  m_Name: LevelDB 8-17-25
   m_EditorClassIdentifier: 
   _levelDictionary:
     reorderableList:
@@ -52,6 +52,7 @@ MonoBehaviour:
     - 4a26ea08-11e2-45f9-97ec-937ada2a6d12
     - b911d6cb-3ff9-44a8-977a-9b4eb596d7e8
     - 7db78471-5d50-44e6-b0f9-20946c781eb0
+    - 0a3d2b9f-af99-4537-89dc-572434bdee99
     _keys:
     - fb0e6ee1-3af6-402f-80c7-b9be4eff865b
     - aba2d3d5-4f5e-4add-9c23-55aaa1771bc2
@@ -68,6 +69,7 @@ MonoBehaviour:
     - 4a26ea08-11e2-45f9-97ec-937ada2a6d12
     - b911d6cb-3ff9-44a8-977a-9b4eb596d7e8
     - 7db78471-5d50-44e6-b0f9-20946c781eb0
+    - 0a3d2b9f-af99-4537-89dc-572434bdee99
     _values:
     - _UID: fb0e6ee1-3af6-402f-80c7-b9be4eff865b
       _name: Double Gap
@@ -1513,6 +1515,97 @@ MonoBehaviour:
               TargetOffset: {x: 0, y: 10}
               IsAdjusting: 0
               SerializedPosition: {x: 192.62743, y: 10.941972, z: -13.705789}
+    - _UID: 0a3d2b9f-af99-4537-89dc-572434bdee99
+      _name: Undelete Test
+      _goldRequired: 0
+      _medalTimes:
+        _bronzeTime: 20
+        _silverTime: 14
+        _goldTime: 10
+        _blueTime: 8
+        _redTime: 6
+      _serializedObjects:
+      - rid: 2514962788019077963
+      _leaderboardKey: Undelete Test_leaderboard
+      _killPlaneY: Infinity
+      _cameraStartPosition: {x: 116, y: 6}
+      _rootCameraTarget:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 0
+        TargetType: 0
+        SerializedLocation: 
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 1
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 0}
+          IsAdjusting: 0
+          SerializedPosition: {x: 0, y: 0, z: 0}
+      _startTarget:
+        LeftTargets: []
+        RightTargets:
+        - rid: 2514962788019077962
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000001000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: -118, y: 24, z: 0}
+      _serializedStartLine:
+        xOffset: 0
+        _curvePoint:
+          name: CP 0_1
+          position: {x: -59, y: 12, z: 0}
+          leftTangent: {x: -20, y: 0, z: 0}
+          rightTangent: {x: 20, y: 0.0000017484556, z: 0}
+          _serializedWorldPosition: {x: -59, y: 12, z: 0}
+          _mode: 1
+          _isSymmetrical: 0
+          _floorHeight: 100
+          _floorAngle: 0
+          _forceNewSection: 0
+          _blockNewSection: 0
+          _object: {fileID: 0}
+          _linkedCameraTarget:
+            LeftTargets: []
+            RightTargets:
+            - rid: 2514962788019077962
+            LeftKDNode:
+              rid: -2
+            RightKDNode:
+              rid: -2
+            doTargetHigh: 0
+            doTargetLow: 1
+            TargetType: 0
+            SerializedLocation: 0000000001000000
+            _target:
+              TargetTransform: {fileID: 0}
+              CurrentInfluenceH: 1
+              CurrentInfluenceV: 1
+              TargetInfluenceH: 0
+              TargetInfluenceV: 1
+              TargetOffset: {x: 0, y: 10}
+              IsAdjusting: 0
+              SerializedPosition: {x: -118, y: 24, z: 0}
   _nameToUIDDictionary:
     reorderableList:
       canAdd: 0
@@ -1550,6 +1643,7 @@ MonoBehaviour:
     - Fun Level
     - Start Then Finish
     - Easy Does It
+    - Undelete Test
     _keys:
     - Double Gap
     - Triple Gap
@@ -1563,6 +1657,7 @@ MonoBehaviour:
     - Fun Level
     - Start Then Finish
     - Easy Does It
+    - Undelete Test
     _values:
     - fb0e6ee1-3af6-402f-80c7-b9be4eff865b
     - aba2d3d5-4f5e-4add-9c23-55aaa1771bc2
@@ -1576,6 +1671,7 @@ MonoBehaviour:
     - d8d26a17-8e45-493a-89eb-cea9694210e8
     - 9d8ee989-b4fa-4f83-9bdb-218dd0f24d09
     - 7db78471-5d50-44e6-b0f9-20946c781eb0
+    - 0a3d2b9f-af99-4537-89dc-572434bdee99
   _uidToNameDictionary:
     reorderableList:
       canAdd: 1
@@ -1616,6 +1712,7 @@ MonoBehaviour:
     - 4a26ea08-11e2-45f9-97ec-937ada2a6d12
     - b911d6cb-3ff9-44a8-977a-9b4eb596d7e8
     - 7db78471-5d50-44e6-b0f9-20946c781eb0
+    - 0a3d2b9f-af99-4537-89dc-572434bdee99
     _keys:
     - fb0e6ee1-3af6-402f-80c7-b9be4eff865b
     - aba2d3d5-4f5e-4add-9c23-55aaa1771bc2
@@ -1632,6 +1729,7 @@ MonoBehaviour:
     - 4a26ea08-11e2-45f9-97ec-937ada2a6d12
     - b911d6cb-3ff9-44a8-977a-9b4eb596d7e8
     - 7db78471-5d50-44e6-b0f9-20946c781eb0
+    - 0a3d2b9f-af99-4537-89dc-572434bdee99
     _values:
     - Double Gap
     - Triple Gap
@@ -1648,6 +1746,7 @@ MonoBehaviour:
     - Plateaus
     - Plateaus
     - Easy Does It
+    - Undelete Test
   _levelOrder:
   - Easy Does It
   - Surprise
@@ -1656,8 +1755,8 @@ MonoBehaviour:
   - Double Double
   - Plateaus
   _editorLevel:
-    _UID: fb0e6ee1-3af6-402f-80c7-b9be4eff865b
-    _name: Double Gap
+    _UID: 0a3d2b9f-af99-4537-89dc-572434bdee99
+    _name: Undelete Test
     _goldRequired: 0
     _medalTimes:
       _bronzeTime: 20
@@ -1666,40 +1765,34 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 2514962698943332491
-    - rid: 2514962698943332492
-    - rid: 2514962698943332493
-    - rid: 2514962698943332494
-    - rid: 2514962698943332495
-    _leaderboardKey: Double Gap_leaderboard
-    _killPlaneY: -46.6902
-    _cameraStartPosition: {x: -48.999973, y: 17.224987}
+    - rid: 2514962788019077963
+    _leaderboardKey: Undelete Test_leaderboard
+    _killPlaneY: Infinity
+    _cameraStartPosition: {x: 116, y: 6}
     _rootCameraTarget:
-      LeftTargets:
-      - rid: 2514962690691564459
-      RightTargets:
-      - rid: 2514962690691564460
+      LeftTargets: []
+      RightTargets: []
       LeftKDNode:
-        rid: 2514962690691564461
+        rid: -2
       RightKDNode:
-        rid: 2514962690691564462
+        rid: -2
       doTargetHigh: 0
-      doTargetLow: 1
+      doTargetLow: 0
       TargetType: 0
-      SerializedLocation: 0100000001000000
+      SerializedLocation: 
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
         CurrentInfluenceV: 1
-        TargetInfluenceH: 0
+        TargetInfluenceH: 1
         TargetInfluenceV: 1
-        TargetOffset: {x: 0, y: 10}
+        TargetOffset: {x: 0, y: 0}
         IsAdjusting: 0
-        SerializedPosition: {x: 287.54514, y: -24.504047, z: 0}
+        SerializedPosition: {x: 0, y: 0, z: 0}
     _startTarget:
       LeftTargets: []
       RightTargets:
-      - rid: 2514962690691564461
+      - rid: 2514962788019077962
       LeftKDNode:
         rid: -2
       RightKDNode:
@@ -1735,7 +1828,7 @@ MonoBehaviour:
         _linkedCameraTarget:
           LeftTargets: []
           RightTargets:
-          - rid: 2514962690691564461
+          - rid: 2514962788019077962
           LeftKDNode:
             rid: -2
           RightKDNode:
@@ -1756,8 +1849,8 @@ MonoBehaviour:
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   lastLevelLoaded:
-    _UID: fb0e6ee1-3af6-402f-80c7-b9be4eff865b
-    _name: Double Gap
+    _UID: 0a3d2b9f-af99-4537-89dc-572434bdee99
+    _name: Undelete Test
     _goldRequired: 0
     _medalTimes:
       _bronzeTime: 20
@@ -1766,40 +1859,34 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 2514962698943332491
-    - rid: 2514962698943332492
-    - rid: 2514962698943332493
-    - rid: 2514962698943332494
-    - rid: 2514962698943332495
-    _leaderboardKey: Double Gap_leaderboard
-    _killPlaneY: -46.6902
-    _cameraStartPosition: {x: -48.999973, y: 17.224987}
+    - rid: 2514962788019077963
+    _leaderboardKey: Undelete Test_leaderboard
+    _killPlaneY: Infinity
+    _cameraStartPosition: {x: 116, y: 6}
     _rootCameraTarget:
-      LeftTargets:
-      - rid: 2514962690691564459
-      RightTargets:
-      - rid: 2514962690691564460
+      LeftTargets: []
+      RightTargets: []
       LeftKDNode:
-        rid: 2514962690691564461
+        rid: -2
       RightKDNode:
-        rid: 2514962690691564462
+        rid: -2
       doTargetHigh: 0
-      doTargetLow: 1
+      doTargetLow: 0
       TargetType: 0
-      SerializedLocation: 0100000001000000
+      SerializedLocation: 
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
         CurrentInfluenceV: 1
-        TargetInfluenceH: 0
+        TargetInfluenceH: 1
         TargetInfluenceV: 1
-        TargetOffset: {x: 0, y: 10}
+        TargetOffset: {x: 0, y: 0}
         IsAdjusting: 0
-        SerializedPosition: {x: 287.54514, y: -24.504047, z: 0}
+        SerializedPosition: {x: 0, y: 0, z: 0}
     _startTarget:
       LeftTargets: []
       RightTargets:
-      - rid: 2514962690691564461
+      - rid: 2514962788019077962
       LeftKDNode:
         rid: -2
       RightKDNode:
@@ -1835,7 +1922,7 @@ MonoBehaviour:
         _linkedCameraTarget:
           LeftTargets: []
           RightTargets:
-          - rid: 2514962690691564461
+          - rid: 2514962788019077962
           LeftKDNode:
             rid: -2
           RightKDNode:
@@ -60405,6 +60492,210 @@ MonoBehaviour:
           TargetOffset: {x: 0, y: 10}
           IsAdjusting: 0
           SerializedPosition: {x: 440, y: -60.848427, z: 0}
+    - rid: 2514962788019077962
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077968
+        RightTargets:
+        - rid: 2514962788019077969
+        LeftKDNode:
+          rid: 2514962788019077969
+        RightKDNode:
+          rid: 2514962788019077968
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000002000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: -48.863617, y: -16.704346, z: 0}
+    - rid: 2514962788019077963
+      type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
+      data:
+        xOffset: 0
+        _curvePoint:
+          name: CP 0_1
+          position: {x: -59, y: 12, z: 0}
+          leftTangent: {x: -20, y: 0, z: 0}
+          rightTangent: {x: 20, y: 0.0000017484556, z: 0}
+          _serializedWorldPosition: {x: -59, y: 12, z: 0}
+          _mode: 1
+          _isSymmetrical: 0
+          _floorHeight: 100
+          _floorAngle: 0
+          _forceNewSection: 0
+          _blockNewSection: 0
+          _object: {fileID: 0}
+          _linkedCameraTarget:
+            LeftTargets: []
+            RightTargets:
+            - rid: 2514962788019077962
+            LeftKDNode:
+              rid: -2
+            RightKDNode:
+              rid: -2
+            doTargetHigh: 0
+            doTargetLow: 1
+            TargetType: 0
+            SerializedLocation: 0000000001000000
+            _target:
+              TargetTransform: {fileID: 0}
+              CurrentInfluenceH: 1
+              CurrentInfluenceV: 1
+              TargetInfluenceH: 0
+              TargetInfluenceV: 1
+              TargetOffset: {x: 0, y: 10}
+              IsAdjusting: 0
+              SerializedPosition: {x: -118, y: 24, z: 0}
+    - rid: 2514962788019077968
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets:
+        - rid: 2514962788019077962
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000001000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: -118, y: 24, z: 0}
+    - rid: 2514962788019077969
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077962
+        RightTargets:
+        - rid: 2514962788019077972
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000006000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: 100.00003, y: -21.976063, z: 0}
+    - rid: 2514962788019077972
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077969
+        RightTargets:
+        - rid: 2514962788019077974
+        LeftKDNode:
+          rid: 2514962788019077962
+        RightKDNode:
+          rid: 2514962788019077975
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0100000001000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: 287.54514, y: -24.504047, z: 0}
+    - rid: 2514962788019077974
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077972
+        RightTargets:
+        - rid: 2514962788019077975
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0200000001000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: 458.74515, y: -26.104048, z: 0}
+    - rid: 2514962788019077975
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077974
+        RightTargets:
+        - rid: 2514962788019077978
+        LeftKDNode:
+          rid: 2514962788019077978
+        RightKDNode:
+          rid: 2514962788019077974
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0200000005000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: 642.2295, y: -54.929375, z: 0}
+    - rid: 2514962788019077978
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets:
+        - rid: 2514962788019077975
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0200000006000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 10}
+          IsAdjusting: 0
+          SerializedPosition: {x: 738.7451, y: -73.3804, z: 0}
     - rid: 7890021813186462638
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:

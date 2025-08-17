@@ -114,6 +114,11 @@ public class LevelDatabase : ScriptableObject
         _uidToNameDictionary[level.UID] = level.Name;
     }
 
+    public bool DeleteLevel(Level level)
+    {
+        return DeleteLevel(level.Name);
+    }
+
     public bool DeleteLevel(string name)
     {
         if (name == null || !LevelNameExists(name))
@@ -130,7 +135,7 @@ public class LevelDatabase : ScriptableObject
         }
         var uid = _nameToUIDDictionary[name];
 
-        _levelDictionary.Remove(name);
+        _levelDictionary.Remove(uid);
         _nameToUIDDictionary.Remove(name);
         _uidToNameDictionary.Remove(uid);
         _levelOrder.Remove(name);
