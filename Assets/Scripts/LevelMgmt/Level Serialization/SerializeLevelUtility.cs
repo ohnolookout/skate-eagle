@@ -49,8 +49,15 @@ public static class SerializeLevelUtility
             ground.gameObject.name = "Ground " + i;
             for (int j = 0; j < ground.CurvePointObjects.Length; j++)
             {
-                ground.CurvePointObjects[j].name = "CP " + i + "_" + j;
-                ground.CurvePointObjects[j].LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
+                var cpObj = ground.CurvePointObjects[j];
+                cpObj.name = "CP " + i + "_" + j;
+
+                if (cpObj.LinkedCameraTarget.doTargetLow)
+                {
+                    cpObj.name += "_LT";
+                }
+
+                cpObj.LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
             }
         }
     }
