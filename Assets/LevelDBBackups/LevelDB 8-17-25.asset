@@ -1295,50 +1295,49 @@ MonoBehaviour:
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   lastLevelLoaded:
-    _UID: 7db78471-5d50-44e6-b0f9-20946c781eb0
-    _name: Easy Does It
+    _UID: b911d6cb-3ff9-44a8-977a-9b4eb596d7e8
+    _name: Plateaus
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 20
-      _silverTime: 14
+      _bronzeTime: 25
+      _silverTime: 15
       _goldTime: 10
-      _blueTime: 8
-      _redTime: 6
+      _blueTime: 9.5
+      _redTime: 9.25
     _serializedObjects:
-    - rid: 2514962512920707955
-    - rid: 2514962512920707956
-    - rid: 2514962512920707957
-    - rid: 2514962512920707958
-    - rid: 2514962512920707959
-    _leaderboardKey: Easy Does It_leaderboard
-    _killPlaneY: -40.206715
-    _cameraStartPosition: {x: 202.62732, y: 11.473552}
+    - rid: 2514962831644557646
+    - rid: 2514962831644557647
+    - rid: 2514962831644557648
+    - rid: 2514962831644557649
+    _leaderboardKey: Plateaus_leaderboard
+    _killPlaneY: -39.08039
+    _cameraStartPosition: {x: 116.79995, y: 2.1536489}
     _rootCameraTarget:
       LeftTargets:
-      - rid: 2514962512920707960
+      - rid: 2514962831644557551
       RightTargets:
-      - rid: 2514962512920707961
+      - rid: 2514962831644557542
       LeftKDNode:
-        rid: 2514962512920707962
+        rid: 2514962831644557543
       RightKDNode:
-        rid: 2514962512920707961
+        rid: 2514962831644557542
       doTargetHigh: 0
       doTargetLow: 1
       TargetType: 0
-      SerializedLocation: 000000000a000000
+      SerializedLocation: 0000000000000000
       _target:
         TargetTransform: {fileID: 0}
-        CurrentInfluenceH: 0
+        CurrentInfluenceH: 1
         CurrentInfluenceV: 1
         TargetInfluenceH: 0
         TargetInfluenceV: 1
         TargetOffset: {x: 0, y: 10}
         IsAdjusting: 0
-        SerializedPosition: {x: 417.72742, y: -10.074259, z: -13.705789}
+        SerializedPosition: {x: 213.7903, y: 31.174086, z: 0}
     _startTarget:
       LeftTargets: []
       RightTargets:
-      - rid: 2514962512920707721
+      - rid: 2514962831644557548
       LeftKDNode:
         rid: -2
       RightKDNode:
@@ -1346,24 +1345,24 @@ MonoBehaviour:
       doTargetHigh: 0
       doTargetLow: 1
       TargetType: 0
-      SerializedLocation: 0000000001000000
+      SerializedLocation: 0100000001000000
       _target:
         TargetTransform: {fileID: 0}
-        CurrentInfluenceH: 0
+        CurrentInfluenceH: 1
         CurrentInfluenceV: 1
         TargetInfluenceH: 0
         TargetInfluenceV: 1
         TargetOffset: {x: 0, y: 10}
         IsAdjusting: 0
-        SerializedPosition: {x: 192.62743, y: 10.941972, z: -13.705789}
+        SerializedPosition: {x: -144.82742, y: 6.6580276, z: 0}
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
-        name: CP
-        position: {x: -59, y: 12, z: 0}
+        name: CP 1_1
+        position: {x: -144.82742, y: 6.6580276, z: 0}
         leftTangent: {x: -20, y: 0, z: 0}
         rightTangent: {x: 20, y: 0.0000017484556, z: 0}
-        _serializedWorldPosition: {x: 192.62743, y: 10.941972, z: -13.705789}
+        _serializedWorldPosition: {x: -144.82742, y: 6.6580276, z: 0}
         _mode: 1
         _isSymmetrical: 0
         _floorHeight: 100
@@ -1374,7 +1373,7 @@ MonoBehaviour:
         _linkedCameraTarget:
           LeftTargets: []
           RightTargets:
-          - rid: 2514962512920707721
+          - rid: 2514962831644557548
           LeftKDNode:
             rid: -2
           RightKDNode:
@@ -1382,7 +1381,7 @@ MonoBehaviour:
           doTargetHigh: 0
           doTargetLow: 1
           TargetType: 0
-          SerializedLocation: 0000000001000000
+          SerializedLocation: 0100000001000000
           _target:
             TargetTransform: {fileID: 0}
             CurrentInfluenceH: 1
@@ -1391,7 +1390,7 @@ MonoBehaviour:
             TargetInfluenceV: 1
             TargetOffset: {x: 0, y: 10}
             IsAdjusting: 0
-            SerializedPosition: {x: 192.62743, y: 10.941972, z: -13.705789}
+            SerializedPosition: {x: -144.82742, y: 6.6580276, z: 0}
   references:
     version: 2
     RefIds:

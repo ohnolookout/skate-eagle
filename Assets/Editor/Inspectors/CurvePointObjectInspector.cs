@@ -344,8 +344,7 @@ public class CurvePointObjectInspector : Editor
 
         var startPos = curvePointEditObject.transform.position;
 
-        var handlesChanged = DrawCurvePointHandles(curvePointEditObject);
-        if (handlesChanged)
+        if (DrawCurvePointHandles(curvePointEditObject))
         {
             if (_editManager.doShiftEdits)
             {
@@ -377,6 +376,7 @@ public class CurvePointObjectInspector : Editor
         {
             Handles.color = Color.white;
         }
+
         EditorGUI.BeginChangeCheck();
 
         var handlePosition = Handles.PositionHandle(

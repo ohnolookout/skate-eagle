@@ -189,6 +189,14 @@ public class CurvePoint
         return direction * magnitude;
     }
 
+    public void SaveWorldPosition()
+    {
+        if (_object != null)
+        {
+            _serializedWorldPosition = _object.transform.position;
+        }
+    }
+
     public CurvePoint DeepCopy()
     {
         CurvePoint copy = new CurvePoint();

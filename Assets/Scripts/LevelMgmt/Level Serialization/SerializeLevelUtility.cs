@@ -209,7 +209,7 @@ public static class SerializeLevelUtility
                 deserializable.Deserialize(groundManager.StartLine.gameObject, groundManager.gameObject);
                 break;
             case SerializedTutorialSign:
-                var isSquare = ((SerializedTutorialSign)deserializable).IsSquare;
+                var isSquare = ((SerializedTutorialSign)deserializable).Type;
                 var tutorialSign = groundManager.groundSpawner.AddTutorialSign(isSquare);
                 deserializable.Deserialize(tutorialSign.gameObject, groundManager.gameObject);
                 break;

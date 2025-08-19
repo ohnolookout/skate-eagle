@@ -16,6 +16,7 @@ public class SerializedStartLine : IDeserializable
         startLine.CurvePoint.LinkedCameraTarget.doTargetLow = true;
 
         _curvePoint = startLine.CurvePoint;
+        _curvePoint.SaveWorldPosition();
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

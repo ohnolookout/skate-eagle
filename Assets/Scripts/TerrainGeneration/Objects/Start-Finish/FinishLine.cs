@@ -289,7 +289,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
     public bool IsParentGround(GameObject obj)
     {
-        if(_flagPoint.Object == null)
+        if(_flagPoint == null || _flagPoint.Object == null)
         {
             return false;
         }

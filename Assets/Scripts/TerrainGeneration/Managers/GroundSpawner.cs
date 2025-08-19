@@ -14,8 +14,11 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private GroundManager _groundManager;
     [SerializeField] private GameObject _groundPrefab;
     [SerializeField] private GameObject _groundSegmentPrefab;
-    [SerializeField] private GameObject _longSignPrefab;
-    [SerializeField] private GameObject _squareSignPrefab;
+    [SerializeField] private GameObject _arrowTextSign;
+    [SerializeField] private GameObject _arrowSquareSign;
+    [SerializeField] private GameObject _rotateTextSign;
+    [SerializeField] private GameObject _rotateSquareSign;
+
 
     #region Add/Remove Segments
     public Ground AddGround()
@@ -53,13 +56,26 @@ public class GroundSpawner : MonoBehaviour
     #endregion
 
     #region Objects
-    public GameObject AddTutorialSign(bool isSquare)
+    public GameObject AddTutorialSign(SignType type)
     {
-        var signPrefab = _longSignPrefab;
-
-        if(isSquare)
+        GameObject signPrefab;
+        switch (type)
         {
-            signPrefab = _squareSignPrefab;
+            case SignType.ArrowSquare:
+                signPrefab = _arrowSquareSign;
+                break;
+            case SignType.ArrowText:
+                signPrefab = _arrowTextSign;
+                break;
+            case SignType.RotateSquare:
+                signPrefab = _rotateSquareSign;
+                break;
+            case SignType.RotateText:
+                signPrefab = _rotateTextSign;
+                break;
+            default:
+                signPrefab = _arrowSquareSign;
+                break;
         }
 
         var sign = Instantiate(signPrefab, _groundManager.groundContainer.transform);

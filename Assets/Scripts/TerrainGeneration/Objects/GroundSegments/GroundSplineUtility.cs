@@ -47,10 +47,16 @@ public static class GroundSplineUtility
             return;
         }
 
-        curvePoints[0].Mode = ShapeTangentMode.Broken;
+        if (curvePoints[0].Mode == ShapeTangentMode.Continuous)
+        {
+            curvePoints[0].Mode = ShapeTangentMode.Broken;
+        }
         curvePoints[0].LeftTangent = new Vector3(0, 0);
 
-        curvePoints[^1].Mode = ShapeTangentMode.Broken;
+        if (curvePoints[^1].Mode == ShapeTangentMode.Continuous)
+        {
+            curvePoints[^1].Mode = ShapeTangentMode.Broken;
+        }
         curvePoints[^1].RightTangent = new Vector3(0, 0);
 
         var leftPosition = GetCornerPosition(curvePoints[0], true);

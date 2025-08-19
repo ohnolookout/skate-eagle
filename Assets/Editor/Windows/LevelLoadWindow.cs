@@ -34,11 +34,12 @@ public class LevelLoadWindow : EditorWindow
 
         if (GUILayout.Button("Delete"))
         {
-            var isDeleted = _editManager.DeleteLevel(_levelDB.lastLevelLoaded);
+            var isDeleted = _editManager.DeleteLevel(_levelDB.GetLevelByName(_levelNames[_nameIndex]));
 
             if (isDeleted)
             {
                 _nameIndex = 0;
+                _levelNames = _levelDB.LevelNames();
             }
         }
         if (GUILayout.Button("Cancel"))

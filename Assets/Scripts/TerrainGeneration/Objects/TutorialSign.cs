@@ -2,17 +2,24 @@ using TMPro;
 using UnityEngine;
 using System;
 
+public enum SignType
+{
+    ArrowSquare,
+    ArrowText,
+    RotateSquare,
+    RotateText
+}
 public class TutorialSign: MonoBehaviour, ISerializable
 {
-    [SerializeField] private TMP_Text _signText;
-    [SerializeField] private bool _isSquare = false;
+    [SerializeField] private TMP_Text _text;
+    [SerializeField] private SignType _type = SignType.ArrowSquare;
     [SerializeField] private Transform _imageTransform;
     public GameObject GameObject => gameObject;
 
     public TMP_Text SignText
     {
-        get => _signText;
-        set => _signText = value;
+        get => _text;
+        set => _text = value;
     }
 
     public Transform ImageTransform
@@ -24,13 +31,12 @@ public class TutorialSign: MonoBehaviour, ISerializable
     public IDeserializable Serialize()
     {
 
-        return new SerializedTutorialSign(gameObject.name, _signText.text, new Vector2(transform.position.x, transform.position.y), _imageTransform.rotation.eulerAngles.z, _isSquare);
+        return new SerializedTutorialSign(gameObject.name, _type, _text.text, new Vector2(transform.position.x, transform.position.y), _imageTransform.rotation.eulerAngles.z);
     }
 
     public void Clear()
     {
-        _signText.text = string.Empty;
-        _isSquare = false;
+        _text.text = string.Empty;
         _imageTransform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
