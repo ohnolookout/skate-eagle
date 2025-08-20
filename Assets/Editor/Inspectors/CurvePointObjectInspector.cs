@@ -186,7 +186,6 @@ public class CurvePointObjectInspector : Editor
         if (GUILayout.Button("Remove", GUILayout.ExpandWidth(true)))
         {
             var ground = _curvePointObject.ParentGround;
-            //Undo.RegisterFullObjectHierarchyUndo(ground, "Curve point destroyed.");
             Undo.DestroyObjectImmediate(_curvePointObject.gameObject);
             Selection.activeGameObject = ground.gameObject;
             return;
@@ -338,6 +337,7 @@ public class CurvePointObjectInspector : Editor
         #endregion
 
     }
+    #region Handles
     public void OnSceneGUI()
     {
         var curvePointEditObject = (CurvePointEditObject)target;
@@ -437,7 +437,9 @@ public class CurvePointObjectInspector : Editor
 
         return handlesChanged;
     }
+    #endregion
 
+    #region Utilities
     private static CurvePointEditObject NextCurvePoint(CurvePointEditObject currentCurvePoint)
     {
         var curvePointObjects = currentCurvePoint.ParentGround.CurvePointObjects;
@@ -467,5 +469,5 @@ public class CurvePointObjectInspector : Editor
         Undo.RecordObject(_curvePointObject.gameObject, "Refresh ground.");
         _editManager.RefreshSerializable(_curvePointObject.ParentGround);
     }
-
+    #endregion
 }

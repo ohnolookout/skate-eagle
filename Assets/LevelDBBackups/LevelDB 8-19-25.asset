@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 344a43f33074d484780b8fa3cb59317c, type: 3}
-  m_Name: LevelDB
+  m_Name: LevelDB 8-19-25
   m_EditorClassIdentifier: 
   _levelDictionary:
     reorderableList:
@@ -1324,17 +1324,16 @@ MonoBehaviour:
       _name: Ugly Tester
       _goldRequired: 0
       _medalTimes:
-        _bronzeTime: 25
-        _silverTime: 15
+        _bronzeTime: 20
+        _silverTime: 14
         _goldTime: 10
-        _blueTime: 9.5
-        _redTime: 9.25
+        _blueTime: 8
+        _redTime: 6
       _serializedObjects:
-      - rid: 2514962872021549549
-      - rid: 2514962872021549550
+      - rid: 2514962872021549546
       _leaderboardKey: Ugly Tester_leaderboard
-      _killPlaneY: -10
-      _cameraStartPosition: {x: 9.519584, y: 5.007283}
+      _killPlaneY: Infinity
+      _cameraStartPosition: {x: 116, y: 6}
       _rootCameraTarget:
         LeftTargets: []
         RightTargets: []
@@ -1487,21 +1486,21 @@ MonoBehaviour:
   - Plateaus
   - Double Double
   _editorLevel:
-    _UID: edac540c-71a1-4f39-bd69-3354cdd5cf29
+    _UID: 
     _name: Ugly Tester
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 25
-      _silverTime: 15
+      _bronzeTime: 20
+      _silverTime: 14
       _goldTime: 10
-      _blueTime: 9.5
-      _redTime: 9.25
+      _blueTime: 8
+      _redTime: 6
     _serializedObjects:
-    - rid: 2514962872021549549
-    - rid: 2514962872021549550
+    - rid: 2514962872021549547
+    - rid: 2514962872021549548
     _leaderboardKey: Ugly Tester_leaderboard
     _killPlaneY: -10
-    _cameraStartPosition: {x: 9.519584, y: 5.007283}
+    _cameraStartPosition: {x: -48.999973, y: 17.224987}
     _rootCameraTarget:
       LeftTargets: []
       RightTargets: []
@@ -1579,24 +1578,23 @@ MonoBehaviour:
             TargetOffset: {x: 0, y: 10}
             IsAdjusting: 0
             SerializedPosition: {x: -0.48042297, y: -0.21771312, z: 0}
-  _levelIsDirty: 0
+  _levelIsDirty: 1
   _levelOrderIsDirty: 1
   lastLevelLoaded:
     _UID: edac540c-71a1-4f39-bd69-3354cdd5cf29
     _name: Ugly Tester
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 25
-      _silverTime: 15
+      _bronzeTime: 20
+      _silverTime: 14
       _goldTime: 10
-      _blueTime: 9.5
-      _redTime: 9.25
+      _blueTime: 8
+      _redTime: 6
     _serializedObjects:
-    - rid: 2514962872021549549
-    - rid: 2514962872021549550
+    - rid: 2514962872021549546
     _leaderboardKey: Ugly Tester_leaderboard
-    _killPlaneY: -10
-    _cameraStartPosition: {x: 9.519584, y: 5.007283}
+    _killPlaneY: Infinity
+    _cameraStartPosition: {x: 116, y: 6}
     _rootCameraTarget:
       LeftTargets: []
       RightTargets: []
@@ -65469,7 +65467,45 @@ MonoBehaviour:
               TargetOffset: {x: 0, y: 10}
               IsAdjusting: 0
               SerializedPosition: {x: -59, y: 12, z: 0}
-    - rid: 2514962872021549549
+    - rid: 2514962872021549546
+      type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
+      data:
+        xOffset: 0
+        _curvePoint:
+          name: CP 0_1_LT
+          position: {x: -0.48042297, y: -0.21771312, z: 0}
+          leftTangent: {x: -12.806252, y: -0.0000011175871, z: 0}
+          rightTangent: {x: 27.48933, y: 0.0000023989626, z: -0}
+          _serializedWorldPosition: {x: -0.48042297, y: -0.21771312, z: 0}
+          _mode: 1
+          _isSymmetrical: 0
+          _floorHeight: 100
+          _floorAngle: 0
+          _forceNewSection: 0
+          _blockNewSection: 0
+          _object: {fileID: 0}
+          _linkedCameraTarget:
+            LeftTargets: []
+            RightTargets:
+            - rid: -2
+            LeftKDNode:
+              rid: -2
+            RightKDNode:
+              rid: -2
+            doTargetHigh: 0
+            doTargetLow: 1
+            TargetType: 0
+            SerializedLocation: 0000000001000000
+            _target:
+              TargetTransform: {fileID: 0}
+              CurrentInfluenceH: 1
+              CurrentInfluenceV: 1
+              TargetInfluenceH: 0
+              TargetInfluenceV: 1
+              TargetOffset: {x: 0, y: 10}
+              IsAdjusting: 0
+              SerializedPosition: {x: -0.48042297, y: -0.21771312, z: 0}
+    - rid: 2514962872021549547
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -65561,7 +65597,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 40.4, y: 0, z: 0}
+            position: {x: 32, y: 0, z: 0}
             leftTangent: {x: -10, y: -8, z: 0}
             rightTangent: {x: 10, y: 8, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -65722,7 +65758,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 40.4, y: 0, z: 0}
+            position: {x: 32, y: 0, z: 0}
             leftTangent: {x: -10, y: -8, z: 0}
             rightTangent: {x: 10, y: 8, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -65821,49 +65857,49 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 0.7045448, y: 0.97139937}
-          - {x: 2.1534455, y: -0.08523023}
-          - {x: 3.7406406, y: -1.039664}
-          - {x: 5.452041, y: -1.8896487}
-          - {x: 7.2730203, y: -2.6332698}
-          - {x: 9.188627, y: -3.2689843}
-          - {x: 11.183736, y: -3.795597}
-          - {x: 13.243137, y: -4.212219}
-          - {x: 15.35158, y: -4.5182166}
-          - {x: 17.493805, y: -4.713174}
-          - {x: 19.654558, y: -4.796876}
-          - {x: 21.818575, y: -4.7692766}
-          - {x: 23.9706, y: -4.6305127}
-          - {x: 26.095377, y: -4.3809013}
-          - {x: 28.177643, y: -4.020968}
-          - {x: 30.20217, y: -3.5514758}
-          - {x: 32.15378, y: -2.9734674}
-          - {x: 34.017433, y: -2.2883177}
-          - {x: 35.77831, y: -1.4977612}
-          - {x: 37.42205, y: -0.6039026}
-          - {x: 38.95894, y: 0.40967405}
-          - {x: 39.650368, y: 0.93704253}
-          - {x: 39.694614, y: 0.97078705}
-          - {x: 41.34395, y: 2.1635854}
-          - {x: 43.118584, y: 3.2257876}
-          - {x: 45.003788, y: 4.159354}
-          - {x: 46.985344, y: 4.965986}
-          - {x: 49.04931, y: 5.647091}
-          - {x: 51.18198, y: 6.203775}
-          - {x: 53.36974, y: 6.636871}
-          - {x: 55.599045, y: 6.946972}
-          - {x: 57.856354, y: 7.134457}
-          - {x: 60.12814, y: 7.199517}
-          - {x: 62.400887, y: 7.142158}
-          - {x: 64.66108, y: 6.96221}
-          - {x: 66.89517, y: 6.65931}
-          - {x: 69.08962, y: 6.232885}
-          - {x: 71.23083, y: 5.6821256}
-          - {x: 73.30506, y: 5.005953}
-          - {x: 75.29845, y: 4.2029905}
-          - {x: 77.19681, y: 3.2715564}
-          - {x: 78.98543, y: 2.209715}
-          - {x: 80.608185, y: 1.0492129}
+          - {x: 0.71553874, y: 0.96332985}
+          - {x: 2.4846847, y: -0.35486853}
+          - {x: 4.285904, y: -1.5000001}
+          - {x: 6.1140895, y: -2.4731708}
+          - {x: 7.9644012, y: -3.2755067}
+          - {x: 9.832288, y: -3.90808}
+          - {x: 11.713485, y: -4.3718276}
+          - {x: 13.603978, y: -4.667466}
+          - {x: 15.499923, y: -4.7954154}
+          - {x: 17.39756, y: -4.7557583}
+          - {x: 19.293102, y: -4.54823}
+          - {x: 21.182625, y: -4.1722445}
+          - {x: 23.061983, y: -3.6269615}
+          - {x: 24.926771, y: -2.9113607}
+          - {x: 26.77228, y: -2.0243309}
+          - {x: 28.59352, y: -0.9647497}
+          - {x: 30.403101, y: 0.28251165}
+          - {x: 31.250366, y: 0.93704253}
+          - {x: 31.302044, y: 0.9761437}
+          - {x: 32.731422, y: 1.9914248}
+          - {x: 34.32054, y: 2.9074712}
+          - {x: 36.054726, y: 3.7289984}
+          - {x: 37.919888, y: 4.4594016}
+          - {x: 39.90202, y: 5.1010737}
+          - {x: 41.987072, y: 5.6556807}
+          - {x: 44.16085, y: 6.1243787}
+          - {x: 46.40901, y: 6.507969}
+          - {x: 48.71708, y: 6.8069963}
+          - {x: 51.070496, y: 7.0218253}
+          - {x: 53.45463, y: 7.15268}
+          - {x: 55.854805, y: 7.1996675}
+          - {x: 58.25633, y: 7.1627946}
+          - {x: 60.644524, y: 7.0419674}
+          - {x: 63.00475, y: 6.83698}
+          - {x: 65.32241, y: 6.547491}
+          - {x: 67.58307, y: 6.172982}
+          - {x: 69.77232, y: 5.712695}
+          - {x: 71.87598, y: 5.165528}
+          - {x: 73.87994, y: 4.5298977}
+          - {x: 75.77023, y: 3.803527}
+          - {x: 77.53278, y: 2.9831774}
+          - {x: 79.15304, y: 2.0643342}
+          - {x: 80.56871, y: 1.079534}
           - {x: 80.74963, y: 0.93704253}
           - {x: 80.70496, y: 0.9710956}
           - {x: 82.16678, y: -0.09580243}
@@ -65888,7 +65924,7 @@ MonoBehaviour:
           - {x: 118.838135, y: 0.6164461}
           - {x: 119.25037, y: 0.93704253}
           bottomColliderPoints:
-          - {x: 0.7045448, y: 0.97139937}
+          - {x: 0.71553874, y: 0.96332985}
           - {x: 0, y: 0}
           - {x: 0, y: -100}
           - {x: 0, y: -100}
@@ -65999,7 +66035,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 40.4, y: 0, z: 0}
+            position: {x: 32, y: 0, z: 0}
             leftTangent: {x: -10, y: -8, z: 0}
             rightTangent: {x: 10, y: 8, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -66160,7 +66196,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 40.4, y: 0, z: 0}
+            position: {x: 32, y: 0, z: 0}
             leftTangent: {x: -10, y: -8, z: 0}
             rightTangent: {x: 10, y: 8, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -66259,49 +66295,49 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 0.7045448, y: 0.97139937}
-          - {x: 2.1534455, y: -0.08523023}
-          - {x: 3.7406406, y: -1.039664}
-          - {x: 5.452041, y: -1.8896487}
-          - {x: 7.2730203, y: -2.6332698}
-          - {x: 9.188627, y: -3.2689843}
-          - {x: 11.183736, y: -3.795597}
-          - {x: 13.243137, y: -4.212219}
-          - {x: 15.35158, y: -4.5182166}
-          - {x: 17.493805, y: -4.713174}
-          - {x: 19.654558, y: -4.796876}
-          - {x: 21.818575, y: -4.7692766}
-          - {x: 23.9706, y: -4.6305127}
-          - {x: 26.095377, y: -4.3809013}
-          - {x: 28.177643, y: -4.020968}
-          - {x: 30.20217, y: -3.5514758}
-          - {x: 32.15378, y: -2.9734674}
-          - {x: 34.017433, y: -2.2883177}
-          - {x: 35.77831, y: -1.4977612}
-          - {x: 37.42205, y: -0.6039026}
-          - {x: 38.95894, y: 0.40967405}
-          - {x: 39.650368, y: 0.93704253}
-          - {x: 39.694614, y: 0.97078705}
-          - {x: 41.34395, y: 2.1635854}
-          - {x: 43.118584, y: 3.2257876}
-          - {x: 45.003788, y: 4.159354}
-          - {x: 46.985344, y: 4.965986}
-          - {x: 49.04931, y: 5.647091}
-          - {x: 51.18198, y: 6.203775}
-          - {x: 53.36974, y: 6.636871}
-          - {x: 55.599045, y: 6.946972}
-          - {x: 57.856354, y: 7.134457}
-          - {x: 60.12814, y: 7.199517}
-          - {x: 62.400887, y: 7.142158}
-          - {x: 64.66108, y: 6.96221}
-          - {x: 66.89517, y: 6.65931}
-          - {x: 69.08962, y: 6.232885}
-          - {x: 71.23083, y: 5.6821256}
-          - {x: 73.30506, y: 5.005953}
-          - {x: 75.29845, y: 4.2029905}
-          - {x: 77.19681, y: 3.2715564}
-          - {x: 78.98543, y: 2.209715}
-          - {x: 80.608185, y: 1.0492129}
+          - {x: 0.71553874, y: 0.96332985}
+          - {x: 2.4846847, y: -0.35486853}
+          - {x: 4.285904, y: -1.5000001}
+          - {x: 6.1140895, y: -2.4731708}
+          - {x: 7.9644012, y: -3.2755067}
+          - {x: 9.832288, y: -3.90808}
+          - {x: 11.713485, y: -4.3718276}
+          - {x: 13.603978, y: -4.667466}
+          - {x: 15.499923, y: -4.7954154}
+          - {x: 17.39756, y: -4.7557583}
+          - {x: 19.293102, y: -4.54823}
+          - {x: 21.182625, y: -4.1722445}
+          - {x: 23.061983, y: -3.6269615}
+          - {x: 24.926771, y: -2.9113607}
+          - {x: 26.77228, y: -2.0243309}
+          - {x: 28.59352, y: -0.9647497}
+          - {x: 30.403101, y: 0.28251165}
+          - {x: 31.250366, y: 0.93704253}
+          - {x: 31.302044, y: 0.9761437}
+          - {x: 32.731422, y: 1.9914248}
+          - {x: 34.32054, y: 2.9074712}
+          - {x: 36.054726, y: 3.7289984}
+          - {x: 37.919888, y: 4.4594016}
+          - {x: 39.90202, y: 5.1010737}
+          - {x: 41.987072, y: 5.6556807}
+          - {x: 44.16085, y: 6.1243787}
+          - {x: 46.40901, y: 6.507969}
+          - {x: 48.71708, y: 6.8069963}
+          - {x: 51.070496, y: 7.0218253}
+          - {x: 53.45463, y: 7.15268}
+          - {x: 55.854805, y: 7.1996675}
+          - {x: 58.25633, y: 7.1627946}
+          - {x: 60.644524, y: 7.0419674}
+          - {x: 63.00475, y: 6.83698}
+          - {x: 65.32241, y: 6.547491}
+          - {x: 67.58307, y: 6.172982}
+          - {x: 69.77232, y: 5.712695}
+          - {x: 71.87598, y: 5.165528}
+          - {x: 73.87994, y: 4.5298977}
+          - {x: 75.77023, y: 3.803527}
+          - {x: 77.53278, y: 2.9831774}
+          - {x: 79.15304, y: 2.0643342}
+          - {x: 80.56871, y: 1.079534}
           - {x: 80.74963, y: 0.93704253}
           - {x: 80.70496, y: 0.9710956}
           - {x: 82.16678, y: -0.09580243}
@@ -66326,7 +66362,7 @@ MonoBehaviour:
           - {x: 118.838135, y: 0.6164461}
           - {x: 119.25037, y: 0.93704253}
           bottomColliderPoints:
-          - {x: 0.7045448, y: 0.97139937}
+          - {x: 0.71553874, y: 0.96332985}
           - {x: 0, y: 0}
           - {x: 0, y: -100}
           - {x: 0, y: -100}
@@ -66483,7 +66519,7 @@ MonoBehaviour:
               TargetOffset: {x: 0, y: 10}
               IsAdjusting: 0
               SerializedPosition: {x: 240, y: 0, z: 0}
-    - rid: 2514962872021549550
+    - rid: 2514962872021549548
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0

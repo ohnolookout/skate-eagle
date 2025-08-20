@@ -192,7 +192,7 @@ public class EditManager : MonoBehaviour
             var cp = ground.CurvePoints[0];
             pos = cp.Position - _cpDelta;
             leftTang = new(cp.LeftTangent.x, -cp.LeftTangent.y);
-        } else if(index >= cpCount)
+        } else if(index >= cpCount || doShiftEdits)
         {
             index = Math.Min(index, cpCount);
             var cp = ground.CurvePoints[index - 1];
