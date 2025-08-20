@@ -1,11 +1,14 @@
 #if UNITY_EDITOR
 
+using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
+using static UnityEngine.Timeline.TimelineAsset;
 
+public enum EditType { Insert, Shift };
 //Handles all editor-specific functions for ground construction and destruction
 [ExecuteInEditMode]
 public class EditManager : MonoBehaviour
@@ -19,7 +22,7 @@ public class EditManager : MonoBehaviour
     private GroundSpawner _groundSpawner;
     private LevelDatabase _levelDB;
     private bool _debugMode = false;
-    public bool doShiftEdits = false;
+    public EditType editType = EditType.Insert;
 
     public GroundManager GroundManager => _groundManager;
     public GroundSpawner GroundSpawner => _groundSpawner;
@@ -192,7 +195,7 @@ public class EditManager : MonoBehaviour
             var cp = ground.CurvePoints[0];
             pos = cp.Position - _cpDelta;
             leftTang = new(cp.LeftTangent.x, -cp.LeftTangent.y);
-        } else if(index >= cpCount || doShiftEdits)
+        } else if(index >= cpCount || editType == EditType.Shift)
         {
             index = Math.Min(index, cpCount);
             var cp = ground.CurvePoints[index - 1];
@@ -216,7 +219,7 @@ public class EditManager : MonoBehaviour
         Undo.RegisterFullObjectHierarchyUndo(ground.gameObject, "Inserted point");
         var cpObj = ground.SetCurvePoint(newPoint, index);
 
-        if (doShiftEdits)
+        if (editType == EditType.Shift)
         {
             ShiftCurvePoints(cpObj, _cpDelta);
         }

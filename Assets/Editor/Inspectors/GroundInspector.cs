@@ -8,6 +8,7 @@ public class GroundInspector : Editor
     private EditManager _levelEditManager;
     private bool _showSettings = false;
     public static bool DebugSegments = false;
+    private bool _controlHeld = false;
     public override void OnInspectorGUI()
     {
         if (_levelEditManager == null)
@@ -81,6 +82,15 @@ public class GroundInspector : Editor
     }
     public void OnSceneGUI()
     {
+        if (Event.current.control)
+        {
+            _controlHeld = true;
+        }
+        else if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftControl)
+        {
+            _controlHeld = false;
+        }
+
         if (_levelEditManager == null)
         {
             _levelEditManager = FindFirstObjectByType<EditManager>();
@@ -94,7 +104,7 @@ public class GroundInspector : Editor
             _levelEditManager.RefreshSerializable(ground);
         }
 
-        DrawCurvePoints(ground, _levelEditManager);
+        DrawCurvePoints(ground, _levelEditManager, _controlHeld);
 
         if (ground.gameObject.transform.hasChanged)
         {
@@ -103,23 +113,23 @@ public class GroundInspector : Editor
         }
     }
 
-    public static void DrawCurvePoints(Ground ground, EditManager levelEditManager)
+    public static void DrawCurvePoints(Ground ground, EditManager editManager, bool controlHeld)
     {
         foreach (var point in ground.CurvePointObjects)
         {
             var startPos = point.transform.position;
             if (CurvePointObjectInspector.DrawCurvePointHandles(point))
             {
-                if (levelEditManager.doShiftEdits)
+                if (editManager.editType == EditType.Shift || controlHeld)
                 {
-                    levelEditManager.ShiftCurvePoints(point, point.transform.position - startPos);
+                    editManager.ShiftCurvePoints(point, point.transform.position - startPos);
                 }
-                levelEditManager.RefreshSerializable(ground);
+                editManager.RefreshSerializable(ground);
             }
         }
     }
 
-    private static void ClearCurvePointTargets(Ground ground, EditManager levelEditManager)
+    private static void ClearCurvePointTargets(Ground ground, EditManager editManager)
     {
         foreach(var curvePointObj in ground.CurvePointObjects)
         {
@@ -129,21 +139,21 @@ public class GroundInspector : Editor
             curvePointObj.LinkedCameraTarget.RightTargets = new();
         }
 
-        if (levelEditManager != null)
+        if (editManager != null)
         {
-            levelEditManager.UpdateEditorLevel();
+            editManager.UpdateEditorLevel();
         }
     }
 
-    public static void PopulateDefaultTargets(Ground ground, EditManager levelEditManager)
+    public static void PopulateDefaultTargets(Ground ground, EditManager editManager)
     {
         foreach(var point in ground.CurvePointObjects)
         {
             point.PopulateDefaultTargets();
         }
-        if (levelEditManager != null)
+        if (editManager != null)
         {
-            levelEditManager.UpdateEditorLevel();
+            editManager.UpdateEditorLevel();
         }
     }
 }

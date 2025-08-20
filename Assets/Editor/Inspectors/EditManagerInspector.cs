@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,8 +11,6 @@ public class EditManagerInspector : Editor
     private bool _showCamStart = false;
 
     public bool debugMode = false;
-    public static string[] editModeStrings = { "Insert", "Shift" };
-    public static int editMode = 0;
     public override void OnInspectorGUI()
     {
         _editManager = (EditManager)target;
@@ -91,12 +90,7 @@ public class EditManagerInspector : Editor
             GUILayout.Label("No Level Found. Save, load, or create new level to edit.", EditorStyles.boldLabel);
         }
 
-        EditorGUI.BeginChangeCheck();
-        editMode = GUILayout.Toolbar(editMode, editModeStrings);
-        if (EditorGUI.EndChangeCheck())
-        {
-            _editManager.doShiftEdits = editMode == 1;
-        }
+        _editManager.editType = (EditType)GUILayout.Toolbar((int)_editManager.editType, Enum.GetNames(typeof(EditType)));
 
         debugMode = EditorGUILayout.Toggle("Debug Mode", debugMode, GUILayout.ExpandWidth(false));
     }
@@ -337,12 +331,7 @@ public class EditorToolbar : EditorWindow
         GUILayout.Space(10);
         GUILayout.Label("Edit Mode", EditorStyles.boldLabel);
 
-        EditorGUI.BeginChangeCheck();
-        EditManagerInspector.editMode = GUILayout.Toolbar(EditManagerInspector.editMode, EditManagerInspector.editModeStrings);
-        if (EditorGUI.EndChangeCheck())
-        {
-            _editManager.doShiftEdits = EditManagerInspector.editMode == 1;
-        }        
+        _editManager.editType = (EditType)GUILayout.Toolbar((int)_editManager.editType, Enum.GetNames(typeof(EditType)));
 
         if (GUILayout.Button("Refresh Level", GUILayout.ExpandWidth(false)))
         {

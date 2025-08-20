@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
+using UnityEngine.UIElements;
 
 [CustomEditor(typeof(CurvePointEditObject))]
 public class CurvePointObjectInspector : Editor
@@ -15,6 +16,7 @@ public class CurvePointObjectInspector : Editor
     private EditManager _editManager;
     private bool _showTargetObjects = false;
     private bool _showFloorOptions = false;
+    private bool _controlHeld = false;
     public override void OnInspectorGUI()
     {
         #region Inspector Declarations
@@ -35,17 +37,34 @@ public class CurvePointObjectInspector : Editor
         }
         #endregion
 
+        if (Event.current.control)
+        {
+            _controlHeld = true;
+        }
+        else if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftControl)
+        {
+            _controlHeld = false;
+        }
+
         #region Transform Controls
 
         GUILayout.Label("Transform Controls", EditorStyles.boldLabel);
 
         //Vector transform controls
 
+        var startPos = _curvePointObject.transform.position;
+
         EditorGUI.BeginChangeCheck();
         var position = EditorGUILayout.Vector2Field("Position", _curvePointObject.transform.position);
         if(EditorGUI.EndChangeCheck())
         {
             _curvePointObject.PositionChanged(position);
+
+            if (_editManager.editType == EditType.Shift || _controlHeld)
+            {
+                _editManager.ShiftCurvePoints(_curvePointObject, _curvePointObject.transform.position - startPos);
+            }
+
             RefreshGround();
         }
 
@@ -340,15 +359,23 @@ public class CurvePointObjectInspector : Editor
     #region Handles
     public void OnSceneGUI()
     {
-        var curvePointEditObject = (CurvePointEditObject)target;
-
-        var startPos = curvePointEditObject.transform.position;
-
-        if (DrawCurvePointHandles(curvePointEditObject))
+        if (Event.current.control)
         {
-            if (_editManager.doShiftEdits)
+            _controlHeld = true;
+        } else if(Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftControl)
+        {
+            _controlHeld = false;
+        }
+
+        var curvePointObject = (CurvePointEditObject)target;
+
+        var startPos = curvePointObject.transform.position;
+
+        if (DrawCurvePointHandles(curvePointObject))
+        {
+            if (_editManager.editType == EditType.Shift || _controlHeld)
             {
-                _editManager.ShiftCurvePoints(curvePointEditObject, curvePointEditObject.transform.position - startPos);
+                _editManager.ShiftCurvePoints(curvePointObject, curvePointObject.transform.position - startPos);
             }
             RefreshGround();
         }
