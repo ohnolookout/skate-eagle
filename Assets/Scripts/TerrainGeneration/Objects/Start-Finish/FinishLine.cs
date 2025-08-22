@@ -154,9 +154,21 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         return resyncs;
         
     }
+    public void Refresh(GroundManager _ = null)
+    {
+#if UNITY_EDITOR
+        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
+#endif
+        UpdateFlagPosition();
+        UpdateBackstopPosition();
+    }
 
     public void SetFlagPoint(CurvePoint flagPoint)
     {
+        gameObject.SetActive(true);
+#if UNITY_EDITOR
+        Undo.RecordObject(this, "Set Finish Flag and Backstop");
+#endif
         flagPoint.LinkedCameraTarget.doTargetLow = true;
         _flagPoint = flagPoint;
 
@@ -168,15 +180,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
     }
 
-    public void Refresh(GroundManager _ = null)
-    {
-#if UNITY_EDITOR
-        Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
-#endif
-        UpdateFlagPosition();
-        UpdateBackstopPosition();
-    }
-
     public void SetFlagOffset(int flagXOffset)
     {
 #if UNITY_EDITOR
@@ -185,7 +188,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _flagXOffset = flagXOffset;
         UpdateFlagPosition();
     }
-
 
     public void UpdateFlagPosition()
     {
@@ -197,6 +199,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void SetBackstopPoint(CurvePoint backstopPoint)
     {
+        gameObject.SetActive(true);
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
@@ -262,6 +265,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
         ClearFlag();
         ClearBackstop();
+        gameObject.SetActive(false);
     }
     public void ClearBackstop()
     {

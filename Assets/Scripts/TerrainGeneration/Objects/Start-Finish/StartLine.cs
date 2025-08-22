@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class StartLine : MonoBehaviour, ISerializable, IObjectResync
@@ -24,6 +25,9 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)
     {
+#if UNITY_EDITOR
+        Undo.RecordObject(this, "Set Start Point");
+#endif
         startPoint.LinkedCameraTarget.doTargetLow = true;
         _curvePoint = startPoint;
         _xOffset = xOffset;

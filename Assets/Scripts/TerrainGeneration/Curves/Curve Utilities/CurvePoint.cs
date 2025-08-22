@@ -80,7 +80,7 @@ public class CurvePoint
         _blockNewSection = false;
         _linkedCameraTarget = new();
     }
-    public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false)
     {
         position = control;
         leftTangent = new(0, 0);
@@ -95,7 +95,7 @@ public class CurvePoint
 
     }
 
-    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false, bool isCorner = false)
+    public CurvePoint(Vector3 control, Vector3 lTang, Vector3 rTang, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false)
     {
         position = control;
         leftTangent = lTang;

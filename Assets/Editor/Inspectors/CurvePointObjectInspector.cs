@@ -17,6 +17,21 @@ public class CurvePointObjectInspector : Editor
     private bool _showTargetObjects = false;
     private bool _showFloorOptions = false;
     private bool _controlHeld = false;
+    private Tool _lastTool = Tool.None;
+
+    #region Tool Mgmt
+    private void OnEnable()
+    {
+        _lastTool = Tools.current;
+        Tools.current = Tool.None; // Disable the current tool to prevent conflicts with handles
+    }
+
+    private void OnDisable()
+    {
+        Tools.current = _lastTool; // Restore the last tool when the inspector is closed
+    }
+    #endregion
+
     public override void OnInspectorGUI()
     {
         #region Inspector Declarations
@@ -37,6 +52,7 @@ public class CurvePointObjectInspector : Editor
         }
         #endregion
 
+        #region Control Key Handling
         if (Event.current.control)
         {
             _controlHeld = true;
@@ -45,6 +61,7 @@ public class CurvePointObjectInspector : Editor
         {
             _controlHeld = false;
         }
+        #endregion
 
         #region Transform Controls
 
@@ -204,9 +221,7 @@ public class CurvePointObjectInspector : Editor
         GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Remove", GUILayout.ExpandWidth(true)))
         {
-            var ground = _curvePointObject.ParentGround;
-            Undo.DestroyObjectImmediate(_curvePointObject.gameObject);
-            Selection.activeGameObject = ground.gameObject;
+            _editManager.RemoveCurvePoint(_curvePointObject, true);
             return;
         }
         GUI.backgroundColor = originalColor;
@@ -295,14 +310,12 @@ public class CurvePointObjectInspector : Editor
         GUI.backgroundColor = Color.lightGreen;
         if (GUILayout.Button("Start", GUILayout.ExpandWidth(true)))
         {
-            Undo.RecordObject(_groundManager.StartLine, "Set Start Point");
             _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
         }
 
         GUI.backgroundColor = Color.orange;
         if (GUILayout.Button("Finish", GUILayout.ExpandWidth(true)))
         {
-            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag and Backstop");
             _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
 
             var nextCurvePoint = NextCurvePoint(_curvePointObject);
@@ -319,13 +332,11 @@ public class CurvePointObjectInspector : Editor
         GUI.backgroundColor = Color.softYellow;
         if (GUILayout.Button("Flag", GUILayout.ExpandWidth(true)))
         {
-            Undo.RecordObject(_groundManager.FinishLine, "Set Finish Flag Point");
             _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
         }
 
         if (GUILayout.Button("Backstop", GUILayout.ExpandWidth(true)))
         {
-            Undo.RecordObject(_groundManager.FinishLine, "Set Backstop Point");
             _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
         }
         GUI.backgroundColor = originalColor;

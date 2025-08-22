@@ -1,12 +1,14 @@
 #if UNITY_EDITOR
 
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEngine.Timeline.TimelineAsset;
+using UnityEngine.U2D;
 
 public enum EditType { Insert, Shift };
 //Handles all editor-specific functions for ground construction and destruction
@@ -23,6 +25,8 @@ public class EditManager : MonoBehaviour
     private LevelDatabase _levelDB;
     private bool _debugMode = false;
     public EditType editType = EditType.Insert;
+    public const int defaultTangMang = 25;
+    public static Vector3 defaultCPDelta = new(60, 0);
 
     public GroundManager GroundManager => _groundManager;
     public GroundSpawner GroundSpawner => _groundSpawner;
@@ -178,29 +182,25 @@ public class EditManager : MonoBehaviour
         return ground;
     }
 
-    private readonly Vector3 _cpDelta = new(40, 0);
 
     public CurvePointEditObject InsertCurvePoint(Ground ground, int index)
     {
         var cpCount = ground.CurvePoints.Count;
         Vector3 pos;
-        Vector3 leftTang;
+        Vector3 leftTang = new(-defaultTangMang, 0);
 
         if (cpCount == 0)
         {
             index = 0;
             pos = ground.transform.position;
-            leftTang = new(-10, 8);
         } else if (index == 0) {
             var cp = ground.CurvePoints[0];
-            pos = cp.Position - _cpDelta;
-            leftTang = new(cp.LeftTangent.x, -cp.LeftTangent.y);
+            pos = cp.Position - defaultCPDelta;
         } else if(index >= cpCount || editType == EditType.Shift)
         {
             index = Math.Min(index, cpCount);
             var cp = ground.CurvePoints[index - 1];
-            pos = cp.Position + _cpDelta;
-            leftTang = new Vector3(-cp.RightTangent.x, cp.RightTangent.y);
+            pos = cp.Position + defaultCPDelta;
         } else
         {
             var prevCP = ground.CurvePoints[index - 1];
@@ -215,18 +215,46 @@ public class EditManager : MonoBehaviour
             leftTang = (leftTang + invertedRightTang) / 2;
         }
 
-            CurvePoint newPoint = new(pos, leftTang, -leftTang);
+        CurvePoint newPoint = new(pos, leftTang, -leftTang, ShapeTangentMode.Continuous, true);
         Undo.RegisterFullObjectHierarchyUndo(ground.gameObject, "Inserted point");
         var cpObj = ground.SetCurvePoint(newPoint, index);
 
         if (editType == EditType.Shift)
         {
-            ShiftCurvePoints(cpObj, _cpDelta);
+            ShiftCurvePoints(cpObj, defaultCPDelta);
         }
 
         RefreshSerializable(ground);
 
         return cpObj;
+    }
+
+    public void AddStart(Ground ground)
+    {
+        AddCurvePointsToGround(ground, CurvePointPresets.DefaultStart(ground), true);
+        _groundManager.StartLine.SetStartLine(ground.CurvePointObjects[1].CurvePoint);
+        ground.CurvePointObjects[2].LinkedCameraTarget.doTargetLow = true;
+        
+    }
+
+    public void AddFinish(Ground ground)
+    {
+        AddCurvePointsToGround(ground, CurvePointPresets.DefaultFinish(ground), false);
+        _groundManager.FinishLine.SetFlagPoint(ground.CurvePointObjects[^2].CurvePoint);
+        _groundManager.FinishLine.SetBackstopPoint(ground.CurvePointObjects[^1].CurvePoint);
+    }
+
+    public void AddCurvePointsToGround(Ground ground, List<CurvePoint> curvePoints, bool addToFront)
+    {
+        Undo.RegisterFullObjectHierarchyUndo(ground.gameObject, "Added curve points to ground");
+        if (addToFront)
+        {
+            curvePoints.Reverse();
+        }
+        foreach(var cp in curvePoints)
+        {
+            var cpObj = ground.SetCurvePoint(cp, addToFront ? 0 : -1);
+        }
     }
 
     #endregion
@@ -240,6 +268,30 @@ public class EditManager : MonoBehaviour
         Undo.DestroyObjectImmediate(ground.gameObject);
         RenameAll(index, grounds);
 
+    }
+
+    public void RemoveCurvePoint(CurvePointEditObject cpObj, bool doSelectPrevious)
+    {
+        if (cpObj == null || cpObj.ParentGround == null)
+        {
+            Debug.LogWarning("Cannot remove a null CurvePointEditObject or its parent ground.");
+            return;
+        }
+        var ground = cpObj.ParentGround;
+
+        var cpIndex = cpObj.transform.GetSiblingIndex();
+
+        Undo.DestroyObjectImmediate(cpObj.gameObject);
+        RefreshSerializable(ground);
+
+        if(doSelectPrevious && ground.CurvePointObjects.Length > 0)
+        {
+            var newIndex = Mathf.Max(0, cpIndex - 1);
+            Selection.activeGameObject = ground.CurvePointObjects[newIndex].gameObject;
+        } else
+        {
+            Selection.activeGameObject = ground.gameObject;
+        }
     }
 
     #endregion
@@ -309,3 +361,45 @@ public class EditManager : MonoBehaviour
 }
 
 #endif
+
+#region CurvePoint Presets
+public static class CurvePointPresets
+{
+    public static List<CurvePoint> DefaultStart(Ground ground)
+    {
+        var startPos = ground.CurvePoints.Count > 0 ? ground.CurvePoints[0].Position : new Vector3();
+        var xDelta = EditManager.defaultCPDelta.x;
+        var dropHeight = EditManager.defaultCPDelta.x/2;
+        var tangMag = EditManager.defaultTangMang;
+
+        var firstPoint = new CurvePoint(startPos - new Vector3(xDelta * 5, -dropHeight), ShapeTangentMode.Linear);
+        var secondPoint = new CurvePoint(firstPoint.Position + new Vector3(xDelta * 3, 0), new Vector3( -tangMag, 0), new Vector3(tangMag, 0), ShapeTangentMode.Continuous, true);
+        var thirdPoint = new CurvePoint(secondPoint.Position + new Vector3(60, -dropHeight), new Vector3(-tangMag, 0), new Vector3(tangMag, 0), ShapeTangentMode.Continuous, true);
+
+        List<CurvePoint> points = new() { firstPoint, secondPoint, thirdPoint };
+        return points;
+    }
+
+    public static List<CurvePoint> DefaultFinish(Ground ground)
+    {
+        var startPos = ground.CurvePoints.Count > 0 ? ground.CurvePoints[^1].Position : new Vector3();
+
+        var xDelta = EditManager.defaultCPDelta.x;
+        var dropHeight = EditManager.defaultCPDelta.x / 2;
+        var tangMag = EditManager.defaultTangMang;
+
+        var firstPoint = new CurvePoint(startPos + new Vector3(xDelta, -dropHeight), new Vector3(-tangMag * 1.25f, 0), new Vector3(tangMag * 1.25f, 0), ShapeTangentMode.Continuous, true);
+        var secondPoint = new CurvePoint(firstPoint.Position + new Vector3(xDelta * 8, 0), ShapeTangentMode.Linear);
+
+        List<CurvePoint> points = new() { firstPoint, secondPoint };
+
+        return points;
+    }
+
+}
+
+
+
+
+
+#endregion

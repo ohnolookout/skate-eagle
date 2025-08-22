@@ -5,15 +5,15 @@ using UnityEngine;
 [CustomEditor(typeof(Ground))]
 public class GroundInspector : Editor
 {
-    private EditManager _levelEditManager;
+    private EditManager _editManager;
     private bool _showSettings = false;
     public static bool DebugSegments = false;
     private bool _controlHeld = false;
     public override void OnInspectorGUI()
     {
-        if (_levelEditManager == null)
+        if (_editManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<EditManager>();
+            _editManager = FindFirstObjectByType<EditManager>();
         }
 
         var ground = (Ground)target;
@@ -24,18 +24,35 @@ public class GroundInspector : Editor
         GUILayout.BeginHorizontal();
 
         GUI.backgroundColor = Color.skyBlue;
-        if (GUILayout.Button("Add To Back", GUILayout.ExpandWidth(true)))
+        if (GUILayout.Button("Add Before", GUILayout.ExpandWidth(true)))
         {
-            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, ground.CurvePoints.Count);
+            _editManager.InsertCurvePoint(ground, 0);
         }
-        if (GUILayout.Button("Add To Front", GUILayout.ExpandWidth(true)))
+        if (GUILayout.Button("Add After", GUILayout.ExpandWidth(true)))
         {
-            Selection.activeObject = _levelEditManager.InsertCurvePoint(ground, 0);
+            _editManager.InsertCurvePoint(ground, ground.CurvePoints.Count);
         }
         GUI.backgroundColor = defaultColor;
 
         GUILayout.EndHorizontal();
 
+        if (ground.CurvePointObjects.Length > 0)
+        {
+            GUILayout.BeginHorizontal();
+
+            GUI.backgroundColor = Color.orangeRed;
+            if (GUILayout.Button("Remove Before", GUILayout.ExpandWidth(true)))
+            {
+                _editManager.RemoveCurvePoint(ground.CurvePointObjects[0], false);
+            }
+            if (GUILayout.Button("Remove After", GUILayout.ExpandWidth(true)))
+            {
+                _editManager.RemoveCurvePoint(ground.CurvePointObjects[^1], false);
+            }
+            GUI.backgroundColor = defaultColor;
+
+            GUILayout.EndHorizontal();
+        }
         GUILayout.Space(20);
         GUILayout.Label("Settings", EditorStyles.boldLabel);
 
@@ -47,7 +64,7 @@ public class GroundInspector : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
-            _levelEditManager.RefreshSerializable(ground);
+            _editManager.RefreshSerializable(ground);
         }
 
         GUILayout.Space(20);
@@ -57,17 +74,28 @@ public class GroundInspector : Editor
         if (GUILayout.Button("Populate Defaults", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Populate default targets");
-            PopulateDefaultTargets(ground, _levelEditManager);
+            PopulateDefaultTargets(ground, _editManager);
         }
 
         GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Clear", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Clear Curve Point Targets");
-            ClearCurvePointTargets(ground, _levelEditManager);
+            ClearCurvePointTargets(ground, _editManager);
         }
         GUI.backgroundColor = defaultColor;
 
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
+        {
+            _editManager.AddStart(ground);
+        }
+        if (GUILayout.Button("Add Finish", GUILayout.ExpandWidth(false)))
+        {
+            _editManager.AddFinish(ground);
+        }
         GUILayout.EndHorizontal();
 
         GUILayout.Space(20);
@@ -91,9 +119,9 @@ public class GroundInspector : Editor
             _controlHeld = false;
         }
 
-        if (_levelEditManager == null)
+        if (_editManager == null)
         {
-            _levelEditManager = FindFirstObjectByType<EditManager>();
+            _editManager = FindFirstObjectByType<EditManager>();
         }
 
         var ground = (Ground)target;
@@ -101,15 +129,15 @@ public class GroundInspector : Editor
         if(ground.lastCPObjCount != ground.curvePointContainer.transform.childCount)
         {
             ground.lastCPObjCount = ground.curvePointContainer.transform.childCount;
-            _levelEditManager.RefreshSerializable(ground);
+            _editManager.RefreshSerializable(ground);
         }
 
-        DrawCurvePoints(ground, _levelEditManager, _controlHeld);
+        DrawCurvePoints(ground, _editManager, _controlHeld);
 
         if (ground.gameObject.transform.hasChanged)
         {
             ground.gameObject.transform.hasChanged = false;
-            _levelEditManager.OnUpdateTransform(ground.gameObject);
+            _editManager.OnUpdateTransform(ground.gameObject);
         }
     }
 

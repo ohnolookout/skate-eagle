@@ -58,14 +58,6 @@ public class Ground : MonoBehaviour, ISerializable
         return pointObject;
     }
 
-    public void RemoveCurvePoint(CurvePoint cp)
-    {
-        Undo.RecordObject(this, "Curve point removed.");
-        _curvePoints.Remove(cp);
-        var groundManager = FindFirstObjectByType<GroundManager>();
-        Refresh(groundManager);
-    }
-
     #endregion
 
     #region Refresh Utilities
