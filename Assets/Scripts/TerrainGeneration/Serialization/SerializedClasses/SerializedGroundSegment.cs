@@ -2,6 +2,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
 using static UnityEngine.Rendering.HableCurve;
@@ -12,11 +13,15 @@ public class SerializedGroundSegment
     //Transform contents
     public string name;
     public Vector3 position;
-    public Quaternion rotation;
+
+    //Floor contents
+    public Vector3 floorPositions;
     public int leftFloorHeight;
     public int leftFloorAngle;
     public int rightFloorHeight;
     public int rightFloorAngle;
+    public Vector3 startFloor;
+    public Vector3 endFloor;
 
     //Segment contents
     public bool isStart;
@@ -40,18 +45,13 @@ public class SerializedGroundSegment
     //CameraTargetable contents
     public LinkedCameraTarget linkedCameraTarget;
 
-    public SerializedGroundSegment()
-    {
-
-    }
-    public SerializedGroundSegment(string name, Vector3 position, Quaternion rotation, 
-        List<CurvePoint> curvePoints, Vector3? firstColliderPoint, 
-        bool isFloating, bool isInverted, bool isFirst, bool isLast)
+    //Constructors
+    public SerializedGroundSegment(string name, SerializedGround serializedGround, List<CurvePoint> curvePoints, 
+        Vector3? firstColliderPoint, bool isFirst, bool isLast)
     {
         //Position
         this.name = name;
-        this.position = position;
-        this.rotation = rotation;
+        position = serializedGround.position;
 
         //State
         isStart = false;
@@ -62,30 +62,37 @@ public class SerializedGroundSegment
             return;
         }
 
-        //Floor
-        leftFloorHeight = curvePoints[0].FloorHeight;
-        rightFloorHeight = curvePoints[^1].FloorHeight;
-        leftFloorAngle = curvePoints[0].FloorAngle;
-        rightFloorAngle = curvePoints[^1].FloorAngle;
-
         //Curve points
         edgeSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
         fillSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
 
-        if (!isFloating)
+        if (!serializedGround.isFloating)
         {
-            GroundSplineUtility.AddCornerPoints(fillSplineCurvePoints);
+            GroundSplineUtility.AddFloorPoints(fillSplineCurvePoints, GetFloorPositions(curvePoints));
         }        
 
         //Collider
-        colliderPoints = ColliderGenerator.GetEdgeColliderPoints(curvePoints, firstColliderPoint, isInverted);
+        colliderPoints = ColliderGenerator.GetEdgeColliderPoints(curvePoints, firstColliderPoint, serializedGround.isInverted);
 
-        if (!isFloating)
+        if (!serializedGround.isFloating)
         {
             bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, isFirst, isLast);
         }
+        
+    }
 
-
+    private List<Vector3> GetFloorPositions(List<CurvePoint> curvePoints)
+    {
+        List<Vector3> floorPositions = new();
+        foreach(var point in curvePoints)
+        {
+            if(point.HasFloorPosition)
+            {
+                Debug.Log("Adding floor position to serialized segment: " + point.FloorPosition);
+                floorPositions.Add(point.FloorPosition);
+            }
+        }
+        return floorPositions;
     }
 
     public GroundSegment Deserialize(GroundSegment segment, Ground ground)
@@ -101,7 +108,6 @@ public class SerializedGroundSegment
         }
 
         segment.transform.position = position;
-        segment.transform.rotation = rotation;
         segment.gameObject.name = name;
         segment.LeftFloorHeight = leftFloorHeight;
         segment.RightFloorHeight = rightFloorHeight;

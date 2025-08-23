@@ -11,8 +11,10 @@ public class CurvePoint
     [SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private bool _isSymmetrical = true;
+    [SerializeField] private bool _hasFloorPoint = false;
     [SerializeField] private int _floorHeight;
     [SerializeField] private int _floorAngle;
+    [SerializeField] private Vector3 _floorPosition;
     [SerializeField] private bool _forceNewSection;
     [SerializeField] private bool _blockNewSection;
     [SerializeField] private GameObject _object;
@@ -64,8 +66,10 @@ public class CurvePoint
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
     public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
+    public bool HasFloorPosition { get => _hasFloorPoint; set => _hasFloorPoint = value; }
     public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
+    public Vector3 FloorPosition { get => _floorPosition; set => _floorPosition = value; }
 
     public CurvePoint()
     {
@@ -207,6 +211,8 @@ public class CurvePoint
         copy.IsSymmetrical = _isSymmetrical;
         copy.FloorHeight = _floorHeight;
         copy.FloorAngle = _floorAngle;
+        copy.HasFloorPosition = _hasFloorPoint;
+        copy.FloorPosition = _floorPosition;
         copy.ForceNewSection = _forceNewSection;
         copy.BlockNewSection = _blockNewSection;
 

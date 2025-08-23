@@ -53,7 +53,80 @@ public class GroundInspector : Editor
 
             GUILayout.EndHorizontal();
         }
-        GUILayout.Space(20);
+        GUILayout.Space(10);
+        GUILayout.Label("Floor", EditorStyles.boldLabel);
+        
+        EditorGUI.BeginChangeCheck();
+
+        var floorType = (FloorType)EditorGUILayout.EnumPopup("Floor Type", ground.FloorType);
+        if(EditorGUI.EndChangeCheck())
+        {
+            if(!EditorUtility.DisplayDialog("Change Floor Type", "Changing the floor type may reset some curve point floor settings. Are you sure you want to continue?", "Yes", "No"))
+            {
+                return;
+            }
+            Undo.RecordObject(ground, "Change Floor Type");
+            ground.FloorType = floorType;
+
+            //Update floor points based on type
+            ground.CurvePoints[0].HasFloorPosition = true;
+            ground.CurvePoints[^1].HasFloorPosition = true;
+
+            if (floorType != FloorType.Segmented)
+            {
+                for(int i = 1; i < ground.CurvePoints.Count - 1; i++)
+                {
+                    ground.CurvePoints[i].HasFloorPosition = false;
+                }
+            } else
+            {
+                if (ground.CurvePoints[0].FloorHeight == 0)
+                {
+                    ground.CurvePoints[0].FloorHeight = ground.StartFloorHeight;
+                    ground.CurvePoints[0].FloorAngle = ground.StartFloorAngle;
+                }
+
+                if (ground.CurvePoints[^1].FloorHeight == 0)
+                {
+                    ground.CurvePoints[^1].FloorHeight = ground.EndFloorHeight;
+                    ground.CurvePoints[^1].FloorAngle = ground.EndFloorAngle;
+                }
+            }
+
+            _editManager.RefreshSerializable(ground);
+        }
+
+        EditorGUI.BeginChangeCheck();
+        int startFloorHeight = ground.StartFloorHeight;
+        int startFloorAngle = ground.StartFloorAngle;
+        int endFloorHeight = ground.EndFloorHeight;
+        int endFloorAngle = ground.EndFloorAngle;
+
+        if (ground.FloorType == FloorType.Flat)
+        {
+            startFloorHeight = EditorGUILayout.IntField("Floor Height", startFloorHeight);
+        }
+
+        if(ground.FloorType == FloorType.Slanted)
+        {
+            startFloorHeight = EditorGUILayout.IntField("Start Floor Height", startFloorHeight);
+            startFloorAngle = EditorGUILayout.IntField("Start Floor Angle", startFloorAngle);
+            endFloorHeight = EditorGUILayout.IntField("Start Floor Height", endFloorHeight);
+            endFloorAngle = EditorGUILayout.IntField("Start Floor Angle", endFloorAngle);
+        }
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(ground, "Change Floor Settings");
+            ground.StartFloorHeight = startFloorHeight;
+            ground.StartFloorAngle = startFloorAngle;
+            ground.EndFloorHeight = endFloorHeight;
+            ground.EndFloorAngle = endFloorAngle;
+            _editManager.RefreshSerializable(ground);
+        }
+
+
+        GUILayout.Space(10);
         GUILayout.Label("Settings", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
@@ -67,7 +140,7 @@ public class GroundInspector : Editor
             _editManager.RefreshSerializable(ground);
         }
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
 
         GUILayout.BeginHorizontal();
@@ -98,7 +171,7 @@ public class GroundInspector : Editor
         }
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
         GUILayout.Label("View Options", EditorStyles.boldLabel);
         _showSettings = GUILayout.Toggle(_showSettings, "Show Default Inspector");
         DebugSegments = GUILayout.Toggle(DebugSegments, "Show Segment Inspector");

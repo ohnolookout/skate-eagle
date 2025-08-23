@@ -98,19 +98,12 @@ public static class BezierMath
     }
     public static Vector2 GetPerpendicularIntersection(Vector2 startPoint, Vector2 endPoint, Vector2 targetPoint)
     {
-        // Compute the direction vector of the line
-        Vector2 lineUnit = (endPoint - startPoint).normalized;
+        Vector2 lineDir = endPoint - startPoint;
+        Vector2 toTarget = targetPoint - startPoint;
 
-        // Compute the vector from the start point to the target point
-        Vector2 startToTarget = targetPoint - startPoint;
+        float t = Vector2.Dot(toTarget, lineDir) / Vector2.Dot(lineDir, lineDir);
 
-        // Project startToTarget onto the line direction
-        float projectionLength = Vector2.Dot(startToTarget, lineUnit);
-
-        // Compute the intersection point
-        Vector2 intersection = startPoint + lineUnit * projectionLength;
-
-        return intersection;
+        return startPoint + t * lineDir;
     }
     public static Vector2 GetParallelProjectionPoint(Vector2 startPoint, Vector2 endPoint, Vector2 targetPoint, float t)
     {

@@ -38,7 +38,7 @@ public static class GroundSplineUtility
         }
     }
 
-    public static void AddCornerPoints(List<CurvePoint> curvePoints)
+    public static void AddFloorPoints(List<CurvePoint> curvePoints, List<Vector3> floorPositions)
     {
 
         if (curvePoints.Count < 2)
@@ -59,30 +59,32 @@ public static class GroundSplineUtility
         }
         curvePoints[^1].RightTangent = new Vector3(0, 0);
 
-        var leftPosition = GetCornerPosition(curvePoints[0], true);
-        var rightPosition = GetCornerPosition(curvePoints[^1], false);
+        //Try refactoring to add all floor points onto end in reverse order. Not sure if it will be consequential.
+        floorPositions.Reverse();
 
-        // Add left corner point
-        CurvePoint leftCorner = new CurvePoint(leftPosition, ShapeTangentMode.Linear);
-        curvePoints.Insert(0, leftCorner);
+        for (int i = 0; i < floorPositions.Count; i++)
+        {
+            CurvePoint floorPoint = new CurvePoint(floorPositions[i], ShapeTangentMode.Linear);
 
-        // Add right corner point
-        CurvePoint rightCorner = new CurvePoint(rightPosition, ShapeTangentMode.Linear);
-        curvePoints.Add(rightCorner);
+            if(i == floorPositions.Count - 1)
+            {
+                curvePoints.Insert(0, floorPoint);
+            } else
+            {
+                curvePoints.Add(floorPoint);
+            }
+        }
     }
 
-    private static Vector3 GetCornerPosition(CurvePoint cornerPoint, bool isLeftCorner)
+    public static Vector3 GetFloorPosition(CurvePoint cornerPoint)
     {
-        float radians = (cornerPoint.FloorAngle % 360) * Mathf.Deg2Rad;
+        return GetPositionFromAngle(cornerPoint.Position, cornerPoint.FloorHeight, cornerPoint.FloorAngle);
+    }
 
-        if (isLeftCorner)
-        {
-            return cornerPoint.Position + new Vector3(-Mathf.Sin(radians) * cornerPoint.FloorHeight, -Mathf.Cos(radians) * cornerPoint.FloorHeight);
-        }
-        else
-        {
-            return cornerPoint.Position + new Vector3(Mathf.Sin(radians) * cornerPoint.FloorHeight, -Mathf.Cos(radians) * cornerPoint.FloorHeight);
-        }
+    public static Vector3 GetPositionFromAngle(Vector3 position, int floorHeight, int floorAngle)
+    {
+        float radians = (floorAngle % 360) * Mathf.Deg2Rad;
+        return position + new Vector3(Mathf.Sin(radians) * floorHeight, -Mathf.Cos(radians) * floorHeight);
     }
 
 

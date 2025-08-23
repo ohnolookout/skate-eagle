@@ -15,7 +15,6 @@ public class CurvePointObjectInspector : Editor
     private GroundManager _groundManager;
     private EditManager _editManager;
     private bool _showTargetObjects = false;
-    private bool _showFloorOptions = false;
     private bool _controlHeld = false;
     private Tool _lastTool = Tool.None;
 
@@ -345,19 +344,26 @@ public class CurvePointObjectInspector : Editor
         #endregion
 
         #region Floor Options
-        GUILayout.Space(10);
-        _showFloorOptions = EditorGUILayout.Foldout(_showFloorOptions, "Floor Options");
-
-        if (_showFloorOptions)
+        if (_curvePointObject.ParentGround.FloorType == FloorType.Segmented)
         {
-            EditorGUI.BeginChangeCheck();
+            GUILayout.Space(10);
+            GUILayout.Label("Floor Options", EditorStyles.boldLabel);
 
-            var floorHeight = EditorGUILayout.IntField("Floor Height", _curvePointObject.CurvePoint.FloorHeight);
-            var floorAngle = EditorGUILayout.IntField("Floor Angle", _curvePointObject.CurvePoint.FloorAngle);
+            EditorGUI.BeginChangeCheck();
+            int floorHeight = _curvePointObject.CurvePoint.FloorHeight;
+            int floorAngle = _curvePointObject.CurvePoint.FloorAngle;
+
+            var hasFloor = GUILayout.Toggle(_curvePointObject.CurvePoint.HasFloorPosition, "Has Floor Point");
+
+            if (hasFloor) { 
+                floorHeight = EditorGUILayout.IntField("Floor Height", floorHeight);
+                floorAngle = EditorGUILayout.IntField("Floor Angle", floorAngle);
+            }
 
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_curvePointObject, "Change height and angle.");
+                _curvePointObject.CurvePoint.HasFloorPosition = hasFloor;
                 _curvePointObject.CurvePoint.FloorHeight = floorHeight;
                 _curvePointObject.CurvePoint.FloorAngle = floorAngle;
 

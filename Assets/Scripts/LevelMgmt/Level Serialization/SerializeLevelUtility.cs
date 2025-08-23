@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
 
 public static class SerializeLevelUtility
 {
     #region Serialization
-
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager, out SerializedStartLine startLine)
     {
         var grounds = groundManager.GetGrounds();
@@ -85,12 +85,12 @@ public static class SerializeLevelUtility
         serializedGround.segmentList = new();
         var groundNamePrefix = serializedGround.name.Remove(1, serializedGround.name.Length - 2);
 
-        serializedGround.editorSegment = new(groundNamePrefix + " Editor Segment", serializedGround.position, 
-            serializedGround.rotation, serializedGround.curvePoints, null, 
-            serializedGround.isFloating, serializedGround.isInverted, true, true);
+        serializedGround.editorSegment = new(groundNamePrefix + " Editor Segment", serializedGround, serializedGround.curvePoints, null, true, true);
 
         //Create serialized runtime segments
-        var runtimeSegmentsCurvePoints = BreakDownSegments(serializedGround.curvePoints);
+        var runtimeSegmentsCurvePoints = BreakDownSegments(serializedGround);
+
+        Debug.Log("SerializeGroundSegments: Broken down into " + runtimeSegmentsCurvePoints.Count + " segments.");
 
         for (int i = 0; i < runtimeSegmentsCurvePoints.Count; i++)
         {
@@ -100,50 +100,91 @@ public static class SerializeLevelUtility
             var isFirst = i == 0;
             var isLast = i == runtimeSegmentsCurvePoints.Count - 1;
 
-            var serializedSegment = new SerializedGroundSegment(name, serializedGround.position, 
-                serializedGround.rotation, runtimeSegmentsCurvePoints[i], lastColliderPoint,
-                serializedGround.isFloating, serializedGround.isInverted, isFirst, isLast);
+            var serializedSegment = new SerializedGroundSegment(name, serializedGround, runtimeSegmentsCurvePoints[i], lastColliderPoint,
+                isFirst, isLast);
 
             serializedGround.segmentList.Add(serializedSegment);
         }
 
     }
-    
-    private const float MaxSectionDistance = 80; // Maximum distance between points in a section
-    private static List<List<CurvePoint>> BreakDownSegments(List<CurvePoint> allCurvePoints)
-    {
-        allCurvePoints = DeepCopyCurvePoints(allCurvePoints);
 
+    private const float MaxSectionDistance = 80; // Maximum distance between points in a section
+    private static List<List<CurvePoint>> BreakDownSegments(SerializedGround serializedGround)
+    {
+        var allCurvePoints = DeepCopyCurvePoints(serializedGround.curvePoints);
         List<List<CurvePoint>> sections = new();
         if (allCurvePoints.Count < 3)
         {
             sections.Add(allCurvePoints);
+
             return sections;
         }
 
+        int prevFloorPositionIndex = 0;
+        int nextFloorPositionIndex = allCurvePoints.Count - 1;
+
+
+        if (serializedGround.floorType == FloorType.Segmented)
+        {
+            nextFloorPositionIndex = FindNextFloorPointIndex(allCurvePoints, 0);
+        }
+
         List<CurvePoint> currentSection = new();
-        var startPoint = allCurvePoints[0].Position;
+        List<Vector3> currentFloorSection = new();
 
         for (int i = 0; i < allCurvePoints.Count; i++)
         {
+
             var curvePoint = allCurvePoints[i];
+            //Check if we need to update the last and next floor position indices
+            if(i == nextFloorPositionIndex)
+            {
+                prevFloorPositionIndex = nextFloorPositionIndex;
+                nextFloorPositionIndex = FindNextFloorPointIndex(allCurvePoints, prevFloorPositionIndex);
+            }
+
             // Check if the distance from the start point exceeds the maximum section distance
             // Also, check to make sure we are not at the last point
             if (i < allCurvePoints.Count - 1 &&
                 (currentSection.Count > 4 ||
-                (currentSection.Count > 0 && Vector2.Distance(startPoint, curvePoint.Position) > MaxSectionDistance)))
+                (currentSection.Count > 0 && Vector2.Distance(currentSection[0].Position, curvePoint.Position) > MaxSectionDistance)))
             {
+                //End of section/start of next section identified
+                //Calculate floor position and set to has floor position if cp doesn't currently have one.
+
+                if (!curvePoint.HasFloorPosition)
+                {
+                    curvePoint.HasFloorPosition = true;
+                    curvePoint.FloorPosition = LerpFloorPoint(curvePoint, allCurvePoints[prevFloorPositionIndex], allCurvePoints[nextFloorPositionIndex]);
+                }
+
                 currentSection.Add(curvePoint);
                 sections.Add(currentSection);
                 currentSection = new List<CurvePoint>();
-                startPoint = curvePoint.Position;
             }
             currentSection.Add(curvePoint);
         }
-
         sections.Add(currentSection);
 
         return sections;
+    }
+
+    private static int FindNextFloorPointIndex(List<CurvePoint> curvePoints, int startIndex)
+    {
+        for (int i = startIndex + 1; i < curvePoints.Count; i++)
+        {
+            if (curvePoints[i].HasFloorPosition)
+            {
+                return i;
+            }
+        }
+        return curvePoints.Count - 1;
+    }
+
+    private static Vector3 LerpFloorPoint(CurvePoint currentCP, CurvePoint prevFloorCP, CurvePoint nextFloorCP)
+    {
+        var point = BezierMath.GetPerpendicularIntersection(prevFloorCP.FloorPosition, nextFloorCP.FloorPosition, currentCP.Position);
+        return point;
     }
 
     public static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
