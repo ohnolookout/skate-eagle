@@ -76,7 +76,7 @@ public class SerializedGroundSegment
 
         if (!serializedGround.isFloating)
         {
-            bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, isFirst, isLast);
+            bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, curvePoints.Count, isFirst, isLast);
         }
         
     }
@@ -88,7 +88,6 @@ public class SerializedGroundSegment
         {
             if(point.HasFloorPosition)
             {
-                Debug.Log("Adding floor position to serialized segment: " + point.FloorPosition);
                 floorPositions.Add(point.FloorPosition);
             }
         }

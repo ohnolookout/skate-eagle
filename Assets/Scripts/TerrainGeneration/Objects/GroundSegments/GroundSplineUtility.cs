@@ -66,13 +66,7 @@ public static class GroundSplineUtility
         {
             CurvePoint floorPoint = new CurvePoint(floorPositions[i], ShapeTangentMode.Linear);
 
-            if(i == floorPositions.Count - 1)
-            {
-                curvePoints.Insert(0, floorPoint);
-            } else
-            {
-                curvePoints.Add(floorPoint);
-            }
+            curvePoints.Add(floorPoint);
         }
     }
 
