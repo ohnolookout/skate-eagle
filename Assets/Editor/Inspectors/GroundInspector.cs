@@ -212,6 +212,7 @@ public class GroundInspector : Editor
             ground.gameObject.transform.hasChanged = false;
             _editManager.OnUpdateTransform(ground.gameObject);
         }
+
     }
 
     public static void DrawCurvePoints(Ground ground, EditManager editManager, bool controlHeld)

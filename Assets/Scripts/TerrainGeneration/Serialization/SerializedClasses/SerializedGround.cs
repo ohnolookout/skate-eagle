@@ -77,9 +77,9 @@ public class SerializedGround : IDeserializable
 
     public void SetSlantedFloorPoints(Ground ground)
     {
-        ground.CurvePoints[0].FloorPosition = GroundSplineUtility.GetPositionFromAngle(ground.CurvePoints[0].Position, ground.StartFloorHeight, ground.StartFloorAngle);
-        ground.CurvePoints[^1].FloorPosition = GroundSplineUtility.GetPositionFromAngle(ground.CurvePoints[^1].Position, ground.EndFloorHeight, ground.EndFloorAngle);
-        
+        ground.CurvePoints[0].FloorPosition = GroundSplineUtility.GetFloorPosition(ground.CurvePoints[0]);
+        ground.CurvePoints[^1].FloorPosition = GroundSplineUtility.GetFloorPosition(ground.CurvePoints[^1]);
+
     }
 
     public void SetSegmentedFloorPoints(Ground ground)
