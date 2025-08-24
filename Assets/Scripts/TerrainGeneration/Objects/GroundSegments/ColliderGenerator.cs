@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
-using static UnityEngine.Rendering.HableCurve;
+using UnityEngine.U2D;
+
 [ExecuteAlways]
 public static class ColliderGenerator
 {
@@ -74,9 +75,9 @@ public static class ColliderGenerator
         }
 
         //Skip curve calcs if points form a straight line, just add points
-        if (AreTangentsAligned(firstPoint, secondPoint))
+        if (firstPoint.TangentMode == ShapeTangentMode.Linear || secondPoint.TangentMode == ShapeTangentMode.Linear || AreTangentsAligned(firstPoint, secondPoint))
         {
-            points.Add(firstPoint.Position);
+            //points.Add(firstPoint.Position);
             points.Add(secondPoint.Position);
         }
         //Otherwise calculate points from curve
@@ -130,9 +131,9 @@ public static class ColliderGenerator
         {
             offsetArray[i] = CalculateOffset(array[i], array[i + 1], -edgeOffset);
         }
-        Vector3 lastDir = (lastPoint.RightTangent - lastPoint.LeftTangent)/2;
-        lastDir.Normalize();
-        offsetArray[^1] = lastPoint.Position + new Vector3(lastDir.y, -lastDir.x) * -edgeOffset;
+        //Vector3 lastDir = (lastPoint.RightTangent - lastPoint.LeftTangent)/2;
+        //lastDir.Normalize();
+        offsetArray[^1] = CalculateOffset(array[^1], array[^2], edgeOffset);
         return offsetArray;
     }
 

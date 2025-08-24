@@ -47,15 +47,15 @@ public static class GroundSplineUtility
             return;
         }
 
-        if (curvePoints[0].Mode == ShapeTangentMode.Continuous)
+        if (curvePoints[0].TangentMode == ShapeTangentMode.Continuous)
         {
-            curvePoints[0].Mode = ShapeTangentMode.Broken;
+            curvePoints[0].TangentMode = ShapeTangentMode.Broken;
         }
         curvePoints[0].LeftTangent = new Vector3(0, 0);
 
-        if (curvePoints[^1].Mode == ShapeTangentMode.Continuous)
+        if (curvePoints[^1].TangentMode == ShapeTangentMode.Continuous)
         {
-            curvePoints[^1].Mode = ShapeTangentMode.Broken;
+            curvePoints[^1].TangentMode = ShapeTangentMode.Broken;
         }
         curvePoints[^1].RightTangent = new Vector3(0, 0);
 
@@ -104,7 +104,7 @@ public static class GroundSplineUtility
         {
             spline.SetPosition(index, curvePoint.Position);
         }
-        var tangentMode = curvePoint.Mode == ShapeTangentMode.Linear ? ShapeTangentMode.Continuous : curvePoint.Mode;
+        var tangentMode = curvePoint.TangentMode == ShapeTangentMode.Linear ? ShapeTangentMode.Continuous : curvePoint.TangentMode;
         spline.SetTangentMode(index, tangentMode);
         spline.SetLeftTangent(index, curvePoint.LeftTangent);
         spline.SetRightTangent(index, curvePoint.RightTangent);

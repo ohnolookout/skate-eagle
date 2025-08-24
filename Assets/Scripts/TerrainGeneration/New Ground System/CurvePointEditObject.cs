@@ -107,7 +107,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         {
             CurvePoint.RightTangent = -CurvePoint.LeftTangent; // If it's symmetrical, update the right tangent accordingly
         }
-        else if (CurvePoint.Mode == ShapeTangentMode.Continuous)
+        else if (CurvePoint.TangentMode == ShapeTangentMode.Continuous)
         {
             var rightMagnitude = CurvePoint.RightTangent.magnitude;
             CurvePoint.RightTangent = -CurvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
@@ -123,7 +123,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         if(CurvePoint.IsSymmetrical)
         {
             CurvePoint.LeftTangent = -CurvePoint.RightTangent; // If it's symmetrical, update the right tangent accordingly
-        } else if (CurvePoint.Mode == ShapeTangentMode.Continuous)
+        } else if (CurvePoint.TangentMode == ShapeTangentMode.Continuous)
         {
             var leftMagnitude = CurvePoint.LeftTangent.magnitude;
             CurvePoint.LeftTangent = -CurvePoint.RightTangent.normalized * leftMagnitude; // Maintain the same magnitude for the left tangent
@@ -141,13 +141,13 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public void TangentSettingsChanged(ShapeTangentMode mode, bool isSymmetrical)
     {
         Undo.RecordObject(this, "Tangents Changed");
-        CurvePoint.Mode = mode;
+        CurvePoint.TangentMode = mode;
         CurvePoint.IsSymmetrical = isSymmetrical;
         if (isSymmetrical)
         {
             CurvePoint.RightTangent = -CurvePoint.LeftTangent; // If it's symmetrical, update the right tangent accordingly
         }
-        else if (CurvePoint.Mode == ShapeTangentMode.Continuous)
+        else if (CurvePoint.TangentMode == ShapeTangentMode.Continuous)
         {
             var rightMagnitude = CurvePoint.RightTangent.magnitude;
             CurvePoint.RightTangent = -CurvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent

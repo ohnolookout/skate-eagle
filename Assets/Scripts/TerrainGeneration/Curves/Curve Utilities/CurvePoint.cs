@@ -62,7 +62,7 @@ public class CurvePoint
     }
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
-    public ShapeTangentMode Mode { get => _mode; set => _mode = value; }
+    public ShapeTangentMode TangentMode { get => _mode; set => _mode = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
     public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
@@ -207,7 +207,7 @@ public class CurvePoint
         copy.Position = position;
         copy.LeftTangent = leftTangent;
         copy.RightTangent = rightTangent;
-        copy.Mode = _mode;
+        copy.TangentMode = _mode;
         copy.IsSymmetrical = _isSymmetrical;
         copy.FloorHeight = _floorHeight;
         copy.FloorAngle = _floorAngle;

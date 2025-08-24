@@ -198,7 +198,7 @@ public class GroundInspector : Editor
 
         var ground = (Ground)target;
 
-        if(ground.lastCPObjCount != ground.curvePointContainer.transform.childCount)
+        if(!Application.isPlaying && ground.lastCPObjCount != ground.curvePointContainer.transform.childCount)
         {
             ground.lastCPObjCount = ground.curvePointContainer.transform.childCount;
             _editManager.RefreshSerializable(ground);

@@ -167,7 +167,7 @@ public class CurvePointObjectInspector : Editor
         //Tangent settings
         EditorGUI.BeginChangeCheck();
 
-        var currentMode = (int)_curvePointObject.CurvePoint.Mode;
+        var currentMode = (int)_curvePointObject.CurvePoint.TangentMode;
         var mode = GUILayout.Toolbar(currentMode, Enum.GetNames(typeof(ShapeTangentMode)));
 
         GUILayout.BeginHorizontal();
@@ -460,7 +460,7 @@ public class CurvePointObjectInspector : Editor
         }
 
         //Don't draw tangents if linear
-        if (curvePointObject.CurvePoint.Mode == ShapeTangentMode.Linear)
+        if (curvePointObject.CurvePoint.TangentMode == ShapeTangentMode.Linear)
         {
             return handlesChanged;
         }
