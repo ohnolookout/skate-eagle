@@ -82,6 +82,18 @@ public static class GroundSplineUtility
     }
 
 
+    public static void GetAngleAndMagFromPosition(Vector3 curvePointPos, Vector3 targetPos, out float angle, out float magnitude)
+    {
+        var vector = targetPos - curvePointPos;
+        magnitude = vector.magnitude;
+        // Angle (0 = down)
+        angle = Mathf.Atan2(vector.x, -vector.y) * Mathf.Rad2Deg;
+
+        // Normalize angle to [0, 360)
+        if (angle < 0) angle += 360f;
+    }
+
+
     private static void AddCurvePointToSpline(Spline spline, CurvePoint curvePoint, int index, bool doInsert) //Inserts curvePoint at a given index
     {
         if (doInsert)

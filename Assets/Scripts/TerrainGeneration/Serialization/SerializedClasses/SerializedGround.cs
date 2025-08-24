@@ -8,7 +8,6 @@ public class SerializedGround : IDeserializable
     public Vector2 position;
     public Quaternion rotation;
     public string name;
-    public bool isFloating = false;
     public bool isInverted = false;
     public bool hasShadow = true;
     public FloorType floorType;
@@ -18,6 +17,7 @@ public class SerializedGround : IDeserializable
     public List<SerializedGroundSegment> segmentList; //Divided segments for runtime
     public List<CurvePoint> curvePoints;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
+    public bool IsFloating => floorType == FloorType.Floating;
 
     #region Serialization
     public SerializedGround(Ground ground)
@@ -33,7 +33,6 @@ public class SerializedGround : IDeserializable
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
         isInverted = ground.IsInverted;
-        isFloating = ground.IsFloating;
         hasShadow = ground.HasShadow;
         floorType = ground.FloorType;
         floorHeight = ground.StartFloorHeight;
@@ -115,7 +114,6 @@ public class SerializedGround : IDeserializable
 
         ground.name = name;
         ground.IsInverted = isInverted;
-        ground.IsFloating = isFloating;
         ground.HasShadow = hasShadow;
         ground.FloorType = floorType;
         ground.StartFloorHeight = floorHeight;

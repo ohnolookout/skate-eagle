@@ -66,7 +66,7 @@ public class SerializedGroundSegment
         edgeSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
         fillSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
 
-        if (!serializedGround.isFloating)
+        if (!serializedGround.IsFloating)
         {
             GroundSplineUtility.AddFloorPoints(fillSplineCurvePoints, GetFloorPositions(curvePoints));
         }        
@@ -74,7 +74,7 @@ public class SerializedGroundSegment
         //Collider
         colliderPoints = ColliderGenerator.GetEdgeColliderPoints(curvePoints, firstColliderPoint, serializedGround.isInverted);
 
-        if (!serializedGround.isFloating)
+        if (!serializedGround.IsFloating)
         {
             bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, curvePoints.Count, isFirst, isLast);
         }

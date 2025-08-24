@@ -211,4 +211,5 @@ public static class BezierMath
         return new Vector3(Mathf.Cos(radians) * magnitude, Mathf.Sin(radians) * magnitude, 0);
     }
 
+
 }

@@ -90,8 +90,6 @@ public static class SerializeLevelUtility
         //Create serialized runtime segments
         var runtimeSegmentsCurvePoints = BreakDownSegments(serializedGround);
 
-        Debug.Log("SerializeGroundSegments: Broken down into " + runtimeSegmentsCurvePoints.Count + " segments.");
-
         for (int i = 0; i < runtimeSegmentsCurvePoints.Count; i++)
         {
             var name = groundNamePrefix + " Segment " + i;

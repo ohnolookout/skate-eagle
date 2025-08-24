@@ -8,7 +8,8 @@ public enum FloorType
 {
     Flat,
     Slanted,
-    Segmented
+    Segmented,
+    Floating
 }
 
 public class Ground : MonoBehaviour, ISerializable
@@ -17,7 +18,6 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private List<GroundSegment> _segmentList;
     [SerializeField] GameObject _segmentPrefab;
     [SerializeField] PhysicsMaterial2D _colliderMaterial;
-    [SerializeField] private bool _isFloating = false;
     [SerializeField] private bool _isInverted = false;
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
@@ -28,7 +28,7 @@ public class Ground : MonoBehaviour, ISerializable
 
     public List<GroundSegment> SegmentList { get => _segmentList; set => _segmentList = value; }
     public PhysicsMaterial2D ColliderMaterial { get => _colliderMaterial; set => _colliderMaterial = value; }
-    public bool IsFloating { get => _isFloating; set => _isFloating = value; }
+    public bool IsFloating => _floorType == FloorType.Floating;
     public bool IsInverted { get => _isInverted; set => _isInverted = value; }
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public FloorType FloorType { get => _floorType; set => _floorType = value; }
@@ -169,7 +169,7 @@ public class Ground : MonoBehaviour, ISerializable
 
         _segmentList = new();
 
-        _isFloating = false;
+        _floorType = FloorType.Flat;
         _isInverted = false;
         _hasShadow = true;
     }

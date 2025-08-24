@@ -402,7 +402,7 @@ public class CurvePointObjectInspector : Editor
     {
         var objectPosition = curvePointObject.transform.position;
         var objectRotation = curvePointObject.transform.rotation;
-        var handleScale = HandleUtility.GetHandleSize(objectPosition) * .005f;
+        var handleScale = HandleUtility.GetHandleSize(objectPosition) * .4f;
         var groundPosition = curvePointObject.ParentGround.transform.position;
 
         var handlesChanged = false;
@@ -434,6 +434,32 @@ public class CurvePointObjectInspector : Editor
             handlesChanged = true;
         }
 
+        //Floor handle
+        if (curvePointObject.ParentGround.FloorType == FloorType.Segmented && curvePointObject.CurvePoint.HasFloorPosition)
+        {
+            Handles.color = Color.cyan;
+            EditorGUI.BeginChangeCheck();
+            var floorHandle = Handles.FreeMoveHandle(
+                curvePointObject.CurvePoint.FloorPosition + groundPosition,
+                handleScale,
+                Vector3.zero,
+                Handles.ArrowHandleCap);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(curvePointObject, "Curve Point Edit");
+                GroundSplineUtility.GetAngleAndMagFromPosition(
+                    curvePointObject.transform.position,
+                    floorHandle,
+                    out var angle,
+                    out var magnitude);
+                curvePointObject.CurvePoint.FloorAngle = (int)angle;
+                curvePointObject.CurvePoint.FloorHeight = (int)magnitude;
+                handlesChanged = true;
+            }
+        }
+
+        //Don't draw tangents if linear
         if (curvePointObject.CurvePoint.Mode == ShapeTangentMode.Linear)
         {
             return handlesChanged;
@@ -451,7 +477,7 @@ public class CurvePointObjectInspector : Editor
 
         var leftTangentHandle = Handles.FreeMoveHandle(
             curvePointObject.CurvePoint.LeftTangentPosition + groundPosition,
-            HandleUtility.GetHandleSize(curvePointObject.CurvePoint.LeftTangentPosition) * .4f,
+            handleScale,
             Vector3.zero,
             Handles.ArrowHandleCap);
 
@@ -468,7 +494,7 @@ public class CurvePointObjectInspector : Editor
 
         var rightTangentHandle = Handles.FreeMoveHandle(
             curvePointObject.CurvePoint.RightTangentPosition + groundPosition,
-            HandleUtility.GetHandleSize(curvePointObject.CurvePoint.RightTangentPosition) * .4f,
+            handleScale,
             Vector3.zero,
             Handles.ArrowHandleCap);
 
@@ -479,7 +505,9 @@ public class CurvePointObjectInspector : Editor
             handlesChanged = true;
         }
 
-        return handlesChanged;
+
+
+        return handlesChanged;        
     }
     #endregion
 

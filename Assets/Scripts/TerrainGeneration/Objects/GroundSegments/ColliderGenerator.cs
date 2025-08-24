@@ -39,11 +39,12 @@ public static class ColliderGenerator
 
     public static Vector2[] GetBottomColliderPoints(List<CurvePoint> fillSplinePoints, Vector2[] edgeColliderPoints, int curvePointCount, bool isFirstSegment, bool isLastSegment)
     {
-        var bottomColliderPoints = new Vector2[fillSplinePoints.Count - curvePointCount];
+        var colliderPointCount = fillSplinePoints.Count - curvePointCount;
+        var bottomColliderPoints = new Vector2[colliderPointCount];
 
-        for (int i = curvePointCount, j = 0; i < fillSplinePoints.Count; i++, j++)
+        for (int i = curvePointCount, j = 1; i < fillSplinePoints.Count; i++, j++)
         {
-            bottomColliderPoints[j] = fillSplinePoints[i].Position;
+            bottomColliderPoints[colliderPointCount - j] = fillSplinePoints[i].Position;
         }
 
         if (isFirstSegment)

@@ -132,7 +132,6 @@ public class GroundInspector : Editor
         EditorGUI.BeginChangeCheck();
 
         ground.IsInverted = GUILayout.Toggle(ground.IsInverted, "Inverted");
-        ground.IsFloating = GUILayout.Toggle(ground.IsFloating, "Floating");
         ground.HasShadow = GUILayout.Toggle(ground.HasShadow, "Shadow");
 
         if (EditorGUI.EndChangeCheck())
