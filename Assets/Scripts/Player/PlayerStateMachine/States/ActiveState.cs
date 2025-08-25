@@ -124,6 +124,7 @@ public class ActiveState : PlayerState
 
     private void CheckForBodyCollision(ColliderCategory colliderCategory, float _)
     {
+        Debug.Log("Collided with " + colliderCategory);
         if (colliderCategory == ColliderCategory.Body)
         {
             Die();

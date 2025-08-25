@@ -86,7 +86,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
 
     private ColliderCategory FindCategory(Collision2D collision, ColliderCategory inputCategory)
     {
-        if (collision.collider.name != "Collider")
+        if (collision.collider.name != "Collider" && collision.collider.name != "Bottom Collider")
         {
             return ColliderCategory.BodyAndBoard;
         }
