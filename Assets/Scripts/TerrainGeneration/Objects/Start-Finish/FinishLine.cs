@@ -256,8 +256,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         }
         _backstop.SetActive(doActivate);
     }
-#if UNITY_EDITOR
-
     public void Clear()
     {
 #if UNITY_EDITOR
@@ -288,7 +286,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _flagRenderer.flipX = false;
         _flag.transform.position = Vector2.zero;
     }
-#endif
 
 #if UNITY_EDITOR
     public bool IsParentGround(GameObject obj)

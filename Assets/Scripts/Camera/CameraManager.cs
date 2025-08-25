@@ -137,13 +137,13 @@ public class CameraManager : MonoBehaviour
         {
             var target = _camera.CameraTargets[i];
 
-            if(target == null || target.TargetTransform == null)
+            if(target == null || target.TargetPosition == null)
             {
                 _camera.RemoveCameraTarget(target);
                 continue;
             }
 
-            if (!playerTargetIsFound && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
+            if (!playerTargetIsFound && target.TargetTransform!= null && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
             {
                 playerTargetIsFound = true;
                 continue;

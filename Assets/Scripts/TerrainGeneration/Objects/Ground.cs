@@ -152,9 +152,12 @@ public class Ground : MonoBehaviour, ISerializable
 
     #endregion
 
+#endif
     #region Refresh Utilities
     public void Clear()
     {
+#if UNITY_EDITOR
+
         _curvePoints = new();
 
         foreach (var point in CurvePointObjects)
@@ -167,6 +170,7 @@ public class Ground : MonoBehaviour, ISerializable
             DestroyImmediate(seg.gameObject);
         }
 
+#endif
         _segmentList = new();
 
         _floorType = FloorType.Flat;
@@ -181,6 +185,7 @@ public class Ground : MonoBehaviour, ISerializable
 
     public void Refresh(GroundManager groundManager)
     {
+#if UNITY_EDITOR
         _curvePoints = _curvePoints.Where( cp => cp.Object != null).ToList();
         var serializedGround = (SerializedGround)Serialize();
 
@@ -193,7 +198,7 @@ public class Ground : MonoBehaviour, ISerializable
 
         serializedGround.DeserializeEditSegment(groundManager, this);
         lastCPObjCount = curvePointContainer.transform.childCount;
+#endif
     }
     #endregion
-#endif
 }

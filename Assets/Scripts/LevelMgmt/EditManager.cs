@@ -360,7 +360,6 @@ public class EditManager : MonoBehaviour
 
 }
 
-#endif
 
 #region CurvePoint Presets
 public static class CurvePointPresets
@@ -398,8 +397,6 @@ public static class CurvePointPresets
 
 }
 
-
-
-
-
 #endregion
+
+#endif

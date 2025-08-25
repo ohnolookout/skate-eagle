@@ -75,7 +75,7 @@ public static class ColliderGenerator
         }
 
         //Skip curve calcs if points form a straight line, just add points
-        if (firstPoint.TangentMode == ShapeTangentMode.Linear || secondPoint.TangentMode == ShapeTangentMode.Linear || AreTangentsAligned(firstPoint, secondPoint))
+        if ((firstPoint.TangentMode == ShapeTangentMode.Linear && secondPoint.TangentMode == ShapeTangentMode.Linear) || AreTangentsAligned(firstPoint, secondPoint))
         {
             //points.Add(firstPoint.Position);
             points.Add(secondPoint.Position);

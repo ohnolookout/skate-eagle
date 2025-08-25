@@ -91,6 +91,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         curvePoint.LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
     }
 
+#if UNITY_EDITOR
     public void TangentsChanged(Vector3 updatedleftTang, Vector3 updatedRightTang)
     {
         CurvePoint.LeftTangent = updatedleftTang - transform.position;
@@ -153,7 +154,8 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
             CurvePoint.RightTangent = -CurvePoint.LeftTangent.normalized * rightMagnitude; // Maintain the same magnitude for the left tangent
         }
     }
-    #endregion
+#endif
+#endregion
 
     #region Targeting
     public void GenerateTarget()

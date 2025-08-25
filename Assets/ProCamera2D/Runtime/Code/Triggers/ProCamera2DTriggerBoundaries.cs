@@ -36,7 +36,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             {
                 if (value && !_setAsStartingBoundaries)
                 {
-                    var allBoundariesTriggers = FindObjectsOfType(typeof(ProCamera2DTriggerBoundaries));
+                    var allBoundariesTriggers = FindObjectsByType(typeof(ProCamera2DTriggerBoundaries), FindObjectsSortMode.None);
                     foreach (ProCamera2DTriggerBoundaries trigger in allBoundariesTriggers)
                     {
                         trigger.SetAsStartingBoundaries = false;
@@ -89,7 +89,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             
             if (NumericBoundaries == null)
             {
-                var numericBoundaries = FindObjectOfType<ProCamera2DNumericBoundaries>();
+                var numericBoundaries = FindFirstObjectByType<ProCamera2DNumericBoundaries>();
                 NumericBoundaries = numericBoundaries == null ? ProCamera2D.gameObject.AddComponent<ProCamera2DNumericBoundaries>() : numericBoundaries;
             }
 

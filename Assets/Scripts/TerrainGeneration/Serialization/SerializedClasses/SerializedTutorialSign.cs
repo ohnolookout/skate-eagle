@@ -8,7 +8,6 @@ public class SerializedTutorialSign : IDeserializable
     [SerializeField] private SignType _type;
     [SerializeField] private Vector2 _position;
     [SerializeField] private string _name;
-    [SerializeField] private bool _isSquare = false;
     [SerializeField] private float _imgRotation = 0;
     
     public SignType Type { get => _type;}
