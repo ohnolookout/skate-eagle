@@ -8,6 +8,7 @@ public class GroundedState : PlayerState
     private Action OnAirborne;
     private bool _doDampen;
     private const int _dampenThreshold = 180;
+    private const float _allowNewJumpDelay = 0.4f;
     public GroundedState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory) : base(playerMachine, stateFactory)
     {
         OnAirborne += () => ChangeState(_stateFactory.GetState(PlayerStateType.Airborne));
@@ -22,6 +23,7 @@ public class GroundedState : PlayerState
         _player.InputEvents.OnJumpPress += FirstJump;
         _player.CollisionManager.OnAirborne += OnAirborne;
         _player.Params.JumpCount = 0;
+
         FlipCheck();
     }
 
@@ -76,12 +78,17 @@ public class GroundedState : PlayerState
 
     private void FirstJump()
     {
+        if (Time.time - _player.Params.JumpStartTime < _allowNewJumpDelay)
+        {
+            return;
+        }
         //Don't jump if player is on ground upside down
         var adjustedRotation = _player.NormalBody.rotation % 360;
         if (adjustedRotation > 90 || adjustedRotation < -90)
         {
             return;
         }
+
 
         _player.JumpManager.Jump();
         ChangeState(_stateFactory.GetState(PlayerStateType.Airborne));
