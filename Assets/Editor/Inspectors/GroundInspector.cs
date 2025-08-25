@@ -9,6 +9,7 @@ public class GroundInspector : Editor
     private bool _showSettings = false;
     public static bool DebugSegments = false;
     private bool _controlHeld = false;
+    private bool _altHeld = false;
     public override void OnInspectorGUI()
     {
         if (_editManager == null)
@@ -191,6 +192,15 @@ public class GroundInspector : Editor
             _controlHeld = false;
         }
 
+        if (Event.current.alt)
+        {
+            _altHeld = true;
+        }
+        else if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftAlt)
+        {
+            _altHeld = false;
+        }
+
         if (_editManager == null)
         {
             _editManager = FindFirstObjectByType<EditManager>();
@@ -204,7 +214,7 @@ public class GroundInspector : Editor
             _editManager.RefreshSerializable(ground);
         }
 
-        DrawCurvePoints(ground, _editManager, _controlHeld);
+        DrawCurvePoints(ground, _editManager, _controlHeld, _altHeld);
 
         if (ground.gameObject.transform.hasChanged)
         {
@@ -214,12 +224,12 @@ public class GroundInspector : Editor
 
     }
 
-    public static void DrawCurvePoints(Ground ground, EditManager editManager, bool controlHeld)
+    public static void DrawCurvePoints(Ground ground, EditManager editManager, bool controlHeld, bool altHeld)
     {
         foreach (var point in ground.CurvePointObjects)
         {
             var startPos = point.transform.position;
-            if (CurvePointObjectInspector.DrawCurvePointHandles(point))
+            if (CurvePointObjectInspector.DrawCurvePointHandles(point,  altHeld))
             {
                 if (editManager.editType == EditType.Shift || controlHeld)
                 {

@@ -16,6 +16,7 @@ public class CurvePointObjectInspector : Editor
     private EditManager _editManager;
     private bool _showTargetObjects = false;
     private bool _controlHeld = false;
+    private bool _altHeld = false;
     private Tool _lastTool = Tool.None;
 
     #region Tool Mgmt
@@ -51,7 +52,7 @@ public class CurvePointObjectInspector : Editor
         }
         #endregion
 
-        #region Control Key Handling
+        #region Control/Alt Key Handling
         if (Event.current.control)
         {
             _controlHeld = true;
@@ -170,7 +171,6 @@ public class CurvePointObjectInspector : Editor
         var currentMode = (int)_curvePointObject.CurvePoint.TangentMode;
         var mode = GUILayout.Toolbar(currentMode, Enum.GetNames(typeof(ShapeTangentMode)));
 
-        GUILayout.BeginHorizontal();
         var isSymmetrical = GUILayout.Toggle(_curvePointObject.CurvePoint.IsSymmetrical, "Symmetrical");
 
         if (EditorGUI.EndChangeCheck())
@@ -178,6 +178,39 @@ public class CurvePointObjectInspector : Editor
             Undo.RecordObject(_curvePointObject, "Curve Point Settings");
             _curvePointObject.TangentSettingsChanged((ShapeTangentMode)mode, isSymmetrical);
             RefreshGround();
+        }
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Reset Angle", GUILayout.ExpandWidth(false)))
+        {
+            Undo.RecordObject(_curvePointObject, "Tangent Settings");
+            _curvePointObject.TangentSettingsChanged(ShapeTangentMode.Continuous, _curvePointObject.CurvePoint.IsSymmetrical);
+
+            float angle;
+            var nextCurvePoint = NextCurvePoint(_curvePointObject);
+            var previousCurvePoint = PreviousCurvePoint(_curvePointObject);
+
+            if(previousCurvePoint == null && nextCurvePoint == null)
+            {
+                return;
+            } else if(previousCurvePoint == null)
+            {
+                angle = nextCurvePoint.LeftTangentAngle;
+            } else if(nextCurvePoint == null)
+            {
+                angle = previousCurvePoint.RightTangentAngle;
+            }
+            else
+            {
+                var dir = nextCurvePoint.CurvePoint.Position - previousCurvePoint.CurvePoint.Position;
+                angle = (float) Math.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            }
+
+            Undo.RecordObject(_curvePointObject, "Tangent Angle");
+            var rightTang = BezierMath.ConvertAngleToVector(angle, _curvePointObject.RightTangentMagnitude) + _curvePointObject.transform.position;
+            _curvePointObject.RightTangentChanged(rightTang);
+            RefreshGround();
+
         }
 
         GUI.backgroundColor = Color.orangeRed;
@@ -383,12 +416,20 @@ public class CurvePointObjectInspector : Editor
         {
             _controlHeld = false;
         }
+        if (Event.current.alt)
+        {
+            _altHeld = true;
+        }
+        else if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftAlt)
+        {
+            _altHeld = false;
+        }
 
         var curvePointObject = (CurvePointEditObject)target;
 
         var startPos = curvePointObject.transform.position;
 
-        if (DrawCurvePointHandles(curvePointObject))
+        if (DrawCurvePointHandles(curvePointObject, _altHeld))
         {
             if (_editManager.editType == EditType.Shift || _controlHeld)
             {
@@ -398,7 +439,7 @@ public class CurvePointObjectInspector : Editor
         }
     }
 
-    public static bool DrawCurvePointHandles(CurvePointEditObject curvePointObject)
+    public static bool DrawCurvePointHandles(CurvePointEditObject curvePointObject, bool altHeld = false)
     {
         var objectPosition = curvePointObject.transform.position;
         var objectRotation = curvePointObject.transform.rotation;
@@ -484,6 +525,16 @@ public class CurvePointObjectInspector : Editor
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(curvePointObject, "Curve Point Edit");
+
+            //If alt is held, lock tangent angle and only change magnitude
+            if (altHeld)
+            {
+                leftTangentHandle = BezierMath.GetPerpendicularIntersection(
+                    curvePointObject.CurvePoint.Position,
+                    curvePointObject.CurvePoint.LeftTangentPosition,
+                    leftTangentHandle);
+            }
+
             curvePointObject.LeftTangentChanged(leftTangentHandle);
             handlesChanged = true;
         }
@@ -501,6 +552,16 @@ public class CurvePointObjectInspector : Editor
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(curvePointObject, "Curve Point Edit");
+
+            //If alt is held, lock tangent angle and only change magnitude
+            if (altHeld)
+            {
+                rightTangentHandle = BezierMath.GetPerpendicularIntersection(
+                    curvePointObject.CurvePoint.Position,
+                    curvePointObject.CurvePoint.RightTangentPosition,
+                    rightTangentHandle);
+            }
+
             curvePointObject.RightTangentChanged(rightTangentHandle);
             handlesChanged = true;
         }
