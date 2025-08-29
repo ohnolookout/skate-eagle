@@ -5,7 +5,7 @@ public class PlayerAnimationManager
     private IPlayer _player;
     private Animator _animator;
     private bool _stomping = false;
-    private const int _speedMax = 100, _speedMin = 20, _ySpeedMax = 15, _forceDeltaMin = 80, _forceDeltaMax = 200;
+    private const int _speedMax = 100, _speedMin = 20, _ySpeedMax = 15, _forceDeltaMin = 20, _forceDeltaMax = 120;
 
     public PlayerAnimationManager(IPlayer player, Animator animator)
     {
@@ -57,6 +57,7 @@ public class PlayerAnimationManager
     {
         _animator.SetBool("Airborne", false);
         _animator.SetFloat("forceDelta", MinMaxTo01(_player.MomentumTracker.ReboundMagnitude(TrackingType.PlayerNormal), _forceDeltaMin, _forceDeltaMax));
+        Debug.Log("Landed with force delta: " + _animator.GetFloat("forceDelta"));
         if (_stomping)
         {
             _animator.SetTrigger("StompLand");
