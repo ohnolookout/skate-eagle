@@ -1,6 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
-using System.Threading.Tasks;
 using System.Threading;
 
 /// <summary>
@@ -18,6 +17,7 @@ public class JumpManager
     // Used to cancel async release check
     private CancellationTokenSource _tokenSource;
     private CancellationToken _releaseCheckToken;
+    public bool secondJumpScheduled = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JumpManager"/> class.
@@ -45,7 +45,8 @@ public class JumpManager
     /// </summary>
     public void Jump()
     {
-        _player.Params.JumpMultiplier = 1 - (_player.Params.JumpCount * 0.25f);
+        float dampenMult = _player.Params.JumpCount == 0 ? 1 : GetDampenedValue(_player.NormalBody.linearVelocity.y, _player.Params.SecondJumpDampenMinVel, _player.Params.SecondJumpDampenMaxVel, _player.Params.MinSecondJumpVelDampen);
+        _player.Params.JumpMultiplier = (1 - (_player.Params.JumpCount * _player.Params.SecondJumpDampen)) * dampenMult;
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Jump);
         // Reset downward velocity if jumping while falling
         if (_player.NormalBody.linearVelocity.y < 0)
@@ -58,8 +59,9 @@ public class JumpManager
             _player.NormalBody.angularVelocity *= 0.1f;
             _player.NormalBody.centerOfMass = new Vector2(0, 0.0f);
         }
-        _player.NormalBody.AddForce(new Vector2(0, _player.Params.JumpForce * 1000 * _player.Params.JumpMultiplier));
-        _player.Params.JumpCount++;
+        _player.NormalBody.AddForce(new Vector2(0, _player.Params.JumpForce * 1000 * _player.Params.JumpMultiplier), ForceMode2D.Impulse);
+        _player.Params.IncrementJumpCount();
+        secondJumpScheduled = false;
         _player.Params.JumpStartTime = Time.time;
         AddReleaseCheck();
     }
@@ -87,6 +89,11 @@ public class JumpManager
     /// </summary>
     public void ScheduleSecondJump()
     {
+        if (secondJumpScheduled)
+        {
+            return;
+        }
+        secondJumpScheduled = true;
         // If undoJumpDampen has not expired, adds speed to offset the dampen from the first jump due to rapid second jump
         if (_undoJumpDampen)
         {
@@ -96,9 +103,10 @@ public class JumpManager
         float timeSinceLastJump = Time.time - _player.Params.JumpStartTime;
 
         // If second jump has been pressed faster than the minimum jump duration, triggers the second jump after a delay
-        if (timeSinceLastJump < _player.Params.FullJumpDuration)
+        if (timeSinceLastJump < _player.Params.MinSecondJumpInterval)
         {
-            PlayerAsyncUtility.DelayedFunc(Jump, _player.Params.FullJumpDuration - timeSinceLastJump);
+            var delay = _player.Params.MinSecondJumpInterval - timeSinceLastJump;
+            PlayerAsyncUtility.DelayedFunc(Jump, delay);
         }
         else
         {
@@ -156,5 +164,20 @@ public class JumpManager
     public void CancelReleaseCheck()
     {
         _tokenSource.Cancel();
+    }
+
+    private static float GetDampenedValue( float value, float minDampenThreshold, float maxDampenThreshold, float minMultiplier)
+    {
+        if (value <= minDampenThreshold)
+            return 1f;
+
+        if (value >= maxDampenThreshold)
+            return minMultiplier;
+
+        // Normalize value between thresholds (0 → 1)
+        float t = (value - minDampenThreshold) / (maxDampenThreshold - minDampenThreshold);
+
+        // Linearly interpolate from 1 → minMultiplier
+        return 1f + (minMultiplier - 1f) * t;
     }
 }

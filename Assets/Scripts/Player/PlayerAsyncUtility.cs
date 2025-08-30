@@ -63,7 +63,7 @@ public static class PlayerAsyncUtility
 
     public static async void DelayedFunc(Action callback, float delayInSeconds)
     {
-        await Task.Delay((int)delayInSeconds * 1000);
+        await Task.Delay((int)(delayInSeconds * 1000));
         callback();
     }
 

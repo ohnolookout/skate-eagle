@@ -33,7 +33,8 @@ public class GroundedState : PlayerState
         _player.CollisionManager.OnAirborne += OnAirborne;
 
         //Reset jump count
-        _player.Params.JumpCount = 0;
+        _player.Params.ResetJumpCount();
+        _player.JumpManager.secondJumpScheduled = false;
 
         //Check for flips
         FlipCheck();
