@@ -10,10 +10,10 @@ public class PlayerParameters
     public readonly float MinJumpDuration = 0.15f;
     public readonly float FullJumpDuration = 0.25f;
     public readonly float MinSecondJumpInterval = .35f;
-    public readonly float SecondJumpDampen = 0.3f;
+    public readonly float SecondJumpDampen = 0.25f;
     public readonly float SecondJumpDampenMinVel = 50;
     public readonly float SecondJumpDampenMaxVel = 80;
-    public readonly float MinSecondJumpVelDampen = 0.1f;
+    public readonly float MinSecondJumpVelDampen = 0.025f;
     public readonly int StompThreshold = 2;
     public readonly int JumpLimit = 2;
     public float JumpMultiplier = 1;

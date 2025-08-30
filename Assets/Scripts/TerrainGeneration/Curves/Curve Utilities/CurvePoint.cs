@@ -15,8 +15,8 @@ public class CurvePoint
     [SerializeField] private int _floorHeight;
     [SerializeField] private int _floorAngle;
     [SerializeField] private Vector3 _floorPosition;
-    [SerializeField] private bool _forceNewSection;
-    [SerializeField] private bool _blockNewSection;
+    [SerializeField] private bool _forceNewSegment;
+    [SerializeField] private bool _blockNewSegment;
     [SerializeField] private GameObject _object;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
 
@@ -64,8 +64,8 @@ public class CurvePoint
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode TangentMode { get => _mode; set => _mode = value; }
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
-    public bool ForceNewSection { get => _forceNewSection; set => _forceNewSection = value; }
-    public bool BlockNewSection { get => _blockNewSection; set => _blockNewSection = value; }
+    public bool ForceNewSegment { get => _forceNewSegment; set => _forceNewSegment = value; }
+    public bool BlockNewSegment { get => _blockNewSegment; set => _blockNewSegment = value; }
     public bool HasFloorPosition { get => _hasFloorPoint; set => _hasFloorPoint = value; }
     public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
@@ -80,8 +80,8 @@ public class CurvePoint
         _isSymmetrical = false;
         _floorHeight = 100;
         _floorAngle = 0;
-        _forceNewSection = false;
-        _blockNewSection = false;
+        _forceNewSegment = false;
+        _blockNewSegment = false;
         _linkedCameraTarget = new();
     }
     public CurvePoint(Vector3 control, ShapeTangentMode mode = ShapeTangentMode.Continuous, bool isSymmetrical = false)
@@ -93,8 +93,8 @@ public class CurvePoint
         _isSymmetrical = isSymmetrical;
         _floorHeight = 100;
         _floorAngle = 0;
-        _forceNewSection = false;
-        _blockNewSection = false;
+        _forceNewSegment = false;
+        _blockNewSegment = false;
         _linkedCameraTarget = new();
 
     }
@@ -108,8 +108,8 @@ public class CurvePoint
         _isSymmetrical = isSymmetrical;
         _floorHeight = 100;
         _floorAngle = 0;
-        _forceNewSection = false;
-        _blockNewSection = false;
+        _forceNewSegment = false;
+        _blockNewSegment = false;
         _linkedCameraTarget = new();
     }
 
@@ -213,8 +213,8 @@ public class CurvePoint
         copy.FloorAngle = _floorAngle;
         copy.HasFloorPosition = _hasFloorPoint;
         copy.FloorPosition = _floorPosition;
-        copy.ForceNewSection = _forceNewSection;
-        copy.BlockNewSection = _blockNewSection;
+        copy.ForceNewSegment = _forceNewSegment;
+        copy.BlockNewSegment = _blockNewSegment;
 
         return copy;
 

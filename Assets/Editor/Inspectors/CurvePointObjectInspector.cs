@@ -405,6 +405,50 @@ public class CurvePointObjectInspector : Editor
         }
         #endregion
 
+        #region Segment Breaks
+
+        GUILayout.Space(10);
+        GUILayout.Label("Segment Options", EditorStyles.boldLabel);
+
+        EditorGUILayout.BeginHorizontal();
+
+        var forceSegment = GUILayout.Toggle(_curvePointObject.CurvePoint.ForceNewSegment, "Force New Segment", GUILayout.ExpandWidth(true));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Segment Settings");
+            _curvePointObject.CurvePoint.ForceNewSegment = forceSegment;
+
+            // If forcing a new segment, also ensure not blocking segments
+            if (forceSegment)
+            {
+                _curvePointObject.CurvePoint.BlockNewSegment = false;
+            }
+
+            _editManager.UpdateEditorLevel();
+        }
+
+        EditorGUI.BeginChangeCheck();
+
+        var blockSegment = GUILayout.Toggle(_curvePointObject.CurvePoint.BlockNewSegment, "Block New Segment", GUILayout.ExpandWidth(false));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Segment Settings");
+            _curvePointObject.CurvePoint.BlockNewSegment = blockSegment;
+
+            // If blocking segments, also ensure not forcing a new segment
+            if (blockSegment)
+            {
+                _curvePointObject.CurvePoint.ForceNewSegment = false;
+            }
+            _editManager.UpdateEditorLevel();
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        #endregion
+
     }
     #region Handles
     public void OnSceneGUI()

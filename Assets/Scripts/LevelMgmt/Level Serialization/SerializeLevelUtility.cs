@@ -4,21 +4,30 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
 
+/// <summary>
+/// Utility class for serializing and deserializing level data, including grounds, curve points, and related objects.
+/// </summary>
 public static class SerializeLevelUtility
 {
     #region Serialization
+
+    /// <summary>
+    /// Serializes all grounds managed by the GroundManager and outputs the serialized start line.
+    /// </summary>
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager, out SerializedStartLine startLine)
     {
         var grounds = groundManager.GetGrounds();
         GenerateGroundIndices(grounds);
 
+        // Ensure the StartLine has a valid CurvePoint
         if (groundManager.StartLine.CurvePoint == null)
         {
             Debug.Log("StartPoint is null, setting to default.");
             if (grounds == null || grounds.Length == 0 || grounds[0].CurvePoints.Count == 0)
             {
                 groundManager.StartLine.SetStartLine(new CurvePoint());
-            } else if (grounds[0].CurvePoints.Count > 1)
+            }
+            else if (grounds[0].CurvePoints.Count > 1)
             {
                 groundManager.StartLine.SetStartLine(grounds[0].CurvePoints[1]);
             }
@@ -28,19 +37,23 @@ public static class SerializeLevelUtility
             }
         }
 
-        startLine = (SerializedStartLine) groundManager.StartLine.Serialize();
+        startLine = (SerializedStartLine)groundManager.StartLine.Serialize();
 
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
         List<IDeserializable> serializedObjects = new();
 
-        foreach(var serializable in serializables)
+        foreach (var serializable in serializables)
         {
             serializedObjects.Add(serializable.Serialize());
         }
 
         return serializedObjects;
     }
+
+    /// <summary>
+    /// Assigns names and serialized locations to ground and curve point objects for identification.
+    /// </summary>
     private static void GenerateGroundIndices(Ground[] grounds)
     {
         for (int i = 0; i < grounds.Length; i++)
@@ -62,6 +75,9 @@ public static class SerializeLevelUtility
         }
     }
 
+    /// <summary>
+    /// Creates a deep copy of all control points from a spline.
+    /// </summary>
     public static List<SplineControlPoint> CopySplinePoints(Spline splineToCopy)
     {
         var pointsList = new List<SplineControlPoint>();
@@ -76,23 +92,27 @@ public static class SerializeLevelUtility
         }
 
         return pointsList;
+    }
 
-    }    
-
+    /// <summary>
+    /// Serializes ground segments by breaking down curve points into sections and creating segment objects.
+    /// </summary>
     public static void SerializeGroundSegments(SerializedGround serializedGround)
     {
-
         serializedGround.segmentList = new();
+        // Get a prefix for naming segments
         var groundNamePrefix = serializedGround.name.Remove(1, serializedGround.name.Length - 2);
 
+        // Create the editor segment
         serializedGround.editorSegment = new(groundNamePrefix + " Editor Segment", serializedGround, serializedGround.curvePoints, null, true, true);
 
-        //Create serialized runtime segments
+        // Create serialized runtime segments
         var runtimeSegmentsCurvePoints = BreakDownSegments(serializedGround);
 
         for (int i = 0; i < runtimeSegmentsCurvePoints.Count; i++)
         {
             var name = groundNamePrefix + " Segment " + i;
+            // Get the last collider point from the previous segment if available
             Vector3? lastColliderPoint = serializedGround.segmentList.Count > 0 ? serializedGround.segmentList[^1].colliderPoints[^1] : null;
 
             var isFirst = i == 0;
@@ -103,10 +123,13 @@ public static class SerializeLevelUtility
 
             serializedGround.segmentList.Add(serializedSegment);
         }
-
     }
 
     private const float MaxSectionDistance = 80; // Maximum distance between points in a section
+
+    /// <summary>
+    /// Breaks down a list of curve points into multiple sections based on distance and floor positions.
+    /// </summary>
     private static List<List<CurvePoint>> BreakDownSegments(SerializedGround serializedGround)
     {
         var allCurvePoints = DeepCopyCurvePoints(serializedGround.curvePoints);
@@ -114,13 +137,11 @@ public static class SerializeLevelUtility
         if (allCurvePoints.Count < 3)
         {
             sections.Add(allCurvePoints);
-
             return sections;
         }
 
         int prevFloorPositionIndex = 0;
         int nextFloorPositionIndex = allCurvePoints.Count - 1;
-
 
         if (serializedGround.floorType == FloorType.Segmented)
         {
@@ -130,26 +151,36 @@ public static class SerializeLevelUtility
         List<CurvePoint> currentSection = new();
         List<Vector3> currentFloorSection = new();
 
-        for (int i = 0; i < allCurvePoints.Count; i++)
-        {
+        //Add first point to current section
+        currentSection.Add(allCurvePoints[0]);
 
+        for (int i = 1; i < allCurvePoints.Count - 1; i++)
+        {
             var curvePoint = allCurvePoints[i];
-            //Check if we need to update the last and next floor position indices
-            if(i == nextFloorPositionIndex)
+            
+            // Update floor position indices if needed
+            if (i == nextFloorPositionIndex)
             {
                 prevFloorPositionIndex = nextFloorPositionIndex;
                 nextFloorPositionIndex = FindNextFloorPointIndex(allCurvePoints, prevFloorPositionIndex);
             }
 
+            //Check if the current point blocks new sections
+            if(curvePoint.BlockNewSegment)
+            {
+                currentSection.Add(curvePoint);
+                continue;
+            }
+
             // Check if the distance from the start point exceeds the maximum section distance
             // Also, check to make sure we are not at the last point
-            if (i < allCurvePoints.Count - 1 &&
-                (currentSection.Count > 4 ||
-                (currentSection.Count > 0 && Vector2.Distance(currentSection[0].Position, curvePoint.Position) > MaxSectionDistance)))
+            if (currentSection.Count > 4 
+                || curvePoint.ForceNewSegment
+                || (currentSection.Count > 0 
+                && Vector2.Distance(currentSection[0].Position, curvePoint.Position) > MaxSectionDistance))
             {
-                //End of section/start of next section identified
-                //Calculate floor position and set to has floor position if cp doesn't currently have one.
-
+                // End of section/start of next section identified
+                // Calculate floor position and set to has floor position if cp doesn't currently have one.
                 if (!curvePoint.HasFloorPosition)
                 {
                     curvePoint.HasFloorPosition = true;
@@ -160,13 +191,19 @@ public static class SerializeLevelUtility
                 sections.Add(currentSection);
                 currentSection = new List<CurvePoint>();
             }
+
+            // Add the current point to the current section
             currentSection.Add(curvePoint);
         }
+        currentSection.Add(allCurvePoints[^1]);
         sections.Add(currentSection);
 
         return sections;
     }
 
+    /// <summary>
+    /// Finds the next index in the curve points list that has a floor position.
+    /// </summary>
     private static int FindNextFloorPointIndex(List<CurvePoint> curvePoints, int startIndex)
     {
         for (int i = startIndex + 1; i < curvePoints.Count; i++)
@@ -179,12 +216,18 @@ public static class SerializeLevelUtility
         return curvePoints.Count - 1;
     }
 
+    /// <summary>
+    /// Calculates the perpendicular intersection point for a floor position between two curve points.
+    /// </summary>
     private static Vector3 LerpFloorPoint(CurvePoint currentCP, CurvePoint prevFloorCP, CurvePoint nextFloorCP)
     {
         var point = BezierMath.GetPerpendicularIntersection(prevFloorCP.FloorPosition, nextFloorCP.FloorPosition, currentCP.Position);
         return point;
     }
 
+    /// <summary>
+    /// Copies all points from an EdgeCollider2D into a new list.
+    /// </summary>
     public static List<Vector2> CopyColliderPoints(EdgeCollider2D colliderToCopy)
     {
         var pointsList = new List<Vector2>();
@@ -195,8 +238,9 @@ public static class SerializeLevelUtility
         return pointsList;
     }
 
-    
-
+    /// <summary>
+    /// Creates a deep copy of a list of CurvePoints.
+    /// </summary>
     public static List<CurvePoint> DeepCopyCurvePoints(List<CurvePoint> curvePoints)
     {
         List<CurvePoint> copiedCurvePoints = new();
@@ -210,6 +254,10 @@ public static class SerializeLevelUtility
     #endregion
 
     #region Deserialization
+
+    /// <summary>
+    /// Deserializes a level, reconstructing all objects and grounds from serialized data.
+    /// </summary>
     public static void DeserializeLevel(Level level, GroundManager groundManager, LevelManager levelManager = null)
     {
         groundManager.ClearGround();
@@ -233,6 +281,9 @@ public static class SerializeLevelUtility
 #endif
     }
 
+    /// <summary>
+    /// Handles deserialization of a single object based on its type.
+    /// </summary>
     private static void ProcessSerializedObject(IDeserializable deserializable, GroundManager groundManager)
     {
         switch (deserializable)
@@ -258,14 +309,15 @@ public static class SerializeLevelUtility
         }
     }
 
-
+    /// <summary>
+    /// Generates a list of CurvePoints from all segments of a serialized ground.
+    /// </summary>
     public static List<CurvePoint> GenerateCurvePointListFromGround(SerializedGround serializedGround)
     {
         List<CurvePoint> curvePoints = new List<CurvePoint>();
         bool isFirstSegment = true;
         foreach (var serializedSegment in serializedGround.segmentList)
         {
-
             if (isFirstSegment)
             {
                 CurvePoint curvePoint = LocalizedCurvePointFromSegment(serializedGround, serializedSegment, serializedSegment.curve.CurvePoints[0]);
@@ -278,25 +330,30 @@ public static class SerializeLevelUtility
                 CurvePoint curvePoint = LocalizedCurvePointFromSegment(serializedGround, serializedSegment, serializedSegment.curve.CurvePoints[i]);
                 curvePoints.Add(curvePoint);
             }
-
         }
 
         return curvePoints;
     }
 
+    /// <summary>
+    /// Converts a segment-local curve point to a ground-local curve point.
+    /// </summary>
     private static CurvePoint LocalizedCurvePointFromSegment(SerializedGround ground, SerializedGroundSegment segment, CurvePoint curvePoint)
     {
         var groundLocalzedPosition = (segment.position + curvePoint.Position) - (Vector3)ground.position;
         return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
     }
 
+    /// <summary>
+    /// Resynchronizes objects that implement IObjectResync by invoking their resync functions.
+    /// </summary>
     private static void ResyncObjects(GroundManager groundManager)
     {
         var iResyncObjects = groundManager.GetComponentsInChildren<IObjectResync>();
 
         List<ObjectResync> objectResyncs = new();
-        foreach(var resyncObject in iResyncObjects) { 
-
+        foreach (var resyncObject in iResyncObjects)
+        {
             var resyncs = resyncObject.GetObjectResyncs();
             if (resyncs != null && resyncs.Count > 0)
             {
@@ -304,7 +361,7 @@ public static class SerializeLevelUtility
             }
         }
 
-        foreach(var resync in objectResyncs)
+        foreach (var resync in objectResyncs)
         {
             var gameObject = groundManager.GetGameObjectByIndices(resync.serializedLocation);
 
@@ -322,6 +379,9 @@ public static class SerializeLevelUtility
     #endregion
 }
 
+/// <summary>
+/// Helper class for resynchronizing objects after deserialization.
+/// </summary>
 public class ObjectResync
 {
     public int[] serializedLocation;
