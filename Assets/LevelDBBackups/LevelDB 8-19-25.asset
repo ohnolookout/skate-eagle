@@ -1611,35 +1611,37 @@ MonoBehaviour:
   _levelIsDirty: 1
   _levelOrderIsDirty: 1
   lastLevelLoaded:
-    _UID: 69c1f29a-39e5-4d42-a804-622b272c9561
-    _name: Plateaus
+    _UID: fb0e6ee1-3af6-402f-80c7-b9be4eff865b
+    _name: Double Gap
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 15
-      _silverTime: 10
-      _goldTime: 7
-      _blueTime: 6
-      _redTime: 5.5
+      _bronzeTime: 20
+      _silverTime: 14
+      _goldTime: 10
+      _blueTime: 8
+      _redTime: 6
     _serializedObjects:
-    - rid: 2514962872021549430
-    - rid: 2514962872021549431
-    - rid: 2514962872021549432
-    - rid: 2514962872021549433
-    - rid: 2514962872021549434
-    _leaderboardKey: Plateaus_leaderboard
-    _killPlaneY: -39.14869
-    _cameraStartPosition: {x: -48.999973, y: 17.224987}
+    - rid: 2514962831318975367
+    - rid: 2514962831318975368
+    - rid: 2514962831318975369
+    - rid: 2514962831318975370
+    - rid: 2514962831318975371
+    _leaderboardKey: Double Gap_leaderboard
+    _killPlaneY: -46.6902
+    _cameraStartPosition: {x: -48.999973, y: -2.0768008}
     _rootCameraTarget:
-      LeftTargets: []
-      RightTargets: []
+      LeftTargets:
+      - rid: 2514962831318975372
+      RightTargets:
+      - rid: 2514962831318975373
       LeftKDNode:
-        rid: 2514962872021549385
+        rid: 2514962831318975374
       RightKDNode:
-        rid: 2514962872021549386
+        rid: 2514962831318975375
       doTargetHigh: 0
       doTargetLow: 1
       TargetType: 0
-      SerializedLocation: 000000000a000000
+      SerializedLocation: 0100000001000000
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
@@ -1648,11 +1650,11 @@ MonoBehaviour:
         TargetInfluenceV: 1
         TargetOffset: {x: 0, y: 10}
         IsAdjusting: 0
-        SerializedPosition: {x: 166.09999, y: -9.016231, z: 0}
+        SerializedPosition: {x: 143.77257, y: -12.252024, z: 0}
     _startTarget:
       LeftTargets: []
       RightTargets:
-      - rid: -2
+      - rid: 2514962690691564461
       LeftKDNode:
         rid: -2
       RightKDNode:
@@ -1664,19 +1666,19 @@ MonoBehaviour:
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 0
-        CurrentInfluenceV: 1
+        CurrentInfluenceV: 0.7199995
         TargetInfluenceH: 0
         TargetInfluenceV: 1
         TargetOffset: {x: 0, y: 10}
         IsAdjusting: 0
-        SerializedPosition: {x: -59, y: 12, z: 0}
+        SerializedPosition: {x: -118, y: 24, z: 0}
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
-        name: CP 0_1_LT
+        name: CP 0_1
         position: {x: -59, y: 12, z: 0}
-        leftTangent: {x: -20, y: 0.3935585, z: 0}
-        rightTangent: {x: 20, y: 0.0000017484556, z: -0}
+        leftTangent: {x: -20, y: 0, z: 0}
+        rightTangent: {x: 20, y: 0.0000017484556, z: 0}
         _serializedWorldPosition: {x: -59, y: 12, z: 0}
         _mode: 1
         _isSymmetrical: 0
@@ -1690,7 +1692,7 @@ MonoBehaviour:
         _linkedCameraTarget:
           LeftTargets: []
           RightTargets:
-          - rid: -2
+          - rid: 2514962690691564461
           LeftKDNode:
             rid: -2
           RightKDNode:
@@ -1701,13 +1703,13 @@ MonoBehaviour:
           SerializedLocation: 0000000001000000
           _target:
             TargetTransform: {fileID: 0}
-            CurrentInfluenceH: 0
+            CurrentInfluenceH: 1
             CurrentInfluenceV: 1
             TargetInfluenceH: 0
             TargetInfluenceV: 1
             TargetOffset: {x: 0, y: 10}
             IsAdjusting: 0
-            SerializedPosition: {x: -59, y: 12, z: 0}
+            SerializedPosition: {x: -118, y: 24, z: 0}
   references:
     version: 2
     RefIds:
