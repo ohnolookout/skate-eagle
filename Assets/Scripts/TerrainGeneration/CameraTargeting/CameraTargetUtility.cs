@@ -16,7 +16,7 @@ public static class CameraTargetUtility
     //GroundSegmentLowPoint
     public static Vector2 GroundSegmentLowPointInfluence => new Vector2(0, 1f);
     public static float GroundSegmentLowpointDuration = 0.75f;
-    public static Vector2 GroundSegmentLowPointOffset = new Vector2(0, 25);
+    public static Vector2 GroundSegmentLowPointOffset = new Vector2(0, 30);
 
     //GroundSegmentHighPoint
     public static Vector2 GroundSegmentHighPointInfluence => new Vector2(0, 0.15f);
@@ -24,9 +24,9 @@ public static class CameraTargetUtility
     public static Vector2 GroundSegmentHighPointOffset = new Vector2(0, -12);
 
     //Player
-    public static Vector2 PlayerInfluence => new Vector2(1, .25f);
+    public static Vector2 PlayerInfluence => new Vector2(1, .3f);
     public static float PlayerDuration = 0;
-    public static Vector2 PlayerOffset = new Vector2(10, -5);
+    public static Vector2 PlayerOffset = new Vector2(10, -7);
 
 
     private static Dictionary<CameraTargetType, Vector2> InfluenceDict = new()

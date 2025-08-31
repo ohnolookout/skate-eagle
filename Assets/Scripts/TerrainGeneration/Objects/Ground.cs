@@ -196,7 +196,7 @@ public class Ground : MonoBehaviour, ISerializable
 
         _segmentList = new();
 
-        serializedGround.DeserializeEditSegment(groundManager, this);
+        serializedGround.DeserializeRuntimeSegments(groundManager, this);
         lastCPObjCount = curvePointContainer.transform.childCount;
 #endif
     }

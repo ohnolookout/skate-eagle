@@ -13,8 +13,7 @@ public class SerializedGround : IDeserializable
     public FloorType floorType;
     public int floorHeight;
     public int floorAngle;
-    public SerializedGroundSegment editorSegment; //Single segment for editing
-    public List<SerializedGroundSegment> segmentList; //Divided segments for runtime
+    public List<SerializedGroundSegment> segmentList;
     public List<CurvePoint> curvePoints;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
     public bool IsFloating => floorType == FloorType.Floating;
@@ -49,8 +48,8 @@ public class SerializedGround : IDeserializable
             return;
         }
 
-        ground.CurvePoints[0].HasFloorPosition = true;
-        ground.CurvePoints[^1].HasFloorPosition = true;
+        ground.CurvePoints[0].FloorPointType = FloorPointType.Set;
+        ground.CurvePoints[^1].FloorPointType = FloorPointType.Set;
 
         switch (ground.FloorType)
         {
@@ -85,7 +84,7 @@ public class SerializedGround : IDeserializable
     {
         foreach (var cp in ground.CurvePoints)
         {
-            if (cp.HasFloorPosition)
+            if (cp.FloorPointType != FloorPointType.None)
             {
                 cp.FloorPosition = GroundSplineUtility.GetFloorPosition(cp);
             }
@@ -119,14 +118,7 @@ public class SerializedGround : IDeserializable
         ground.StartFloorHeight = floorHeight;
         ground.StartFloorAngle = floorAngle;
 
-        if (Application.isPlaying)
-        {
-            DeserializeRuntimeSegments(groundManager, ground);
-        }
-        else
-        {
-            DeserializeEditSegment(groundManager, ground);
-        }
+        DeserializeRuntimeSegments(groundManager, ground);
 
 #if UNITY_EDITOR
 
@@ -139,13 +131,7 @@ public class SerializedGround : IDeserializable
         return ground;
     }
 
-    public void DeserializeEditSegment(GroundManager groundManager, Ground ground)
-    {
-        var segment = groundManager.groundSpawner.AddEmptySegment(ground);
-        editorSegment.Deserialize(segment, ground);
-    }
-
-    private void DeserializeRuntimeSegments(GroundManager groundManager, Ground ground)
+    public void DeserializeRuntimeSegments(GroundManager groundManager, Ground ground)
     {
         foreach (var serializedSegment in segmentList)
         {

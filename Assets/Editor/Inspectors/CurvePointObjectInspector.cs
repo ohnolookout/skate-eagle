@@ -265,6 +265,7 @@ public class CurvePointObjectInspector : Editor
 
         GUILayout.Space(10);
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
+
         //Camera targetting
         EditorGUI.BeginChangeCheck();
 
@@ -386,7 +387,7 @@ public class CurvePointObjectInspector : Editor
             int floorHeight = _curvePointObject.CurvePoint.FloorHeight;
             int floorAngle = _curvePointObject.CurvePoint.FloorAngle;
 
-            var hasFloor = GUILayout.Toggle(_curvePointObject.CurvePoint.HasFloorPosition, "Has Floor Point");
+            var hasFloor = GUILayout.Toggle(_curvePointObject.CurvePoint.FloorPointType == FloorPointType.Set, "Has Floor Point");
 
             if (hasFloor) { 
                 floorHeight = EditorGUILayout.IntField("Floor Height", floorHeight);
@@ -396,7 +397,15 @@ public class CurvePointObjectInspector : Editor
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_curvePointObject, "Change height and angle.");
-                _curvePointObject.CurvePoint.HasFloorPosition = hasFloor;
+                
+                if(hasFloor)
+                {
+                    _curvePointObject.CurvePoint.FloorPointType = FloorPointType.Set;
+                } else
+                {
+                    _curvePointObject.CurvePoint.FloorPointType = FloorPointType.None;
+                }
+
                 _curvePointObject.CurvePoint.FloorHeight = floorHeight;
                 _curvePointObject.CurvePoint.FloorAngle = floorAngle;
 
@@ -520,7 +529,7 @@ public class CurvePointObjectInspector : Editor
         }
 
         //Floor handle
-        if (curvePointObject.ParentGround.FloorType == FloorType.Segmented && curvePointObject.CurvePoint.HasFloorPosition)
+        if (curvePointObject.ParentGround.FloorType == FloorType.Segmented && curvePointObject.CurvePoint.FloorPointType == FloorPointType.Set)
         {
             Handles.color = Color.cyan;
             EditorGUI.BeginChangeCheck();

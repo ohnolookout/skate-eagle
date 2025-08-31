@@ -10,6 +10,7 @@ public class GroundInspector : Editor
     public static bool DebugSegments = false;
     private bool _controlHeld = false;
     private bool _altHeld = false;
+    private bool _showCPTransform = true;
     public override void OnInspectorGUI()
     {
         if (_editManager == null)
@@ -70,14 +71,14 @@ public class GroundInspector : Editor
             ground.FloorType = floorType;
 
             //Update floor points based on type
-            ground.CurvePoints[0].HasFloorPosition = true;
-            ground.CurvePoints[^1].HasFloorPosition = true;
+            ground.CurvePoints[0].FloorPointType = FloorPointType.Set;
+            ground.CurvePoints[^1].FloorPointType = FloorPointType.Set;
 
             if (floorType != FloorType.Segmented)
             {
                 for(int i = 1; i < ground.CurvePoints.Count - 1; i++)
                 {
-                    ground.CurvePoints[i].HasFloorPosition = false;
+                    ground.CurvePoints[i].FloorPointType = FloorPointType.None;
                 }
             } else
             {
@@ -173,8 +174,9 @@ public class GroundInspector : Editor
 
         GUILayout.Space(10);
         GUILayout.Label("View Options", EditorStyles.boldLabel);
+        _showCPTransform = GUILayout.Toggle(_showCPTransform, "Show CP Transforms");
         _showSettings = GUILayout.Toggle(_showSettings, "Show Default Inspector");
-        DebugSegments = GUILayout.Toggle(DebugSegments, "Show Segment Inspector");
+        DebugSegments = GUILayout.Toggle(DebugSegments, "Allow Segment Selection");
 
         if (_showSettings)
         {
@@ -214,7 +216,11 @@ public class GroundInspector : Editor
             _editManager.RefreshSerializable(ground);
         }
 
-        DrawCurvePoints(ground, _editManager, _controlHeld, _altHeld);
+
+        if (_showCPTransform)
+        {
+            DrawCurvePoints(ground, _editManager, _controlHeld, _altHeld);
+        }
 
         if (ground.gameObject.transform.hasChanged)
         {

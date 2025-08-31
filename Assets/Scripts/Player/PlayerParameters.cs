@@ -21,7 +21,7 @@ public class PlayerParameters
     public float JumpStartTime;
     public int StompCharge = 0;
     public int JumpCount = 0;
-    public int FlipBoost = 90;
+    public int FlipBoost = 100;
     public float RotationAccel = 1500;
 
     public PlayerParameters(int startingStompCharge = 0)

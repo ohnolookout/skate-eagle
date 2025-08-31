@@ -103,9 +103,6 @@ public static class SerializeLevelUtility
         // Get a prefix for naming segments
         var groundNamePrefix = serializedGround.name.Remove(1, serializedGround.name.Length - 2);
 
-        // Create the editor segment
-        serializedGround.editorSegment = new(groundNamePrefix + " Editor Segment", serializedGround, serializedGround.curvePoints, null, true, true);
-
         // Create serialized runtime segments
         var runtimeSegmentsCurvePoints = BreakDownSegments(serializedGround);
 
@@ -181,9 +178,9 @@ public static class SerializeLevelUtility
             {
                 // End of section/start of next section identified
                 // Calculate floor position and set to has floor position if cp doesn't currently have one.
-                if (!curvePoint.HasFloorPosition)
+                if (curvePoint.FloorPointType != FloorPointType.Set)
                 {
-                    curvePoint.HasFloorPosition = true;
+                    curvePoint.FloorPointType = FloorPointType.Auto;
                     curvePoint.FloorPosition = LerpFloorPoint(curvePoint, allCurvePoints[prevFloorPositionIndex], allCurvePoints[nextFloorPositionIndex]);
                 }
 
@@ -208,7 +205,7 @@ public static class SerializeLevelUtility
     {
         for (int i = startIndex + 1; i < curvePoints.Count; i++)
         {
-            if (curvePoints[i].HasFloorPosition)
+            if (curvePoints[i].FloorPointType == FloorPointType.Set)
             {
                 return i;
             }

@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
+public enum  FloorPointType
+{
+    None,
+    Set,
+    Auto
+}
+
 [Serializable]
 public class CurvePoint
 {
@@ -10,8 +17,8 @@ public class CurvePoint
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
     [SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
+    [SerializeField] private FloorPointType _floorPointType = FloorPointType.None;
     [SerializeField] private bool _isSymmetrical = true;
-    [SerializeField] private bool _hasFloorPoint = false;
     [SerializeField] private int _floorHeight;
     [SerializeField] private int _floorAngle;
     [SerializeField] private Vector3 _floorPosition;
@@ -66,10 +73,10 @@ public class CurvePoint
     public bool IsSymmetrical { get => _isSymmetrical; set => _isSymmetrical = value; }
     public bool ForceNewSegment { get => _forceNewSegment; set => _forceNewSegment = value; }
     public bool BlockNewSegment { get => _blockNewSegment; set => _blockNewSegment = value; }
-    public bool HasFloorPosition { get => _hasFloorPoint; set => _hasFloorPoint = value; }
     public int FloorHeight { get => _floorHeight; set => _floorHeight = value; }
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
     public Vector3 FloorPosition { get => _floorPosition; set => _floorPosition = value; }
+    public FloorPointType FloorPointType { get => _floorPointType; set => _floorPointType = value; }
 
     public CurvePoint()
     {
@@ -211,7 +218,7 @@ public class CurvePoint
         copy.IsSymmetrical = _isSymmetrical;
         copy.FloorHeight = _floorHeight;
         copy.FloorAngle = _floorAngle;
-        copy.HasFloorPosition = _hasFloorPoint;
+        copy.FloorPointType = _floorPointType;
         copy.FloorPosition = _floorPosition;
         copy.ForceNewSegment = _forceNewSegment;
         copy.BlockNewSegment = _blockNewSegment;

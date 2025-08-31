@@ -86,7 +86,7 @@ public class SerializedGroundSegment
         List<Vector3> floorPositions = new();
         foreach(var point in curvePoints)
         {
-            if(point.HasFloorPosition)
+            if(point.FloorPointType != FloorPointType.None)
             {
                 floorPositions.Add(point.FloorPosition);
             }
