@@ -184,12 +184,12 @@ MonoBehaviour:
         _bronzeTime: 18
         _silverTime: 13
         _goldTime: 11
-        _blueTime: 10
-        _redTime: 9.5
+        _blueTime: 9.8
+        _redTime: 9.3
       _serializedObjects:
-      - rid: 1160016693383659670
-      - rid: 1160016693383659671
-      - rid: 1160016693383659672
+      - rid: 1160016693383660112
+      - rid: 1160016693383660113
+      - rid: 1160016693383660114
       _leaderboardKey: Growing Up_leaderboard
       _killPlaneY: -10.408813
       _cameraStartPosition: {x: -109.99995, y: 48.87305}
@@ -197,17 +197,17 @@ MonoBehaviour:
         LeftTargets: []
         RightTargets: []
         LeftKDNode:
-          rid: 1160016693383659673
+          rid: 1160016693383660067
         RightKDNode:
-          rid: 1160016693383659674
+          rid: 1160016693383660068
         doTargetHigh: 0
         doTargetLow: 1
         TargetType: 0
         SerializedLocation: 0000000006000000
         _target:
           TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 0
-          CurrentInfluenceV: 0
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
           TargetInfluenceH: 0
           TargetInfluenceV: 1
           TargetOffset: {x: 0, y: 30}
@@ -228,7 +228,7 @@ MonoBehaviour:
         _target:
           TargetTransform: {fileID: 0}
           CurrentInfluenceH: 0
-          CurrentInfluenceV: 1
+          CurrentInfluenceV: 0
           TargetInfluenceH: 0
           TargetInfluenceV: 1
           TargetOffset: {x: 0, y: 25}
@@ -266,7 +266,7 @@ MonoBehaviour:
             _target:
               TargetTransform: {fileID: 0}
               CurrentInfluenceH: 0
-              CurrentInfluenceV: 1
+              CurrentInfluenceV: 0
               TargetInfluenceH: 0
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 25}
@@ -2102,51 +2102,46 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: 94181cf9-b181-43e6-a52b-759cb19d6565
-    _name: Triple Gap
+    _UID: aba2d3d5-4f5e-4add-9c23-55aaa1771bc2
+    _name: Growing Up
     _goldRequired: 0
     _medalTimes:
-      _bronzeTime: 25
-      _silverTime: 15
-      _goldTime: 10
-      _blueTime: 9.5
-      _redTime: 9.25
+      _bronzeTime: 18
+      _silverTime: 13
+      _goldTime: 11
+      _blueTime: 9.8
+      _redTime: 9.3
     _serializedObjects:
-    - rid: 2514963144342242230
-    - rid: 2514963144342242231
-    - rid: 2514963144342242232
-    - rid: 2514963144342242233
-    - rid: 2514963144342242234
-    - rid: 2514963144342242235
-    _leaderboardKey: Triple Gap_leaderboard
-    _killPlaneY: -52.532173
-    _cameraStartPosition: {x: -48.999973, y: 25.368948}
+    - rid: 1160016693383660112
+    - rid: 1160016693383660113
+    - rid: 1160016693383660114
+    _leaderboardKey: Growing Up_leaderboard
+    _killPlaneY: -10.408813
+    _cameraStartPosition: {x: -109.99995, y: 48.87305}
     _rootCameraTarget:
-      LeftTargets:
-      - rid: 2514963144342242236
-      RightTargets:
-      - rid: 2514963144342242237
+      LeftTargets: []
+      RightTargets: []
       LeftKDNode:
-        rid: 2514963144342242238
+        rid: 1160016693383660067
       RightKDNode:
-        rid: 2514963144342242239
+        rid: 1160016693383660068
       doTargetHigh: 0
       doTargetLow: 1
       TargetType: 0
-      SerializedLocation: 0200000001000000
+      SerializedLocation: 0000000006000000
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 1
         CurrentInfluenceV: 1
         TargetInfluenceH: 0
         TargetInfluenceV: 1
-        TargetOffset: {x: 0, y: 25}
+        TargetOffset: {x: 0, y: 30}
         IsAdjusting: 0
-        SerializedPosition: {x: 222.2177, y: -14.293996, z: 0}
+        SerializedPosition: {x: 414, y: 0, z: 0}
     _startTarget:
       LeftTargets: []
       RightTargets:
-      - rid: 2514963144342242240
+      - rid: -2
       LeftKDNode:
         rid: -2
       RightKDNode:
@@ -2158,49 +2153,50 @@ MonoBehaviour:
       _target:
         TargetTransform: {fileID: 0}
         CurrentInfluenceH: 0
-        CurrentInfluenceV: 1
+        CurrentInfluenceV: 0
         TargetInfluenceH: 0
         TargetInfluenceV: 1
-        TargetOffset: {x: 0, y: 10}
+        TargetOffset: {x: 0, y: 25}
         IsAdjusting: 0
-        SerializedPosition: {x: -118, y: 24, z: 0}
+        SerializedPosition: {x: -120, y: 30, z: 0}
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
-        name: CP
-        position: {x: 0, y: 0, z: 0}
-        leftTangent: {x: -1, y: 0, z: 0}
-        rightTangent: {x: 1, y: 0, z: 0}
-        _serializedWorldPosition: {x: 0, y: 0, z: 0}
-        _mode: 1
+        name: CP 0_1_LT
+        position: {x: -120, y: 30, z: 0}
+        leftTangent: {x: -25, y: -0.0000011175871, z: 0}
+        rightTangent: {x: 25, y: 0.0000023989626, z: -0}
+        _serializedWorldPosition: {x: -120, y: 30, z: 0}
+        _mode: 0
         _floorPointType: 0
-        _isSymmetrical: 0
-        _floorHeight: 100
+        _isSymmetrical: 1
+        _floorHeight: 58
         _floorAngle: 0
-        _floorPosition: {x: 0, y: 0, z: 0}
+        _floorPosition: {x: -120, y: -28, z: 0}
         _forceNewSegment: 0
         _blockNewSegment: 0
         _object: {fileID: 0}
         _linkedCameraTarget:
           LeftTargets: []
-          RightTargets: []
+          RightTargets:
+          - rid: -2
           LeftKDNode:
             rid: -2
           RightKDNode:
             rid: -2
           doTargetHigh: 0
-          doTargetLow: 0
+          doTargetLow: 1
           TargetType: 0
-          SerializedLocation: 
+          SerializedLocation: 0000000001000000
           _target:
             TargetTransform: {fileID: 0}
-            CurrentInfluenceH: 1
-            CurrentInfluenceV: 1
-            TargetInfluenceH: 1
+            CurrentInfluenceH: 0
+            CurrentInfluenceV: 0
+            TargetInfluenceH: 0
             TargetInfluenceV: 1
-            TargetOffset: {x: 0, y: 0}
+            TargetOffset: {x: 0, y: 25}
             IsAdjusting: 0
-            SerializedPosition: {x: 0, y: 0, z: 0}
+            SerializedPosition: {x: -120, y: 30, z: 0}
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   references:
@@ -2208,7 +2204,139 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 1160016693383659670
+    - rid: 1160016693383660067
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: 1160016693383660069
+        RightKDNode:
+          rid: 1160016693383660070
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000004000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: 110, y: 0, z: 0}
+    - rid: 1160016693383660068
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: 1160016693383660071
+        RightKDNode:
+          rid: 1160016693383660072
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 000000000c000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: 1436.6582, y: 0, z: 0}
+    - rid: 1160016693383660069
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000002000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: -120, y: 0, z: 0}
+    - rid: 1160016693383660070
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000001000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: -240, y: 60, z: 0}
+    - rid: 1160016693383660071
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 0000000008000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: 826, y: 0, z: 0}
+    - rid: 1160016693383660072
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        LeftTargets: []
+        RightTargets: []
+        LeftKDNode:
+          rid: -2
+        RightKDNode:
+          rid: -2
+        doTargetHigh: 0
+        doTargetLow: 1
+        TargetType: 0
+        SerializedLocation: 000000000a000000
+        _target:
+          TargetTransform: {fileID: 0}
+          CurrentInfluenceH: 1
+          CurrentInfluenceV: 1
+          TargetInfluenceH: 0
+          TargetInfluenceV: 1
+          TargetOffset: {x: 0, y: 30}
+          IsAdjusting: 0
+          SerializedPosition: {x: 1193.1404, y: 42.368546, z: 0}
+    - rid: 1160016693383660112
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -2573,7 +2701,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 0, y: -75, z: 0}
+            _floorPosition: {x: 0.000030517578, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -2598,7 +2726,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 0, y: -75, z: 0}
+            position: {x: 0.000030517578, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -2744,7 +2872,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 0, y: -75, z: 0}
+            _floorPosition: {x: 0.000030517578, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -2842,7 +2970,7 @@ MonoBehaviour:
           - {x: 0, y: 29.15596}
           bottomColliderPoints:
           - {x: -120, y: -75}
-          - {x: 0, y: -75}
+          - {x: 0.000030517578, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -2892,7 +3020,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 0, y: -75, z: 0}
+            _floorPosition: {x: 0.000030517578, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3019,7 +3147,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 0, y: -75, z: 0}
+            position: {x: 0.000030517578, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3063,7 +3191,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 0, y: -75, z: 0}
+            _floorPosition: {x: 0.000030517578, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3237,7 +3365,7 @@ MonoBehaviour:
           - {x: 129.88322, y: 51.68098}
           - {x: 130.98181, y: 51.697636}
           bottomColliderPoints:
-          - {x: 0, y: -75}
+          - {x: 0.000030517578, y: -75}
           - {x: 131, y: -75}
           linkedCameraTarget:
             LeftTargets: []
@@ -3322,7 +3450,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 206.99997, y: -75, z: 0}
+            _floorPosition: {x: 207.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3347,7 +3475,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 206.99997, y: -75, z: 0}
+            position: {x: 207.00006, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3459,7 +3587,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 206.99997, y: -75, z: 0}
+            _floorPosition: {x: 207.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3535,7 +3663,7 @@ MonoBehaviour:
           - {x: 207.03378, y: 1.1995246}
           bottomColliderPoints:
           - {x: 131, y: -75}
-          - {x: 206.99997, y: -75}
+          - {x: 207.00006, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -3585,7 +3713,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 206.99997, y: -75, z: 0}
+            _floorPosition: {x: 207.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3610,7 +3738,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 305, y: 77.63266, z: 0}
+            position: {x: 313, y: 77.63266, z: 0}
             leftTangent: {x: -40, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3619,7 +3747,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 304.99994, y: -75, z: 0}
+            _floorPosition: {x: 313, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3644,7 +3772,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 304.99994, y: -75, z: 0}
+            position: {x: 313, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3678,7 +3806,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 206.99997, y: -75, z: 0}
+            position: {x: 207.00006, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3722,7 +3850,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 206.99997, y: -75, z: 0}
+            _floorPosition: {x: 207.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3747,7 +3875,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 305, y: 77.63266, z: 0}
+            position: {x: 313, y: 77.63266, z: 0}
             leftTangent: {x: -40, y: 0, z: 0}
             rightTangent: {x: 40, y: -0, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3756,7 +3884,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 304.99994, y: -75, z: 0}
+            _floorPosition: {x: 313, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3785,71 +3913,74 @@ MonoBehaviour:
           edgeSplinePoints: []
           colliderPoints:
           - {x: 207.03378, y: 1.1995246}
-          - {x: 208.5667, y: 1.253845}
-          - {x: 210.16104, y: 1.4215431}
-          - {x: 211.74197, y: 1.6990728}
-          - {x: 213.31105, y: 2.0833278}
-          - {x: 214.86954, y: 2.5712624}
-          - {x: 216.41843, y: 3.1598172}
-          - {x: 217.95851, y: 3.845828}
-          - {x: 219.4903, y: 4.626079}
-          - {x: 221.01433, y: 5.497156}
-          - {x: 222.53094, y: 6.45558}
-          - {x: 224.04051, y: 7.4977117}
-          - {x: 225.54335, y: 8.61987}
-          - {x: 227.03981, y: 9.818224}
-          - {x: 228.53027, y: 11.0889435}
-          - {x: 230.01515, y: 12.4281}
-          - {x: 231.49484, y: 13.831753}
-          - {x: 232.96985, y: 15.295929}
-          - {x: 234.44064, y: 16.816631}
-          - {x: 235.90778, y: 18.389866}
-          - {x: 237.37183, y: 20.011585}
-          - {x: 238.8333, y: 21.677837}
-          - {x: 240.2929, y: 23.384514}
-          - {x: 241.75114, y: 25.12771}
-          - {x: 243.20882, y: 26.903278}
-          - {x: 244.66643, y: 28.707321}
-          - {x: 246.12477, y: 30.535763}
-          - {x: 247.58449, y: 32.384636}
-          - {x: 249.04633, y: 34.249897}
-          - {x: 250.51094, y: 36.1276}
-          - {x: 251.97913, y: 38.013718}
-          - {x: 253.45157, y: 39.904278}
-          - {x: 254.92903, y: 41.7953}
-          - {x: 256.4123, y: 43.682796}
-          - {x: 257.9021, y: 45.562798}
-          - {x: 259.39926, y: 47.431347}
-          - {x: 260.90454, y: 49.28447}
-          - {x: 262.4188, y: 51.11818}
-          - {x: 263.9428, y: 52.928555}
-          - {x: 265.47745, y: 54.711597}
-          - {x: 267.02353, y: 56.46336}
-          - {x: 268.58194, y: 58.179905}
-          - {x: 270.15356, y: 59.857204}
-          - {x: 271.73926, y: 61.49135}
-          - {x: 273.34006, y: 63.078312}
-          - {x: 274.95682, y: 64.61408}
-          - {x: 276.59048, y: 66.094696}
-          - {x: 278.24216, y: 67.51603}
-          - {x: 279.91275, y: 68.874054}
-          - {x: 281.6033, y: 70.164635}
-          - {x: 283.31485, y: 71.383575}
-          - {x: 285.0483, y: 72.52669}
-          - {x: 286.80478, y: 73.589615}
-          - {x: 288.58514, y: 74.56801}
-          - {x: 290.39032, y: 75.45741}
-          - {x: 292.221, y: 76.25331}
-          - {x: 294.078, y: 76.95113}
-          - {x: 295.96167, y: 77.546234}
-          - {x: 297.87247, y: 78.034035}
-          - {x: 299.81046, y: 78.40996}
-          - {x: 301.7757, y: 78.66953}
-          - {x: 303.75403, y: 78.80822}
-          - {x: 304.97623, y: 78.83243}
+          - {x: 208.5037, y: 1.249269}
+          - {x: 210.04634, y: 1.4028397}
+          - {x: 211.58821, y: 1.6572983}
+          - {x: 213.13, y: 2.0099998}
+          - {x: 214.67238, y: 2.4582763}
+          - {x: 216.21559, y: 2.999436}
+          - {x: 217.75995, y: 3.6306648}
+          - {x: 219.30544, y: 4.3490744}
+          - {x: 220.8521, y: 5.151656}
+          - {x: 222.39987, y: 6.035311}
+          - {x: 223.94873, y: 6.9968605}
+          - {x: 225.49858, y: 8.033017}
+          - {x: 227.0494, y: 9.140489}
+          - {x: 228.60114, y: 10.315869}
+          - {x: 230.1538, y: 11.555792}
+          - {x: 231.70746, y: 12.856788}
+          - {x: 233.26213, y: 14.215399}
+          - {x: 234.8179, y: 15.62819}
+          - {x: 236.37491, y: 17.091608}
+          - {x: 237.93321, y: 18.602232}
+          - {x: 239.49304, y: 20.156553}
+          - {x: 241.05457, y: 21.751017}
+          - {x: 242.61787, y: 23.3822}
+          - {x: 244.18326, y: 25.04659}
+          - {x: 245.75093, y: 26.740654}
+          - {x: 247.32109, y: 28.460941}
+          - {x: 248.89398, y: 30.203945}
+          - {x: 250.46986, y: 31.966162}
+          - {x: 252.04893, y: 33.74416}
+          - {x: 253.63156, y: 35.5344}
+          - {x: 255.21796, y: 37.33343}
+          - {x: 256.80838, y: 39.13779}
+          - {x: 258.40323, y: 40.943993}
+          - {x: 260.0027, y: 42.748554}
+          - {x: 261.60712, y: 44.548054}
+          - {x: 263.21686, y: 46.33898}
+          - {x: 264.83215, y: 48.117905}
+          - {x: 266.4534, y: 49.881348}
+          - {x: 268.08093, y: 51.625893}
+          - {x: 269.71512, y: 53.34802}
+          - {x: 271.35626, y: 55.044327}
+          - {x: 273.0048, y: 56.71134}
+          - {x: 274.66104, y: 58.34562}
+          - {x: 276.3255, y: 59.943665}
+          - {x: 277.9985, y: 61.502075}
+          - {x: 279.68048, y: 63.01732}
+          - {x: 281.37195, y: 64.48597}
+          - {x: 283.0733, y: 65.90449}
+          - {x: 284.785, y: 67.26942}
+          - {x: 286.50763, y: 68.57719}
+          - {x: 288.2416, y: 69.82427}
+          - {x: 289.9875, y: 71.00709}
+          - {x: 291.74582, y: 72.121994}
+          - {x: 293.51706, y: 73.16533}
+          - {x: 295.3018, y: 74.13338}
+          - {x: 297.1005, y: 75.02236}
+          - {x: 298.9135, y: 75.828445}
+          - {x: 300.74133, y: 76.54771}
+          - {x: 302.58417, y: 77.1762}
+          - {x: 304.44226, y: 77.70995}
+          - {x: 306.3156, y: 78.14493}
+          - {x: 308.20416, y: 78.47712}
+          - {x: 310.10764, y: 78.70257}
+          - {x: 312.0085, y: 78.81724}
+          - {x: 312.98117, y: 78.83251}
           bottomColliderPoints:
-          - {x: 206.99997, y: -75}
-          - {x: 304.99994, y: -75}
+          - {x: 207.00006, y: -75}
+          - {x: 313, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -3890,7 +4021,7 @@ MonoBehaviour:
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: 305, y: 77.63266, z: 0}
+            position: {x: 313, y: 77.63266, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 40, y: -0, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3899,7 +4030,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 304.99994, y: -75, z: 0}
+            _floorPosition: {x: 313, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3924,7 +4055,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 400, y: 0, z: 0}
+            position: {x: 413, y: 0, z: 0}
             leftTangent: {x: -40, y: 0.0000034969112, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3933,7 +4064,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 400, y: -75, z: 0}
+            _floorPosition: {x: 413.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -3958,7 +4089,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 400, y: -75, z: 0}
+            position: {x: 413.00006, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -3992,7 +4123,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 304.99994, y: -75, z: 0}
+            position: {x: 313, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4027,7 +4158,7 @@ MonoBehaviour:
                 SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: 305, y: 77.63266, z: 0}
+            position: {x: 313, y: 77.63266, z: 0}
             leftTangent: {x: -40, y: 0, z: 0}
             rightTangent: {x: 40, y: -0, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4036,7 +4167,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 304.99994, y: -75, z: 0}
+            _floorPosition: {x: 313, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4061,7 +4192,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 400, y: 0, z: 0}
+            position: {x: 413, y: 0, z: 0}
             leftTangent: {x: -40, y: 0.0000034969112, z: 0}
             rightTangent: {x: 40, y: -0.0000034969112, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4070,7 +4201,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 400, y: -75, z: 0}
+            _floorPosition: {x: 413.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4098,71 +4229,73 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 304.97623, y: 78.83243}
-          - {x: 307.06754, y: 78.764885}
-          - {x: 309.0567, y: 78.57118}
-          - {x: 311.00604, y: 78.255356}
-          - {x: 312.91592, y: 77.822014}
-          - {x: 314.78693, y: 77.27592}
-          - {x: 316.61993, y: 76.62189}
-          - {x: 318.41605, y: 75.86476}
-          - {x: 320.17603, y: 75.00939}
-          - {x: 321.9015, y: 74.06055}
-          - {x: 323.59387, y: 73.02294}
-          - {x: 325.2547, y: 71.90115}
-          - {x: 326.88556, y: 70.69971}
-          - {x: 328.48788, y: 69.42308}
-          - {x: 330.0636, y: 68.075615}
-          - {x: 331.61426, y: 66.661606}
-          - {x: 333.14145, y: 65.18531}
-          - {x: 334.6467, y: 63.65097}
-          - {x: 336.13177, y: 62.06271}
-          - {x: 337.59814, y: 60.424713}
-          - {x: 339.04724, y: 58.741142}
-          - {x: 340.48083, y: 57.016075}
-          - {x: 341.9002, y: 55.253628}
-          - {x: 343.3068, y: 53.458}
-          - {x: 344.70227, y: 51.633175}
-          - {x: 346.08777, y: 49.783386}
-          - {x: 347.46494, y: 47.912693}
-          - {x: 348.83514, y: 46.02517}
-          - {x: 350.19952, y: 44.12506}
-          - {x: 351.55984, y: 42.21636}
-          - {x: 352.9171, y: 40.30329}
-          - {x: 354.27283, y: 38.389957}
-          - {x: 355.6283, y: 36.4805}
-          - {x: 356.98483, y: 34.579086}
-          - {x: 358.34375, y: 32.689816}
-          - {x: 359.70624, y: 30.816898}
-          - {x: 361.0736, y: 28.964499}
-          - {x: 362.44724, y: 27.136713}
-          - {x: 363.82812, y: 25.337797}
-          - {x: 365.2177, y: 23.571821}
-          - {x: 366.61707, y: 21.843023}
-          - {x: 368.02737, y: 20.155548}
-          - {x: 369.44986, y: 18.513494}
-          - {x: 370.88553, y: 16.921057}
-          - {x: 372.33557, y: 15.382334}
-          - {x: 373.801, y: 13.901442}
-          - {x: 375.28302, y: 12.482402}
-          - {x: 376.7825, y: 11.129244}
-          - {x: 378.30045, y: 9.845968}
-          - {x: 379.83807, y: 8.636424}
-          - {x: 381.39624, y: 7.504479}
-          - {x: 382.97607, y: 6.4538517}
-          - {x: 384.57883, y: 5.4881854}
-          - {x: 386.20554, y: 4.6110716}
-          - {x: 387.85776, y: 3.8259845}
-          - {x: 389.53702, y: 3.1363552}
-          - {x: 391.2448, y: 2.545633}
-          - {x: 392.9833, y: 2.0572662}
-          - {x: 394.75446, y: 1.6748091}
-          - {x: 396.56058, y: 1.4019537}
-          - {x: 398.41068, y: 1.2424169}
-          - {x: 400.0317, y: 1.1995814}
+          - {x: 312.98117, y: 78.83251}
+          - {x: 315.0137, y: 78.768654}
+          - {x: 316.9592, y: 78.585655}
+          - {x: 318.87378, y: 78.28725}
+          - {x: 320.7576, y: 77.8777}
+          - {x: 322.61108, y: 77.361404}
+          - {x: 324.43475, y: 76.74278}
+          - {x: 326.2295, y: 76.026245}
+          - {x: 327.996, y: 75.216225}
+          - {x: 329.73547, y: 74.31703}
+          - {x: 331.44894, y: 73.33294}
+          - {x: 333.13748, y: 72.26817}
+          - {x: 334.80243, y: 71.12684}
+          - {x: 336.44498, y: 69.912994}
+          - {x: 338.06635, y: 68.63066}
+          - {x: 339.66794, y: 67.283745}
+          - {x: 341.2508, y: 65.87618}
+          - {x: 342.8162, y: 64.41184}
+          - {x: 344.3654, y: 62.894558}
+          - {x: 345.89957, y: 61.328148}
+          - {x: 347.41983, y: 59.716434}
+          - {x: 348.92734, y: 58.063213}
+          - {x: 350.42328, y: 56.372242}
+          - {x: 351.9086, y: 54.647343}
+          - {x: 353.3845, y: 52.892284}
+          - {x: 354.85202, y: 51.11086}
+          - {x: 356.31223, y: 49.30684}
+          - {x: 357.76617, y: 47.48402}
+          - {x: 359.2149, y: 45.64615}
+          - {x: 360.65927, y: 43.797104}
+          - {x: 362.10052, y: 41.94061}
+          - {x: 363.53955, y: 40.080482}
+          - {x: 364.97736, y: 38.220516}
+          - {x: 366.41483, y: 36.364532}
+          - {x: 367.85303, y: 34.51633}
+          - {x: 369.29285, y: 32.67971}
+          - {x: 370.7352, y: 30.858534}
+          - {x: 372.1811, y: 29.056564}
+          - {x: 373.63138, y: 27.27766}
+          - {x: 375.08694, y: 25.525635}
+          - {x: 376.54874, y: 23.804308}
+          - {x: 378.01758, y: 22.117502}
+          - {x: 379.49435, y: 20.469032}
+          - {x: 380.9798, y: 18.862732}
+          - {x: 382.47485, y: 17.302385}
+          - {x: 383.98022, y: 15.79179}
+          - {x: 385.49667, y: 14.33473}
+          - {x: 387.02505, y: 12.934934}
+          - {x: 388.56592, y: 11.5961685}
+          - {x: 390.12018, y: 10.322057}
+          - {x: 391.68835, y: 9.116306}
+          - {x: 393.27136, y: 7.9824424}
+          - {x: 394.86975, y: 6.924017}
+          - {x: 396.4844, y: 5.9444666}
+          - {x: 398.11612, y: 5.047156}
+          - {x: 399.76566, y: 4.23541}
+          - {x: 401.43414, y: 3.5124526}
+          - {x: 403.12268, y: 2.8814826}
+          - {x: 404.83258, y: 2.3456707}
+          - {x: 406.5653, y: 1.908212}
+          - {x: 408.32242, y: 1.572374}
+          - {x: 410.10577, y: 1.3415256}
+          - {x: 411.93326, y: 1.2190127}
+          - {x: 413.02118, y: 1.1998132}
           bottomColliderPoints:
-          - {x: 304.99994, y: -75}
-          - {x: 400, y: -75}
+          - {x: 313, y: -75}
+          - {x: 413.00006, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -4203,7 +4336,7 @@ MonoBehaviour:
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: 400, y: 0, z: 0}
+            position: {x: 413, y: 0, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 40, y: -0.0000034969112, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4212,7 +4345,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 400, y: -75, z: 0}
+            _floorPosition: {x: 413.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4237,7 +4370,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 503.4254, y: 98.31094, z: 0}
+            position: {x: 522.4254, y: 98.31094, z: 0}
             leftTangent: {x: -45, y: -0.0000076293945, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4246,7 +4379,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 503.4254, y: -75, z: 0}
+            _floorPosition: {x: 522.4254, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4271,7 +4404,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 503.4254, y: -75, z: 0}
+            position: {x: 522.4254, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4305,7 +4438,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 400, y: -75, z: 0}
+            position: {x: 413.00006, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4340,7 +4473,7 @@ MonoBehaviour:
                 SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: 400, y: 0, z: 0}
+            position: {x: 413, y: 0, z: 0}
             leftTangent: {x: -40, y: 0.0000034969112, z: 0}
             rightTangent: {x: 40, y: -0.0000034969112, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4349,7 +4482,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 400, y: -75, z: 0}
+            _floorPosition: {x: 413.00006, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4374,7 +4507,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 503.4254, y: 98.31094, z: 0}
+            position: {x: 522.4254, y: 98.31094, z: 0}
             leftTangent: {x: -45, y: -0.0000076293945, z: 0}
             rightTangent: {x: 45, y: 0.0000076293945, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4383,7 +4516,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 503.4254, y: -75, z: 0}
+            _floorPosition: {x: 522.4254, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4411,81 +4544,83 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 400.0317, y: 1.1995814}
-          - {x: 401.55423, y: 1.2515876}
-          - {x: 403.12677, y: 1.4122418}
-          - {x: 404.6781, y: 1.6784265}
-          - {x: 406.20996, y: 2.0475187}
-          - {x: 407.72397, y: 2.516995}
-          - {x: 409.22122, y: 3.0844164}
-          - {x: 410.7029, y: 3.7473016}
-          - {x: 412.16983, y: 4.5030813}
-          - {x: 413.62256, y: 5.3491373}
-          - {x: 415.06174, y: 6.2827806}
-          - {x: 416.48795, y: 7.3010135}
-          - {x: 417.90146, y: 8.401028}
-          - {x: 419.30286, y: 9.579673}
-          - {x: 420.6925, y: 10.833871}
-          - {x: 422.07086, y: 12.160408}
-          - {x: 423.43845, y: 13.556084}
-          - {x: 424.79575, y: 15.017572}
-          - {x: 426.14328, y: 16.541641}
-          - {x: 427.4817, y: 18.124918}
-          - {x: 428.81152, y: 19.764122}
-          - {x: 430.13345, y: 21.455837}
-          - {x: 431.44806, y: 23.196795}
-          - {x: 432.756, y: 24.983576}
-          - {x: 434.05798, y: 26.812954}
-          - {x: 435.3548, y: 28.681417}
-          - {x: 436.647, y: 30.58578}
-          - {x: 437.9355, y: 32.522564}
-          - {x: 439.2209, y: 34.488583}
-          - {x: 440.5041, y: 36.48032}
-          - {x: 441.78564, y: 38.494583}
-          - {x: 443.06644, y: 40.528004}
-          - {x: 444.34726, y: 42.5773}
-          - {x: 445.62894, y: 44.639103}
-          - {x: 446.91223, y: 46.710117}
-          - {x: 448.19794, y: 48.787003}
-          - {x: 449.48682, y: 50.866524}
-          - {x: 450.77975, y: 52.94533}
-          - {x: 452.0775, y: 55.020164}
-          - {x: 453.38098, y: 57.08769}
-          - {x: 454.69098, y: 59.144634}
-          - {x: 456.00833, y: 61.187748}
-          - {x: 457.33392, y: 63.21368}
-          - {x: 458.66858, y: 65.2192}
-          - {x: 460.01315, y: 67.201035}
-          - {x: 461.3686, y: 69.15588}
-          - {x: 462.73578, y: 71.080505}
-          - {x: 464.11557, y: 72.97157}
-          - {x: 465.50888, y: 74.825905}
-          - {x: 466.91675, y: 76.640114}
-          - {x: 468.34, y: 78.411026}
-          - {x: 469.77966, y: 80.13528}
-          - {x: 471.23666, y: 81.80962}
-          - {x: 472.7121, y: 83.43072}
-          - {x: 474.20694, y: 84.99524}
-          - {x: 475.72223, y: 86.499886}
-          - {x: 477.25903, y: 87.9412}
-          - {x: 478.81842, y: 89.31583}
-          - {x: 480.40146, y: 90.620224}
-          - {x: 482.00928, y: 91.85093}
-          - {x: 483.64282, y: 93.004326}
-          - {x: 485.30316, y: 94.076775}
-          - {x: 486.99124, y: 95.06454}
-          - {x: 488.70795, y: 95.963806}
-          - {x: 490.45407, y: 96.77075}
-          - {x: 492.23026, y: 97.481476}
-          - {x: 494.037, y: 98.09206}
-          - {x: 495.87454, y: 98.59861}
-          - {x: 497.74316, y: 98.997345}
-          - {x: 499.64285, y: 99.28453}
-          - {x: 501.57224, y: 99.45658}
-          - {x: 503.3899, y: 99.510414}
+          - {x: 413.02118, y: 1.1998132}
+          - {x: 414.51706, y: 1.2489518}
+          - {x: 416.05957, y: 1.4014698}
+          - {x: 417.5888, y: 1.654366}
+          - {x: 419.1061, y: 2.0052495}
+          - {x: 420.6124, y: 2.4518356}
+          - {x: 422.10876, y: 2.991825}
+          - {x: 423.59583, y: 3.6229067}
+          - {x: 425.0741, y: 4.3426633}
+          - {x: 426.54395, y: 5.1486583}
+          - {x: 428.0058, y: 6.038279}
+          - {x: 429.45978, y: 7.0088787}
+          - {x: 430.90625, y: 8.057727}
+          - {x: 432.3454, y: 9.181927}
+          - {x: 433.7774, y: 10.378695}
+          - {x: 435.20264, y: 11.644961}
+          - {x: 436.6212, y: 12.977851}
+          - {x: 438.0335, y: 14.374339}
+          - {x: 439.43994, y: 15.831306}
+          - {x: 440.84067, y: 17.345804}
+          - {x: 442.2362, y: 18.914694}
+          - {x: 443.62683, y: 20.53494}
+          - {x: 445.01303, y: 22.20346}
+          - {x: 446.3952, y: 23.917185}
+          - {x: 447.77386, y: 25.673038}
+          - {x: 449.14944, y: 27.467857}
+          - {x: 450.52234, y: 29.298653}
+          - {x: 451.89307, y: 31.162327}
+          - {x: 453.26215, y: 33.05583}
+          - {x: 454.63016, y: 34.976006}
+          - {x: 455.9975, y: 36.919907}
+          - {x: 457.36478, y: 38.8843}
+          - {x: 458.73236, y: 40.866302}
+          - {x: 460.10098, y: 42.862755}
+          - {x: 461.4711, y: 44.870625}
+          - {x: 462.84332, y: 46.886894}
+          - {x: 464.21817, y: 48.90839}
+          - {x: 465.59607, y: 50.932213}
+          - {x: 466.97775, y: 52.955265}
+          - {x: 468.36374, y: 54.97449}
+          - {x: 469.75464, y: 56.986866}
+          - {x: 471.15097, y: 58.989357}
+          - {x: 472.55334, y: 60.978935}
+          - {x: 473.9624, y: 62.95258}
+          - {x: 475.37872, y: 64.90721}
+          - {x: 476.80283, y: 66.8399}
+          - {x: 478.23547, y: 68.74755}
+          - {x: 479.67725, y: 70.62716}
+          - {x: 481.12875, y: 72.475716}
+          - {x: 482.59067, y: 74.2902}
+          - {x: 484.06366, y: 76.06756}
+          - {x: 485.54834, y: 77.80482}
+          - {x: 487.0454, y: 79.49894}
+          - {x: 488.5557, y: 81.14685}
+          - {x: 490.0798, y: 82.74551}
+          - {x: 491.61847, y: 84.29194}
+          - {x: 493.17252, y: 85.78296}
+          - {x: 494.7426, y: 87.21556}
+          - {x: 496.32962, y: 88.58655}
+          - {x: 497.93427, y: 89.89286}
+          - {x: 499.5574, y: 91.131226}
+          - {x: 501.19977, y: 92.298454}
+          - {x: 502.86218, y: 93.391235}
+          - {x: 504.54535, y: 94.40623}
+          - {x: 506.25006, y: 95.34003}
+          - {x: 507.97687, y: 96.189156}
+          - {x: 509.72635, y: 96.9501}
+          - {x: 511.49902, y: 97.61931}
+          - {x: 513.29517, y: 98.1932}
+          - {x: 515.11505, y: 98.668175}
+          - {x: 516.95856, y: 99.040726}
+          - {x: 518.8258, y: 99.30738}
+          - {x: 520.7133, y: 99.464714}
+          - {x: 522.3927, y: 99.5105}
           bottomColliderPoints:
-          - {x: 400, y: -75}
-          - {x: 503.4254, y: -75}
+          - {x: 413.00006, y: -75}
+          - {x: 522.4254, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -4526,7 +4661,7 @@ MonoBehaviour:
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: 503.4254, y: 98.31094, z: 0}
+            position: {x: 522.4254, y: 98.31094, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 45, y: 0.0000076293945, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4535,7 +4670,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 503.4254, y: -75, z: 0}
+            _floorPosition: {x: 522.4254, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4560,7 +4695,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 573.5702, y: 21.184273, z: 0}
+            position: {x: 596.5702, y: 21.184273, z: 0}
             leftTangent: {x: -25, y: -0.0000019073486, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4569,7 +4704,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 573.5701, y: -75, z: 0}
+            _floorPosition: {x: 596.5702, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4594,7 +4729,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 573.5701, y: -75, z: 0}
+            position: {x: 596.5702, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4628,7 +4763,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 503.4254, y: -75, z: 0}
+            position: {x: 522.4254, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4663,7 +4798,7 @@ MonoBehaviour:
                 SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: 503.4254, y: 98.31094, z: 0}
+            position: {x: 522.4254, y: 98.31094, z: 0}
             leftTangent: {x: -45, y: -0.0000076293945, z: 0}
             rightTangent: {x: 45, y: 0.0000076293945, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4672,7 +4807,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 503.4254, y: -75, z: 0}
+            _floorPosition: {x: 522.4254, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4697,7 +4832,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 573.5702, y: 21.184273, z: 0}
+            position: {x: 596.5702, y: 21.184273, z: 0}
             leftTangent: {x: -25, y: -0.0000019073486, z: 0}
             rightTangent: {x: 25, y: 0.0000019073486, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4706,7 +4841,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 573.5701, y: -75, z: 0}
+            _floorPosition: {x: 596.5702, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4734,64 +4869,65 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 503.3899, y: 99.510414}
-          - {x: 506.01944, y: 99.42535}
-          - {x: 508.485, y: 99.1793}
-          - {x: 510.86197, y: 98.778046}
-          - {x: 513.15216, y: 98.22781}
-          - {x: 515.35675, y: 97.53499}
-          - {x: 517.4776, y: 96.70628}
-          - {x: 519.51636, y: 95.74855}
-          - {x: 521.47546, y: 94.66871}
-          - {x: 523.3567, y: 93.47381}
-          - {x: 525.1632, y: 92.17074}
-          - {x: 526.89764, y: 90.766335}
-          - {x: 528.5627, y: 89.26738}
-          - {x: 530.1616, y: 87.68048}
-          - {x: 531.6976, y: 86.012}
-          - {x: 533.17346, y: 84.26848}
-          - {x: 534.59283, y: 82.45601}
-          - {x: 535.9586, y: 80.580826}
-          - {x: 537.27374, y: 78.64906}
-          - {x: 538.5414, y: 76.666855}
-          - {x: 539.7648, y: 74.64008}
-          - {x: 540.94666, y: 72.5749}
-          - {x: 542.0901, y: 70.47727}
-          - {x: 543.19794, y: 68.35322}
-          - {x: 544.2732, y: 66.208755}
-          - {x: 545.3188, y: 64.04981}
-          - {x: 546.33734, y: 61.882477}
-          - {x: 547.3317, y: 59.712822}
-          - {x: 548.3049, y: 57.546795}
-          - {x: 549.25946, y: 55.390495}
-          - {x: 550.19806, y: 53.250046}
-          - {x: 551.12366, y: 51.131527}
-          - {x: 552.03876, y: 49.04106}
-          - {x: 552.94617, y: 46.98476}
-          - {x: 553.8484, y: 44.968872}
-          - {x: 554.748, y: 42.99956}
-          - {x: 555.6475, y: 41.0831}
-          - {x: 556.54944, y: 39.225773}
-          - {x: 557.4561, y: 37.433907}
-          - {x: 558.3698, y: 35.713776}
-          - {x: 559.29254, y: 34.07189}
-          - {x: 560.2265, y: 32.514538}
-          - {x: 561.1734, y: 31.048079}
-          - {x: 562.1347, y: 29.678785}
-          - {x: 563.1116, y: 28.412842}
-          - {x: 564.1052, y: 27.255938}
-          - {x: 565.1164, y: 26.213428}
-          - {x: 566.14575, y: 25.28991}
-          - {x: 567.19464, y: 24.488993}
-          - {x: 568.265, y: 23.813335}
-          - {x: 569.36017, y: 23.264866}
-          - {x: 570.4858, y: 22.845322}
-          - {x: 571.6494, y: 22.557344}
-          - {x: 572.8938, y: 22.40486}
-          - {x: 573.6058, y: 22.383745}
+          - {x: 522.3927, y: 99.5105}
+          - {x: 524.97003, y: 99.428894}
+          - {x: 527.3979, y: 99.19299}
+          - {x: 529.7478, y: 98.8083}
+          - {x: 532.02106, y: 98.28066}
+          - {x: 534.2187, y: 97.61617}
+          - {x: 536.3422, y: 96.821106}
+          - {x: 538.3933, y: 95.90183}
+          - {x: 540.3733, y: 94.8649}
+          - {x: 542.28467, y: 93.716705}
+          - {x: 544.12915, y: 92.463745}
+          - {x: 545.90924, y: 91.11238}
+          - {x: 547.62756, y: 89.668816}
+          - {x: 549.28625, y: 88.13931}
+          - {x: 550.8883, y: 86.52988}
+          - {x: 552.4364, y: 84.846405}
+          - {x: 553.9327, y: 83.09489}
+          - {x: 555.3802, y: 81.281044}
+          - {x: 556.78125, y: 79.41072}
+          - {x: 558.1387, y: 77.489586}
+          - {x: 559.4549, y: 75.523285}
+          - {x: 560.7323, y: 73.51759}
+          - {x: 561.9736, y: 71.478065}
+          - {x: 563.181, y: 69.410446}
+          - {x: 564.35724, y: 67.320244}
+          - {x: 565.5044, y: 65.21326}
+          - {x: 566.62494, y: 63.095085}
+          - {x: 567.7213, y: 60.97139}
+          - {x: 568.7958, y: 58.847828}
+          - {x: 569.8507, y: 56.73011}
+          - {x: 570.8883, y: 54.623928}
+          - {x: 571.9108, y: 52.535027}
+          - {x: 572.9206, y: 50.469112}
+          - {x: 573.9198, y: 48.431923}
+          - {x: 574.9106, y: 46.429302}
+          - {x: 575.8952, y: 44.466927}
+          - {x: 576.8755, y: 42.55081}
+          - {x: 577.8539, y: 40.686707}
+          - {x: 578.8323, y: 38.880436}
+          - {x: 579.81256, y: 37.13797}
+          - {x: 580.79645, y: 35.46527}
+          - {x: 581.78577, y: 33.86829}
+          - {x: 582.78217, y: 32.352932}
+          - {x: 583.7869, y: 30.925167}
+          - {x: 584.8014, y: 29.590807}
+          - {x: 585.82635, y: 28.355656}
+          - {x: 586.8629, y: 27.225016}
+          - {x: 587.9113, y: 26.204042}
+          - {x: 588.9722, y: 25.297197}
+          - {x: 590.0464, y: 24.508173}
+          - {x: 591.1353, y: 23.83982}
+          - {x: 592.2414, y: 23.294294}
+          - {x: 593.36884, y: 22.873411}
+          - {x: 594.5239, y: 22.579445}
+          - {x: 595.73816, y: 22.415388}
+          - {x: 596.6139, y: 22.383476}
           bottomColliderPoints:
-          - {x: 503.4254, y: -75}
-          - {x: 573.5701, y: -75}
+          - {x: 522.4254, y: -75}
+          - {x: 596.5702, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -4832,7 +4968,7 @@ MonoBehaviour:
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: 573.5702, y: 21.184273, z: 0}
+            position: {x: 596.5702, y: 21.184273, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 25, y: 0.0000019073486, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4841,7 +4977,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 573.5701, y: -75, z: 0}
+            _floorPosition: {x: 596.5702, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4866,7 +5002,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 618.5081, y: 40.33854, z: 0}
+            position: {x: 641.5081, y: 40.33854, z: 0}
             leftTangent: {x: -25, y: -0.0000038146973, z: 0}
             rightTangent: {x: 25, y: 0.0000038146973, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4900,7 +5036,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 695.3291, y: 0, z: 0}
+            position: {x: 718.3291, y: 0, z: 0}
             leftTangent: {x: -45, y: 0.000003934025, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4909,7 +5045,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 695.3291, y: -75, z: 0}
+            _floorPosition: {x: 718.3291, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -4934,7 +5070,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 695.3291, y: -75, z: 0}
+            position: {x: 718.3291, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -4968,7 +5104,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 573.5701, y: -75, z: 0}
+            position: {x: 596.5702, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5003,7 +5139,7 @@ MonoBehaviour:
                 SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: 573.5702, y: 21.184273, z: 0}
+            position: {x: 596.5702, y: 21.184273, z: 0}
             leftTangent: {x: -25, y: -0.0000019073486, z: 0}
             rightTangent: {x: 25, y: 0.0000019073486, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5012,7 +5148,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 573.5701, y: -75, z: 0}
+            _floorPosition: {x: 596.5702, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5037,7 +5173,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 618.5081, y: 40.33854, z: 0}
+            position: {x: 641.5081, y: 40.33854, z: 0}
             leftTangent: {x: -25, y: -0.0000038146973, z: 0}
             rightTangent: {x: 25, y: 0.0000038146973, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5071,7 +5207,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 695.3291, y: 0, z: 0}
+            position: {x: 718.3291, y: 0, z: 0}
             leftTangent: {x: -45, y: 0.000003934025, z: 0}
             rightTangent: {x: 45, y: -0.000003934025, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5080,7 +5216,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 695.3291, y: -75, z: 0}
+            _floorPosition: {x: 718.3291, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5108,77 +5244,77 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 573.6058, y: 22.383745}
-          - {x: 576.4801, y: 22.478903}
-          - {x: 579.12256, y: 22.757238}
-          - {x: 581.4881, y: 23.199352}
-          - {x: 583.6087, y: 23.787008}
-          - {x: 585.51715, y: 24.503578}
-          - {x: 587.2464, y: 25.334343}
-          - {x: 588.8286, y: 26.265835}
-          - {x: 590.29395, y: 27.285269}
-          - {x: 591.6716, y: 28.379372}
-          - {x: 592.9893, y: 29.533934}
-          - {x: 594.2748, y: 30.733225}
-          - {x: 595.55554, y: 31.960655}
-          - {x: 596.85974, y: 33.19785}
-          - {x: 598.2156, y: 34.42551}
-          - {x: 599.65137, y: 35.622883}
-          - {x: 601.19446, y: 36.767982}
-          - {x: 602.871, y: 37.8382}
-          - {x: 604.7055, y: 38.810936}
-          - {x: 606.7214, y: 39.664658}
-          - {x: 608.9414, y: 40.379524}
-          - {x: 611.3889, y: 40.93748}
-          - {x: 614.0885, y: 41.321804}
-          - {x: 617.04474, y: 41.516323}
-          - {x: 618.4898, y: 41.5384}
-          - {x: 618.55475, y: 41.537632}
-          - {x: 620.42365, y: 41.461254}
-          - {x: 622.2324, y: 41.244095}
-          - {x: 623.98376, y: 40.893646}
-          - {x: 625.68036, y: 40.417862}
-          - {x: 627.3254, y: 39.82505}
-          - {x: 628.92285, y: 39.12361}
-          - {x: 630.4773, y: 38.3218}
-          - {x: 631.9933, y: 37.42775}
-          - {x: 633.476, y: 36.449284}
-          - {x: 634.9309, y: 35.39397}
-          - {x: 636.36334, y: 34.269066}
-          - {x: 637.77875, y: 33.081596}
-          - {x: 639.1819, y: 31.838734}
-          - {x: 640.57874, y: 30.547087}
-          - {x: 641.97406, y: 29.213505}
-          - {x: 643.3731, y: 27.8446}
-          - {x: 644.7807, y: 26.447094}
-          - {x: 646.2019, y: 25.027555}
-          - {x: 647.6414, y: 23.59262}
-          - {x: 649.1041, y: 22.148884}
-          - {x: 650.5947, y: 20.702894}
-          - {x: 652.11804, y: 19.261198}
-          - {x: 653.6787, y: 17.830309}
-          - {x: 655.2812, y: 16.416773}
-          - {x: 656.93036, y: 15.027018}
-          - {x: 658.6309, y: 13.667438}
-          - {x: 660.3873, y: 12.344466}
-          - {x: 662.20435, y: 11.064452}
-          - {x: 664.08685, y: 9.833676}
-          - {x: 666.03955, y: 8.658483}
-          - {x: 668.0676, y: 7.545081}
-          - {x: 670.1756, y: 6.4998255}
-          - {x: 672.3689, y: 5.528984}
-          - {x: 674.6526, y: 4.6389217}
-          - {x: 677.03174, y: 3.8360596}
-          - {x: 679.5117, y: 3.1268897}
-          - {x: 682.09784, y: 2.517994}
-          - {x: 684.7953, y: 2.0160532}
-          - {x: 687.6093, y: 1.6278303}
-          - {x: 690.5452, y: 1.3601668}
-          - {x: 693.62, y: 1.2198948}
-          - {x: 695.343, y: 1.1999195}
+          - {x: 596.6139, y: 22.383476}
+          - {x: 599.4801, y: 22.478903}
+          - {x: 602.12256, y: 22.757238}
+          - {x: 604.48816, y: 23.199352}
+          - {x: 606.60864, y: 23.787}
+          - {x: 608.51715, y: 24.503593}
+          - {x: 610.2464, y: 25.334322}
+          - {x: 611.82855, y: 26.265871}
+          - {x: 613.294, y: 27.285254}
+          - {x: 614.6716, y: 28.379375}
+          - {x: 615.9893, y: 29.533937}
+          - {x: 617.2748, y: 30.73325}
+          - {x: 618.55554, y: 31.960617}
+          - {x: 619.8597, y: 33.19788}
+          - {x: 621.2156, y: 34.42551}
+          - {x: 622.65137, y: 35.622887}
+          - {x: 624.19446, y: 36.767986}
+          - {x: 625.871, y: 37.838203}
+          - {x: 627.7055, y: 38.810944}
+          - {x: 629.7214, y: 39.664665}
+          - {x: 631.9414, y: 40.379528}
+          - {x: 634.3889, y: 40.93748}
+          - {x: 637.08844, y: 41.321808}
+          - {x: 640.04474, y: 41.516323}
+          - {x: 641.4898, y: 41.5384}
+          - {x: 641.55475, y: 41.537632}
+          - {x: 643.4236, y: 41.461254}
+          - {x: 645.2324, y: 41.244095}
+          - {x: 646.98376, y: 40.893642}
+          - {x: 648.6803, y: 40.41787}
+          - {x: 650.32544, y: 39.82505}
+          - {x: 651.9229, y: 39.1236}
+          - {x: 653.4773, y: 38.32179}
+          - {x: 654.99316, y: 37.42776}
+          - {x: 656.476, y: 36.4493}
+          - {x: 657.93097, y: 35.39394}
+          - {x: 659.3632, y: 34.269085}
+          - {x: 660.77875, y: 33.08163}
+          - {x: 662.18207, y: 31.8387}
+          - {x: 663.57874, y: 30.547087}
+          - {x: 664.97406, y: 29.213505}
+          - {x: 666.3731, y: 27.8446}
+          - {x: 667.7807, y: 26.447094}
+          - {x: 669.2019, y: 25.027555}
+          - {x: 670.6414, y: 23.59262}
+          - {x: 672.10406, y: 22.148901}
+          - {x: 673.5948, y: 20.702894}
+          - {x: 675.11816, y: 19.261183}
+          - {x: 676.67865, y: 17.830324}
+          - {x: 678.28125, y: 16.416773}
+          - {x: 679.9304, y: 15.026991}
+          - {x: 681.6308, y: 13.66745}
+          - {x: 683.3873, y: 12.344466}
+          - {x: 685.20435, y: 11.064452}
+          - {x: 687.08685, y: 9.833676}
+          - {x: 689.03955, y: 8.658475}
+          - {x: 691.0675, y: 7.5450935}
+          - {x: 693.17566, y: 6.49982}
+          - {x: 695.3689, y: 5.528984}
+          - {x: 697.6526, y: 4.6389217}
+          - {x: 700.0317, y: 3.8360615}
+          - {x: 702.5118, y: 3.1268883}
+          - {x: 705.09784, y: 2.517994}
+          - {x: 707.7953, y: 2.0160532}
+          - {x: 710.6093, y: 1.6278301}
+          - {x: 713.54517, y: 1.3601668}
+          - {x: 716.62, y: 1.2198948}
+          - {x: 718.343, y: 1.1999195}
           bottomColliderPoints:
-          - {x: 573.5701, y: -75}
-          - {x: 695.3291, y: -75}
+          - {x: 596.5702, y: -75}
+          - {x: 718.3291, y: -75}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -5219,7 +5355,7 @@ MonoBehaviour:
             _highPoint: {x: 0, y: 0, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: 695.3291, y: 0, z: 0}
+            position: {x: 718.3291, y: 0, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 45, y: -0.000003934025, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5228,7 +5364,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 695.3291, y: -75, z: 0}
+            _floorPosition: {x: 718.3291, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5253,7 +5389,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 1175.3293, y: -0.40881348, z: 0}
+            position: {x: 1198.3293, y: -0.40881348, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5262,7 +5398,7 @@ MonoBehaviour:
             _isSymmetrical: 0
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 1175.3293, y: -75, z: 0}
+            _floorPosition: {x: 1198.3293, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5287,7 +5423,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 1175.3293, y: -75, z: 0}
+            position: {x: 1198.3293, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5321,7 +5457,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 695.3291, y: -75, z: 0}
+            position: {x: 718.3291, y: -75, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5356,7 +5492,7 @@ MonoBehaviour:
                 SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: 695.3291, y: 0, z: 0}
+            position: {x: 718.3291, y: 0, z: 0}
             leftTangent: {x: -45, y: 0.000003934025, z: 0}
             rightTangent: {x: 45, y: -0.000003934025, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5365,7 +5501,7 @@ MonoBehaviour:
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 695.3291, y: -75, z: 0}
+            _floorPosition: {x: 718.3291, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5390,7 +5526,7 @@ MonoBehaviour:
                 IsAdjusting: 0
                 SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 1175.3293, y: -0.40881348, z: 0}
+            position: {x: 1198.3293, y: -0.40881348, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -5399,7 +5535,7 @@ MonoBehaviour:
             _isSymmetrical: 0
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 1175.3293, y: -75, z: 0}
+            _floorPosition: {x: 1198.3293, y: -75, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -5427,14 +5563,14 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 695.343, y: 1.1999195}
-          - {x: 1175.3334, y: 0.7911799}
+          - {x: 718.343, y: 1.1999195}
+          - {x: 1198.3334, y: 0.7911799}
           bottomColliderPoints:
-          - {x: 695.3291, y: -75}
-          - {x: 1175.3293, y: -75}
-          - {x: 1175.3293, y: -75}
-          - {x: 1175.3293, y: -0.40881348}
-          - {x: 1175.3334, y: 0.7911799}
+          - {x: 718.3291, y: -75}
+          - {x: 1198.3293, y: -75}
+          - {x: 1198.3293, y: -75}
+          - {x: 1198.3293, y: -0.40881348}
+          - {x: 1198.3334, y: 0.7911799}
           linkedCameraTarget:
             LeftTargets: []
             RightTargets: []
@@ -5610,9 +5746,9 @@ MonoBehaviour:
             LeftTargets: []
             RightTargets: []
             LeftKDNode:
-              rid: 1160016693383659675
+              rid: 1160016693383660069
             RightKDNode:
-              rid: 1160016693383659676
+              rid: 1160016693383660070
             doTargetHigh: 0
             doTargetLow: 1
             TargetType: 0
@@ -5678,9 +5814,9 @@ MonoBehaviour:
             LeftTargets: []
             RightTargets: []
             LeftKDNode:
-              rid: 1160016693383659673
+              rid: 1160016693383660067
             RightKDNode:
-              rid: 1160016693383659674
+              rid: 1160016693383660068
             doTargetHigh: 0
             doTargetLow: 1
             TargetType: 0
@@ -5695,10 +5831,10 @@ MonoBehaviour:
               IsAdjusting: 0
               SerializedPosition: {x: 414, y: 0, z: 0}
         - name: CP 0_7
-          position: {x: 305, y: 77.63266, z: 0}
+          position: {x: 313, y: 77.63266, z: 0}
           leftTangent: {x: -40, y: 0, z: 0}
           rightTangent: {x: 40, y: -0, z: -0}
-          _serializedWorldPosition: {x: 305, y: 77.63266, z: 0}
+          _serializedWorldPosition: {x: 313, y: 77.63266, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5727,12 +5863,12 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 610, y: 155.26532, z: 0}
+              SerializedPosition: {x: 626, y: 155.26532, z: 0}
         - name: CP 0_8_LT
-          position: {x: 400, y: 0, z: 0}
+          position: {x: 413, y: 0, z: 0}
           leftTangent: {x: -40, y: 0.0000034969112, z: 0}
           rightTangent: {x: 40, y: -0.0000034969112, z: -0}
-          _serializedWorldPosition: {x: 400, y: 0, z: 0}
+          _serializedWorldPosition: {x: 413, y: 0, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5761,12 +5897,12 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 800, y: 0, z: 0}
+              SerializedPosition: {x: 826, y: 0, z: 0}
         - name: CP 0_9
-          position: {x: 503.4254, y: 98.31094, z: 0}
+          position: {x: 522.4254, y: 98.31094, z: 0}
           leftTangent: {x: -45, y: -0.0000076293945, z: 0}
           rightTangent: {x: 45, y: 0.0000076293945, z: -0}
-          _serializedWorldPosition: {x: 503.4254, y: 98.31094, z: 0}
+          _serializedWorldPosition: {x: 522.4254, y: 98.31094, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5795,12 +5931,12 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 1006.8508, y: 196.62189, z: 0}
+              SerializedPosition: {x: 1044.8508, y: 196.62189, z: 0}
         - name: CP 0_10_LT
-          position: {x: 573.5702, y: 21.184273, z: 0}
+          position: {x: 596.5702, y: 21.184273, z: 0}
           leftTangent: {x: -25, y: -0.0000019073486, z: 0}
           rightTangent: {x: 25, y: 0.0000019073486, z: -0}
-          _serializedWorldPosition: {x: 573.5702, y: 21.184273, z: 0}
+          _serializedWorldPosition: {x: 596.5702, y: 21.184273, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5829,12 +5965,12 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 1147.1404, y: 42.368546, z: 0}
+              SerializedPosition: {x: 1193.1404, y: 42.368546, z: 0}
         - name: CP 0_11
-          position: {x: 618.5081, y: 40.33854, z: 0}
+          position: {x: 641.5081, y: 40.33854, z: 0}
           leftTangent: {x: -25, y: -0.0000038146973, z: 0}
           rightTangent: {x: 25, y: 0.0000038146973, z: -0}
-          _serializedWorldPosition: {x: 618.5081, y: 40.33854, z: 0}
+          _serializedWorldPosition: {x: 641.5081, y: 40.33854, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5863,12 +5999,12 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 1237.0162, y: 80.67708, z: 0}
+              SerializedPosition: {x: 1283.0162, y: 80.67708, z: 0}
         - name: CP 0_12_LT
-          position: {x: 695.3291, y: 0, z: 0}
+          position: {x: 718.3291, y: 0, z: 0}
           leftTangent: {x: -45, y: 0.000003934025, z: 0}
           rightTangent: {x: 45, y: -0.000003934025, z: -0}
-          _serializedWorldPosition: {x: 695.3291, y: 0, z: 0}
+          _serializedWorldPosition: {x: 718.3291, y: 0, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -5882,9 +6018,9 @@ MonoBehaviour:
             LeftTargets: []
             RightTargets: []
             LeftKDNode:
-              rid: 1160016693383659677
+              rid: 1160016693383660071
             RightKDNode:
-              rid: 1160016693383659678
+              rid: 1160016693383660072
             doTargetHigh: 0
             doTargetLow: 1
             TargetType: 0
@@ -5897,18 +6033,18 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 1390.6582, y: 0, z: 0}
+              SerializedPosition: {x: 1436.6582, y: 0, z: 0}
         - name: CP 0_13
-          position: {x: 1175.3293, y: -0.40881348, z: 0}
+          position: {x: 1198.3293, y: -0.40881348, z: 0}
           leftTangent: {x: 0, y: 0, z: 0}
           rightTangent: {x: 0, y: 0, z: 0}
-          _serializedWorldPosition: {x: 1175.3293, y: -0.40881348, z: 0}
+          _serializedWorldPosition: {x: 1198.3293, y: -0.40881348, z: 0}
           _mode: 0
           _floorPointType: 1
           _isSymmetrical: 0
           _floorHeight: 100
           _floorAngle: 0
-          _floorPosition: {x: 1175.3293, y: -75, z: 0}
+          _floorPosition: {x: 1198.3293, y: -75, z: 0}
           _forceNewSegment: 0
           _blockNewSegment: 0
           _object: {fileID: 0}
@@ -5931,8 +6067,8 @@ MonoBehaviour:
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 30}
               IsAdjusting: 0
-              SerializedPosition: {x: 2350.6587, y: -0.81762695, z: 0}
-    - rid: 1160016693383659671
+              SerializedPosition: {x: 2396.6587, y: -0.81762695, z: 0}
+    - rid: 1160016693383660113
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -6008,7 +6144,7 @@ MonoBehaviour:
               SerializedPosition: {x: 2296.6587, y: -0.81762695, z: 0}
         backstopPointXOffset: 0
         backstopIsActive: 1
-    - rid: 1160016693383659672
+    - rid: 1160016693383660114
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -6042,144 +6178,12 @@ MonoBehaviour:
             _target:
               TargetTransform: {fileID: 0}
               CurrentInfluenceH: 0
-              CurrentInfluenceV: 1
+              CurrentInfluenceV: 0
               TargetInfluenceH: 0
               TargetInfluenceV: 1
               TargetOffset: {x: 0, y: 25}
               IsAdjusting: 0
               SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 1160016693383659673
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: 1160016693383659675
-        RightKDNode:
-          rid: 1160016693383659676
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 0000000004000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 0
-          CurrentInfluenceV: 0
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: 110, y: 0, z: 0}
-    - rid: 1160016693383659674
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: 1160016693383659677
-        RightKDNode:
-          rid: 1160016693383659678
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 000000000c000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
-          CurrentInfluenceV: 1
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: 1390.6582, y: 0, z: 0}
-    - rid: 1160016693383659675
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: -2
-        RightKDNode:
-          rid: -2
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 0000000002000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 0
-          CurrentInfluenceV: 0
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: -120, y: 0, z: 0}
-    - rid: 1160016693383659676
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: -2
-        RightKDNode:
-          rid: -2
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 0000000001000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
-          CurrentInfluenceV: 1
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: -240, y: 60, z: 0}
-    - rid: 1160016693383659677
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: -2
-        RightKDNode:
-          rid: -2
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 0000000008000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 0
-          CurrentInfluenceV: 1
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: 800, y: 0, z: 0}
-    - rid: 1160016693383659678
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        LeftTargets: []
-        RightTargets: []
-        LeftKDNode:
-          rid: -2
-        RightKDNode:
-          rid: -2
-        doTargetHigh: 0
-        doTargetLow: 1
-        TargetType: 0
-        SerializedLocation: 000000000a000000
-        _target:
-          TargetTransform: {fileID: 0}
-          CurrentInfluenceH: 1
-          CurrentInfluenceV: 1
-          TargetInfluenceH: 0
-          TargetInfluenceV: 1
-          TargetOffset: {x: 0, y: 30}
-          IsAdjusting: 0
-          SerializedPosition: {x: 1147.1404, y: 42.368546, z: 0}
     - rid: 2514962720456180402
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
