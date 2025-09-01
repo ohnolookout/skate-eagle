@@ -26,16 +26,16 @@ public class EditManagerInspector : Editor
             return;
         }
 
-        if (_levelDB.lastLevelLoaded != null)
+        if (_levelDB.LastLevelLoaded != null)
         {
-            GUILayout.Label("Level: " + _levelDB.lastLevelLoaded.Name, EditorStyles.boldLabel);
+            GUILayout.Label("Level: " + _levelDB.LastLevelLoaded.Name, EditorStyles.boldLabel);
         }
 
         GUILayout.Space(20);
         SaveLoadBar(_editManager, _levelDB);
 
 
-        if (_levelDB.lastLevelLoaded != null)
+        if (_levelDB.LastLevelLoaded != null)
         {
             GUILayout.Space(20);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
@@ -127,7 +127,7 @@ public class EditManagerInspector : Editor
                 return;
             }
             var renameWindow = EditorWindow.GetWindow<RenameLevelWindow>();
-            renameWindow.Init(editManager, levelDB.lastLevelLoaded);
+            renameWindow.Init(editManager, levelDB.LastLevelLoaded);
         }
 
         GUI.backgroundColor = Color.skyBlue;
@@ -145,7 +145,7 @@ public class EditManagerInspector : Editor
         GUI.backgroundColor = Color.orangeRed;
         if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true)))
         {
-            var isDeleted = editManager.DeleteLevel(levelDB.lastLevelLoaded);
+            var isDeleted = editManager.DeleteLevel(levelDB.LastLevelLoaded);
 
             if (isDeleted)
             {
@@ -325,7 +325,7 @@ public class EditorToolbar : EditorWindow
             _cameraManager = FindFirstObjectByType<CameraManager>();
         }
 
-        GUILayout.Label("Level: " + (_levelDB.lastLevelLoaded != null ? _levelDB.lastLevelLoaded.Name : "None"), EditorStyles.boldLabel);
+        GUILayout.Label("Level: " + (_levelDB.LastLevelLoaded != null ? _levelDB.LastLevelLoaded.Name : "None"), EditorStyles.boldLabel);
         EditManagerInspector.SaveLoadBar(_editManager, _levelDB);
 
         GUILayout.Space(10);

@@ -15,9 +15,9 @@ public class LevelLoadWindow : EditorWindow
         _editManager = editManager;
         _levelDB = levelDB;
         _levelNames = _levelDB.LevelNames();
-        if (_levelDB.lastLevelLoaded != null && _levelDB.UIDExists(_levelDB.lastLevelLoaded.UID))
+        if (_levelDB.LastLevelLoaded != null && _levelDB.UIDExists(_levelDB.LastLevelLoaded.UID))
         {
-            _nameIndex = Array.IndexOf(_levelNames, _levelDB.lastLevelLoaded.Name);
+            _nameIndex = Array.IndexOf(_levelNames, _levelDB.LastLevelLoaded.Name);
         }
     }
 

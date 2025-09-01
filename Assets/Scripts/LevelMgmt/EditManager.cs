@@ -64,16 +64,16 @@ public class EditManager : MonoBehaviour
     #region Save/Load Level
     public void SaveLevel()
     {
-        var levelToSave = new Level(_levelDB.lastLevelLoaded.Name, medalTimes, _groundManager, cameraStartPosition);
+        var levelToSave = new Level(_levelDB.LastLevelLoaded.Name, medalTimes, _groundManager, cameraStartPosition);
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
         {
-            Debug.Log($"Level {_levelDB.lastLevelLoaded.Name} saved");
+            Debug.Log($"Level {_levelDB.LastLevelLoaded.Name} saved");
         }
         else
         {
-            Debug.Log($"Level {_levelDB.lastLevelLoaded.Name} failed to save");
+            Debug.Log($"Level {_levelDB.LastLevelLoaded.Name} failed to save");
         }
 
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
@@ -151,7 +151,7 @@ public class EditManager : MonoBehaviour
 
         if (_levelDB.LevelIsDirty)
         {
-            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {_levelDB.lastLevelLoaded.Name}?", "Yes", "No");
+            var discardChanges = EditorUtility.DisplayDialog("Warning: Unsaved Changes", $"Discard unsaved changes to {_levelDB.LastLevelLoaded.Name}?", "Yes", "No");
             if (!discardChanges)
             {
                 EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
@@ -311,12 +311,12 @@ public class EditManager : MonoBehaviour
     }
     public void UpdateEditorLevel()
     {
-        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
     }
 
     public void RefreshSerializable(ISerializable serializable)
     {
-        _levelDB.UpdateEditorLevel(_levelDB.lastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
 
         Undo.RegisterFullObjectHierarchyUndo(serializable.GameObject, "Update ISerializable");
         serializable.Refresh(_groundManager);
