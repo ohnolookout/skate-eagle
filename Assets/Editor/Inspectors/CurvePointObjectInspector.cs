@@ -459,7 +459,7 @@ public class CurvePointObjectInspector : Editor
         #endregion
 
     }
-    #region Handles
+    #region Scene GUI
     public void OnSceneGUI()
     {
         if (Event.current.control)
@@ -489,6 +489,18 @@ public class CurvePointObjectInspector : Editor
                 _editManager.ShiftCurvePoints(curvePointObject, curvePointObject.transform.position - startPos);
             }
             RefreshGround();
+        }
+
+        if (curvePointObject.LinkedCameraTarget.doTargetLow)
+        {
+            foreach(var obj in curvePointObject.ParentGround.CurvePointObjects)
+            {
+                if (obj == curvePointObject)
+                {
+                    continue;
+                }
+                CamTargetButtons(curvePointObject, obj);
+            }
         }
     }
 
@@ -623,6 +635,92 @@ public class CurvePointObjectInspector : Editor
 
         return handlesChanged;        
     }
+
+    public static void CamTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
+    {
+        var targetObj = targetCPObj.gameObject;
+
+        if(targetCPObj == null)
+        {
+            return;
+        }
+
+        if (targetCPObj.LinkedCameraTarget.doTargetLow)
+        {
+            Rect buttonRect = new Rect(targetCPObj.transform.position, new Vector2(80, 20));
+            if (currentCPObj.LeftTargetObjects.Contains(targetObj))
+            {
+                if (GUI.Button(buttonRect, $"Remove L Target"))
+                {
+                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
+                    currentCPObj.LeftTargetObjects.Remove(targetObj);
+                }
+            } else
+            {
+                if (GUI.Button(buttonRect, $"Add L Target"))
+                {
+                    Undo.RecordObject(currentCPObj, "Add Camera Target");
+                    currentCPObj.LeftTargetObjects.Add(targetObj);
+                }
+            }
+
+            buttonRect.y += 22;
+
+            if (currentCPObj.RightTargetObjects.Contains(targetObj))
+            {
+                if (GUI.Button(buttonRect, $"Remove R Target"))
+                {
+                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
+                    currentCPObj.RightTargetObjects.Remove(targetObj);
+                }
+            }
+            else
+            {
+                if (GUI.Button(buttonRect, $"Add R Target"))
+                {
+                    Undo.RecordObject(currentCPObj, "Add Camera Target");
+                    currentCPObj.RightTargetObjects.Add(targetObj);
+                }
+            }
+        }
+
+        if(targetCPObj.LinkedCameraTarget.doTargetHigh)
+        {
+            if (currentCPObj.LeftTargetObjects.Contains(targetObj))
+            {
+                if (GUILayout.Button($"Remove High Target", GUILayout.ExpandWidth(false)))
+                {
+                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
+                    currentCPObj.LeftTargetObjects.Remove(targetObj);
+                }
+            }
+            else
+            {
+                if (GUILayout.Button($"Add High Target", GUILayout.ExpandWidth(false)))
+                {
+                    Undo.RecordObject(currentCPObj, "Add Camera Target");
+                    currentCPObj.LeftTargetObjects.Add(targetObj);
+                }
+            }
+            if (currentCPObj.RightTargetObjects.Contains(targetObj))
+            {
+                if (GUILayout.Button($"Remove High Target", GUILayout.ExpandWidth(false)))
+                {
+                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
+                    currentCPObj.RightTargetObjects.Remove(targetObj);
+                }
+            }
+            else
+            {
+                if (GUILayout.Button($"Add High Target", GUILayout.ExpandWidth(false)))
+                {
+                    Undo.RecordObject(currentCPObj, "Add Camera Target");
+                    currentCPObj.RightTargetObjects.Add(targetObj);
+                }
+            }
+        }
+    }
+
     #endregion
 
     #region Utilities
