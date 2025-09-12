@@ -168,7 +168,13 @@ public class EditManagerInspector : Editor
         GUILayout.EndHorizontal();
     }
 
-
+    public static void DrawCamTargetOptions(EditManager editManager, CurvePointEditObject currentCPObj)
+    {
+        foreach(var ground in editManager.GroundManager.GetGrounds())
+        {
+            GroundInspector.DrawCamTargetOptions(ground, currentCPObj);
+        }
+    }
 }
 
 

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography.X509Certificates;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -17,13 +18,28 @@ public class CurvePointObjectInspector : Editor
     private bool _showTargetObjects = false;
     private bool _controlHeld = false;
     private bool _altHeld = false;
+    private bool _aHeld = false;
     private Tool _lastTool = Tool.None;
+    public static GUIContent rightTargetButton = new GUIContent("R", "Add/Remove Right Target");
+    public static GUIContent leftTargetButton = new GUIContent("L", "Add/Remove Left Target");
+    public static GUIContent highTargetButton = new GUIContent("H", "Add/Remove High Target");
+    public static GUIContent doHighButton = new GUIContent("/\\", "Set High Target");
+    public static GUIContent doLowButton = new GUIContent("\\/", "Set Low Target");
+    public static GUIContent selectButton = new GUIContent("S", "Select Curve Point");
+    public static GUIStyle buttonStyle = new GUIStyle();
+
 
     #region Tool Mgmt
     private void OnEnable()
     {
         _lastTool = Tools.current;
         Tools.current = Tool.None; // Disable the current tool to prevent conflicts with handles
+        buttonStyle = new GUIStyle()
+        {
+            fontSize = 10,
+            alignment = TextAnchor.MiddleCenter,
+            padding = new RectOffset(3, 3, 2, 2)
+        };
     }
 
     private void OnDisable()
@@ -462,6 +478,8 @@ public class CurvePointObjectInspector : Editor
     #region Scene GUI
     public void OnSceneGUI()
     {
+        //Set key held bools
+
         if (Event.current.control)
         {
             _controlHeld = true;
@@ -478,11 +496,21 @@ public class CurvePointObjectInspector : Editor
             _altHeld = false;
         }
 
+        if (Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyDown)
+        {
+            _aHeld = true;
+        }
+        else if (Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyUp)
+        {
+            _aHeld = false;
+        }
+
         var curvePointObject = (CurvePointEditObject)target;
 
         var startPos = curvePointObject.transform.position;
 
-        if (DrawCurvePointHandles(curvePointObject, _altHeld))
+
+        if (!_aHeld && DrawCurvePointHandles(curvePointObject, _altHeld))
         {
             if (_editManager.editType == EditType.Shift || _controlHeld)
             {
@@ -491,16 +519,9 @@ public class CurvePointObjectInspector : Editor
             RefreshGround();
         }
 
-        if (curvePointObject.LinkedCameraTarget.doTargetLow)
+        if (_aHeld && curvePointObject.LinkedCameraTarget.doTargetLow)
         {
-            foreach(var obj in curvePointObject.ParentGround.CurvePointObjects)
-            {
-                if (obj == curvePointObject)
-                {
-                    continue;
-                }
-                CamTargetButtons(curvePointObject, obj);
-            }
+            EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
         }
     }
 
@@ -636,7 +657,7 @@ public class CurvePointObjectInspector : Editor
         return handlesChanged;        
     }
 
-    public static void CamTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
+    public static void DrawCamTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
     {
         var targetObj = targetCPObj.gameObject;
 
@@ -645,30 +666,40 @@ public class CurvePointObjectInspector : Editor
             return;
         }
 
+        var objPos = targetObj.transform.position;
+
+        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
+        float xMod = targetCPObj.DoTargetHigh ? 1 : (targetCPObj.DoTargetLow ? 0.5f: 0);
+        rect.position = new Vector2(rect.position.x - rect.width * xMod, rect.position.y + rect.height);
+
+        Handles.BeginGUI();
+
         if (targetCPObj.LinkedCameraTarget.doTargetLow)
         {
-            Rect buttonRect = new Rect(targetCPObj.transform.position, new Vector2(80, 20));
             if (currentCPObj.LeftTargetObjects.Contains(targetObj))
             {
-                if (GUI.Button(buttonRect, $"Remove L Target"))
+                GUI.backgroundColor = Color.lightGreen;
+                if (GUI.Button(rect, leftTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Remove Camera Target");
                     currentCPObj.LeftTargetObjects.Remove(targetObj);
                 }
             } else
             {
-                if (GUI.Button(buttonRect, $"Add L Target"))
+                GUI.backgroundColor = Color.orangeRed;
+                if (GUI.Button(rect, leftTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Add Camera Target");
                     currentCPObj.LeftTargetObjects.Add(targetObj);
                 }
             }
 
-            buttonRect.y += 22;
+            rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
 
             if (currentCPObj.RightTargetObjects.Contains(targetObj))
             {
-                if (GUI.Button(buttonRect, $"Remove R Target"))
+                GUI.backgroundColor = Color.lightGreen;
+                if (GUI.Button(rect, rightTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Remove Camera Target");
                     currentCPObj.RightTargetObjects.Remove(targetObj);
@@ -676,7 +707,8 @@ public class CurvePointObjectInspector : Editor
             }
             else
             {
-                if (GUI.Button(buttonRect, $"Add R Target"))
+                GUI.backgroundColor = Color.orangeRed;
+                if (GUI.Button(rect, rightTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Add Camera Target");
                     currentCPObj.RightTargetObjects.Add(targetObj);
@@ -684,11 +716,17 @@ public class CurvePointObjectInspector : Editor
             }
         }
 
-        if(targetCPObj.LinkedCameraTarget.doTargetHigh)
+        if (xMod != 0)
+        {
+            rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+        }
+
+        if (targetCPObj.LinkedCameraTarget.doTargetHigh)
         {
             if (currentCPObj.LeftTargetObjects.Contains(targetObj))
             {
-                if (GUILayout.Button($"Remove High Target", GUILayout.ExpandWidth(false)))
+                GUI.backgroundColor = Color.lightGreen;
+                if (GUI.Button(rect, highTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Remove Camera Target");
                     currentCPObj.LeftTargetObjects.Remove(targetObj);
@@ -696,7 +734,8 @@ public class CurvePointObjectInspector : Editor
             }
             else
             {
-                if (GUILayout.Button($"Add High Target", GUILayout.ExpandWidth(false)))
+                GUI.backgroundColor = Color.orangeRed;
+                if (GUI.Button(rect, highTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Add Camera Target");
                     currentCPObj.LeftTargetObjects.Add(targetObj);
@@ -704,7 +743,7 @@ public class CurvePointObjectInspector : Editor
             }
             if (currentCPObj.RightTargetObjects.Contains(targetObj))
             {
-                if (GUILayout.Button($"Remove High Target", GUILayout.ExpandWidth(false)))
+                if (GUI.Button(rect, highTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Remove Camera Target");
                     currentCPObj.RightTargetObjects.Remove(targetObj);
@@ -712,13 +751,82 @@ public class CurvePointObjectInspector : Editor
             }
             else
             {
-                if (GUILayout.Button($"Add High Target", GUILayout.ExpandWidth(false)))
+                if (GUI.Button(rect, highTargetButton))
                 {
                     Undo.RecordObject(currentCPObj, "Add Camera Target");
                     currentCPObj.RightTargetObjects.Add(targetObj);
                 }
             }
         }
+
+        Handles.EndGUI();
+    }
+
+    public static void DrawSelectAndDoTargetButtons(CurvePointEditObject cpObj)
+    {
+
+        var targetObj = cpObj.gameObject;
+
+        if (cpObj == null)
+        {
+            return;
+        }
+
+        var objPos = targetObj.transform.position;
+
+        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
+        rect.position = new Vector2(rect.position.x - rect.width, rect.position.y + rect.height);
+
+        Handles.BeginGUI();
+        //Button to select curve point
+        GUI.backgroundColor = Color.cyan;
+        if (GUI.Button(rect, selectButton))
+        {
+            Selection.activeObject = cpObj;
+        }
+
+        //Buttons for low target settings
+        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+        if (cpObj.LinkedCameraTarget.doTargetLow)
+        {
+            GUI.backgroundColor = Color.lightGreen;
+            if(GUI.Button(rect, doLowButton))
+            {
+                Undo.RecordObject(cpObj, "Turn off doTargetLow");
+                cpObj.LinkedCameraTarget.doTargetLow = false;
+            }
+        } else
+        {
+            GUI.backgroundColor = Color.orangeRed;
+            if (GUI.Button(rect, doLowButton))
+            {
+                Undo.RecordObject(cpObj, "Turn on doTargetLow");
+                cpObj.LinkedCameraTarget.doTargetLow = true;
+            }
+        }
+
+        //Buttons for high target settings
+        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+
+        if (cpObj.LinkedCameraTarget.doTargetHigh)
+        {
+            GUI.backgroundColor = Color.lightGreen;
+            if (GUI.Button(rect, doHighButton))
+            {
+                Undo.RecordObject(cpObj, "Turn off doTargetHigh");
+                cpObj.LinkedCameraTarget.doTargetHigh = false;
+            }
+        }
+        else
+        {
+            GUI.backgroundColor = Color.orangeRed;
+            if (GUI.Button(rect, doHighButton))
+            {
+                Undo.RecordObject(cpObj, "Turn on doTargetHigh");
+                cpObj.LinkedCameraTarget.doTargetHigh = true;
+            }
+        }
+        Handles.EndGUI();
     }
 
     #endregion

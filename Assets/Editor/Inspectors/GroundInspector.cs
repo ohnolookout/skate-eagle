@@ -10,6 +10,7 @@ public class GroundInspector : Editor
     public static bool DebugSegments = false;
     private bool _controlHeld = false;
     private bool _altHeld = false;
+    private bool _aHeld = false;
     private bool _showCPTransform = true;
     public override void OnInspectorGUI()
     {
@@ -185,6 +186,7 @@ public class GroundInspector : Editor
     }
     public void OnSceneGUI()
     {
+        //Check key held bools
         if (Event.current.control)
         {
             _controlHeld = true;
@@ -203,6 +205,14 @@ public class GroundInspector : Editor
             _altHeld = false;
         }
 
+        if(Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyDown)
+        {
+            _aHeld = true;
+        } else if(Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyUp)
+        {
+            _aHeld = false;
+        }
+
         if (_editManager == null)
         {
             _editManager = FindFirstObjectByType<EditManager>();
@@ -217,7 +227,7 @@ public class GroundInspector : Editor
         }
 
 
-        if (_showCPTransform)
+        if (_showCPTransform && !_aHeld)
         {
             DrawCurvePoints(ground, _editManager, _controlHeld, _altHeld);
         }
@@ -226,6 +236,11 @@ public class GroundInspector : Editor
         {
             ground.gameObject.transform.hasChanged = false;
             _editManager.OnUpdateTransform(ground.gameObject);
+        }
+
+        if (_aHeld)
+        {
+            DrawSelectAndDoTargetButtons(ground);
         }
 
     }
@@ -243,6 +258,32 @@ public class GroundInspector : Editor
                 }
                 editManager.RefreshSerializable(ground);
             }
+        }
+    }
+
+    public static void DrawCamTargetOptions(Ground ground, CurvePointEditObject currentCPObject)
+    {
+        if(currentCPObject == null || !currentCPObject.DoTargetLow)
+        {
+            return;
+        }
+
+        foreach(var cpObj in ground.CurvePointObjects)
+        {
+            if(cpObj == currentCPObject)
+            {
+                continue;
+            }
+
+            CurvePointObjectInspector.DrawCamTargetButtons(currentCPObject, cpObj);
+        }
+    }
+
+    public static void DrawSelectAndDoTargetButtons(Ground ground)
+    {
+        foreach (var cpObj in ground.CurvePointObjects)
+        {
+            CurvePointObjectInspector.DrawSelectAndDoTargetButtons(cpObj);
         }
     }
 
