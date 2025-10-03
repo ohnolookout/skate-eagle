@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Threading;
-using TMPro;
 using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections.Generic;
 
@@ -71,7 +70,8 @@ public class Player : MonoBehaviour, IPlayer
                 + new Vector3(0, HalfPlayerHeight + 1.2f);
         }
 
-        _cameraTargets.Add(CameraTargetUtility.GetTarget(CameraTargetType.Player, transform));
+        //Add player to camera here.
+        //_cameraTargets.Add(CameraTargetUtility.GetTarget(CameraTargetType.Player, transform));
     }
 
     private void Start()

@@ -146,10 +146,10 @@ public class GroundInspector : Editor
         GUILayout.Label("Targeting", EditorStyles.boldLabel);
 
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Populate Defaults", GUILayout.ExpandWidth(true)))
+        if (GUILayout.Button("Build Targets", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Populate default targets");
-            PopulateDefaultTargets(ground, _editManager);
+            CameraTargetUtility.BuildGroundCameraTargets(ground);
         }
 
         GUI.backgroundColor = Color.orangeRed;
@@ -284,6 +284,7 @@ public class GroundInspector : Editor
         foreach (var cpObj in ground.CurvePointObjects)
         {
             CurvePointObjectInspector.DrawSelectAndDoTargetButtons(cpObj);
+            cpObj.LinkedCameraTarget.DrawTargetInfo();
         }
     }
 
@@ -293,8 +294,8 @@ public class GroundInspector : Editor
         {
             curvePointObj.RightTargetObjects = new();
             curvePointObj.LeftTargetObjects = new();
-            curvePointObj.LinkedCameraTarget.LeftTargets = new();
-            curvePointObj.LinkedCameraTarget.RightTargets = new();
+            //curvePointObj.LinkedCameraTarget.LeftTargets = new();
+            //curvePointObj.LinkedCameraTarget.RightTargets = new();
         }
 
         if (editManager != null)
@@ -305,9 +306,11 @@ public class GroundInspector : Editor
 
     public static void PopulateDefaultTargets(Ground ground, EditManager editManager)
     {
-        foreach(var point in ground.CurvePointObjects)
+        CameraTargetUtility.BuildGroundCameraTargets(ground);
+
+        foreach (var point in ground.CurvePointObjects)
         {
-            point.PopulateDefaultTargets();
+            point.GenerateTarget();
         }
         if (editManager != null)
         {

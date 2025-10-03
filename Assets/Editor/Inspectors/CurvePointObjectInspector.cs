@@ -10,12 +10,9 @@ public class CurvePointObjectInspector : Editor
 {
     private CurvePointEditObject _curvePointObject;
     private SerializedObject _so;
-    private SerializedProperty _serializedLeftTargetObjects;
-    private SerializedProperty _serializedRightTargetObjects;
     private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
     private EditManager _editManager;
-    private bool _showTargetObjects = false;
     private bool _controlHeld = false;
     private bool _altHeld = false;
     private bool _aHeld = false;
@@ -53,8 +50,6 @@ public class CurvePointObjectInspector : Editor
         #region Inspector Declarations
         _curvePointObject = (CurvePointEditObject)target;
         _so = new SerializedObject(_curvePointObject);
-        _serializedLeftTargetObjects = _so.FindProperty("leftTargetObjects");
-        _serializedRightTargetObjects = _so.FindProperty("rightTargetObjects");
         var originalColor = GUI.backgroundColor;
 
         if (_groundManager == null)
@@ -332,19 +327,24 @@ public class CurvePointObjectInspector : Editor
 
             EditorGUILayout.EndHorizontal();
 
-            _showTargetObjects = EditorGUILayout.Foldout(_showTargetObjects, "Target Objects");
-            if (_showTargetObjects)
+            _curvePointObject.LinkedCameraTarget.doUseManualOffsets = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffsets, "Manual Offset", GUILayout.ExpandWidth(false));
+            
+            if (_curvePointObject.LinkedCameraTarget.doUseManualOffsets)
             {
-                EditorGUI.BeginChangeCheck();
+                var yOffset = EditorGUILayout.FloatField("Y Offset", _curvePointObject.LinkedCameraTarget.manualYOffset);
+                yOffset = Mathf.Max(CameraTargetUtility.MinYOffsetT * CameraTargetUtility.DefaultOrthoSize, yOffset);
+                _curvePointObject.LinkedCameraTarget.manualYOffset = yOffset;
 
-                EditorGUILayout.PropertyField(_serializedLeftTargetObjects, true);
-                EditorGUILayout.PropertyField(_serializedRightTargetObjects, true);
 
-                if (EditorGUI.EndChangeCheck())
-                {
-                    _so.ApplyModifiedProperties();
-                    _so.Update();
-                }
+            }
+
+            _curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize, "Manual Zoom Ortho Size", GUILayout.ExpandWidth(false));
+
+            if (_curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize)
+            {
+                var zoomSize = EditorGUILayout.FloatField("Zoom Ortho Size", _curvePointObject.LinkedCameraTarget.manualZoomOrthoSize);
+                zoomSize = Mathf.Max(zoomSize, CameraTargetUtility.DefaultOrthoSize);
+                _curvePointObject.LinkedCameraTarget.manualZoomOrthoSize = zoomSize;
             }
         }
 
@@ -475,6 +475,8 @@ public class CurvePointObjectInspector : Editor
         #endregion
 
     }
+
+
     #region Scene GUI
     public void OnSceneGUI()
     {
@@ -503,7 +505,7 @@ public class CurvePointObjectInspector : Editor
         else if (Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyUp)
         {
             _aHeld = false;
-        }
+        }     
 
         var curvePointObject = (CurvePointEditObject)target;
 
@@ -519,11 +521,14 @@ public class CurvePointObjectInspector : Editor
             RefreshGround();
         }
 
-        if (_aHeld && curvePointObject.LinkedCameraTarget.doTargetLow)
+        if (_aHeld && curvePointObject.LinkedCameraTarget.doLowTarget)
         {
             EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
+            curvePointObject.LinkedCameraTarget.DrawTargetInfo();
         }
     }
+
+
 
     public static bool DrawCurvePointHandles(CurvePointEditObject curvePointObject, bool altHeld = false)
     {
@@ -674,7 +679,7 @@ public class CurvePointObjectInspector : Editor
 
         Handles.BeginGUI();
 
-        if (targetCPObj.LinkedCameraTarget.doTargetLow)
+        if (targetCPObj.LinkedCameraTarget.doLowTarget)
         {
             if (currentCPObj.LeftTargetObjects.Contains(targetObj))
             {
@@ -721,7 +726,7 @@ public class CurvePointObjectInspector : Editor
             rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
         }
 
-        if (targetCPObj.LinkedCameraTarget.doTargetHigh)
+        if (targetCPObj.LinkedCameraTarget.doZoomTarget)
         {
             if (currentCPObj.LeftTargetObjects.Contains(targetObj))
             {
@@ -787,13 +792,13 @@ public class CurvePointObjectInspector : Editor
 
         //Buttons for low target settings
         rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-        if (cpObj.LinkedCameraTarget.doTargetLow)
+        if (cpObj.LinkedCameraTarget.doLowTarget)
         {
             GUI.backgroundColor = Color.lightGreen;
             if(GUI.Button(rect, doLowButton))
             {
                 Undo.RecordObject(cpObj, "Turn off doTargetLow");
-                cpObj.LinkedCameraTarget.doTargetLow = false;
+                cpObj.LinkedCameraTarget.doLowTarget = false;
             }
         } else
         {
@@ -801,20 +806,20 @@ public class CurvePointObjectInspector : Editor
             if (GUI.Button(rect, doLowButton))
             {
                 Undo.RecordObject(cpObj, "Turn on doTargetLow");
-                cpObj.LinkedCameraTarget.doTargetLow = true;
+                cpObj.LinkedCameraTarget.doLowTarget = true;
             }
         }
 
         //Buttons for high target settings
         rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
 
-        if (cpObj.LinkedCameraTarget.doTargetHigh)
+        if (cpObj.LinkedCameraTarget.doZoomTarget)
         {
             GUI.backgroundColor = Color.lightGreen;
             if (GUI.Button(rect, doHighButton))
             {
                 Undo.RecordObject(cpObj, "Turn off doTargetHigh");
-                cpObj.LinkedCameraTarget.doTargetHigh = false;
+                cpObj.LinkedCameraTarget.doZoomTarget = false;
             }
         }
         else
@@ -823,7 +828,7 @@ public class CurvePointObjectInspector : Editor
             if (GUI.Button(rect, doHighButton))
             {
                 Undo.RecordObject(cpObj, "Turn on doTargetHigh");
-                cpObj.LinkedCameraTarget.doTargetHigh = true;
+                cpObj.LinkedCameraTarget.doZoomTarget = true;
             }
         }
         Handles.EndGUI();

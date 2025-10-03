@@ -16,8 +16,8 @@ public static class CameraTargetBuilder
 
         targetable.GenerateTarget();
 
-        targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
-        targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
+        //targetable.LinkedCameraTarget.LeftTargets = GetTargetableList(targetable.LeftTargetObjects);
+        //targetable.LinkedCameraTarget.RightTargets = GetTargetableList(targetable.RightTargetObjects);
     }
     private static List<LinkedCameraTarget> GetTargetableList(List<GameObject> targetObjects)
     {
@@ -46,7 +46,7 @@ public static class CameraTargetBuilder
         return targetables;
     }
     #endregion
-
+    /*
     #region KD Tree
     public static LinkedCameraTarget BuildKdTree(ICameraTargetable[] targetables)
     {
@@ -78,13 +78,13 @@ public static class CameraTargetBuilder
         var axis = depth % 2;
 
         targets = targets.OrderBy(t => axis == 0 
-        ? t.Target.TargetPosition.x 
-        : t.Target.TargetPosition.y).ToList();
+        ? t.TargetPosition.x 
+        : t.TargetPosition.y).ToList();
 
         int medianIndex = targets.Count / 2;
         LinkedCameraTarget medianTarget = targets[medianIndex];
-        medianTarget.LeftKDNode = BuildKdTreeRecursive(targets.GetRange(0, medianIndex), depth + 1);
-        medianTarget.RightKDNode = BuildKdTreeRecursive(targets.GetRange(medianIndex + 1, targets.Count - medianIndex - 1), depth + 1);
+        //medianTarget.LeftKDNode = BuildKdTreeRecursive(targets.GetRange(0, medianIndex), depth + 1);
+        //medianTarget.RightKDNode = BuildKdTreeRecursive(targets.GetRange(medianIndex + 1, targets.Count - medianIndex - 1), depth + 1);
         return medianTarget;
     }
 
@@ -98,8 +98,8 @@ public static class CameraTargetBuilder
             return best;
         }
 
-        float nodeDist = DistanceSquared(point, node.Target.TargetPosition);
-        float bestDist = DistanceSquared(point, best.Target.TargetPosition);
+        float nodeDist = DistanceSquared(point, node.TargetPosition);
+        float bestDist = DistanceSquared(point, best.TargetPosition);
 
         if (nodeDist < bestDist)
             best = node;
@@ -107,22 +107,23 @@ public static class CameraTargetBuilder
         int axis = depth % 2;
 
         float pointVal = axis == 0 ? point.x : point.y;
-        float nodeVal = axis == 0 ? node.Target.TargetPosition.x : node.Target.TargetPosition.y;
+        float nodeVal = axis == 0 ? node.TargetPosition.x : node.TargetPosition.y;
 
-        LinkedCameraTarget first = pointVal < nodeVal ? node.LeftKDNode : node.RightKDNode;
-        LinkedCameraTarget second = pointVal < nodeVal ? node.RightKDNode : node.LeftKDNode;
+        //LinkedCameraTarget first = pointVal < nodeVal ? node.LeftKDNode : node.RightKDNode;
+        //LinkedCameraTarget second = pointVal < nodeVal ? node.RightKDNode : node.LeftKDNode;
 
-        best = FindNearestRecursive(first, point, depth + 1, best);
+        //best = FindNearestRecursive(first, point, depth + 1, best);
 
-        float planeDist = (pointVal - nodeVal) * (pointVal - nodeVal);
-        bestDist = DistanceSquared(point, best.Target.TargetPosition);
+        //float planeDist = (pointVal - nodeVal) * (pointVal - nodeVal);
+        //bestDist = DistanceSquared(point, best.Target.TargetPosition);
 
-        if (planeDist < bestDist)
-        {
-            best = FindNearestRecursive(second, point, depth + 1, best);
-        }
+        //if (planeDist < bestDist)
+        //{
+        //    best = FindNearestRecursive(second, point, depth + 1, best);
+        //}
 
-        return best;
+        //return best;
+        return null;
     }
 
     private static float DistanceSquared(Vector2 a, Vector3 b)
@@ -130,4 +131,5 @@ public static class CameraTargetBuilder
         return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
     }
     #endregion
+    */
 }

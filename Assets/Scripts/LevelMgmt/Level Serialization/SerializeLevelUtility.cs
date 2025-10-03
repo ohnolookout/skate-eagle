@@ -65,12 +65,12 @@ public static class SerializeLevelUtility
                 var cpObj = ground.CurvePointObjects[j];
                 cpObj.name = "CP " + i + "_" + j;
 
-                if (cpObj.LinkedCameraTarget.doTargetLow)
+                if (cpObj.LinkedCameraTarget.doLowTarget)
                 {
                     cpObj.name += "_LT";
                 }
 
-                cpObj.LinkedCameraTarget.SerializedLocation = new int[2] { i, j };
+                cpObj.LinkedCameraTarget.SerializedObjectLocation = new int[2] { i, j };
             }
         }
     }

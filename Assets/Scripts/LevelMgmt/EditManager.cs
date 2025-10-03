@@ -233,7 +233,7 @@ public class EditManager : MonoBehaviour
     {
         AddCurvePointsToGround(ground, CurvePointPresets.DefaultStart(ground), true);
         _groundManager.StartLine.SetStartLine(ground.CurvePointObjects[1].CurvePoint);
-        ground.CurvePointObjects[2].LinkedCameraTarget.doTargetLow = true;
+        ground.CurvePointObjects[2].LinkedCameraTarget.doLowTarget = true;
         
     }
 

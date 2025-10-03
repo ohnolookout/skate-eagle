@@ -8,26 +8,16 @@ public class CameraManager : MonoBehaviour
     public bool doSetStartPosition = false;
     private StartPositionSetter positionSetter;
 #endif
-    private ProCamera2D _camera;
-    private ProCamera2DForwardFocus _forwardFocus;
     private LinkedCameraTarget _currentTarget;
-    private LinkedCameraTarget _rootKDTarget;
     [SerializeField] private CameraZoom _cameraZoom;
-    private float _transitionSmoothness = 0.4f;
     public bool doLogPosition = false;
     private bool _doDuration = false;
     private bool _doUpdate = true;
-    private List<LinkedCameraTarget> _targetsToCheck = new();
-    private List<LinkedCameraTarget> _targetsToTrack = new();
     private IPlayer _player;
     private Transform _playerTransform;
     private int _frameCount = 0;
     void Awake()
     {
-        _camera = ProCamera2D.Instance;
-        _forwardFocus = _camera.GetComponent<ProCamera2DForwardFocus>();
-        _transitionSmoothness = _forwardFocus.TransitionSmoothness;
-
         FreezeCamera();
 
         LevelManager.OnPlayerCreated += AddPlayerTarget;
@@ -58,7 +48,7 @@ public class CameraManager : MonoBehaviour
 #if UNITY_EDITOR
         if (_doUpdate & doSetStartPosition)
         {
-            doSetStartPosition = !positionSetter.CheckPosition(_camera.transform.position);
+            doSetStartPosition = !positionSetter.CheckPosition(Camera.main.transform.position);
         }
 #endif
     }
@@ -70,20 +60,12 @@ public class CameraManager : MonoBehaviour
             return;
         }
         Gizmos.color = Color.red;
-        foreach(var target in _targetsToTrack)
-        {
-            if (target == null || target.Target == null)
-            {
-                continue;
-            }
-            Gizmos.DrawSphere(target.Target.TargetPosition, 2f);
-        }
 
         Gizmos.color = Color.blue;
 
-        if (_currentTarget != null && _currentTarget.Target != null)
+        if (_currentTarget != null && _currentTarget != null)
         {
-            Gizmos.DrawSphere(_currentTarget.Target.TargetPosition, 2f);
+            //Gizmos.DrawSphere(_currentTarget.TargetPosition, 2f);
         }
 
     }
@@ -93,85 +75,85 @@ public class CameraManager : MonoBehaviour
         _player = player;
         _playerTransform = player.Transform;
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
-        _camera.AddCameraTarget(player.CameraTarget, CameraTargetUtility.GetDuration(CameraTargetType.Player));
+        //_camera.AddCameraTarget(player.CameraTarget, CameraTargetUtility.GetDuration(CameraTargetType.Player));
     }
 
     private void CheckCurrentTarget()
     {
 
-        var closestTarget = _currentTarget;
-        if (_frameCount % 10 == 0)
-        {
-            closestTarget = CameraTargetBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
-            _frameCount = 0;
-        }
+        //var closestTarget = _currentTarget;
+        //if (_frameCount % 10 == 0)
+        //{
+        //    closestTarget = CameraTargetBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
+        //    _frameCount = 0;
+        //}
 
-        _frameCount++;
-        if(closestTarget != _currentTarget)
-        {
-            UpdateCurrentTarget(closestTarget);
-        }
+        //_frameCount++;
+        //if(closestTarget != _currentTarget)
+        //{
+        //    UpdateCurrentTarget(closestTarget);
+        //}
     }
 
 
     private void UpdateCurrentTarget(LinkedCameraTarget newTarget)
     {
-        _currentTarget = newTarget;
+        //_currentTarget = newTarget;
 
-        if (_player.FacingForward)
-        {
-            _targetsToTrack = _currentTarget.RightTargets;
-        }
-        else
-        {
-            _targetsToTrack = _currentTarget.LeftTargets;
-        }
+        //if (_player.FacingForward)
+        //{
+        //    _targetsToTrack = _currentTarget.RightTargets;
+        //}
+        //else
+        //{
+        //    _targetsToTrack = _currentTarget.LeftTargets;
+        //}
 
 
-        var duration = CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow);
+        //var duration = CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow);
 
-        bool playerTargetIsFound = false;
-        bool currentTargetIsFound = false;
+        //bool playerTargetIsFound = false;
+        //bool currentTargetIsFound = false;
 
-        for (int i = 0; i < _camera.CameraTargets.Count; i++)
-        {
-            var target = _camera.CameraTargets[i];
+        //for (int i = 0; i < _camera.CameraTargets.Count; i++)
+        //{
+        //    var target = _camera.CameraTargets[i];
 
-            if(target == null || target.TargetPosition == null)
-            {
-                _camera.RemoveCameraTarget(target);
-                continue;
-            }
+        //    if(target == null || target.TargetPosition == null)
+        //    {
+        //        _camera.RemoveCameraTarget(target);
+        //        continue;
+        //    }
 
-            if (!playerTargetIsFound && target.TargetTransform!= null && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
-            {
-                playerTargetIsFound = true;
-                continue;
-            }
+        //    if (!playerTargetIsFound && target.TargetTransform!= null && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
+        //    {
+        //        playerTargetIsFound = true;
+        //        continue;
+        //    }
 
-            if(target.TargetPosition == _currentTarget.Target.TargetPosition)
-            {
-                currentTargetIsFound = true;
-                continue;
-            }
+        //    if(target.TargetPosition == _currentTarget.Target.TargetPosition)
+        //    {
+        //        currentTargetIsFound = true;
+        //        continue;
+        //    }
 
-            _camera.RemoveCameraTarget(target, duration);
-        }
+        //    _camera.RemoveCameraTarget(target, duration);
+        //}
 
-        if (!currentTargetIsFound)
-        {
-            _camera.AddCameraTarget(_currentTarget.Target, duration);
-        }
+        //if (!currentTargetIsFound)
+        //{
+        //    _camera.AddCameraTarget(_currentTarget.Target, duration);
+        //}
 
-        foreach (var target in _targetsToTrack)
-        {
-            if(target.Target == null)
-            {
-                continue;
-            }
+        //foreach (var target in _targetsToTrack)
+        //{
+        //    if(target.Target == null)
+        //    {
+        //        continue;
+        //    }
             
-            _camera.AddCameraTarget(target.Target, duration);
-        }
+        //    _camera.AddCameraTarget(target.Target, duration);
+        //}
 
     }
 
@@ -182,10 +164,6 @@ public class CameraManager : MonoBehaviour
 
     private void FreezeCamera()
     {
-        _camera.RemoveAllCameraTargets();
-        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = 0f;
-        _camera.FollowHorizontal = false;
-        _camera.FollowVertical = false;
         _cameraZoom.gameObject.SetActive(false);
         _doDuration = false;
         _doUpdate = false;
@@ -193,9 +171,6 @@ public class CameraManager : MonoBehaviour
 
     private void UnfreezeCamera()
     {
-        _camera.GetComponent<ProCamera2DForwardFocus>().TransitionSmoothness = _transitionSmoothness;
-        _camera.FollowHorizontal = true;
-        _camera.FollowVertical = true;
         _cameraZoom.gameObject.SetActive(true);
         _cameraZoom.ResetZoom();
         _doUpdate = true;
@@ -204,8 +179,7 @@ public class CameraManager : MonoBehaviour
     private void GoToStartPosition(Level level, PlayerRecord _)
     {
         FreezeCamera();
-        _rootKDTarget = level.RootCameraTarget;
-        _camera.MoveCameraInstantlyToPosition(level.CameraStartPosition);
+        Camera.main.transform.position = level.CameraStartPosition;
         SetFirstTarget(level.StartTarget);
     }
 
@@ -216,11 +190,11 @@ public class CameraManager : MonoBehaviour
             Debug.LogError("Start target is null");
             return;
         }
-        _camera.AddCameraTarget(startTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
+        //_camera.AddCameraTarget(startTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
 
-        _currentTarget = startTarget;
+        //_currentTarget = startTarget;
 
-        _targetsToTrack = _currentTarget.RightTargets;
+        //_targetsToTrack = _currentTarget.RightTargets;
     }
 
     private void TurnOnDuration()

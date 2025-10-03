@@ -57,7 +57,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
         if (_gameManager != null && _gameManager.CurrentLevel != null)
         {         
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(_gameManager.CurrentLevel.StartTarget.Target.TargetPosition, 1);
+            //Gizmos.DrawSphere(_gameManager.CurrentLevel.StartTarget.TargetPosition, 1);
         }
     }
 

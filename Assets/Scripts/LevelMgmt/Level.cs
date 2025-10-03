@@ -35,7 +35,13 @@ public class Level
     {
         _name = name;
         _medalTimes = medalTimes;
-        _rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
+
+        foreach(var targetable in groundManager.CameraTargetables)
+        {
+            targetable.GenerateTarget();
+        }
+
+        //_rootCameraTarget = CameraTargetBuilder.BuildKdTree(groundManager.CameraTargetables);
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager, out _serializedStartLine);
         _startTarget = groundManager.StartLine.CurvePoint.LinkedCameraTarget;
         _leaderboardKey = _name + "_leaderboard";

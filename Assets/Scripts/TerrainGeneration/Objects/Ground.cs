@@ -22,6 +22,9 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
+    [SerializeField] private List<CurvePoint> _zoomPoints = new();
+    [SerializeField] private CurvePointEditObject _manualLeftCamTarget;
+    [SerializeField] private CurvePointEditObject _manualRightCamTarget;
     private FloorType _floorType = FloorType.Flat;
     public GameObject curvePointContainer;
     public int lastCPObjCount = 0;
@@ -34,6 +37,9 @@ public class Ground : MonoBehaviour, ISerializable
     public FloorType FloorType { get => _floorType; set => _floorType = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
+    public List<CurvePoint> ZoomPoints => _zoomPoints;
+    public CurvePointEditObject ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
+    public CurvePointEditObject ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
     public int StartFloorHeight
@@ -135,18 +141,20 @@ public class Ground : MonoBehaviour, ISerializable
         var pointObject = Instantiate(_curvePointEditObjectPrefab, curvePointContainer.transform).GetComponent<CurvePointEditObject>();
         pointObject.ParentGround = this;
         pointObject.name = curvePoint.name;
-        pointObject.SetCurvePoint(curvePoint);
-        
+
         if (index == -1)
         {
             CurvePoints.Add(curvePoint);
-        } else
+        }
+        else
         {
             index = Math.Min(index, CurvePoints.Count);
             CurvePoints.Insert(index, curvePoint);
             pointObject.transform.SetSiblingIndex(index);
         }
 
+        pointObject.SetCurvePoint(curvePoint);
+        
         return pointObject;
     }
 

@@ -176,33 +176,33 @@ public class FindAdjacentCurvePointWindow : EditorWindow
     #region Add Targets
     private void AddNewTarget(CurvePointEditObject newCurvePoint, bool isRight)
     {
-        var targetObjList = isRight ? _curvePointObject.RightTargetObjects : _curvePointObject.LeftTargetObjects;
-        var linkedCameraTargetList = isRight ? _curvePointObject.LinkedCameraTarget.RightTargets : _curvePointObject.LinkedCameraTarget.LeftTargets;
+        //var targetObjList = isRight ? _curvePointObject.RightTargetObjects : _curvePointObject.LeftTargetObjects;
+        //var linkedCameraTargetList = isRight ? _curvePointObject.LinkedCameraTarget.RightTargets : _curvePointObject.LinkedCameraTarget.LeftTargets;
 
-        if (newCurvePoint == null)
-        {
-            Debug.LogWarning("FindAdjacentCurvePoint: No target found.");
-            return;
-        }
-        if (targetObjList.Contains(newCurvePoint.gameObject))
-        {
-            Debug.LogWarning("FindAdjacentCurvePoint: Curve point already exists in the target list.");
-        }
-        else
-        {
-            targetObjList.Add(newCurvePoint.gameObject);
-        }
+        //if (newCurvePoint == null)
+        //{
+        //    Debug.LogWarning("FindAdjacentCurvePoint: No target found.");
+        //    return;
+        //}
+        //if (targetObjList.Contains(newCurvePoint.gameObject))
+        //{
+        //    Debug.LogWarning("FindAdjacentCurvePoint: Curve point already exists in the target list.");
+        //}
+        //else
+        //{
+        //    targetObjList.Add(newCurvePoint.gameObject);
+        //}
 
-        if(linkedCameraTargetList.Contains(newCurvePoint.LinkedCameraTarget))
-        {
-            Debug.LogWarning("FindAdjacentCurvePoint: Linked camera target already exists in the target list.");
-        }
-        else
-        {
-            linkedCameraTargetList.Add(newCurvePoint.LinkedCameraTarget);
-        }
+        //if(linkedCameraTargetList.Contains(newCurvePoint.LinkedCameraTarget))
+        //{
+        //    Debug.LogWarning("FindAdjacentCurvePoint: Linked camera target already exists in the target list.");
+        //}
+        //else
+        //{
+        //    linkedCameraTargetList.Add(newCurvePoint.LinkedCameraTarget);
+        //}
 
-            _editManager.UpdateEditorLevel();
+        //    _editManager.UpdateEditorLevel();
     }
 
 

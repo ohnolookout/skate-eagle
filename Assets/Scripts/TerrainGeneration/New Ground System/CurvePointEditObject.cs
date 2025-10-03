@@ -10,6 +10,9 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     private Ground _parentGround;
     public List<GameObject> rightTargetObjects = new();
     public List<GameObject> leftTargetObjects = new();
+    public List<GameObject> zoomTargetObjects = new();
+    public GameObject manualLeftTargetObject;
+    public GameObject manualRightTargetObject;
     public CurvePoint CurvePoint => _parentGround.CurvePoints[transform.GetSiblingIndex()];
     public Ground ParentGround {
         get
@@ -21,11 +24,14 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
             return _parentGround;
         }
         set => _parentGround = value; }
+    public List<GameObject> ZoomTargetObjects { get => zoomTargetObjects; set => zoomTargetObjects = value; }
+    public GameObject ManualLeftTargetObject { get => manualLeftTargetObject; set => manualLeftTargetObject = value; }
+    public GameObject ManualRightTargetObject { get => manualRightTargetObject; set => manualRightTargetObject = value; }
     public List<GameObject> RightTargetObjects { get => rightTargetObjects; set => rightTargetObjects = value; }
     public List<GameObject> LeftTargetObjects { get => leftTargetObjects; set => leftTargetObjects = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
-    public bool DoTargetLow { get => LinkedCameraTarget.doTargetLow; set => LinkedCameraTarget.doTargetLow = value; }
-    public bool DoTargetHigh { get => LinkedCameraTarget.doTargetHigh; set => LinkedCameraTarget.doTargetHigh = value; }
+    public bool DoTargetLow { get => LinkedCameraTarget.doLowTarget; set => LinkedCameraTarget.doLowTarget = value; }
+    public bool DoTargetHigh { get => LinkedCameraTarget.doZoomTarget; set => LinkedCameraTarget.doZoomTarget = value; }
 
     public float LeftTangentMagnitude => CurvePoint.LeftTangent.magnitude;
     public float RightTangentMagnitude => CurvePoint.RightTangent.magnitude;
@@ -78,7 +84,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         {
             return;
         }
-        LinkedCameraTarget.DrawTargets();
     }
 
     #endregion
@@ -88,7 +93,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     {
         curvePoint.Object = gameObject; // Set the object reference in the CurvePoint
         transform.position = curvePoint.Position + ParentGround.transform.position;
-        curvePoint.LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
+        GenerateTarget();
     }
 
 #if UNITY_EDITOR
@@ -160,19 +165,20 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     #region Targeting
     public void GenerateTarget()
     {
-        LinkedCameraTarget.Target = CameraTargetUtility.GetTarget(CameraTargetType.CurvePointLow, transform);
+        LinkedCameraTarget.TargetTransform = transform;
+        LinkedCameraTarget.SerializedPosition = transform.position;
     }
 
     public void PopulateDefaultTargets() //Figure out if I need to run this on deserialization
     {
         GenerateTarget();
 
-        if (!LinkedCameraTarget.doTargetLow && !LinkedCameraTarget.doTargetHigh)
+        if (!LinkedCameraTarget.doLowTarget && !LinkedCameraTarget.doZoomTarget)
         {
             leftTargetObjects = new();
             rightTargetObjects = new();
-            LinkedCameraTarget.LeftTargets = new();
-            LinkedCameraTarget.RightTargets = new();
+            //LinkedCameraTarget.LeftTargets = new();
+            //LinkedCameraTarget.RightTargets = new();
             return;
         }
 
@@ -211,32 +217,32 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     {
         List<ObjectResync> resyncs = new();
 
-        if (!LinkedCameraTarget.doTargetLow)
+        if (!LinkedCameraTarget.doLowTarget)
         {
             return resyncs;
         }
 
         var targets = new List<LinkedCameraTarget>();
 
-        targets.AddRange(LinkedCameraTarget.LeftTargets);
-        targets.AddRange(LinkedCameraTarget.RightTargets);
+        targets.AddRange(LinkedCameraTarget.forceZoomTargets.Select(t => t.LinkedCameraTarget));
+        
+        if(LinkedCameraTarget.prevTarget != null)
+        {
+            targets.Add(LinkedCameraTarget.prevTarget);
+        }
+        if(LinkedCameraTarget.nextTarget != null)
+        {
+            targets.Add(LinkedCameraTarget.nextTarget);
+        }
+        //targets.AddRange(LinkedCameraTarget.LeftTargets);
+        //targets.AddRange(LinkedCameraTarget.RightTargets);
 
         foreach (var target in targets)
         {
-            var resync = new ObjectResync(target.SerializedLocation);
+            var resync = new ObjectResync(target.SerializedObjectLocation);
             resync.resyncFunc = (obj) => 
             {
-                target.Target.TargetTransform = obj.transform;
-
-                if (LinkedCameraTarget.LeftTargets.Contains(target))
-                {
-                    LeftTargetObjects.Add(obj);
-                }
-
-                if (LinkedCameraTarget.RightTargets.Contains(target))
-                {
-                    RightTargetObjects.Add(obj);
-                }
+                target.TargetTransform = obj.transform;
             };
             resyncs.Add(resync);
         }

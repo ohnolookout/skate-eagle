@@ -28,7 +28,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RecordObject(this, "Set Start Point");
 #endif
-        startPoint.LinkedCameraTarget.doTargetLow = true;
+        startPoint.LinkedCameraTarget.doLowTarget = true;
         _curvePoint = startPoint;
         _xOffset = xOffset;
     }
@@ -39,7 +39,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
         if (_curvePoint != null)
         {
-            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.SerializedLocation);
+            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.SerializedObjectLocation);
             resync.resyncFunc = (obj) => { _curvePoint.Object = obj; };
             resyncs.Add(resync);
         }

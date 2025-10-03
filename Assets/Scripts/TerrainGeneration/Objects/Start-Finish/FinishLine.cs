@@ -157,14 +157,14 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         List<ObjectResync> resyncs = new();
         if (_flagPoint != null)
         {
-            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.SerializedLocation);
+            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.SerializedObjectLocation);
             resync.resyncFunc = (obj) => { _flagPoint.Object = obj; };
             resyncs.Add(resync);
         }
 
         if (_backstop != null)
         {
-            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.SerializedLocation);
+            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.SerializedObjectLocation);
             resync.resyncFunc = (obj) => { _backstopPoint.Object = obj; };
             resyncs.Add(resync);
         }
@@ -195,7 +195,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RecordObject(this, "Set Finish Flag and Backstop");
 #endif
-        flagPoint.LinkedCameraTarget.doTargetLow = true;
+        flagPoint.LinkedCameraTarget.doLowTarget = true;
         _flagPoint = flagPoint;
 
         _flag.SetActive(true);
