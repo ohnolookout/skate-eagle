@@ -3,7 +3,6 @@ using UnityEngine.U2D;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
-using static UnityEngine.Rendering.HableCurve;
 
 //[ExecuteAlways]
 [Serializable]
@@ -20,10 +19,12 @@ public class GroundSegment : MonoBehaviour
     [SerializeField] private int _leftFloorAngle = 0;
     [SerializeField] private int _rightFloorHeight = 100;
     [SerializeField] private int _rightFloorAngle = 0;
+    private int _startPointIndex;
+    private int _endPointIndex;
     private int _containmentBuffer = 20;
+    private int _startLowPointIndex = -1;
     public Ground parentGround;
 
-    private List<CurvePointEditObject> _curvePointEditObjects = new();
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Spline Spline { get => _fillShapeController.spline; }
@@ -40,6 +41,9 @@ public class GroundSegment : MonoBehaviour
     public EdgeCollider2D Collider { get => _collider; set => _collider = value; }
     public EdgeCollider2D BottomCollider { get => _bottomCollider; set => _bottomCollider = value; }
     public new GameObject gameObject { get => transform.gameObject; }
+    public int StartPointIndex { get => _startPointIndex; set => _startPointIndex = value; }
+    public int EndPointIndex { get => _endPointIndex; set => _endPointIndex = value; }
+    public int StartLowPointIndex { get => _startLowPointIndex; set => _startLowPointIndex = value; }
     #endregion
 
     #region Monobehaviors

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -15,6 +16,10 @@ public class SerializedGround : IDeserializable
     public int floorAngle;
     public List<SerializedGroundSegment> segmentList;
     public List<CurvePoint> curvePoints;
+    public List<CurvePoint> lowPoints;
+    public List<CurvePoint> zoomPoints;
+    public CurvePoint manualLeftCamTarget;
+    public CurvePoint manualRightCamTarget;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
     public bool IsFloating => floorType == FloorType.Floating;
 
@@ -31,6 +36,17 @@ public class SerializedGround : IDeserializable
         name = ground.gameObject.name;
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
+        lowPoints = ground.CurvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
+        Debug.Log("Serialized ground with " + lowPoints.Count + " low points.");
+
+        if (lowPoints.Count == 0)
+        {
+            Debug.LogWarning($"SerializedGround: Ground {ground.name} has no lowpoint camera targets. Add some.");
+        }
+
+        manualLeftCamTarget = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
+        manualRightCamTarget = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
+
         isInverted = ground.IsInverted;
         hasShadow = ground.HasShadow;
         floorType = ground.FloorType;
@@ -127,6 +143,10 @@ public class SerializedGround : IDeserializable
             ground.SetCurvePoint(curvePoint);
         }
 #endif
+        ground.LowPoints = lowPoints;
+
+
+
 
         return ground;
     }

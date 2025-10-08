@@ -129,7 +129,8 @@ public static class SerializeLevelUtility
     /// </summary>
     private static List<List<CurvePoint>> BreakDownSegments(SerializedGround serializedGround)
     {
-        var allCurvePoints = DeepCopyCurvePoints(serializedGround.curvePoints);
+        //var allCurvePoints = DeepCopyCurvePoints(serializedGround.curvePoints);
+        var allCurvePoints = serializedGround.curvePoints;
         List<List<CurvePoint>> sections = new();
         if (allCurvePoints.Count < 3)
         {

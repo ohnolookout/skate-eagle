@@ -12,6 +12,13 @@ public class GroundInspector : Editor
     private bool _altHeld = false;
     private bool _aHeld = false;
     private bool _showCPTransform = true;
+    public static GUIContent rightTargetButton = new GUIContent("R", "Add/Remove Right Target");
+    public static GUIContent leftTargetButton = new GUIContent("L", "Add/Remove Left Target");
+    public static GUIContent highTargetButton = new GUIContent("H", "Add/Remove High Target");
+    public static GUIContent doHighButton = new GUIContent("/\\", "Set High Target");
+    public static GUIContent doLowButton = new GUIContent("\\/", "Set Low Target");
+    public static GUIContent selectButton = new GUIContent("S", "Select Curve Point");
+    public static GUIStyle buttonStyle = new GUIStyle();
     public override void OnInspectorGUI()
     {
         if (_editManager == null)
@@ -240,7 +247,16 @@ public class GroundInspector : Editor
 
         if (_aHeld)
         {
-            DrawSelectAndDoTargetButtons(ground);
+            foreach (var cpObj in ground.CurvePointObjects)
+            {
+                if (TargetButtons(cpObj))
+                {
+                    CameraTargetUtility.BuildGroundCameraTargets(ground);
+                }
+
+                CurvePointObjectInspector.DrawTargetInfo(cpObj);
+                //CurvePointObjectInspector.DrawCamBottomIntercept(cpObj);
+            }
         }
 
     }
@@ -279,13 +295,77 @@ public class GroundInspector : Editor
         }
     }
 
-    public static void DrawSelectAndDoTargetButtons(Ground ground)
+    private bool TargetButtons(CurvePointEditObject cpObj)
     {
-        foreach (var cpObj in ground.CurvePointObjects)
+
+        var targetObj = cpObj.gameObject;
+
+        if (cpObj == null)
         {
-            CurvePointObjectInspector.DrawSelectAndDoTargetButtons(cpObj);
-            cpObj.LinkedCameraTarget.DrawTargetInfo();
+            return false;
         }
+
+        var objPos = targetObj.transform.position;
+
+        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
+        rect.position = new Vector2(rect.position.x - rect.width, rect.position.y + rect.height);
+
+        Handles.BeginGUI();
+        //Button to select curve point
+        GUI.backgroundColor = Color.cyan;
+        if (GUI.Button(rect, selectButton))
+        {
+            Selection.activeObject = cpObj;
+        }
+
+        //Buttons for low target settings
+        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+        if (cpObj.LinkedCameraTarget.doLowTarget)
+        {
+            GUI.backgroundColor = Color.lightGreen;
+            if (GUI.Button(rect, doLowButton))
+            {
+                Undo.RecordObject(cpObj, "Turn off doTargetLow");
+                cpObj.LinkedCameraTarget.doLowTarget = false;
+                return true;
+            }
+        }
+        else
+        {
+            GUI.backgroundColor = Color.orangeRed;
+            if (GUI.Button(rect, doLowButton))
+            {
+                Undo.RecordObject(cpObj, "Turn on doTargetLow");
+                cpObj.LinkedCameraTarget.doLowTarget = true;
+                return true;
+            }
+        }
+
+        //Buttons for high target settings
+        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+
+        if (cpObj.LinkedCameraTarget.doZoomTarget)
+        {
+            GUI.backgroundColor = Color.lightGreen;
+            if (GUI.Button(rect, doHighButton))
+            {
+                Undo.RecordObject(cpObj, "Turn off doTargetHigh");
+                cpObj.LinkedCameraTarget.doZoomTarget = false;
+                return true;
+            }
+        }
+        else
+        {
+            GUI.backgroundColor = Color.orangeRed;
+            if (GUI.Button(rect, doHighButton))
+            {
+                Undo.RecordObject(cpObj, "Turn on doTargetHigh");
+                cpObj.LinkedCameraTarget.doZoomTarget = true;
+                return true;
+            }
+        }
+        Handles.EndGUI();
+        return false;
     }
 
     private static void ClearCurvePointTargets(Ground ground, EditManager editManager)

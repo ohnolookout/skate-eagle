@@ -2,6 +2,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -29,6 +30,9 @@ public class SerializedGroundSegment
 
     //Curve contents
     public Curve curve;
+    public int startPointIndex;
+    public int endPointIndex;
+    public int startLowPointIndex = -1;
 
     //Spline contents
     public List<CurvePoint> fillSplineCurvePoints;
@@ -65,6 +69,22 @@ public class SerializedGroundSegment
         //Curve points
         edgeSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
         fillSplineCurvePoints = SerializeLevelUtility.DeepCopyCurvePoints(curvePoints);
+        startPointIndex = serializedGround.curvePoints.IndexOf(curvePoints[0]);
+        endPointIndex = serializedGround.curvePoints.IndexOf(curvePoints[^1]);
+
+        var lowPoints = curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
+        if (lowPoints.Count > 0)
+        {
+            startLowPointIndex = serializedGround.lowPoints.IndexOf(lowPoints[0]);
+        }
+        else
+        {
+            startLowPointIndex = FindFirstLowPointIndex(serializedGround.curvePoints, serializedGround.lowPoints, startPointIndex);
+            if(startLowPointIndex == -1)
+            {
+                Debug.LogWarning($"SerializedGroundSegment: No low point camera targets found for segment {name}. Add some.");
+            }
+        }
 
         if (!serializedGround.IsFloating)
         {
@@ -79,6 +99,27 @@ public class SerializedGroundSegment
             bottomColliderPoints = ColliderGenerator.GetBottomColliderPoints(fillSplineCurvePoints, colliderPoints, curvePoints.Count, isFirst, isLast);
         }
         
+    }
+
+    private int FindFirstLowPointIndex(List<CurvePoint> curvePoints, List<CurvePoint> lowPoints, int startIndex)
+    {
+        for(int i = startIndex; i > 0; i--)
+        {
+            if(curvePoints[i].LinkedCameraTarget.doLowTarget)
+            {
+                return lowPoints.IndexOf(curvePoints[i]);
+            }
+        }
+
+        for(int i = startIndex; i < curvePoints.Count; i++)
+        {
+            if (curvePoints[i].LinkedCameraTarget.doLowTarget)
+            {
+                return lowPoints.IndexOf(curvePoints[i]);
+            }
+        }
+
+        return -1;
     }
 
     private List<Vector3> GetFloorPositions(List<CurvePoint> curvePoints)
@@ -112,6 +153,9 @@ public class SerializedGroundSegment
         segment.RightFloorHeight = rightFloorHeight;
         segment.LeftFloorAngle = leftFloorAngle;
         segment.RightFloorAngle = rightFloorAngle;
+        segment.StartPointIndex = startPointIndex;
+        segment.EndPointIndex = endPointIndex;
+        segment.StartLowPointIndex = startLowPointIndex;
 
         segment.parentGround = ground;
 

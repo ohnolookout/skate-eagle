@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -84,7 +85,7 @@ public class CurvePointObjectInspector : Editor
 
         EditorGUI.BeginChangeCheck();
         var position = EditorGUILayout.Vector2Field("Position", _curvePointObject.transform.position);
-        if(EditorGUI.EndChangeCheck())
+        if (EditorGUI.EndChangeCheck())
         {
             _curvePointObject.PositionChanged(position);
 
@@ -158,7 +159,7 @@ public class CurvePointObjectInspector : Editor
         var rightTangMag = EditorGUILayout.FloatField("R Mag", _curvePointObject.RightTangentMagnitude, GUILayout.ExpandWidth(false));
         if (EditorGUI.EndChangeCheck())
         {
-            if(Math.Abs(rightTangMag) < .5f)
+            if (Math.Abs(rightTangMag) < .5f)
             {
                 rightTangMag = rightTangMag < 0 ? -0.5f : 0.5f;
             }
@@ -201,20 +202,20 @@ public class CurvePointObjectInspector : Editor
             var nextCurvePoint = NextCurvePoint(_curvePointObject);
             var previousCurvePoint = PreviousCurvePoint(_curvePointObject);
 
-            if(previousCurvePoint == null && nextCurvePoint == null)
+            if (previousCurvePoint == null && nextCurvePoint == null)
             {
                 return;
-            } else if(previousCurvePoint == null)
+            } else if (previousCurvePoint == null)
             {
                 angle = nextCurvePoint.LeftTangentAngle;
-            } else if(nextCurvePoint == null)
+            } else if (nextCurvePoint == null)
             {
                 angle = previousCurvePoint.RightTangentAngle;
             }
             else
             {
                 var dir = nextCurvePoint.CurvePoint.Position - previousCurvePoint.CurvePoint.Position;
-                angle = (float) Math.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                angle = (float)Math.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             }
 
             Undo.RecordObject(_curvePointObject, "Tangent Angle");
@@ -328,7 +329,7 @@ public class CurvePointObjectInspector : Editor
             EditorGUILayout.EndHorizontal();
 
             _curvePointObject.LinkedCameraTarget.doUseManualOffsets = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffsets, "Manual Offset", GUILayout.ExpandWidth(false));
-            
+
             if (_curvePointObject.LinkedCameraTarget.doUseManualOffsets)
             {
                 var yOffset = EditorGUILayout.FloatField("Y Offset", _curvePointObject.LinkedCameraTarget.manualYOffset);
@@ -405,7 +406,7 @@ public class CurvePointObjectInspector : Editor
 
             var hasFloor = GUILayout.Toggle(_curvePointObject.CurvePoint.FloorPointType == FloorPointType.Set, "Has Floor Point");
 
-            if (hasFloor) { 
+            if (hasFloor) {
                 floorHeight = EditorGUILayout.IntField("Floor Height", floorHeight);
                 floorAngle = EditorGUILayout.IntField("Floor Angle", floorAngle);
             }
@@ -413,8 +414,8 @@ public class CurvePointObjectInspector : Editor
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_curvePointObject, "Change height and angle.");
-                
-                if(hasFloor)
+
+                if (hasFloor)
                 {
                     _curvePointObject.CurvePoint.FloorPointType = FloorPointType.Set;
                 } else
@@ -485,7 +486,7 @@ public class CurvePointObjectInspector : Editor
         if (Event.current.control)
         {
             _controlHeld = true;
-        } else if(Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftControl)
+        } else if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.LeftControl)
         {
             _controlHeld = false;
         }
@@ -505,7 +506,7 @@ public class CurvePointObjectInspector : Editor
         else if (Event.current.keyCode == KeyCode.A && Event.current.type == EventType.KeyUp)
         {
             _aHeld = false;
-        }     
+        }
 
         var curvePointObject = (CurvePointEditObject)target;
 
@@ -524,7 +525,7 @@ public class CurvePointObjectInspector : Editor
         if (_aHeld && curvePointObject.LinkedCameraTarget.doLowTarget)
         {
             EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
-            curvePointObject.LinkedCameraTarget.DrawTargetInfo();
+            DrawTargetInfo(curvePointObject);
         }
     }
 
@@ -659,14 +660,14 @@ public class CurvePointObjectInspector : Editor
 
 
 
-        return handlesChanged;        
+        return handlesChanged;
     }
 
     public static void DrawCamTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
     {
         var targetObj = targetCPObj.gameObject;
 
-        if(targetCPObj == null)
+        if (targetCPObj == null)
         {
             return;
         }
@@ -674,7 +675,7 @@ public class CurvePointObjectInspector : Editor
         var objPos = targetObj.transform.position;
 
         var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
-        float xMod = targetCPObj.DoTargetHigh ? 1 : (targetCPObj.DoTargetLow ? 0.5f: 0);
+        float xMod = targetCPObj.DoTargetHigh ? 1 : (targetCPObj.DoTargetLow ? 0.5f : 0);
         rect.position = new Vector2(rect.position.x - rect.width * xMod, rect.position.y + rect.height);
 
         Handles.BeginGUI();
@@ -767,71 +768,67 @@ public class CurvePointObjectInspector : Editor
         Handles.EndGUI();
     }
 
-    public static void DrawSelectAndDoTargetButtons(CurvePointEditObject cpObj)
+    public static void DrawCamBottomIntercept(CurvePointEditObject cpObj)
     {
+        var camBottom = CameraTargetUtility.GetCamBottomIntercept(cpObj.CurvePoint.Position, cpObj.ParentGround);
 
-        var targetObj = cpObj.gameObject;
+        Handles.color = Color.orange;
+        Handles.SphereHandleCap(0, camBottom, Quaternion.identity, 1f, EventType.Repaint);
+        Handles.DrawLine(camBottom, cpObj.CurvePoint.Position);
+    }
 
-        if (cpObj == null)
+    public static void DrawTargetInfo(CurvePointEditObject cpObj)
+    {
+        var target = cpObj.LinkedCameraTarget;
+        if (!target.doLowTarget)
         {
             return;
         }
+        var camCenterX = target.TargetPosition.x - CameraTargetUtility.DefaultXBuffer;
 
-        var objPos = targetObj.transform.position;
+        var camBottomY = target.CamBottomPosition.y;
+        var camTopY = camBottomY + (2 * target.zoomOrthoSize);
+        var camLeftX = camCenterX - target.zoomOrthoSize * CameraTargetUtility.DefaultAspectRatio;
+        var camRightX = camCenterX + target.zoomOrthoSize * CameraTargetUtility.DefaultAspectRatio;
 
-        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
-        rect.position = new Vector2(rect.position.x - rect.width, rect.position.y + rect.height);
+        var camTopLeft = new Vector3(camLeftX, camTopY);
+        var camTopRight = new Vector3(camRightX, camTopY);
+        var camBottomLeft = new Vector3(camLeftX, camBottomY);
+        var camBottomRight = new Vector3(camRightX, camBottomY);
 
-        Handles.BeginGUI();
-        //Button to select curve point
-        GUI.backgroundColor = Color.cyan;
-        if (GUI.Button(rect, selectButton))
+        //Draw camera box
+        Handles.color = Color.white;
+        Handles.DrawLine(camTopLeft, camTopRight);
+        Handles.DrawLine(camTopRight, camBottomRight);
+        Handles.DrawLine(camBottomRight, camBottomLeft);
+        Handles.DrawLine(camBottomLeft, camTopLeft);
+
+        //Draw to prev/next targets with offset size
+        Handles.color = Color.magenta;
+        if (target.prevTarget != null)
         {
-            Selection.activeObject = cpObj;
+            Handles.DrawLine(target.CamBottomPosition, target.prevTarget.CamBottomPosition);
         }
 
-        //Buttons for low target settings
-        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-        if (cpObj.LinkedCameraTarget.doLowTarget)
+        Handles.color = Color.cyan;
+        if (target.nextTarget != null)
         {
-            GUI.backgroundColor = Color.lightGreen;
-            if(GUI.Button(rect, doLowButton))
-            {
-                Undo.RecordObject(cpObj, "Turn off doTargetLow");
-                cpObj.LinkedCameraTarget.doLowTarget = false;
-            }
-        } else
-        {
-            GUI.backgroundColor = Color.orangeRed;
-            if (GUI.Button(rect, doLowButton))
-            {
-                Undo.RecordObject(cpObj, "Turn on doTargetLow");
-                cpObj.LinkedCameraTarget.doLowTarget = true;
-            }
+            Handles.DrawLine(target.CamBottomPosition, target.nextTarget.CamBottomPosition);
         }
 
-        //Buttons for high target settings
-        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+        //Draw unoffset target positions
 
-        if (cpObj.LinkedCameraTarget.doZoomTarget)
+        Handles.color = Color.beige;
+
+        if (target.nextTarget != null)
         {
-            GUI.backgroundColor = Color.lightGreen;
-            if (GUI.Button(rect, doHighButton))
-            {
-                Undo.RecordObject(cpObj, "Turn off doTargetHigh");
-                cpObj.LinkedCameraTarget.doZoomTarget = false;
-            }
+            Handles.DrawLine(target.TargetPosition, target.nextTarget.TargetPosition);
         }
-        else
-        {
-            GUI.backgroundColor = Color.orangeRed;
-            if (GUI.Button(rect, doHighButton))
-            {
-                Undo.RecordObject(cpObj, "Turn on doTargetHigh");
-                cpObj.LinkedCameraTarget.doZoomTarget = true;
-            }
-        }
-        Handles.EndGUI();
+
+
+        //Draw offset target positions
+        Handles.color = Color.yellow;
+        Handles.SphereHandleCap(0, target.CamBottomPosition, Quaternion.identity, 1f, EventType.Repaint);
     }
 
     #endregion
