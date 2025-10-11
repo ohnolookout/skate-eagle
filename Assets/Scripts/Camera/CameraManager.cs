@@ -8,6 +8,8 @@ public class CameraManager : MonoBehaviour
 {
     private LinkedCameraTarget _currentLeftTarget;
     private Camera _camera;
+    private Vector3 _targetPosition;
+    private float _targetOrthoSize;
     public bool doLogPosition = false;
     private bool _doUpdate = true;
     private IPlayer _player;
@@ -15,6 +17,16 @@ public class CameraManager : MonoBehaviour
     private bool _doPlayerZoom = false;
     private Ground _currentGround;
     private float _xOffset = CameraTargetUtility.DefaultPlayerXOffset + CameraTargetUtility.DefaultTargetXOffset;
+    private const float _defaultXDampen = 0.15f;
+    private float _xDampen;
+    private float _xDampenOnDirectionChange = 0.01f;
+    private const float _defaultYDampen = 0.15f;
+    private float _yDampenOnDirectionChange = 0.03f;
+    private float _yDampen;
+    private const float _defaultZoomDampen = 0.1f;
+    private float _zoomDampenOnDirectionChange = 0.02f;
+    private float _zoomDampen;
+    private bool _doDirectionChangeDampen = false;
 
     void Awake()
     {
@@ -30,13 +42,18 @@ public class CameraManager : MonoBehaviour
         LevelManager.OnCrossFinish += FreezeCamera;
         LevelManager.OnGameOver += FreezeCamera;
 
+        _xDampen = _defaultXDampen;
+        _yDampen = _defaultYDampen;
+        _zoomDampen = _defaultZoomDampen;
+
     }
 
     void Update()
     {
         if (_doUpdate)
         {
-            UpdateCameraPos();
+            UpdateTargetPos();
+            MoveToTargetPos();
         }
 
     }
@@ -50,12 +67,12 @@ public class CameraManager : MonoBehaviour
     {
         _player = player;
         _playerTransform = player.Transform;
-        //_player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
         _player.EventAnnouncer.SubscribeToAddCollision(OnPlayerCollide);
-        UpdateCameraPos();
+        UpdateTargetPos();
     }
 
-    private void UpdateCameraPos()
+    private void UpdateTargetPos()
     {
         if (_player == null)
         {
@@ -69,9 +86,35 @@ public class CameraManager : MonoBehaviour
         var camParams = CameraTargetUtility.GetCamParams(targetX, _currentLeftTarget);
 
         var adjustedOrthoSize = CheckPlayerZoom(camParams.orthoSize, camParams.camBottomY);
+        Vector3 centerPosition = new(camX, camParams.camBottomY + adjustedOrthoSize);
 
-        _camera.orthographicSize = adjustedOrthoSize;
-        _camera.transform.position = new(camX, camParams.camBottomY + adjustedOrthoSize);
+        _targetOrthoSize = adjustedOrthoSize;
+        _targetPosition = centerPosition;
+    }
+
+    private void MoveToTargetPos()
+    {
+        if (_doDirectionChangeDampen)
+        {
+            Debug.Log("Doing direction change dampen");
+            _xDampen = Mathf.SmoothStep(_xDampen, _defaultXDampen, 0.15f);
+            _yDampen = Mathf.SmoothStep(_yDampen, _defaultYDampen, 0.15f);
+            _zoomDampen = Mathf.SmoothStep(_zoomDampen, _defaultZoomDampen, 0.15f);
+            if (Mathf.Abs(_defaultXDampen - _xDampen) < 0.02 && Mathf.Abs(_defaultYDampen - _yDampen) < 0.02)
+            {
+                _xDampen = _defaultXDampen;
+                _yDampen = _defaultYDampen;
+                _zoomDampen = _defaultZoomDampen;
+                _doDirectionChangeDampen = false;
+            }
+        }
+        var camPos = _camera.transform.position;
+        var newY = Mathf.SmoothStep(camPos.y, _targetPosition.y, _yDampen);
+        var newX = Mathf.SmoothStep(camPos.x, _targetPosition.x, _xDampen);
+        var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSize, _zoomDampen);
+
+        _camera.transform.position = new(newX, newY);
+        _camera.orthographicSize = newOrthoSize;
     }
 
 
@@ -96,7 +139,10 @@ public class CameraManager : MonoBehaviour
 
     private void OnSwitchPlayerDirection(IPlayer player)
     {
-
+        _doDirectionChangeDampen = true;
+        _xDampen = _xDampenOnDirectionChange;
+        _yDampen = _yDampenOnDirectionChange;
+        _zoomDampen = _zoomDampenOnDirectionChange;
     }
 
     private void OnPlayerCollide(Collision2D collision, MomentumTracker _, ColliderCategory __, TrackingType ___)
@@ -150,6 +196,8 @@ public class CameraManager : MonoBehaviour
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
         _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
         _doPlayerZoom = false;
+        _doDirectionChangeDampen = false;
+        _xDampen = _defaultXDampen;
 
     }
 
@@ -159,10 +207,6 @@ public class CameraManager : MonoBehaviour
         var yDist = playerY - camBottomY;
         var playerZoomSize = yDist / (1 + CameraTargetUtility.PlayerHighYT);
 
-        if (playerZoomSize > targetOrthoSize)
-        {
-            Debug.Log("Player Y: " + playerY + " Cam bottom Y: " + camBottomY + " Cam top y: " + (camBottomY + playerZoomSize * 2));
-        }
         return Mathf.Max(playerZoomSize, targetOrthoSize);
     }
 

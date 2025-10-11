@@ -1670,8 +1670,8 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 462384469141357463
-    - rid: 462384469141357464
+    - rid: 462384471575888591
+    - rid: 462384471575888592
     _leaderboardKey: Camera Change Test_leaderboard
     _killPlaneY: -94.478836
     _serializedStartLine:
@@ -1709,8 +1709,8 @@ MonoBehaviour:
           TargetTransform: {fileID: 0}
           IsAdjusting: 0
           SerializedPosition: {x: -120, y: 30, z: 0}
-      _camStartPosition: {x: -75, y: -19.442276, z: 0}
-      _camOrthoSize: 67.53656
+      _camStartPosition: {x: -75, y: -20.192123, z: 0}
+      _camOrthoSize: 66.78671
       _firstCameraTarget:
         forceZoomTargets: []
         prevTarget:
@@ -7358,7 +7358,367 @@ MonoBehaviour:
           TargetTransform: {fileID: 0}
           IsAdjusting: 0
           SerializedPosition: {x: -60, y: -26.764572, z: 0}
-    - rid: 462384469141357463
+    - rid: 462384469141357465
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357475
+        nextTarget:
+          rid: 462384469141357476
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.05
+        OrthoSize: 74.29908
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 208.2
+        SerializedObjectLocation: 0000000002000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: -60, y: -26.521164, z: 0}
+    - rid: 462384469141357466
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: -2
+        nextTarget:
+          rid: 462384469141357468
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.1852914
+        OrthoSize: 59.26457
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 395.9
+        SerializedObjectLocation: 0000000001000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: -120, y: 30, z: 0}
+    - rid: 462384469141357467
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357468
+        nextTarget:
+          rid: 462384469141357469
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.05
+        OrthoSize: 74.230774
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000004000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 61, y: -84.478836, z: 0}
+    - rid: 462384469141357468
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357466
+        nextTarget:
+          rid: 462384469141357467
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.2042853
+        OrthoSize: 64.230774
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 208.2
+        SerializedObjectLocation: 0000000002000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: -60, y: -26.764572, z: 0}
+    - rid: 462384469141357469
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357467
+        nextTarget:
+          rid: 462384469141357470
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.3163557
+        OrthoSize: 105.22968
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000006000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 181, y: -21.161049, z: 0}
+    - rid: 462384469141357470
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357469
+        nextTarget:
+          rid: 462384469141357471
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.3910437
+        OrthoSize: 105.22968
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000008000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
+    - rid: 462384469141357471
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357470
+        nextTarget:
+          rid: 462384469141357472
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.05
+        OrthoSize: 84.73943
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000a000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 421, y: -34.707905, z: 0}
+    - rid: 462384469141357472
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357471
+        nextTarget:
+          rid: 462384469141357473
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.956621
+        OrthoSize: 92.00402
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000c000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 541, y: 10.623146, z: 0}
+    - rid: 462384469141357473
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357472
+        nextTarget:
+          rid: 462384469141357474
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.3815995
+        OrthoSize: 92.00402
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000e000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 661, y: 69.647964, z: 0}
+    - rid: 462384469141357474
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357473
+        nextTarget:
+          rid: -2
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.1345723
+        OrthoSize: 82.37029
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000010000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 781, y: 3.0679855, z: 0}
+    - rid: 462384469141357475
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: -2
+        nextTarget:
+          rid: 462384469141357465
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.7
+        OrthoSize: 50
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 395.9
+        SerializedObjectLocation: 0000000001000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: -120, y: 30, z: 0}
+    - rid: 462384469141357476
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357465
+        nextTarget:
+          rid: 462384469141357477
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.74630934
+        OrthoSize: 107.140915
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000004000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 60, y: 8.294304, z: 0}
+    - rid: 462384469141357477
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357476
+        nextTarget:
+          rid: 462384469141357478
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.8238647
+        OrthoSize: 107.140915
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000006000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 180, y: 96.98754, z: 0}
+    - rid: 462384469141357478
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357477
+        nextTarget:
+          rid: 462384469141357479
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.7
+        OrthoSize: 90.87775
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000008000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 287.72284, y: 128.11206, z: 0}
+    - rid: 462384469141357479
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357478
+        nextTarget:
+          rid: 462384469141357480
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.05
+        OrthoSize: 72.68356
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000a000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 420, y: 61.05988, z: 0}
+    - rid: 462384469141357480
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357479
+        nextTarget:
+          rid: 462384469141357481
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.956621
+        OrthoSize: 89.09818
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000c000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 540, y: 106.39093, z: 0}
+    - rid: 462384469141357481
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357480
+        nextTarget:
+          rid: 462384469141357482
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 1.2304965
+        OrthoSize: 89.09818
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 000000000e000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 660, y: 165.41576, z: 0}
+    - rid: 462384469141357482
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384469141357481
+        nextTarget:
+          rid: -2
+        doZoomTarget: 0
+        doLowTarget: 1
+        doUseManualOffsets: 0
+        manualYOffset: 0
+        YOffset: 0.13457227
+        OrthoSize: 79.464455
+        doUseManualZoomOrthoSize: 0
+        manualZoomOrthoSize: 0
+        SerializedObjectLocation: 0000000010000000
+        TargetTransform: {fileID: 0}
+        IsAdjusting: 0
+        SerializedPosition: {x: 780, y: 98.83577, z: 0}
+    - rid: 462384471575888591
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -12563,7 +12923,7 @@ MonoBehaviour:
             TargetTransform: {fileID: 0}
             IsAdjusting: 0
             SerializedPosition: {x: 0, y: 0, z: 0}
-    - rid: 462384469141357464
+    - rid: 462384471575888592
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -12600,8 +12960,8 @@ MonoBehaviour:
             TargetTransform: {fileID: 0}
             IsAdjusting: 0
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -75, y: -19.442276, z: 0}
-        _camOrthoSize: 67.53656
+        _camStartPosition: {x: -75, y: -20.192123, z: 0}
+        _camOrthoSize: 66.78671
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
@@ -12620,366 +12980,6 @@ MonoBehaviour:
           TargetTransform: {fileID: 0}
           IsAdjusting: 0
           SerializedPosition: {x: -60, y: -26.764572, z: 0}
-    - rid: 462384469141357465
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357475
-        nextTarget:
-          rid: 462384469141357476
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.05
-        OrthoSize: 74.29908
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 208.2
-        SerializedObjectLocation: 0000000002000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: -60, y: -26.521164, z: 0}
-    - rid: 462384469141357466
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384469141357468
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.1852914
-        OrthoSize: 59.26457
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 395.9
-        SerializedObjectLocation: 0000000001000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384469141357467
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357468
-        nextTarget:
-          rid: 462384469141357469
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.05
-        OrthoSize: 74.230774
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000004000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 61, y: -84.478836, z: 0}
-    - rid: 462384469141357468
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357466
-        nextTarget:
-          rid: 462384469141357467
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.2042853
-        OrthoSize: 64.230774
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 208.2
-        SerializedObjectLocation: 0000000002000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: -60, y: -26.764572, z: 0}
-    - rid: 462384469141357469
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357467
-        nextTarget:
-          rid: 462384469141357470
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.3163557
-        OrthoSize: 105.22968
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000006000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 181, y: -21.161049, z: 0}
-    - rid: 462384469141357470
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357469
-        nextTarget:
-          rid: 462384469141357471
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.3910437
-        OrthoSize: 105.22968
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000008000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
-    - rid: 462384469141357471
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357470
-        nextTarget:
-          rid: 462384469141357472
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.05
-        OrthoSize: 84.73943
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000a000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 421, y: -34.707905, z: 0}
-    - rid: 462384469141357472
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357471
-        nextTarget:
-          rid: 462384469141357473
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.956621
-        OrthoSize: 92.00402
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000c000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 541, y: 10.623146, z: 0}
-    - rid: 462384469141357473
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357472
-        nextTarget:
-          rid: 462384469141357474
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.3815995
-        OrthoSize: 92.00402
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000e000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 661, y: 69.647964, z: 0}
-    - rid: 462384469141357474
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357473
-        nextTarget:
-          rid: -2
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.1345723
-        OrthoSize: 82.37029
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000010000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 781, y: 3.0679855, z: 0}
-    - rid: 462384469141357475
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384469141357465
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.7
-        OrthoSize: 50
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 395.9
-        SerializedObjectLocation: 0000000001000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384469141357476
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357465
-        nextTarget:
-          rid: 462384469141357477
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.74630934
-        OrthoSize: 107.140915
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000004000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 60, y: 8.294304, z: 0}
-    - rid: 462384469141357477
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357476
-        nextTarget:
-          rid: 462384469141357478
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.8238647
-        OrthoSize: 107.140915
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000006000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 180, y: 96.98754, z: 0}
-    - rid: 462384469141357478
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357477
-        nextTarget:
-          rid: 462384469141357479
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.7
-        OrthoSize: 90.87775
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000008000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 287.72284, y: 128.11206, z: 0}
-    - rid: 462384469141357479
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357478
-        nextTarget:
-          rid: 462384469141357480
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.05
-        OrthoSize: 72.68356
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000a000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 420, y: 61.05988, z: 0}
-    - rid: 462384469141357480
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357479
-        nextTarget:
-          rid: 462384469141357481
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.956621
-        OrthoSize: 89.09818
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000c000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 540, y: 106.39093, z: 0}
-    - rid: 462384469141357481
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357480
-        nextTarget:
-          rid: 462384469141357482
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 1.2304965
-        OrthoSize: 89.09818
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 000000000e000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 660, y: 165.41576, z: 0}
-    - rid: 462384469141357482
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384469141357481
-        nextTarget:
-          rid: -2
-        doZoomTarget: 0
-        doLowTarget: 1
-        doUseManualOffsets: 0
-        manualYOffset: 0
-        YOffset: 0.13457227
-        OrthoSize: 79.464455
-        doUseManualZoomOrthoSize: 0
-        manualZoomOrthoSize: 0
-        SerializedObjectLocation: 0000000010000000
-        TargetTransform: {fileID: 0}
-        IsAdjusting: 0
-        SerializedPosition: {x: 780, y: 98.83577, z: 0}
     - rid: 1160016942457422683
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
