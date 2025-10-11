@@ -437,6 +437,7 @@ public class CurvePointObjectInspector : Editor
         GUILayout.Label("Segment Options", EditorStyles.boldLabel);
 
         EditorGUILayout.BeginHorizontal();
+        EditorGUI.BeginChangeCheck();
 
         var forceSegment = GUILayout.Toggle(_curvePointObject.CurvePoint.ForceNewSegment, "Force New Segment", GUILayout.ExpandWidth(true));
 
@@ -770,7 +771,7 @@ public class CurvePointObjectInspector : Editor
 
     public static void DrawCamBottomIntercept(CurvePointEditObject cpObj)
     {
-        var camBottom = CameraTargetUtility.GetCamBottomIntercept(cpObj.CurvePoint.Position, cpObj.ParentGround);
+        var camBottom = CameraTargetUtility.GetCamBottomIntercept(cpObj.CurvePoint.Position.x, cpObj.ParentGround);
 
         Handles.color = Color.orange;
         Handles.SphereHandleCap(0, camBottom, Quaternion.identity, 1f, EventType.Repaint);
@@ -784,12 +785,12 @@ public class CurvePointObjectInspector : Editor
         {
             return;
         }
-        var camCenterX = target.TargetPosition.x - CameraTargetUtility.DefaultXBuffer;
+        var camCenterX = target.Position.x - CameraTargetUtility.DefaultTargetXOffset;
 
         var camBottomY = target.CamBottomPosition.y;
-        var camTopY = camBottomY + (2 * target.zoomOrthoSize);
-        var camLeftX = camCenterX - target.zoomOrthoSize * CameraTargetUtility.DefaultAspectRatio;
-        var camRightX = camCenterX + target.zoomOrthoSize * CameraTargetUtility.DefaultAspectRatio;
+        var camTopY = camBottomY + (2 * target.OrthoSize);
+        var camLeftX = camCenterX - target.OrthoSize * CameraTargetUtility.DefaultAspectRatio;
+        var camRightX = camCenterX + target.OrthoSize * CameraTargetUtility.DefaultAspectRatio;
 
         var camTopLeft = new Vector3(camLeftX, camTopY);
         var camTopRight = new Vector3(camRightX, camTopY);
@@ -822,7 +823,7 @@ public class CurvePointObjectInspector : Editor
 
         if (target.nextTarget != null)
         {
-            Handles.DrawLine(target.TargetPosition, target.nextTarget.TargetPosition);
+            Handles.DrawLine(target.Position, target.nextTarget.Position);
         }
 
 

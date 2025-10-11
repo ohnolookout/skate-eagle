@@ -15,7 +15,6 @@ public class StompingState : PlayerState
     public override void EnterState()
     {
         _player.CollisionManager.OnCollide += OnLand; 
-        _player.Stomping = true;
         _player.Params.JumpCount = 2;
         _player.Params.StompCharge = 0;
         _player.NormalBody.angularVelocity = 0;
@@ -30,7 +29,6 @@ public class StompingState : PlayerState
     {
         _player.CollisionManager.OnCollide -= OnLand;
         _player.Params.RotationAccel = _originalRotationAccel;
-        _player.Stomping = false;
     }
 
     public override void FixedUpdateState()

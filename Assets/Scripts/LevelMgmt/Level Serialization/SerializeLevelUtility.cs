@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -19,25 +21,7 @@ public static class SerializeLevelUtility
         var grounds = groundManager.GetGrounds();
         GenerateGroundIndices(grounds);
 
-        // Ensure the StartLine has a valid CurvePoint
-        if (groundManager.StartLine.CurvePoint == null)
-        {
-            Debug.Log("StartPoint is null, setting to default.");
-            if (grounds == null || grounds.Length == 0 || grounds[0].CurvePoints.Count == 0)
-            {
-                groundManager.StartLine.SetStartLine(new CurvePoint());
-            }
-            else if (grounds[0].CurvePoints.Count > 1)
-            {
-                groundManager.StartLine.SetStartLine(grounds[0].CurvePoints[1]);
-            }
-            else
-            {
-                groundManager.StartLine.SetStartLine(grounds[0].CurvePoints[0]);
-            }
-        }
-
-        startLine = (SerializedStartLine)groundManager.StartLine.Serialize();
+        startLine = GetSerializedStartLine(groundManager.StartLine, grounds);
 
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
@@ -73,6 +57,65 @@ public static class SerializeLevelUtility
                 cpObj.LinkedCameraTarget.SerializedObjectLocation = new int[2] { i, j };
             }
         }
+    }
+
+    private static SerializedStartLine GetSerializedStartLine(StartLine startLine, Ground[] grounds)
+    {
+        // Ensure the StartLine has a valid CurvePoint
+        if (startLine.CurvePoint == null)
+        {
+            Debug.Log("StartPoint is null, setting to default.");
+            if (grounds == null || grounds.Length == 0 || grounds[0].CurvePoints.Count == 0)
+            {
+                startLine.SetStartLine(new CurvePoint());
+            }
+            else if (grounds[0].CurvePoints.Count > 1)
+            {
+                startLine.SetStartLine(grounds[0].CurvePoints[1]);
+            }
+            else
+            {
+                startLine.SetStartLine(grounds[0].CurvePoints[0]);
+            }
+        }
+
+        //Get ground associated with startline
+        if(startLine.CurvePoint.Object == null)
+        {
+            Debug.LogWarning("No object associated with curvepoint for startline.");
+            return (SerializedStartLine)startLine.Serialize();
+        }
+        var transform = startLine.CurvePoint.Object.transform;
+        Ground ground = null;
+
+        while (transform.parent != null)
+        {
+            var parentGround = transform.parent.gameObject.GetComponent<Ground>();
+            if (parentGround != null)
+            {
+                ground = parentGround;
+                break;
+            }
+
+            transform = transform.parent;
+        }
+
+        if (ground == null || ground.LowPoints.Count == 0) 
+        {
+            Debug.LogWarning("No parent ground found for startline");
+
+            return (SerializedStartLine)startLine.Serialize();
+        }
+
+        var xPos = startLine.CurvePoint.Position.x + startLine.XOffset + CameraTargetUtility.DefaultPlayerXOffset + CameraTargetUtility.DefaultTargetXOffset;
+        var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
+        var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
+        startLine.FirstCameraTarget = leftTarget;
+        var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
+        startLine.CamStartPosition = new(xPos - CameraTargetUtility.DefaultTargetXOffset, camParams.camBottomY + camParams.orthoSize);
+        startLine.CamOrthoSize = camParams.orthoSize;
+
+        return (SerializedStartLine)startLine.Serialize();
     }
 
     /// <summary>

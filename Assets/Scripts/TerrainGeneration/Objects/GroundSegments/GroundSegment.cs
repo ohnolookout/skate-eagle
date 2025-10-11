@@ -22,7 +22,7 @@ public class GroundSegment : MonoBehaviour
     private int _startPointIndex;
     private int _endPointIndex;
     private int _containmentBuffer = 20;
-    private int _startLowPointIndex = -1;
+    private LinkedCameraTarget _startTarget = null;
     public Ground parentGround;
 
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
@@ -43,7 +43,7 @@ public class GroundSegment : MonoBehaviour
     public new GameObject gameObject { get => transform.gameObject; }
     public int StartPointIndex { get => _startPointIndex; set => _startPointIndex = value; }
     public int EndPointIndex { get => _endPointIndex; set => _endPointIndex = value; }
-    public int StartLowPointIndex { get => _startLowPointIndex; set => _startLowPointIndex = value; }
+    public LinkedCameraTarget StartTarget { get => _startTarget; set => _startTarget = value; }
     #endregion
 
     #region Monobehaviors

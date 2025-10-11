@@ -17,12 +17,12 @@ public class LinkedCameraTarget
     public bool doUseManualOffsets = false;
     public float manualYOffset = 0f;
     public float YOffset = 0f;
-    public float zoomOrthoSize = 50f;
+    public float OrthoSize = 50f;
     public bool doUseManualZoomOrthoSize = false;
     public float manualZoomOrthoSize = 0f;
     public int[] SerializedObjectLocation;
     public Transform TargetTransform;
-    public Vector3 TargetPosition
+    public Vector3 Position
     {
         get
         {
@@ -37,7 +37,7 @@ public class LinkedCameraTarget
         }
     }
 
-    public Vector3 CamBottomPosition => TargetPosition - new Vector3(0, YOffset * CameraTargetUtility.DefaultOrthoSize);
+    public Vector3 CamBottomPosition => Position - new Vector3(0, YOffset * CameraTargetUtility.DefaultOrthoSize);
 
     public bool IsAdjusting = false;
     public Vector3 SerializedPosition;
@@ -58,7 +58,7 @@ public class LinkedCameraTarget
             doUseManualOffsets = doUseManualOffsets,
             manualYOffset = manualYOffset,
             YOffset = YOffset,
-            zoomOrthoSize = zoomOrthoSize,
+            OrthoSize = OrthoSize,
             manualZoomOrthoSize = manualZoomOrthoSize,
             doUseManualZoomOrthoSize = doUseManualZoomOrthoSize,
             forceZoomTargets = new List<CurvePoint>(forceZoomTargets),

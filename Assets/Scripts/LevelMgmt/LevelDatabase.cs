@@ -84,10 +84,10 @@ public class LevelDatabase : ScriptableObject
             MedalTimes = levelToCopy.MedalTimes,
             SerializedObjects = levelToCopy.SerializedObjects,
             LeaderboardKey = levelToCopy.LeaderboardKey,
-            CameraStartPosition = levelToCopy.CameraStartPosition,
+            //CameraStartPosition = levelToCopy.CameraStartPosition,
             KillPlaneY = levelToCopy.KillPlaneY,
-            StartTarget = levelToCopy.StartTarget,
-            RootCameraTarget = levelToCopy.RootCameraTarget
+            //StartTarget = levelToCopy.StartTarget,
+            //RootCameraTarget = levelToCopy.RootCameraTarget
         };
 
         if (UIDExists(copiedLevel.UID))
@@ -196,7 +196,7 @@ public class LevelDatabase : ScriptableObject
 
     public void UpdateEditorLevel(string name, GroundManager groundManager, MedalTimes medalTimes, Vector3 cameraStartPosition = new())
     {
-        _editorLevel = new(name, medalTimes, groundManager, cameraStartPosition);
+        _editorLevel = new(name, medalTimes, groundManager);
         _levelIsDirty = true;
     }
     #endregion

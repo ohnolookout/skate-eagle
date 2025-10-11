@@ -12,7 +12,7 @@ public class Player : MonoBehaviour, IPlayer
     [SerializeField] private CollisionManager _collisionManager;
     private JumpManager _jumpManager;
     private Animator _animator;
-    private bool _facingForward = true, _isRagdoll = false, _doLanding = true, _stomping = false;
+    private bool _facingForward = true, _isRagdoll = false, _doLanding = true;
     private PlayerParameters _params;
     private PlayerStateMachine _stateMachine;
     private CancellationTokenSource _boostTokenSource, _freezeTokenSource;
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour, IPlayer
     public Rigidbody2D RagdollBody { get => _ragdollBody; }
     public PlayerParameters Params { get => _params; }
     public bool FacingForward { get => _facingForward; set => _facingForward = value; }
-    public bool Stomping { get => _stomping; set => _stomping = value; }
+    public bool Airborne => _stateMachine.CurrentState is AirborneState;
     public bool IsRagdoll { get => _isRagdoll; set => _isRagdoll = value; }
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public InputEventController InputEvents { get => _inputEvents; set => _inputEvents = value; }
@@ -69,9 +69,6 @@ public class Player : MonoBehaviour, IPlayer
             transform.position = GameManager.Instance.CurrentLevel.SerializedStartLine.StartPositionWithOffset
                 + new Vector3(0, HalfPlayerHeight + 1.2f);
         }
-
-        //Add player to camera here.
-        //_cameraTargets.Add(CameraTargetUtility.GetTarget(CameraTargetType.Player, transform));
     }
 
     private void Start()

@@ -19,7 +19,7 @@ public interface IPlayer
     PlayerParameters Params { get; }
     PlayerEventAnnouncer EventAnnouncer { get; }
     PlayerAnimationManager AnimationManager { get; }
-    bool Stomping { get; set; }
+    bool Airborne { get; }
     InputEventController InputEvents { get; set; }
     TrailRenderer Trail { get; }
     Transform Transform { get; }

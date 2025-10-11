@@ -19,7 +19,7 @@ public class EditManager : MonoBehaviour
     //Level editing parameters
     private GroundManager _groundManager;
     public MedalTimes medalTimes = new();
-    public Vector3 cameraStartPosition = new Vector3(116, 6);
+    //public Vector3 cameraStartPosition = new Vector3(116, 6);
 
     private GroundSpawner _groundSpawner;
     private LevelDatabase _levelDB;
@@ -64,7 +64,7 @@ public class EditManager : MonoBehaviour
     #region Save/Load Level
     public void SaveLevel()
     {
-        var levelToSave = new Level(_levelDB.LastLevelLoaded.Name, medalTimes, _groundManager, cameraStartPosition);
+        var levelToSave = new Level(_levelDB.LastLevelLoaded.Name, medalTimes, _groundManager);
         var levelSaved = _levelDB.SaveLevel(levelToSave);
 
         if (levelSaved)
@@ -89,7 +89,7 @@ public class EditManager : MonoBehaviour
     {
         _levelDB.LoadInEditMode(level);
         medalTimes = level.MedalTimes;
-        cameraStartPosition = level.CameraStartPosition;
+        //cameraStartPosition = level.CameraStartPosition;
 
         SerializeLevelUtility.DeserializeLevel(level, _groundManager);
         Undo.ClearAll();
@@ -131,13 +131,13 @@ public class EditManager : MonoBehaviour
 
     public void RenameLevel(Level level, string newName)
     {
-        var levelToSave = new Level(newName, medalTimes, _groundManager, cameraStartPosition);
+        var levelToSave = new Level(newName, medalTimes, _groundManager);
         _levelDB.ChangeLevelName(level, newName);
     }
 
     public void SaveLevelAsNew(Level level, string name)
     {
-        var levelToSave = new Level(name, medalTimes, _groundManager, cameraStartPosition);
+        var levelToSave = new Level(name, medalTimes, _groundManager);
         _levelDB.SaveLevel(levelToSave);
     }
 
@@ -311,12 +311,12 @@ public class EditManager : MonoBehaviour
     }
     public void UpdateEditorLevel()
     {
-        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes);
     }
 
     public void RefreshSerializable(ISerializable serializable)
     {
-        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes, cameraStartPosition);
+        _levelDB.UpdateEditorLevel(_levelDB.LastLevelLoaded.Name, _groundManager, medalTimes);
 
         Undo.RegisterFullObjectHierarchyUndo(serializable.GameObject, "Update ISerializable");
         serializable.Refresh(_groundManager);

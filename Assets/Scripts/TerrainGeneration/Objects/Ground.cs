@@ -22,7 +22,7 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
-    [SerializeField] private List<CurvePoint> _lowPoints = new();
+    private List<CurvePoint> _lowPoints = new();
     [SerializeField] private List<CurvePoint> _zoomPoints = new();
     [SerializeField] private CurvePointEditObject _manualLeftCamTarget;
     [SerializeField] private CurvePointEditObject _manualRightCamTarget;
@@ -38,8 +38,8 @@ public class Ground : MonoBehaviour, ISerializable
     public FloorType FloorType { get => _floorType; set => _floorType = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints => _curvePoints;
-    public List<CurvePoint> ZoomPoints { get => _zoomPoints; set => _zoomPoints = value; }
     public List<CurvePoint> LowPoints { get => _lowPoints; set => _lowPoints = value; }
+    public List<CurvePoint> ZoomPoints { get => _zoomPoints; set => _zoomPoints = value; }
     public CurvePointEditObject ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
     public CurvePointEditObject ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
@@ -197,6 +197,7 @@ public class Ground : MonoBehaviour, ISerializable
     {
 #if UNITY_EDITOR
         _curvePoints = _curvePoints.Where( cp => cp.Object != null).ToList();
+        _lowPoints = GetLowPoints();
         var serializedGround = (SerializedGround)Serialize();
 
         foreach (var seg in _segmentList)
@@ -211,20 +212,17 @@ public class Ground : MonoBehaviour, ISerializable
 #endif
     }
     #endregion
-    public void OnPlayerLand(IPlayer player)
+    public LinkedCameraTarget FindNearestLeftLowPoint(Vector3 target, GroundSegment segment)
     {
+
+        var startTarget = segment.StartTarget;
+
+        return CameraTargetUtility.FindNearestLeftTarget(target.x, startTarget);
 
     }
-    public int FindNearestLeftLowPointIndex(Vector3 target, GroundSegment segment)
+
+    private List<CurvePoint> GetLowPoints()
     {
-        if (LowPoints.Count == 0 || segment.StartLowPointIndex < 0 || segment.StartLowPointIndex >= LowPoints.Count)
-        {
-            return -1;
-        }
-
-        var startIndex = segment.StartLowPointIndex;
-
-        return CameraTargetUtility.FindNearestLeftLowPointIndex(target, this, startIndex);
-
+        return _curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
     }
 }

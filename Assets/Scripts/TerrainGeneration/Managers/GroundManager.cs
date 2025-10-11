@@ -7,6 +7,8 @@ public class GroundManager : MonoBehaviour
     [SerializeField] private FinishLine _finishLine;
     [SerializeField] private StartLine _startLine;
     public GroundSpawner groundSpawner;
+    public Ground currentGround;
+    public GroundSegment currentSegment;
     public GameObject groundContainer;
     [SerializeField] private List<Rigidbody2D> _normalBodies, _ragdollBodies;
     public FinishLine FinishLine { get => _finishLine; }

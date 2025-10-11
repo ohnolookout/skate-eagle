@@ -53,7 +53,7 @@ public class ActiveState : PlayerState
     public override void FixedUpdateState()
     {
         _player.MomentumTracker.Update();
-        if (crouched && !_player.Stomping)
+        if (crouched)
         {
             _playerBody.AddForce(new Vector2(0, -_player.Params.DownForce * 20));
         }

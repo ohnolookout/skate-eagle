@@ -32,7 +32,6 @@ public class RagdollController : MonoBehaviour
     void Start()
     {
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Die, TurnOnRagdoll);
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.PreDie, CheckForStompJoints);
     }
     #endregion
 
@@ -56,16 +55,6 @@ public class RagdollController : MonoBehaviour
         SwitchHinges(_ragDollJoints, true);
         ragdoll = true;
 
-    }
-
-    private void CheckForStompJoints(IPlayer _ = null)
-    {
-        if (!_player.Stomping)
-        {
-            _backwingFixedJoint.enabled = true;
-            _backwingSpringJoint.enabled = true;
-            _lowerwingSpringJoint.enabled = true;
-        }
     }
 
     static void SwitchColliders(Collider2D[] colliders, bool isOn)

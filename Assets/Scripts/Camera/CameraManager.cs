@@ -1,28 +1,28 @@
 using Com.LuisPedroFonseca.ProCamera2D;
 using System.Collections.Generic;
+using Unity.Hierarchy;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CameraManager : MonoBehaviour
 {
-#if UNITY_EDITOR
-    public bool doSetStartPosition = false;
-    private StartPositionSetter positionSetter;
-#endif
-    private LinkedCameraTarget _currentTarget;
-    [SerializeField] private CameraZoom _cameraZoom;
+    private LinkedCameraTarget _currentLeftTarget;
+    private Camera _camera;
     public bool doLogPosition = false;
-    private bool _doDuration = false;
     private bool _doUpdate = true;
     private IPlayer _player;
     private Transform _playerTransform;
-    private int _frameCount = 0;
+    private bool _doPlayerZoom = false;
+    private Ground _currentGround;
+    private float _xOffset = CameraTargetUtility.DefaultPlayerXOffset + CameraTargetUtility.DefaultTargetXOffset;
+
     void Awake()
     {
+        _camera = Camera.main;
         FreezeCamera();
 
-        LevelManager.OnPlayerCreated += AddPlayerTarget;
+        LevelManager.OnPlayerCreated += AddPlayer;
         LevelManager.OnLanding += GoToStartPosition;
-        LevelManager.OnAttempt += TurnOnDuration;
 
         //Freeze events
         LevelManager.OnStandby += UnfreezeCamera;
@@ -30,211 +30,141 @@ public class CameraManager : MonoBehaviour
         LevelManager.OnCrossFinish += FreezeCamera;
         LevelManager.OnGameOver += FreezeCamera;
 
-#if UNITY_EDITOR
-        if (doSetStartPosition)
-        {
-            positionSetter = new();
-        }
-#endif
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (_doUpdate)
         {
-            CheckCurrentTarget();
+            UpdateCameraPos();
         }
 
-#if UNITY_EDITOR
-        if (_doUpdate & doSetStartPosition)
-        {
-            doSetStartPosition = !positionSetter.CheckPosition(Camera.main.transform.position);
-        }
-#endif
     }
 
     private void OnDrawGizmosSelected()
     {
-        if(_currentTarget == null)
-        {
-            return;
-        }
-        Gizmos.color = Color.red;
-
-        Gizmos.color = Color.blue;
-
-        if (_currentTarget != null && _currentTarget != null)
-        {
-            //Gizmos.DrawSphere(_currentTarget.TargetPosition, 2f);
-        }
 
     }
 
-    private void AddPlayerTarget(IPlayer player)
+    private void AddPlayer(IPlayer player)
     {
         _player = player;
         _playerTransform = player.Transform;
-        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
-        //_camera.AddCameraTarget(player.CameraTarget, CameraTargetUtility.GetDuration(CameraTargetType.Player));
+        //_player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
+        _player.EventAnnouncer.SubscribeToAddCollision(OnPlayerCollide);
+        UpdateCameraPos();
     }
 
-    private void CheckCurrentTarget()
+    private void UpdateCameraPos()
     {
+        if (_player == null)
+        {
+            return;
+        }
+        var directionalXOffset = _player.FacingForward ? _xOffset : -_xOffset;        
+        var targetX = _playerTransform.position.x + directionalXOffset;
+        var camX = _playerTransform.position.x + (directionalXOffset / 2);
 
-        //var closestTarget = _currentTarget;
-        //if (_frameCount % 10 == 0)
-        //{
-        //    closestTarget = CameraTargetBuilder.FindNearest(_rootKDTarget, _playerTransform.position);
-        //    _frameCount = 0;
-        //}
+        UpdateCurrentTarget(targetX);
+        var camParams = CameraTargetUtility.GetCamParams(targetX, _currentLeftTarget);
 
-        //_frameCount++;
-        //if(closestTarget != _currentTarget)
-        //{
-        //    UpdateCurrentTarget(closestTarget);
-        //}
+        var adjustedOrthoSize = CheckPlayerZoom(camParams.orthoSize, camParams.camBottomY);
+
+        _camera.orthographicSize = adjustedOrthoSize;
+        _camera.transform.position = new(camX, camParams.camBottomY + adjustedOrthoSize);
     }
 
 
-    private void UpdateCurrentTarget(LinkedCameraTarget newTarget)
+    private void UpdateCurrentTarget(float xPos)
     {
-        //_currentTarget = newTarget;
+        if(xPos < _currentLeftTarget.Position.x && _currentLeftTarget.prevTarget != null)
+        {
+            while (_currentLeftTarget.prevTarget != null && _currentLeftTarget.Position.x > xPos)
+            {
+                _currentLeftTarget = _currentLeftTarget.prevTarget;
+            }
 
-        //if (_player.FacingForward)
-        //{
-        //    _targetsToTrack = _currentTarget.RightTargets;
-        //}
-        //else
-        //{
-        //    _targetsToTrack = _currentTarget.LeftTargets;
-        //}
+            return;
+        }
 
-
-        //var duration = CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow);
-
-        //bool playerTargetIsFound = false;
-        //bool currentTargetIsFound = false;
-
-        //for (int i = 0; i < _camera.CameraTargets.Count; i++)
-        //{
-        //    var target = _camera.CameraTargets[i];
-
-        //    if(target == null || target.TargetPosition == null)
-        //    {
-        //        _camera.RemoveCameraTarget(target);
-        //        continue;
-        //    }
-
-        //    if (!playerTargetIsFound && target.TargetTransform!= null && target.TargetTransform.GetInstanceID() == _player.Transform.GetInstanceID())
-        //    {
-        //        playerTargetIsFound = true;
-        //        continue;
-        //    }
-
-        //    if(target.TargetPosition == _currentTarget.Target.TargetPosition)
-        //    {
-        //        currentTargetIsFound = true;
-        //        continue;
-        //    }
-
-        //    _camera.RemoveCameraTarget(target, duration);
-        //}
-
-        //if (!currentTargetIsFound)
-        //{
-        //    _camera.AddCameraTarget(_currentTarget.Target, duration);
-        //}
-
-        //foreach (var target in _targetsToTrack)
-        //{
-        //    if(target.Target == null)
-        //    {
-        //        continue;
-        //    }
-            
-        //    _camera.AddCameraTarget(target.Target, duration);
-        //}
+        while (_currentLeftTarget.nextTarget != null && xPos > _currentLeftTarget.nextTarget.Position.x)
+        {
+            _currentLeftTarget = _currentLeftTarget.nextTarget;
+        }
 
     }
 
     private void OnSwitchPlayerDirection(IPlayer player)
     {
-        UpdateCurrentTarget(_currentTarget);
+
+    }
+
+    private void OnPlayerCollide(Collision2D collision, MomentumTracker _, ColliderCategory __, TrackingType ___)
+    {
+        if (!_player.Airborne)
+        {
+            return;
+        }
+
+        var collidedTransformParent = collision.transform.parent;
+
+        if (collidedTransformParent == _currentGround.transform)
+        {
+            return;
+        }
+
+        var playerPos = _player.NormalBody.position;
+
+        var collidedSeg = collision.gameObject.GetComponent<GroundSegment>();
+        _currentGround = collidedSeg.parentGround;
+        var leftTarget = _currentGround.FindNearestLeftLowPoint(_player.NormalBody.position, collidedSeg);
+
+        if (leftTarget.nextTarget == null)
+        {
+            _currentLeftTarget = leftTarget;
+        }
+        else {
+            var leftDistance = Mathf.Abs(leftTarget.Position.x - playerPos.x);
+            var rightDistance = Mathf.Abs(leftTarget.nextTarget.Position.x - playerPos.x);
+
+            _currentLeftTarget = leftDistance < rightDistance ? leftTarget : leftTarget.nextTarget;
+        }
+
     }
 
     private void FreezeCamera()
     {
-        _cameraZoom.gameObject.SetActive(false);
-        _doDuration = false;
         _doUpdate = false;
+        _doPlayerZoom = false;
     }
 
     private void UnfreezeCamera()
     {
-        _cameraZoom.gameObject.SetActive(true);
-        _cameraZoom.ResetZoom();
         _doUpdate = true;
     }
 
     private void GoToStartPosition(Level level, PlayerRecord _)
     {
         FreezeCamera();
-        Camera.main.transform.position = level.CameraStartPosition;
-        SetFirstTarget(level.StartTarget);
+        Camera.main.transform.position = level.SerializedStartLine.CamStartPosition;
+        Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
+        _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
+        _doPlayerZoom = false;
+
     }
 
-    private void SetFirstTarget(LinkedCameraTarget startTarget)
+    private float CheckPlayerZoom(float targetOrthoSize, float camBottomY)
     {
-        if (startTarget == null)
+        var playerY = _playerTransform.position.y;
+        var yDist = playerY - camBottomY;
+        var playerZoomSize = yDist / (1 + CameraTargetUtility.PlayerHighYT);
+
+        if (playerZoomSize > targetOrthoSize)
         {
-            Debug.LogError("Start target is null");
-            return;
+            Debug.Log("Player Y: " + playerY + " Cam bottom Y: " + camBottomY + " Cam top y: " + (camBottomY + playerZoomSize * 2));
         }
-        //_camera.AddCameraTarget(startTarget.Target, CameraTargetUtility.GetDuration(CameraTargetType.CurvePointLow));
-
-        //_currentTarget = startTarget;
-
-        //_targetsToTrack = _currentTarget.RightTargets;
+        return Mathf.Max(playerZoomSize, targetOrthoSize);
     }
 
-    private void TurnOnDuration()
-    {
-        _doDuration = true;
-
-#if UNITY_EDITOR
-        doSetStartPosition = false;
-#endif
-    }
-
-#if UNITY_EDITOR
-    private class StartPositionSetter
-    {
-        private float _startPositionTimer = 0;
-        private Vector3 _lastPosition;
-        private const int TimeLimit = 1;
-
-//Update returns true if camera has stayed in place for time limit
-        public bool CheckPosition(Vector3 currentPosition)
-        {
-            if (currentPosition != _lastPosition)
-            {
-                _lastPosition = currentPosition;
-                _startPositionTimer = 0;
-            }
-
-            else if(_startPositionTimer >= TimeLimit)
-            {
-                GameManager.Instance.CurrentLevel.CameraStartPosition = currentPosition;
-                Debug.Log("Camera start position for level " + GameManager.Instance.CurrentLevel.Name + 
-                    " set to " + GameManager.Instance.CurrentLevel.CameraStartPosition);
-                return true;
-            } else
-            {
-                _startPositionTimer += Time.deltaTime;
-            }
-
-            return false;
-        }
-    }
-#endif
 }
+

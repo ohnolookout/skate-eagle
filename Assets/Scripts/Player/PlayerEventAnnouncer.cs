@@ -46,10 +46,6 @@ public class PlayerEventAnnouncer
         };
     }
 
-    public Action<IPlayer> GetAction(PlayerEvent action)
-    {
-        return _actionDict[action];
-    }
 
     public void SubscribeToAddCollision(Action<Collision2D, MomentumTracker, ColliderCategory, TrackingType> action)
     {
@@ -65,13 +61,6 @@ public class PlayerEventAnnouncer
     public void InvokeAction(PlayerEvent action)
     {
         _actionDict[action]?.Invoke(_player);
-    }
-
-    //Invokes event and then clears all subscribed actions.
-    public void InvokeAndClearAction(PlayerEvent action)
-    {
-        InvokeAction(action);
-        _actionDict[action] = null;
     }
 
     public void SubscribeToEvent(PlayerEvent eventName, Action<IPlayer> action)

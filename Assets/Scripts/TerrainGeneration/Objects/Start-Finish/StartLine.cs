@@ -6,10 +6,16 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 {
     [SerializeField] private CurvePoint _curvePoint;
     [SerializeField] private float _xOffset = 0;
+    [SerializeField] private Vector3 _camStartPosition = new();
+    [SerializeField] private float _camOrthoSize = 50;
+    private LinkedCameraTarget _firstCameraTarget;
     public GameObject GameObject => gameObject;
 
     public CurvePoint CurvePoint { get => _curvePoint; set => _curvePoint = value; }
     public float XOffset {get => _xOffset; set => _xOffset = value; }
+    public Vector3 CamStartPosition { get => _camStartPosition; set => _camStartPosition = value; }
+    public float CamOrthoSize { get => _camOrthoSize; set => _camOrthoSize = value; }
+    public LinkedCameraTarget FirstCameraTarget { get => _firstCameraTarget; set => _firstCameraTarget = value; }
 
     private void OnDrawGizmosSelected()
     {
@@ -21,6 +27,9 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     {
         _xOffset = serializedStartLine.xOffset;
         _curvePoint = serializedStartLine.CurvePoint;
+        _camStartPosition = serializedStartLine.CamStartPosition;
+        _camOrthoSize = serializedStartLine.CamOrthoSize;
+        _firstCameraTarget = serializedStartLine.FirstCameraTarget;
     }
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)

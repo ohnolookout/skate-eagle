@@ -37,15 +37,26 @@ public class SerializedGround : IDeserializable
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
         lowPoints = ground.CurvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
-        Debug.Log("Serialized ground with " + lowPoints.Count + " low points.");
+
+        manualLeftCamTarget = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
+        manualRightCamTarget = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
 
         if (lowPoints.Count == 0)
         {
             Debug.LogWarning($"SerializedGround: Ground {ground.name} has no lowpoint camera targets. Add some.");
         }
+        else
+        {
+            if (manualLeftCamTarget != null)
+            {
+                lowPoints[0].LinkedCameraTarget.prevTarget = manualLeftCamTarget.LinkedCameraTarget;
+            }
 
-        manualLeftCamTarget = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
-        manualRightCamTarget = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
+            if (manualRightCamTarget != null)
+            {
+                lowPoints[^1].LinkedCameraTarget = manualRightCamTarget.LinkedCameraTarget;
+            }
+        }
 
         isInverted = ground.IsInverted;
         hasShadow = ground.HasShadow;
@@ -142,8 +153,9 @@ public class SerializedGround : IDeserializable
         {
             ground.SetCurvePoint(curvePoint);
         }
+
+        ground.LowPoints = ground.CurvePoints.Where( cp => cp.LinkedCameraTarget.doLowTarget).ToList();
 #endif
-        ground.LowPoints = lowPoints;
 
 
 

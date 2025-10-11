@@ -3,16 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.HableCurve;
 
 public static class CameraTargetUtility
 {
     //Min/Max Window
-    public const float DefaultXBuffer = 55;
+    public const float DefaultTargetXOffset = 55;
+    public const float DefaultPlayerXOffset = 45;
     public const float MinYOffsetT = 0.05f;
     public const float MaxYOffsetT = 0.7f;
     public const float HighYT = 0.3f;
+    public const float PlayerHighYT = 0.7f;
     public const float MinSlopeDeltaForOffset = -.75f;
     public const float MaxSlopeDeltaForOffset = .75f;
     public const float DefaultAspectRatio = 16f / 9f;
@@ -23,7 +23,6 @@ public static class CameraTargetUtility
     public static void BuildGroundCameraTargets(Ground ground)
     {
         var lowPoints = ground.CurvePoints.Where(cp => cp.LinkedCameraTarget != null && cp.LinkedCameraTarget.doLowTarget);
-        ground.LowPoints = lowPoints.ToList();
 
         Dictionary<CurvePoint, IEnumerable<Vector3>> sectionPositionDict = new();
         if (lowPoints.Count() == 0)
@@ -37,7 +36,7 @@ public static class CameraTargetUtility
         //Calculate y offset for each low point
         foreach (var cp in lowPoints)
         {
-            sectionPositionDict[cp] = GetSectionPositions(cp, ground, targetIndices[cp].leftIndex, targetIndices[cp].rightIndex);
+            sectionPositionDict[cp] = GetSectionPositions(cp, ground, targetIndices[cp].prevIndex, targetIndices[cp].nextIndex);
             SetYOffsets(cp, sectionPositionDict[cp]);
         }
 
@@ -46,18 +45,18 @@ public static class CameraTargetUtility
         {
             sectionPositionDict[cp] = sectionPositionDict[cp].Concat(new[] { cp.LinkedCameraTarget.CamBottomPosition });
             var indices = targetIndices[cp];
-            var leftIndex = indices.leftIndex;
-            var rightIndex = indices.rightIndex;
+            var prevIndex = indices.prevIndex;
+            var nexIndex = indices.nextIndex;
 
             if(cp.LinkedCameraTarget.doUseManualZoomOrthoSize)
             {
-                cp.LinkedCameraTarget.zoomOrthoSize = Mathf.Max(cp.LinkedCameraTarget.manualZoomOrthoSize, DefaultOrthoSize);
+                cp.LinkedCameraTarget.OrthoSize = Mathf.Max(cp.LinkedCameraTarget.manualZoomOrthoSize, DefaultOrthoSize);
             } else
             {
                 var maxYDelta = FindMaxYDelta(ground, cp, sectionPositionDict[cp]);
 
                 //Translate maxYDelta to orthographic size
-                cp.LinkedCameraTarget.zoomOrthoSize = Mathf.Max(maxYDelta / (1 + HighYT), DefaultOrthoSize);
+                cp.LinkedCameraTarget.OrthoSize = Mathf.Max(maxYDelta / (1 + HighYT), DefaultOrthoSize);
             }
         }
 
@@ -81,8 +80,8 @@ public static class CameraTargetUtility
             }
         }
 
-        var prevPos = cp.LinkedCameraTarget.prevTarget != null ? cp.LinkedCameraTarget.prevTarget.TargetPosition : cp.Position + Vector3.left;
-        var nextPos = cp.LinkedCameraTarget.nextTarget != null ? cp.LinkedCameraTarget.nextTarget.TargetPosition : cp.Position + Vector3.right;
+        var prevPos = cp.LinkedCameraTarget.prevTarget != null ? cp.LinkedCameraTarget.prevTarget.Position : cp.Position + Vector3.left;
+        var nextPos = cp.LinkedCameraTarget.nextTarget != null ? cp.LinkedCameraTarget.nextTarget.Position : cp.Position + Vector3.right;
 
         var slopeFromPrev = (cp.Position.y - prevPos.y) / (cp.Position.x - prevPos.x);
         var slopeToNext = (nextPos.y - cp.Position.y)/(nextPos.x - cp.Position.x);
@@ -109,7 +108,7 @@ public static class CameraTargetUtility
         var camBottomPos = cp.LinkedCameraTarget.CamBottomPosition;
         foreach (var pos in positions)
         {
-            var camBottomIntercept = GetCamBottomIntercept(pos, ground);
+            var camBottomIntercept = GetCamBottomIntercept(pos.x, ground);
 
             maxYDelta = Mathf.Max(maxYDelta, pos.y - camBottomIntercept.y);
         }
@@ -119,22 +118,22 @@ public static class CameraTargetUtility
 
     public static IEnumerable<Vector3> GetSectionPositions(CurvePoint cp, Ground ground, int start, int end)
     {
-        var allSectionPoints = ground.CurvePoints.GetRange(start, end - start);
+        var allSectionPoints = ground.CurvePoints.GetRange(start, end - start + 1);
         var sectionPositions = allSectionPoints.Select(p =>
         {
-            return p.LinkedCameraTarget.TargetPosition;
+            return p.LinkedCameraTarget.Position;
         });
 
         var zoomPoints = ground.ZoomPoints.Where(z => z.Position.x > ground.CurvePoints[start].Position.x && z.Position.x < ground.CurvePoints[end].Position.x);
         zoomPoints.Concat(cp.LinkedCameraTarget.forceZoomTargets);
         zoomPoints = zoomPoints.Distinct();
-        var zoomPositions = zoomPoints.Select(z => z.LinkedCameraTarget.TargetPosition);
+        var zoomPositions = zoomPoints.Select(z => z.LinkedCameraTarget.Position);
 
         return sectionPositions.Concat(zoomPositions);
     }
-    public static Dictionary<CurvePoint, (int leftIndex, int rightIndex)> BuildAllPrevAndNextTargets(Ground ground, IEnumerable<CurvePoint> lowPoints)
+    public static Dictionary<CurvePoint, (int prevIndex, int nextIndex)> BuildAllPrevAndNextTargets(Ground ground, IEnumerable<CurvePoint> lowPoints)
     {
-        Dictionary<CurvePoint, (int leftIndex, int rightIndex)> targetIndices = new();   
+        Dictionary<CurvePoint, (int prevIndex, int nextIndex)> targetIndices = new();   
 
         if (!lowPoints.Any())
         {
@@ -187,100 +186,103 @@ public static class CameraTargetUtility
         }
 
         return targetIndices;
-    }    
+    }
 
-    public static Vector3 GetCamBottomIntercept(Vector3 target, Ground ground, int startIndex = -1)
+    public static Vector3 GetCamBottomIntercept(float posX, Ground ground)
     {
         if(ground.CurvePoints.Count == 0)
         {
             Debug.LogWarning("No curve points found for ground: " + ground.name);
-            return target + Vector3.down * DefaultOrthoSize;
+            return new(posX, DefaultOrthoSize);
         }
 
-        var leftIndex = FindNearestLeftLowPointIndex(target, ground, startIndex);
-
-        CurvePoint rightPoint = null;
-        CurvePoint leftPoint = null;
-
-        var foundPoint = ground.LowPoints[leftIndex];
-        
-        if(leftIndex < ground.CurvePoints.Count - 1 && foundPoint.Position.x < target.x)
-        {
-            leftPoint = foundPoint;
-            rightPoint = ground.LowPoints[leftIndex + 1];
-        } else
-        {
-            if (foundPoint.Position.x > target.x)
-            {
-                leftPoint = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
-                rightPoint = foundPoint;
-            } else
-            {
-                leftPoint = foundPoint;
-                rightPoint = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
-            }
-
-        }
-
+        var target = FindNearestLeftTarget(posX, ground);
+                
         float camBottomY;
-        if (rightPoint == null)
+        if (target.nextTarget == null || target.Position.x > posX)
         {
-            camBottomY = leftPoint.LinkedCameraTarget.CamBottomPosition.y;
-        }
-        else if (leftPoint == null)
-        {
-            camBottomY = rightPoint.LinkedCameraTarget.CamBottomPosition.y;
+            //Use target bottom y if there is no next target or if target is to the left of found target (bc found target is leftmost target in the chain)
+            camBottomY = target.CamBottomPosition.y;
         }
         else
         {
-            var t = (target.x - leftPoint.Position.x) / (rightPoint.Position.x - leftPoint.Position.x);
-            camBottomY = Mathf.Lerp(leftPoint.LinkedCameraTarget.CamBottomPosition.y, rightPoint.LinkedCameraTarget.CamBottomPosition.y, t);
+            var t = (posX - target.Position.x) / (target.nextTarget.Position.x - target.Position.x);
+            camBottomY = Mathf.Lerp(target.CamBottomPosition.y, target.nextTarget.CamBottomPosition.y, t);
         }
 
-        return new(target.x, camBottomY);
+        return new(posX, camBottomY);
 
     }
 
-    public static int FindNearestLeftLowPointIndex(Vector3 target, Ground ground, int startIndex = -1)
+    public static (float camBottomY, float orthoSize) GetCamParams(float posX, LinkedCameraTarget leftTarget)
     {
-        int leftIndex;
-
-        if (startIndex == -1)
+        if(leftTarget == null)
         {
-            leftIndex = ground.LowPoints.Count / 2;
+            Debug.LogWarning("No target added...");
+            return (-DefaultOrthoSize, DefaultOrthoSize);
+        }
+
+        float camBottomY;
+        float orthoSize;
+        if (leftTarget.nextTarget == null || leftTarget.Position.x > posX)
+        {
+            //Use target bottom y if there is no next target or if target is to the left of found target (bc found target is leftmost target in the chain)
+            camBottomY = leftTarget.CamBottomPosition.y;
+            orthoSize = leftTarget.OrthoSize;
         }
         else
         {
-            leftIndex = Mathf.Clamp(startIndex, 0, ground.LowPoints.Count - 1);
+            var t = (posX - leftTarget.Position.x) / (leftTarget.nextTarget.Position.x - leftTarget.Position.x);
+            t = Mathf.Clamp01(t);
+            orthoSize = Mathf.SmoothStep(leftTarget.OrthoSize, leftTarget.nextTarget.OrthoSize, t);
+            camBottomY = Mathf.SmoothStep(leftTarget.CamBottomPosition.y, leftTarget.nextTarget.CamBottomPosition.y, t);
         }
+        return (camBottomY, orthoSize);
 
-        if (leftIndex == ground.LowPoints.Count - 1)
+    }
+    public static LinkedCameraTarget FindNearestLeftTarget(float posX, Ground ground)
+    {
+        if (ground.LowPoints.Count == 0)
         {
-            return leftIndex;
+            Debug.LogWarning($"Ground {ground.name} has now low targets. Add some.");
+            return null;
         }
 
-        bool lookRight = target.x > ground.LowPoints[leftIndex].Position.x;
+        var startTarget = ground.LowPoints[ground.LowPoints.Count() / 2].LinkedCameraTarget;
+
+        if (ground.LowPoints.Count == 1)
+        {
+            return startTarget;
+        }
+
+        return FindNearestLeftTarget(posX, startTarget);
+    }
+    public static LinkedCameraTarget FindNearestLeftTarget(float posX, LinkedCameraTarget startTarget)
+    {
+        var currentTarget = startTarget;
+
+        bool lookRight = posX > currentTarget.Position.x;
 
         if (lookRight)
         {
-            while (leftIndex < ground.LowPoints.Count - 2)
+            while (currentTarget.nextTarget != null)
             {
-                if (ground.LowPoints[leftIndex + 1].Position.x > target.x)
+                if (currentTarget.nextTarget.Position.x > posX)
                 {
                     break;
                 }
-                leftIndex++;
+                currentTarget = currentTarget.nextTarget;
             }
         }
         else
         {
-            while (leftIndex > 0 && ground.LowPoints[leftIndex].Position.x > target.x)
+            while (currentTarget.prevTarget != null && currentTarget.Position.x > posX)
             {
-                leftIndex--;
+                currentTarget = currentTarget.prevTarget;
             }
         }
         
-        return leftIndex;
+        return currentTarget;
     }
 
 }

@@ -51,11 +51,11 @@ public class EditManagerInspector : Editor
                 _editManager.medalTimes.Bronze = EditorGUILayout.FloatField("Bronze", _editManager.medalTimes.Bronze, GUILayout.ExpandWidth(false));
             }
 
-            _showCamStart = EditorGUILayout.Foldout(_showCamStart, "Camera Start Position");
-            if (_showCamStart)
-            {
-                _editManager.cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", _editManager.cameraStartPosition);
-            }
+            //_showCamStart = EditorGUILayout.Foldout(_showCamStart, "Camera Start Position");
+            //if (_showCamStart)
+            //{
+            //    _editManager.cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", _editManager.cameraStartPosition);
+            //}
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -355,10 +355,10 @@ public class EditorToolbar : EditorWindow
 
         if (_cameraManager != null)
         {
-            GUILayout.Space(10);
-            GUILayout.Label("Camera Management", EditorStyles.boldLabel);
+            //GUILayout.Space(10);
+            //GUILayout.Label("Camera Management", EditorStyles.boldLabel);
 
-            _cameraManager.doSetStartPosition = EditorGUILayout.Toggle("Set Camera Start Position", _cameraManager.doSetStartPosition, GUILayout.ExpandWidth(false));
+            //_cameraManager.doSetStartPosition = EditorGUILayout.Toggle("Set Camera Start Position", _cameraManager.doSetStartPosition, GUILayout.ExpandWidth(false));
         }
 
     }
