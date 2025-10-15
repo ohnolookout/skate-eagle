@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -54,7 +51,7 @@ public static class SerializeLevelUtility
                     cpObj.name += "_LT";
                 }
 
-                cpObj.LinkedCameraTarget.SerializedObjectLocation = new int[2] { i, j };
+                cpObj.LinkedCameraTarget.serializedObjectLocation = new int[2] { i, j };
             }
         }
     }
@@ -85,6 +82,7 @@ public static class SerializeLevelUtility
             Debug.LogWarning("No object associated with curvepoint for startline.");
             return (SerializedStartLine)startLine.Serialize();
         }
+
         var transform = startLine.CurvePoint.Object.transform;
         Ground ground = null;
 
@@ -107,12 +105,13 @@ public static class SerializeLevelUtility
             return (SerializedStartLine)startLine.Serialize();
         }
 
-        var xPos = startLine.CurvePoint.Position.x + startLine.XOffset + CameraTargetUtility.DefaultPlayerXOffset + CameraTargetUtility.DefaultTargetXOffset;
+        var xPos = startLine.CurvePoint.Position.x + startLine.XOffset + CameraManager.minXOffset;
         var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
         var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
         startLine.FirstCameraTarget = leftTarget;
+        startLine.FirstHighPoint = ground.HighPoints[0];
         var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
-        startLine.CamStartPosition = new(xPos - CameraTargetUtility.DefaultTargetXOffset, camParams.camBottomY + camParams.orthoSize);
+        startLine.CamStartPosition = new(xPos - (CameraManager.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
         startLine.CamOrthoSize = camParams.orthoSize;
 
         return (SerializedStartLine)startLine.Serialize();
@@ -408,11 +407,11 @@ public static class SerializeLevelUtility
 
             if (gameObject != null)
             {
-                resync.resyncFunc(gameObject);
+                resync.resyncFunc(gameObject);         
             }
             else
             {
-                Debug.Log("Gameobject is null. Skipping resync...");
+                Debug.Log($"Gameobject is null. Resync failed.");
             }
         }
     }

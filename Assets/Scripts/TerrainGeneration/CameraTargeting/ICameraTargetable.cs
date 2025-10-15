@@ -6,15 +6,12 @@ using System;
 
 public interface ICameraTargetable
 {
-    void GenerateTarget();
-    //Use objects for assigning targets in the editor
-    List<GameObject> LeftTargetObjects { get; set; }
-    List<GameObject> RightTargetObjects { get; set; }
+    void AddObjectToTarget();
     
     //Use LinkedCameraTarget for actual targeting, but only build from GameObjects on level save
     LinkedCameraTarget LinkedCameraTarget { get; set; }
+    GameObject Object { get; }
     bool DoTargetLow { get; set; }
-    bool DoTargetHigh { get; set; }
 }
 
 

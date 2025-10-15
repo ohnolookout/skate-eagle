@@ -29,7 +29,6 @@ public class LevelDatabase : ScriptableObject
         get => _lastLevelLoaded;
         set
         {
-            Debug.Log($"Setting last level loaded to {value?.Name}");
             _lastLevelLoaded = value;
         }
     }

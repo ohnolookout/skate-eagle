@@ -8,7 +8,6 @@ public class EditManagerInspector : Editor
     private EditManager _editManager;
     private LevelDatabase _levelDB;
     private bool _showMedals = false;
-    private bool _showCamStart = false;
 
     public bool debugMode = false;
     public override void OnInspectorGUI()
@@ -71,14 +70,14 @@ public class EditManagerInspector : Editor
                 _editManager.UpdateEditorLevel();
             }
 
-            if (GUILayout.Button("Populate Default Targets", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("Build Targets", GUILayout.ExpandWidth(false)))
             {
                 var grounds = _editManager.GroundManager.GetGrounds();
 
                 foreach (var ground in grounds)
                 {
                     Undo.RecordObject(ground, "Populating default targets.");
-                    GroundInspector.PopulateDefaultTargets(ground, _editManager);
+                    CameraTargetUtility.BuildGroundCameraTargets(ground);
                 }
 
                 _editManager.UpdateEditorLevel();

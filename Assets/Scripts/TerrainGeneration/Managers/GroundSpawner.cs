@@ -46,7 +46,7 @@ public class GroundSpawner : MonoBehaviour
     #endregion
 
     #region Start/Finish
-    public Vector2 SetStartPoint(Ground ground, CurvePoint curvePoint)
+    public Vector2 SetStartPoint(Ground ground, LinkedCameraTarget curvePoint)
     {
         //segment.IsStart = true;
         var startPoint = ground.transform.TransformPoint(curvePoint.Position);

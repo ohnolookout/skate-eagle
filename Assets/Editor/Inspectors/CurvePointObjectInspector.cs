@@ -125,7 +125,7 @@ public class CurvePointObjectInspector : Editor
         if (EditorGUI.EndChangeCheck())
         {
             var newTang = BezierMath.ConvertAngleToVector(leftTangAngle, _curvePointObject.LeftTangentMagnitude);
-            _curvePointObject.LeftTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
+            _curvePointObject.LeftTangentChanged((Vector3)(newTang + _curvePointObject.CurvePoint.Position));
             RefreshGround();
         }
 
@@ -138,7 +138,7 @@ public class CurvePointObjectInspector : Editor
                 leftTangMag = leftTangMag < 0 ? -0.5f : 0.5f;
             }
             var newTang = BezierMath.ConvertAngleToVector(leftTangAngle, leftTangMag);
-            _curvePointObject.LeftTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
+            _curvePointObject.LeftTangentChanged((Vector3)(newTang + _curvePointObject.CurvePoint.Position));
             RefreshGround();
         }
 
@@ -151,7 +151,7 @@ public class CurvePointObjectInspector : Editor
         if (EditorGUI.EndChangeCheck())
         {
             var newTang = BezierMath.ConvertAngleToVector(rightTangAngle, _curvePointObject.RightTangentMagnitude);
-            _curvePointObject.RightTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
+            _curvePointObject.RightTangentChanged((Vector3)(newTang + _curvePointObject.CurvePoint.Position));
             RefreshGround();
         }
 
@@ -164,7 +164,7 @@ public class CurvePointObjectInspector : Editor
                 rightTangMag = rightTangMag < 0 ? -0.5f : 0.5f;
             }
             var newTang = BezierMath.ConvertAngleToVector(rightTangAngle, rightTangMag);
-            _curvePointObject.RightTangentChanged(newTang + _curvePointObject.CurvePoint.Position);
+            _curvePointObject.RightTangentChanged((Vector3)(newTang + _curvePointObject.CurvePoint.Position));
             RefreshGround();
         }
 
@@ -230,8 +230,8 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RecordObject(_curvePointObject, "Reset Curve Point Tangents");
             _curvePointObject.TangentsChanged(
-                _curvePointObject.CurvePoint.Position + new Vector3(-1, 0),
-                _curvePointObject.CurvePoint.Position + new Vector3(-1, 0));
+                (Vector3)(_curvePointObject.CurvePoint.Position + new Vector3(-1, 0)),
+                (Vector3)(_curvePointObject.CurvePoint.Position + new Vector3(-1, 0)));
 
             RefreshGround();
         }
@@ -289,7 +289,6 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetLow = doTargetLow;
-            _curvePointObject.GenerateTarget();
         }
 
         EditorGUI.BeginChangeCheck();
@@ -300,33 +299,12 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetHigh = doTargetHigh;
-            _curvePointObject.GenerateTarget();
         }
 
         EditorGUILayout.EndHorizontal();
 
         if (_curvePointObject.DoTargetLow || _curvePointObject.DoTargetHigh)
         {
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Populate Defaults", GUILayout.ExpandWidth(true)))
-            {
-                Undo.RecordObject(_curvePointObject, "Reseting targets to default");
-                _curvePointObject.PopulateDefaultTargets();
-                _editManager.UpdateEditorLevel();
-            }
-            if (GUILayout.Button("Find Next", GUILayout.ExpandWidth(true)))
-            {
-                if (!_curvePointObject.DoTargetLow)
-                {
-                    Debug.LogWarning("Curve point not set as camera target. Cannot find adjacent curve points.");
-                    return;
-                }
-                _findAdjacentCurvePointWindow = EditorWindow.GetWindow<FindAdjacentCurvePointWindow>();
-                _findAdjacentCurvePointWindow.Init(_curvePointObject);
-            }
-
-            EditorGUILayout.EndHorizontal();
 
             _curvePointObject.LinkedCameraTarget.doUseManualOffsets = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffsets, "Manual Offset", GUILayout.ExpandWidth(false));
 
@@ -681,89 +659,9 @@ public class CurvePointObjectInspector : Editor
 
         Handles.BeginGUI();
 
-        if (targetCPObj.LinkedCameraTarget.doLowTarget)
-        {
-            if (currentCPObj.LeftTargetObjects.Contains(targetObj))
-            {
-                GUI.backgroundColor = Color.lightGreen;
-                if (GUI.Button(rect, leftTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
-                    currentCPObj.LeftTargetObjects.Remove(targetObj);
-                }
-            } else
-            {
-                GUI.backgroundColor = Color.orangeRed;
-                if (GUI.Button(rect, leftTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Add Camera Target");
-                    currentCPObj.LeftTargetObjects.Add(targetObj);
-                }
-            }
-
-            rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-
-            if (currentCPObj.RightTargetObjects.Contains(targetObj))
-            {
-                GUI.backgroundColor = Color.lightGreen;
-                if (GUI.Button(rect, rightTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
-                    currentCPObj.RightTargetObjects.Remove(targetObj);
-                }
-            }
-            else
-            {
-                GUI.backgroundColor = Color.orangeRed;
-                if (GUI.Button(rect, rightTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Add Camera Target");
-                    currentCPObj.RightTargetObjects.Add(targetObj);
-                }
-            }
-        }
-
         if (xMod != 0)
         {
             rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-        }
-
-        if (targetCPObj.LinkedCameraTarget.doZoomTarget)
-        {
-            if (currentCPObj.LeftTargetObjects.Contains(targetObj))
-            {
-                GUI.backgroundColor = Color.lightGreen;
-                if (GUI.Button(rect, highTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
-                    currentCPObj.LeftTargetObjects.Remove(targetObj);
-                }
-            }
-            else
-            {
-                GUI.backgroundColor = Color.orangeRed;
-                if (GUI.Button(rect, highTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Add Camera Target");
-                    currentCPObj.LeftTargetObjects.Add(targetObj);
-                }
-            }
-            if (currentCPObj.RightTargetObjects.Contains(targetObj))
-            {
-                if (GUI.Button(rect, highTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Remove Camera Target");
-                    currentCPObj.RightTargetObjects.Remove(targetObj);
-                }
-            }
-            else
-            {
-                if (GUI.Button(rect, highTargetButton))
-                {
-                    Undo.RecordObject(currentCPObj, "Add Camera Target");
-                    currentCPObj.RightTargetObjects.Add(targetObj);
-                }
-            }
         }
 
         Handles.EndGUI();
@@ -771,11 +669,11 @@ public class CurvePointObjectInspector : Editor
 
     public static void DrawCamBottomIntercept(CurvePointEditObject cpObj)
     {
-        var camBottom = CameraTargetUtility.GetCamBottomIntercept(cpObj.CurvePoint.Position.x, cpObj.ParentGround);
+        var camBottom = CameraTargetUtility.GetCamBottomIntercept((float)cpObj.CurvePoint.Position.x, cpObj.ParentGround);
 
         Handles.color = Color.orange;
         Handles.SphereHandleCap(0, camBottom, Quaternion.identity, 1f, EventType.Repaint);
-        Handles.DrawLine(camBottom, cpObj.CurvePoint.Position);
+        Handles.DrawLine(camBottom, (Vector3)cpObj.CurvePoint.Position);
     }
 
     public static void DrawTargetInfo(CurvePointEditObject cpObj)
@@ -785,12 +683,12 @@ public class CurvePointObjectInspector : Editor
         {
             return;
         }
-        var camCenterX = target.Position.x - CameraTargetUtility.DefaultTargetXOffset;
+        var camCenterX = target.Position.x - (CameraManager.minXOffset/2);
 
         var camBottomY = target.CamBottomPosition.y;
-        var camTopY = camBottomY + (2 * target.OrthoSize);
-        var camLeftX = camCenterX - target.OrthoSize * CameraTargetUtility.DefaultAspectRatio;
-        var camRightX = camCenterX + target.OrthoSize * CameraTargetUtility.DefaultAspectRatio;
+        var camTopY = camBottomY + (2 * target.orthoSize);
+        var camLeftX = camCenterX - target.orthoSize * CameraTargetUtility.DefaultAspectRatio;
+        var camRightX = camCenterX + target.orthoSize * CameraTargetUtility.DefaultAspectRatio;
 
         var camTopLeft = new Vector3(camLeftX, camTopY);
         var camTopRight = new Vector3(camRightX, camTopY);

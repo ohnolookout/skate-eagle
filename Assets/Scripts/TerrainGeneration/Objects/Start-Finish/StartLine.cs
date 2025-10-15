@@ -9,6 +9,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private Vector3 _camStartPosition = new();
     [SerializeField] private float _camOrthoSize = 50;
     private LinkedCameraTarget _firstCameraTarget;
+    private LinkedHighPoint _firstHighPoint;
     public GameObject GameObject => gameObject;
 
     public CurvePoint CurvePoint { get => _curvePoint; set => _curvePoint = value; }
@@ -16,6 +17,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     public Vector3 CamStartPosition { get => _camStartPosition; set => _camStartPosition = value; }
     public float CamOrthoSize { get => _camOrthoSize; set => _camOrthoSize = value; }
     public LinkedCameraTarget FirstCameraTarget { get => _firstCameraTarget; set => _firstCameraTarget = value; }
+    public LinkedHighPoint FirstHighPoint { get => _firstHighPoint; set => _firstHighPoint = value; }
 
     private void OnDrawGizmosSelected()
     {
@@ -30,6 +32,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _camStartPosition = serializedStartLine.CamStartPosition;
         _camOrthoSize = serializedStartLine.CamOrthoSize;
         _firstCameraTarget = serializedStartLine.FirstCameraTarget;
+        _firstHighPoint = serializedStartLine.FirstHighPoint;
     }
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)
@@ -48,8 +51,15 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
         if (_curvePoint != null)
         {
-            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.SerializedObjectLocation);
+            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.serializedObjectLocation);
             resync.resyncFunc = (obj) => { _curvePoint.Object = obj; };
+            resyncs.Add(resync);
+        }
+
+        if (FirstCameraTarget != null && FirstCameraTarget.parentObject != null)
+        {
+            var resync = new ObjectResync(FirstCameraTarget.serializedObjectLocation);
+            resync.resyncFunc = (obj) => { FirstCameraTarget.parentObject.Object.GetComponent<CurvePoint>().Object = obj; };
             resyncs.Add(resync);
         }
 

@@ -157,14 +157,14 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         List<ObjectResync> resyncs = new();
         if (_flagPoint != null)
         {
-            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.SerializedObjectLocation);
+            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.serializedObjectLocation);
             resync.resyncFunc = (obj) => { _flagPoint.Object = obj; };
             resyncs.Add(resync);
         }
 
         if (_backstop != null)
         {
-            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.SerializedObjectLocation);
+            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.serializedObjectLocation);
             resync.resyncFunc = (obj) => { _backstopPoint.Object = obj; };
             resyncs.Add(resync);
         }

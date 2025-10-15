@@ -26,6 +26,7 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private List<CurvePoint> _zoomPoints = new();
     [SerializeField] private CurvePointEditObject _manualLeftCamTarget;
     [SerializeField] private CurvePointEditObject _manualRightCamTarget;
+    private List<LinkedHighPoint> _highPoints = new();
     private FloorType _floorType = FloorType.Flat;
     public GameObject curvePointContainer;
     public int lastCPObjCount = 0;
@@ -37,9 +38,10 @@ public class Ground : MonoBehaviour, ISerializable
     public bool HasShadow { get => _hasShadow; set => _hasShadow = value; }
     public FloorType FloorType { get => _floorType; set => _floorType = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
-    public List<CurvePoint> CurvePoints => _curvePoints;
+    public List<CurvePoint> CurvePoints {  get => _curvePoints; set => _curvePoints = value; }
     public List<CurvePoint> LowPoints { get => _lowPoints; set => _lowPoints = value; }
     public List<CurvePoint> ZoomPoints { get => _zoomPoints; set => _zoomPoints = value; }
+    public List<LinkedHighPoint> HighPoints { get => _highPoints; set => _highPoints = value; }
     public CurvePointEditObject ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
     public CurvePointEditObject ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
@@ -143,7 +145,6 @@ public class Ground : MonoBehaviour, ISerializable
         var pointObject = Instantiate(_curvePointEditObjectPrefab, curvePointContainer.transform).GetComponent<CurvePointEditObject>();
         pointObject.ParentGround = this;
         pointObject.name = curvePoint.name;
-
         if (index == -1)
         {
             CurvePoints.Add(curvePoint);
@@ -156,7 +157,8 @@ public class Ground : MonoBehaviour, ISerializable
         }
 
         pointObject.SetCurvePoint(curvePoint);
-        
+
+
         return pointObject;
     }
 

@@ -33,6 +33,7 @@ public class SerializedGroundSegment
     public int startPointIndex;
     public int endPointIndex;
     public LinkedCameraTarget startTarget = null;
+    public LinkedHighPoint startHighPoint = null;
 
     //Spline contents
     public List<CurvePoint> fillSplineCurvePoints;
@@ -78,6 +79,7 @@ public class SerializedGroundSegment
         {
             Debug.LogWarning($"SerializedGroundSegment: No low point camera targets found for segment {name}. Add some.");
         }
+        startHighPoint = FindFirstHighPoint(serializedGround.highPoints, curvePoints[0].Position);
 
         if (!serializedGround.IsFloating)
         {
@@ -115,6 +117,33 @@ public class SerializedGroundSegment
         return null;
     }
 
+    private LinkedHighPoint FindFirstHighPoint(List<LinkedHighPoint> highPoints, Vector3 segStartPos)
+    {
+        if (highPoints == null || highPoints.Count == 0)
+        {
+            return null;
+        }
+
+        if(highPoints[0].position.x > segStartPos.x)
+        {
+            return highPoints[0];
+        }
+
+        var currentNode = highPoints[0];
+
+        while (currentNode.next != null)
+        {
+            if(currentNode.next.position.x > segStartPos.x)
+            {
+                break;
+            }
+
+            currentNode = currentNode.next;
+        }
+
+        return currentNode;
+    }
+
     private List<Vector3> GetFloorPositions(List<CurvePoint> curvePoints)
     {
         List<Vector3> floorPositions = new();
@@ -149,6 +178,7 @@ public class SerializedGroundSegment
         segment.StartPointIndex = startPointIndex;
         segment.EndPointIndex = endPointIndex;
         segment.StartTarget = startTarget;
+        segment.StartHighPoint = startHighPoint;
 
         segment.parentGround = ground;
 

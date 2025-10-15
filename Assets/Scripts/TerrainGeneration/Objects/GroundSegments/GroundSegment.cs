@@ -21,19 +21,14 @@ public class GroundSegment : MonoBehaviour
     [SerializeField] private int _rightFloorAngle = 0;
     private int _startPointIndex;
     private int _endPointIndex;
-    private int _containmentBuffer = 20;
     private LinkedCameraTarget _startTarget = null;
+    private LinkedHighPoint _startHighPoint = null;
     public Ground parentGround;
 
     public static Action<GroundSegment> OnSegmentBecomeVisible { get; set; }
     public static Action<GroundSegment> OnSegmentBecomeInvisible { get; set; }
     public Spline Spline { get => _fillShapeController.spline; }
     public Spline EdgeSpline { get => _edgeShapeController.spline; }
-    public SpriteShapeController EdgeShapeController { get => _edgeShapeController; }
-    public SpriteShapeController FillShapeController { get => _fillShapeController; }
-    public Vector3 StartPosition => transform.TransformPoint(EdgeSpline.GetPosition(0));
-    public Vector3 EndPosition => transform.TransformPoint(EdgeSpline.GetPosition(EdgeSpline.GetPointCount()-1));
-    public Vector3 Position { get => transform.position; set => transform.position = value; }
     public int LeftFloorHeight { get => _leftFloorHeight; set => _leftFloorHeight = value; }
     public int RightFloorHeight { get => _rightFloorHeight; set => _rightFloorHeight = value; }
     public int LeftFloorAngle { get => _leftFloorAngle; set => _leftFloorAngle = value; }
@@ -44,6 +39,7 @@ public class GroundSegment : MonoBehaviour
     public int StartPointIndex { get => _startPointIndex; set => _startPointIndex = value; }
     public int EndPointIndex { get => _endPointIndex; set => _endPointIndex = value; }
     public LinkedCameraTarget StartTarget { get => _startTarget; set => _startTarget = value; }
+    public LinkedHighPoint StartHighPoint { get => _startHighPoint; set => _startHighPoint = value; }
     #endregion
 
     #region Monobehaviors
@@ -72,22 +68,6 @@ public class GroundSegment : MonoBehaviour
         _shadowCaster.enabled = doActivate;
     }
 
-    #endregion
-
-    #region Positional List Utilities
-    public bool StartsAfterX(float startX)
-    {
-        return StartPosition.x >= startX;
-    }
-
-    public bool EndsBeforeX(float endX)
-    {
-        return EndPosition.x <= endX;
-    }
-    public bool ContainsX(float targetX)
-    {
-        return (targetX > StartPosition.x - _containmentBuffer && targetX < EndPosition.x + _containmentBuffer);
-    }
     #endregion
 
 }

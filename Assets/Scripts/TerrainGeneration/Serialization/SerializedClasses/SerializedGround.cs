@@ -18,6 +18,7 @@ public class SerializedGround : IDeserializable
     public List<CurvePoint> curvePoints;
     public List<CurvePoint> lowPoints;
     public List<CurvePoint> zoomPoints;
+    public List<LinkedHighPoint> highPoints;
     public CurvePoint manualLeftCamTarget;
     public CurvePoint manualRightCamTarget;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
@@ -37,6 +38,12 @@ public class SerializedGround : IDeserializable
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
         lowPoints = ground.CurvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
+        highPoints = ground.HighPoints;
+
+        if(highPoints.Count == 0)
+        {
+            Debug.LogWarning($"SerializedGround: Ground {ground.name} has no high points. Add some.");
+        }
 
         manualLeftCamTarget = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
         manualRightCamTarget = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
@@ -146,6 +153,8 @@ public class SerializedGround : IDeserializable
         ground.StartFloorAngle = floorAngle;
 
         DeserializeRuntimeSegments(groundManager, ground);
+        ground.LowPoints = lowPoints;
+        ground.HighPoints = highPoints;
 
 #if UNITY_EDITOR
 
@@ -153,8 +162,6 @@ public class SerializedGround : IDeserializable
         {
             ground.SetCurvePoint(curvePoint);
         }
-
-        ground.LowPoints = ground.CurvePoints.Where( cp => cp.LinkedCameraTarget.doLowTarget).ToList();
 #endif
 
 
