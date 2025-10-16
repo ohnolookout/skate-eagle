@@ -350,34 +350,14 @@ public class GroundInspector : Editor
         //Buttons for high target settings
         rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
 
-        if (cpObj.LinkedCameraTarget.doZoomTarget)
-        {
-            GUI.backgroundColor = Color.lightGreen;
-            if (GUI.Button(rect, doHighButton))
-            {
-                Undo.RecordObject(cpObj, "Turn off doTargetHigh");
-                cpObj.LinkedCameraTarget.doZoomTarget = false;
-                return true;
-            }
-        }
-        else
-        {
-            GUI.backgroundColor = Color.orangeRed;
-            if (GUI.Button(rect, doHighButton))
-            {
-                Undo.RecordObject(cpObj, "Turn on doTargetHigh");
-                cpObj.LinkedCameraTarget.doZoomTarget = true;
-                return true;
-            }
-        }
         Handles.EndGUI();
         return false;
     }
 
     private static void ClearCurvePointTargets(Ground ground, EditManager editManager)
     {
-        ground.ManualLeftCamTarget = null;
-        ground.ManualRightCamTarget = null;
+        ground.ManualLeftTargetObj = null;
+        ground.ManualRightTargetObj = null;
         ground.ZoomPoints = null;
 
         if (editManager != null)

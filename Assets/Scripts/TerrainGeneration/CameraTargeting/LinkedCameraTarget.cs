@@ -8,7 +8,6 @@ public class LinkedCameraTarget
     [SerializeReference] public List<CurvePoint> forceZoomTargets = new();
     [SerializeReference] public LinkedCameraTarget prevTarget;
     [SerializeReference] public LinkedCameraTarget nextTarget;
-    public bool doZoomTarget = false;
     public bool doLowTarget = false;
     public bool doUseManualOffsets = false;
     public float manualYOffset = 0f;
@@ -48,7 +47,6 @@ public class LinkedCameraTarget
             serializedObjectLocation = (int[])serializedObjectLocation.Clone(),
             SerializedPosition = SerializedPosition,
             targetTransform = targetTransform,
-            doZoomTarget = doZoomTarget,
             doLowTarget = doLowTarget,
             doUseManualOffsets = doUseManualOffsets,
             manualYOffset = manualYOffset,

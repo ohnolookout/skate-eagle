@@ -12,7 +12,7 @@ public enum FloorType
     Floating
 }
 
-public class Ground : MonoBehaviour, ISerializable
+public class Ground : MonoBehaviour, ISerializable, IObjectResync
 {
     #region Declarations
     [SerializeField] private List<GroundSegment> _segmentList;
@@ -24,8 +24,10 @@ public class Ground : MonoBehaviour, ISerializable
     [SerializeField] private List<CurvePoint> _curvePoints = new();
     private List<CurvePoint> _lowPoints = new();
     [SerializeField] private List<CurvePoint> _zoomPoints = new();
-    [SerializeField] private CurvePointEditObject _manualLeftCamTarget;
-    [SerializeField] private CurvePointEditObject _manualRightCamTarget;
+    [SerializeField] private ICameraTargetable _manualLeftTargetObj;
+    [SerializeField] private ICameraTargetable _manualRightTargetObj;
+    private LinkedCameraTarget _manualLeftCamTarget;
+    private LinkedCameraTarget _manualRightCamTarget;
     private List<LinkedHighPoint> _highPoints = new();
     private FloorType _floorType = FloorType.Flat;
     public GameObject curvePointContainer;
@@ -42,8 +44,10 @@ public class Ground : MonoBehaviour, ISerializable
     public List<CurvePoint> LowPoints { get => _lowPoints; set => _lowPoints = value; }
     public List<CurvePoint> ZoomPoints { get => _zoomPoints; set => _zoomPoints = value; }
     public List<LinkedHighPoint> HighPoints { get => _highPoints; set => _highPoints = value; }
-    public CurvePointEditObject ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
-    public CurvePointEditObject ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
+    public ICameraTargetable ManualLeftTargetObj { get => _manualLeftTargetObj; set => _manualLeftTargetObj = value; }
+    public ICameraTargetable ManualRightTargetObj { get => _manualRightTargetObj; set => _manualRightTargetObj = value; }
+    public LinkedCameraTarget ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
+    public LinkedCameraTarget ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
     public int StartFloorHeight
@@ -160,6 +164,38 @@ public class Ground : MonoBehaviour, ISerializable
 
 
         return pointObject;
+    }
+
+    #endregion
+
+    #region Resync
+
+    public List<ObjectResync> GetObjectResyncs()
+    {
+        List<ObjectResync> resyncs = new();
+
+        if(ManualLeftCamTarget != null)
+        {
+            var leftResync = new ObjectResync(ManualLeftCamTarget.serializedObjectLocation);
+            leftResync.resyncFunc = (obj) => 
+            { 
+                ManualLeftTargetObj = obj.GetComponent<ICameraTargetable>();
+            };
+
+            resyncs.Add(leftResync);
+        }
+
+        if(ManualRightCamTarget != null)
+        {
+            var rightResync = new ObjectResync(ManualRightCamTarget.serializedObjectLocation);
+            rightResync.resyncFunc = (obj) => 
+            { 
+                ManualRightTargetObj = obj.GetComponent<ICameraTargetable>();
+            };
+            resyncs.Add(rightResync);
+        }
+
+        return resyncs;
     }
 
     #endregion

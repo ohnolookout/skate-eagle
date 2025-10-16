@@ -19,8 +19,8 @@ public class SerializedGround : IDeserializable
     public List<CurvePoint> lowPoints;
     public List<CurvePoint> zoomPoints;
     public List<LinkedHighPoint> highPoints;
-    public CurvePoint manualLeftCamTarget;
-    public CurvePoint manualRightCamTarget;
+    public LinkedCameraTarget manualLeftCamTarget;
+    public LinkedCameraTarget manualRightCamTarget;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
     public bool IsFloating => floorType == FloorType.Floating;
 
@@ -45,8 +45,8 @@ public class SerializedGround : IDeserializable
             Debug.LogWarning($"SerializedGround: Ground {ground.name} has no high points. Add some.");
         }
 
-        manualLeftCamTarget = ground.ManualLeftCamTarget != null ? ground.ManualLeftCamTarget.CurvePoint : null;
-        manualRightCamTarget = ground.ManualRightCamTarget != null ? ground.ManualRightCamTarget.CurvePoint : null;
+        manualLeftCamTarget = ground.ManualLeftTargetObj != null ? ground.ManualLeftTargetObj.LinkedCameraTarget : null;
+        manualRightCamTarget = ground.ManualRightTargetObj != null ? ground.ManualRightTargetObj.LinkedCameraTarget : null;
 
         if (lowPoints.Count == 0)
         {
@@ -56,12 +56,12 @@ public class SerializedGround : IDeserializable
         {
             if (manualLeftCamTarget != null)
             {
-                lowPoints[0].LinkedCameraTarget.prevTarget = manualLeftCamTarget.LinkedCameraTarget;
+                lowPoints[0].LinkedCameraTarget.prevTarget = manualLeftCamTarget;
             }
 
             if (manualRightCamTarget != null)
             {
-                lowPoints[^1].LinkedCameraTarget = manualRightCamTarget.LinkedCameraTarget;
+                lowPoints[^1].LinkedCameraTarget = manualRightCamTarget;
             }
         }
 
@@ -155,6 +155,8 @@ public class SerializedGround : IDeserializable
         DeserializeRuntimeSegments(groundManager, ground);
         ground.LowPoints = lowPoints;
         ground.HighPoints = highPoints;
+        ground.ManualLeftCamTarget = manualLeftCamTarget;
+        ground.ManualRightCamTarget = manualRightCamTarget;
 
 #if UNITY_EDITOR
 

@@ -204,8 +204,8 @@ public class CameraManager : MonoBehaviour
 
         _doCheckHighPointExit = true;
         _xDampen = _defaultXDampen/4;
-        _yDampen = _defaultYDampen/3;
-        _zoomDampen = _defaultZoomDampen/3;
+        _yDampen = _defaultYDampen/2;
+        _zoomDampen = _defaultZoomDampen/2;
 
     }
 

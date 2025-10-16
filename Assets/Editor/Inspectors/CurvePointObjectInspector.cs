@@ -291,19 +291,9 @@ public class CurvePointObjectInspector : Editor
             _curvePointObject.DoTargetLow = doTargetLow;
         }
 
-        EditorGUI.BeginChangeCheck();
-
-        var doTargetHigh = GUILayout.Toggle(_curvePointObject.DoTargetHigh, "Target High", GUILayout.ExpandWidth(false));
-
-        if (EditorGUI.EndChangeCheck())
-        {
-            Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
-            _curvePointObject.DoTargetHigh = doTargetHigh;
-        }
-
         EditorGUILayout.EndHorizontal();
 
-        if (_curvePointObject.DoTargetLow || _curvePointObject.DoTargetHigh)
+        if (_curvePointObject.DoTargetLow)
         {
 
             _curvePointObject.LinkedCameraTarget.doUseManualOffsets = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffsets, "Manual Offset", GUILayout.ExpandWidth(false));
@@ -524,10 +514,6 @@ public class CurvePointObjectInspector : Editor
         {
             Handles.color = Color.blue;
         }
-        else if (curvePointObject.DoTargetHigh)
-        {
-            Handles.color = Color.green;
-        }
         else
         {
             Handles.color = Color.white;
@@ -654,7 +640,7 @@ public class CurvePointObjectInspector : Editor
         var objPos = targetObj.transform.position;
 
         var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
-        float xMod = targetCPObj.DoTargetHigh ? 1 : (targetCPObj.DoTargetLow ? 0.5f : 0);
+        float xMod = targetCPObj.DoTargetLow ? 0.5f : 0;
         rect.position = new Vector2(rect.position.x - rect.width * xMod, rect.position.y + rect.height);
 
         Handles.BeginGUI();

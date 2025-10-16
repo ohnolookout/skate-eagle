@@ -28,7 +28,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public GameObject ManualRightTargetObject { get => manualRightTargetObject; set => manualRightTargetObject = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
     public bool DoTargetLow { get => LinkedCameraTarget.doLowTarget; set => LinkedCameraTarget.doLowTarget = value; }
-    public bool DoTargetHigh { get => LinkedCameraTarget.doZoomTarget; set => LinkedCameraTarget.doZoomTarget = value; }
 
     public float LeftTangentMagnitude => CurvePoint.LeftTangent.magnitude;
     public float RightTangentMagnitude => CurvePoint.RightTangent.magnitude;
@@ -77,10 +76,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     #region Monobehaviors
     void OnDrawGizmosSelected()
     {
-        if (!DoTargetLow && !DoTargetHigh)
-        {
-            return;
-        }
     }
 
     #endregion
@@ -181,15 +176,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         targets.Add(LinkedCameraTarget);
 
         targets.AddRange(LinkedCameraTarget.forceZoomTargets.Select(t => t.LinkedCameraTarget));
-        
-        //if(LinkedCameraTarget.prevTarget != null)
-        //{
-        //    targets.Add(LinkedCameraTarget.prevTarget);
-        //}
-        //if(LinkedCameraTarget.nextTarget != null)
-        //{
-        //    targets.Add(LinkedCameraTarget.nextTarget);
-        //}
 
         foreach (var target in targets)
         {

@@ -81,9 +81,9 @@ public static class CameraTargetUtility
         int currentIndex = ground.CurvePoints.IndexOf(currentCP);
         int nextIndex = 0;
 
-        if (ground.ManualLeftCamTarget != null && ground.ManualLeftCamTarget.LinkedCameraTarget != null)
+        if (ground.ManualLeftTargetObj != null && ground.ManualLeftTargetObj.LinkedCameraTarget != null)
         {
-            currentCP.LinkedCameraTarget.prevTarget = ground.ManualLeftCamTarget.LinkedCameraTarget;
+            currentCP.LinkedCameraTarget.prevTarget = ground.ManualLeftTargetObj.LinkedCameraTarget;
         }
         else
         {
@@ -111,9 +111,9 @@ public static class CameraTargetUtility
 
         targetIndices[currentCP] = (currentIndex, prevIndex, ground.CurvePoints.Count - 1);
 
-        if (ground.ManualRightCamTarget != null && ground.ManualRightCamTarget.LinkedCameraTarget != null)
+        if (ground.ManualRightTargetObj != null && ground.ManualRightTargetObj.LinkedCameraTarget != null)
         {
-            currentCP.LinkedCameraTarget.nextTarget = ground.ManualRightCamTarget.LinkedCameraTarget;
+            currentCP.LinkedCameraTarget.nextTarget = ground.ManualRightTargetObj.LinkedCameraTarget;
         } else
         {
             currentCP.LinkedCameraTarget.nextTarget = null;
