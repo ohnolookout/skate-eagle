@@ -11,6 +11,7 @@ public interface IPlayer
     bool DoLanding { get; set; }
     float KillPlaneY { get; set; }
     ICollisionManager CollisionManager { get; }
+    Collision2D LastLandCollision { get; set; }
     Rigidbody2D RagdollBoard { get; }
     Rigidbody2D RagdollBody { get; }
     Rigidbody2D NormalBody { get; }

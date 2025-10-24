@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class GroundInspector : Editor
     private bool _showCPTransform = true;
     public static GUIContent rightTargetButton = new GUIContent("R", "Add/Remove Right Target");
     public static GUIContent leftTargetButton = new GUIContent("L", "Add/Remove Left Target");
-    public static GUIContent highTargetButton = new GUIContent("H", "Add/Remove High Target");
+    public static GUIContent zoomTargetButton = new GUIContent("Z", "Add/Remove Zoom Target");
     public static GUIContent doHighButton = new GUIContent("/\\", "Set High Target");
     public static GUIContent doLowButton = new GUIContent("\\/", "Set Low Target");
     public static GUIContent selectButton = new GUIContent("S", "Select Curve Point");
@@ -27,6 +28,7 @@ public class GroundInspector : Editor
         }
 
         var ground = (Ground)target;
+
         var defaultColor = GUI.backgroundColor;
 
         GUILayout.Label("Curve Points", EditorStyles.boldLabel);
@@ -156,7 +158,7 @@ public class GroundInspector : Editor
         if (GUILayout.Button("Build Targets", GUILayout.ExpandWidth(true)))
         {
             Undo.RecordObject(ground, "Building targets");
-            CameraTargetUtility.BuildGroundCameraTargets(ground);
+            _editManager.RefreshSerializable(ground);
         }
 
         GUI.backgroundColor = Color.orangeRed;
@@ -168,6 +170,25 @@ public class GroundInspector : Editor
         GUI.backgroundColor = defaultColor;
 
         GUILayout.EndHorizontal();
+
+        EditorGUI.BeginChangeCheck();
+
+        GameObject manualLeftObj = ground.ManualLeftTargetObj != null ? ground.ManualLeftTargetObj.Object : null;
+        GameObject manualRightObj = ground.ManualRightTargetObj != null ? ground.ManualRightTargetObj.Object : null;
+
+        manualLeftObj = EditorGUILayout.ObjectField(manualLeftObj, typeof(GameObject), true) as GameObject;
+        manualRightObj = EditorGUILayout.ObjectField(manualRightObj, typeof(GameObject), true) as GameObject;
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(ground, "Update manual camera targets");
+
+            ground.ManualLeftTargetObj = CameraTargetUtility.ValidateEndTargetObj(ground, manualLeftObj);
+            ground.ManualRightTargetObj = CameraTargetUtility.ValidateEndTargetObj(ground, manualRightObj);
+
+            _editManager.RefreshSerializable(ground);
+        }
+
 
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Add Start", GUILayout.ExpandWidth(false)))
@@ -253,12 +274,14 @@ public class GroundInspector : Editor
                 {
                     CameraTargetUtility.BuildGroundCameraTargets(ground);
                 }
-
-                CurvePointObjectInspector.DrawTargetInfo(cpObj);
-                //CurvePointObjectInspector.DrawCamBottomIntercept(cpObj);
             }
 
-            foreach(var highPoint in ground.HighPoints)
+            foreach(var lowPoint in ground.LowTargets)
+            {
+                CurvePointObjectInspector.DrawTargetInfo(lowPoint);
+            }
+
+            foreach (var highPoint in ground.HighPoints)
             {
                 Handles.color = Color.magenta;
                 Handles.SphereHandleCap(0, highPoint.position, Quaternion.identity, 2f, EventType.Repaint);
@@ -267,6 +290,7 @@ public class GroundInspector : Editor
 
     }
 
+    #region Drawing GUI
     public static void DrawCurvePoints(Ground ground, EditManager editManager, bool controlHeld, bool altHeld)
     {
         foreach (var point in ground.CurvePointObjects)
@@ -333,6 +357,7 @@ public class GroundInspector : Editor
             {
                 Undo.RecordObject(cpObj, "Turn off doTargetLow");
                 cpObj.LinkedCameraTarget.doLowTarget = false;
+                CameraTargetUtility.BuildGroundCameraTargets(cpObj.ParentGround);
                 return true;
             }
         }
@@ -343,6 +368,7 @@ public class GroundInspector : Editor
             {
                 Undo.RecordObject(cpObj, "Turn on doTargetLow");
                 cpObj.LinkedCameraTarget.doLowTarget = true;
+                CameraTargetUtility.BuildGroundCameraTargets(cpObj.ParentGround);
                 return true;
             }
         }
@@ -353,12 +379,30 @@ public class GroundInspector : Editor
         Handles.EndGUI();
         return false;
     }
+    #endregion
 
     private static void ClearCurvePointTargets(Ground ground, EditManager editManager)
     {
         ground.ManualLeftTargetObj = null;
         ground.ManualRightTargetObj = null;
-        ground.ZoomPoints = null;
+        ground.ManualLeftCamTarget = null;
+        ground.ManualRightCamTarget = null;
+
+        ground.ZoomPoints = new();
+
+        foreach(var target in ground.LowTargets)
+        {
+            target.nextTarget = null;
+            target.prevTarget = null;
+        }
+
+        foreach(var cp in ground.CurvePoints)
+        {
+            cp.LinkedCameraTarget.nextTarget = null;
+            cp.LinkedCameraTarget.prevTarget = null;
+        }
+
+        CameraTargetUtility.BuildGroundCameraTargets(ground);
 
         if (editManager != null)
         {

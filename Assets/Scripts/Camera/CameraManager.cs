@@ -7,6 +7,8 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     private LinkedCameraTarget _currentLeftTarget;
+    private LinkedCameraTarget _prevLeftTarget;
+    private LinkedCameraTarget _nextLeftTarget;
     private LinkedHighPoint _currentHighPoint;
     private Camera _camera;
     private Vector3 _targetPosition;
@@ -90,7 +92,7 @@ public class CameraManager : MonoBehaviour
         _player = player;
         _playerTransform = player.Transform;
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.SwitchDirection, OnSwitchPlayerDirection);
-        _player.EventAnnouncer.SubscribeToAddCollision(OnPlayerCollide);
+        _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.Land, OnPlayerLand);
         UpdateTargetPos();
     }
 
@@ -150,40 +152,70 @@ public class CameraManager : MonoBehaviour
 
     private void UpdateCurrentTarget(float xPos)
     {
-        if(xPos < _currentLeftTarget.Position.x && _currentLeftTarget.prevTarget != null)
+#if UNITY_EDITOR
+        int searchCount = 0;
+#endif
+        while (_prevLeftTarget != null && _currentLeftTarget.Position.x > xPos)
         {
-            while (_currentLeftTarget.prevTarget != null && _currentLeftTarget.Position.x > xPos)
+#if UNITY_EDITOR
+            searchCount++;
+            if(searchCount > 1)
             {
-                _currentLeftTarget = _currentLeftTarget.prevTarget;
-            }
-
-            return;
+                Debug.LogWarning("Cam target search iterations > 1: " + searchCount);
+            } 
+#endif
+            AssignPrevAndNextTargets(_currentLeftTarget, _prevLeftTarget, false);
         }
 
-        while (_currentLeftTarget.nextTarget != null && xPos > _currentLeftTarget.nextTarget.Position.x)
+
+        while (_nextLeftTarget != null && xPos > _nextLeftTarget.Position.x)
         {
-            _currentLeftTarget = _currentLeftTarget.nextTarget;
+#if UNITY_EDITOR
+            searchCount++;
+            if (searchCount > 1)
+            {
+                Debug.LogWarning("Cam target search iterations > 1: " + searchCount);
+            }
+#endif
+            AssignPrevAndNextTargets(_currentLeftTarget, _nextLeftTarget, true);
         }
 
     }
 
     private void UpdateCurrentHighPoint()
     {
+#if UNITY_EDITOR
+        int searchCount = 0;
+#endif
         if (_currentHighPoint == null)
         {
-            Debug.LogWarning("CameraManager: Current high point is null. Assign a high point to the starting ground.");
+            Debug.LogWarning("CameraManager: Current high point is null. Assign a high point to ground.");
             return;
         }
 
         bool hasChanged = false;
         while(_currentHighPoint.previous != null && _playerTransform.position.x < _currentHighPoint.position.x)
         {
+#if UNITY_EDITOR
+            searchCount++;
+            if (searchCount > 1)
+            {
+                Debug.LogWarning("Cam highpoint search iterations > 1: " + searchCount);
+            }
+#endif
             hasChanged = true;
             _currentHighPoint = _currentHighPoint.previous;
         }
 
         while(_currentHighPoint.next != null && _playerTransform.position.x > _currentHighPoint.next.position.x)
         {
+#if UNITY_EDITOR
+            searchCount++;
+            if (searchCount > 1)
+            {
+                Debug.LogWarning("Cam highpoint search iterations > 1: " + searchCount);
+            }
+#endif
             hasChanged = true;
             _currentHighPoint = _currentHighPoint.next;
         }
@@ -196,7 +228,17 @@ public class CameraManager : MonoBehaviour
 
     private void OnSwitchPlayerDirection(IPlayer player)
     {
-        var targetX = _currentHighPoint.position.x + ((_currentHighPoint.next.position.x - _currentHighPoint.position.x)/2);
+        UpdateCurrentHighPoint();
+        float targetX;
+
+        if(_currentHighPoint.next != null)
+        {
+            targetX = _currentHighPoint.position.x + ((_currentHighPoint.next.position.x - _currentHighPoint.position.x) / 2);            
+        }
+        else
+        {
+            targetX = _currentHighPoint.position.x;
+        }
         UpdateCurrentTarget(targetX);
         var camParams = CameraTargetUtility.GetCamParams(targetX, _currentLeftTarget);
         _targetPosition = new Vector3(targetX, camParams.camBottomY + camParams.orthoSize);
@@ -233,25 +275,24 @@ public class CameraManager : MonoBehaviour
 
     }
 
-    private void OnPlayerCollide(Collision2D collision, MomentumTracker _, ColliderCategory __, TrackingType ___)
+    private void OnPlayerLand(IPlayer _)
     {
-        if (!_player.Airborne)
-        {
-            return;
-        }
+        var collision = _player.LastLandCollision;
 
         var collidedTransformParent = collision.transform.parent;
 
-        if (collidedTransformParent == _currentGround.transform)
+        if (_currentGround != null && collidedTransformParent == _currentGround.transform)
         {
             return;
         }
 
+        Debug.Log("Updating ground segment and targets on land.");
+
         var playerPos = _player.NormalBody.position;
 
-        var collidedSeg = collision.gameObject.GetComponent<GroundSegment>();
+        var collidedSeg = collidedTransformParent.GetComponent<GroundSegment>();
         _currentGround = collidedSeg.parentGround;
-        _currentLeftTarget = collidedSeg.StartTarget;
+        AssignPrevAndNextTargets(collidedSeg.FirstLeftTarget);
         _currentHighPoint = collidedSeg.StartHighPoint;
 
         UpdateTargetPos();
@@ -274,6 +315,8 @@ public class CameraManager : MonoBehaviour
         Camera.main.transform.position = level.SerializedStartLine.CamStartPosition;
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
         _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
+        _prevLeftTarget = _currentLeftTarget.prevTarget;
+        _nextLeftTarget = _currentLeftTarget.nextTarget;
         _currentHighPoint = level.SerializedStartLine.FirstHighPoint;
         _doDirectionChangeDampen = false;
         _doCheckHighPointExit = false;
@@ -291,6 +334,93 @@ public class CameraManager : MonoBehaviour
         var playerZoomSize = yDist / (1 + CameraTargetUtility.PlayerHighYT);
 
         return Mathf.Max(playerZoomSize, targetOrthoSize);
+    }
+
+    private void AssignPrevAndNextTargets(LinkedCameraTarget currentTarget, LinkedCameraTarget newTarget, bool moveRight)
+    {
+        _currentLeftTarget = newTarget;
+
+        if (moveRight)
+        {
+            _prevLeftTarget = currentTarget;
+
+            if (newTarget.nextTarget != null)
+            {
+                _nextLeftTarget = newTarget.nextTarget;
+            }
+            else
+            {
+                var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+                if (currentIndex >= 0 && currentIndex < _currentGround.LowTargets.Count - 1)
+                {
+                    _nextLeftTarget = _currentGround.LowTargets[currentIndex + 1];
+                }
+                else
+                {
+                    _nextLeftTarget = null;
+                }
+            }
+        }
+        else
+        {
+            _nextLeftTarget = currentTarget;
+
+            if (newTarget.prevTarget != null)
+            {
+                _prevLeftTarget = newTarget.prevTarget;
+            }
+            else
+            {
+                var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+                if (currentIndex > 0)
+                {
+                    _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];
+                }
+                else
+                {
+                    _prevLeftTarget = null;
+                }
+            }
+        }
+    }
+
+    private void AssignPrevAndNextTargets(LinkedCameraTarget newTarget)
+    {
+        _currentLeftTarget = newTarget;
+
+
+        if (newTarget.nextTarget != null)
+        {
+            _nextLeftTarget = newTarget.nextTarget;
+        }
+        else
+        {
+            var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+            if (currentIndex < _currentGround.LowTargets.Count - 1)
+            {
+                _nextLeftTarget = _currentGround.LowTargets[currentIndex + 1];
+            }
+            else
+            {
+                _nextLeftTarget = null;
+            }
+        }
+
+        if (newTarget.prevTarget != null)
+        {
+            _prevLeftTarget = newTarget.prevTarget;
+        }
+        else
+        {
+            var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+            if (currentIndex > 0)
+            {
+                _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];
+            } else
+            {
+                _prevLeftTarget = null;
+            }
+        }
     }
 
 }

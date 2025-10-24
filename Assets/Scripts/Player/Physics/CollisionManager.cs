@@ -19,6 +19,7 @@ public class CollisionManager: MonoBehaviour, ICollisionManager
        { ColliderCategory.BodyAndBoard, -1 }
     };
     public Action<ColliderCategory, float> OnCollide { get; set; }
+    public Action<Collider2D> OnNewColliderEnter { get; set; }
     public Action<ColliderCategory, float> OnUncollide { get; set; }
     public Action OnAirborne { get; set; }
 

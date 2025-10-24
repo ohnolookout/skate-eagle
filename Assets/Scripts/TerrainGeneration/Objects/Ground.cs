@@ -22,13 +22,13 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private bool _hasShadow = true;
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
-    private List<CurvePoint> _lowPoints = new();
+    private List<LinkedCameraTarget> _lowTargets = new();
     [SerializeField] private List<CurvePoint> _zoomPoints = new();
-    [SerializeField] private ICameraTargetable _manualLeftTargetObj;
-    [SerializeField] private ICameraTargetable _manualRightTargetObj;
+    private CurvePointEditObject _manualLeftTargetObj;
+    private CurvePointEditObject _manualRightTargetObj;
     private LinkedCameraTarget _manualLeftCamTarget;
     private LinkedCameraTarget _manualRightCamTarget;
-    private List<LinkedHighPoint> _highPoints = new();
+    private List<LinkedHighPoint> _highTargets = new();
     private FloorType _floorType = FloorType.Flat;
     public GameObject curvePointContainer;
     public int lastCPObjCount = 0;
@@ -41,15 +41,43 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public FloorType FloorType { get => _floorType; set => _floorType = value; }
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints {  get => _curvePoints; set => _curvePoints = value; }
-    public List<CurvePoint> LowPoints { get => _lowPoints; set => _lowPoints = value; }
+    public List<LinkedCameraTarget> LowTargets { get => _lowTargets; set => _lowTargets = value; }
     public List<CurvePoint> ZoomPoints { get => _zoomPoints; set => _zoomPoints = value; }
-    public List<LinkedHighPoint> HighPoints { get => _highPoints; set => _highPoints = value; }
-    public ICameraTargetable ManualLeftTargetObj { get => _manualLeftTargetObj; set => _manualLeftTargetObj = value; }
-    public ICameraTargetable ManualRightTargetObj { get => _manualRightTargetObj; set => _manualRightTargetObj = value; }
-    public LinkedCameraTarget ManualLeftCamTarget { get => _manualLeftCamTarget; set => _manualLeftCamTarget = value; }
-    public LinkedCameraTarget ManualRightCamTarget { get => _manualRightCamTarget; set => _manualRightCamTarget = value; }
+    public List<LinkedHighPoint> HighPoints { get => _highTargets; set => _highTargets = value; }
+    public CurvePointEditObject ManualLeftTargetObj { get => _manualLeftTargetObj; set => _manualLeftTargetObj = value; }
+    public CurvePointEditObject ManualRightTargetObj { get => _manualRightTargetObj; set => _manualRightTargetObj = value; }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
+    public LinkedCameraTarget ManualLeftCamTarget {
+        get 
+        {
+            if(ManualLeftTargetObj != null)
+            {
+                _manualLeftCamTarget = ManualLeftTargetObj.LinkedCameraTarget;
+                return _manualLeftCamTarget;
+            } else
+            {
+                return _manualLeftCamTarget;
+            }
+        }
+        set => _manualLeftCamTarget = value;
+    }
+    public LinkedCameraTarget ManualRightCamTarget
+    {
+        get
+        {
+            if (ManualRightTargetObj != null)
+            {
+                _manualRightCamTarget = ManualRightTargetObj.LinkedCameraTarget;
+                return _manualRightCamTarget;
+            }
+            else
+            {
+                return _manualRightCamTarget;
+            }
+        }
+        set => _manualRightCamTarget = value;
+    }
     public int StartFloorHeight
     {
         get
@@ -92,7 +120,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
             }
         }
     }
-
     public int EndFloorHeight
     {
         get
@@ -174,23 +201,23 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     {
         List<ObjectResync> resyncs = new();
 
-        if(ManualLeftCamTarget != null)
+        if (ManualLeftCamTarget != null)
         {
             var leftResync = new ObjectResync(ManualLeftCamTarget.serializedObjectLocation);
-            leftResync.resyncFunc = (obj) => 
-            { 
-                ManualLeftTargetObj = obj.GetComponent<ICameraTargetable>();
+            leftResync.resyncFunc = (obj) =>
+            {
+                ManualLeftTargetObj = obj.GetComponent<CurvePointEditObject>();
             };
 
             resyncs.Add(leftResync);
         }
 
-        if(ManualRightCamTarget != null)
+        if (ManualRightCamTarget != null)
         {
             var rightResync = new ObjectResync(ManualRightCamTarget.serializedObjectLocation);
-            rightResync.resyncFunc = (obj) => 
-            { 
-                ManualRightTargetObj = obj.GetComponent<ICameraTargetable>();
+            rightResync.resyncFunc = (obj) =>
+            {
+                ManualRightTargetObj = obj.GetComponent<CurvePointEditObject>();
             };
             resyncs.Add(rightResync);
         }
@@ -235,7 +262,7 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     {
 #if UNITY_EDITOR
         _curvePoints = _curvePoints.Where( cp => cp.Object != null).ToList();
-        _lowPoints = GetLowPoints();
+        _lowTargets = GetLowTargets();
         var serializedGround = (SerializedGround)Serialize();
 
         foreach (var seg in _segmentList)
@@ -250,17 +277,24 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
 #endif
     }
     #endregion
-    public LinkedCameraTarget FindNearestLeftLowPoint(Vector3 target, GroundSegment segment)
+
+    public List<LinkedCameraTarget> GetLowTargets()
     {
+        var lowPoints = _curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).Select(cp => cp.LinkedCameraTarget).ToList();
+        
+        if(ManualLeftTargetObj != null)
+        {
+            lowPoints.Insert(0, ManualLeftCamTarget);
+        }
 
-        var startTarget = segment.StartTarget;
+        if(ManualRightTargetObj != null)
+        {
+            lowPoints.Add(ManualRightCamTarget);
+        }
 
-        return CameraTargetUtility.FindNearestLeftTarget(target.x, startTarget);
-
+        _lowTargets = lowPoints;
+        return lowPoints;
     }
 
-    private List<CurvePoint> GetLowPoints()
-    {
-        return _curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
-    }
+
 }

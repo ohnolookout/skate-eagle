@@ -38,7 +38,7 @@ public class GroundSegment : MonoBehaviour
     public new GameObject gameObject { get => transform.gameObject; }
     public int StartPointIndex { get => _startPointIndex; set => _startPointIndex = value; }
     public int EndPointIndex { get => _endPointIndex; set => _endPointIndex = value; }
-    public LinkedCameraTarget StartTarget { get => _startTarget; set => _startTarget = value; }
+    public LinkedCameraTarget FirstLeftTarget { get => _startTarget; set => _startTarget = value; }
     public LinkedHighPoint StartHighPoint { get => _startHighPoint; set => _startHighPoint = value; }
     #endregion
 

@@ -23,12 +23,14 @@ public class Player : MonoBehaviour, IPlayer
     private float _killPlaneY = -100;
     private const float HalfPlayerHeight = 4.25f;
     private List<CameraTarget> _cameraTargets = new();
+    private Collision2D _lastLandCollision;
 
     public MomentumTracker MomentumTracker { get; set; }
     public ICollisionManager CollisionManager { get => _collisionManager; }
     public Rigidbody2D NormalBody { get => _body; }
     public Rigidbody2D RagdollBoard { get => _ragdollBoard; }
     public Rigidbody2D RagdollBody { get => _ragdollBody; }
+    public Collision2D LastLandCollision { get => _lastLandCollision; set => _lastLandCollision = value; }
     public PlayerParameters Params { get => _params; }
     public bool FacingForward { get => _facingForward; set => _facingForward = value; }
     public bool Airborne => _stateMachine.CurrentState is AirborneState;

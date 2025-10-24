@@ -9,12 +9,12 @@ public class LinkedCameraTarget
     [SerializeReference] public LinkedCameraTarget prevTarget;
     [SerializeReference] public LinkedCameraTarget nextTarget;
     public bool doLowTarget = false;
-    public bool doUseManualOffsets = false;
+    public bool doUseManualOffset = false;
     public float manualYOffset = 0f;
     public float yOffset = 0f;
     public float orthoSize = 50f;
-    public bool doUseManualZoomOrthoSize = false;
-    public float manualZoomOrthoSize = 0f;
+    public bool doUseManualOrthoSize = false;
+    public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
     public Transform targetTransform;
     public ICameraTargetable parentObject;
@@ -42,22 +42,21 @@ public class LinkedCameraTarget
 
     public LinkedCameraTarget DeepCopy()
     {
-        LinkedCameraTarget copy = new LinkedCameraTarget
+        LinkedCameraTarget copy = new()
         {
             serializedObjectLocation = (int[])serializedObjectLocation.Clone(),
             SerializedPosition = SerializedPosition,
             targetTransform = targetTransform,
             doLowTarget = doLowTarget,
-            doUseManualOffsets = doUseManualOffsets,
+            doUseManualOffset = doUseManualOffset,
             manualYOffset = manualYOffset,
             yOffset = yOffset,
             orthoSize = orthoSize,
-            manualZoomOrthoSize = manualZoomOrthoSize,
-            doUseManualZoomOrthoSize = doUseManualZoomOrthoSize,
+            manualOrthoSize = manualOrthoSize,
+            doUseManualOrthoSize = doUseManualOrthoSize,
             forceZoomTargets = new List<CurvePoint>(forceZoomTargets),
             prevTarget = prevTarget,
-            nextTarget = nextTarget,
-            parentObject = parentObject
+            nextTarget = nextTarget
         };
         return copy;
     }

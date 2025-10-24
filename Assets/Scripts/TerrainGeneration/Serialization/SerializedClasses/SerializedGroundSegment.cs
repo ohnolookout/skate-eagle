@@ -74,7 +74,7 @@ public class SerializedGroundSegment
         endPointIndex = serializedGround.curvePoints.IndexOf(curvePoints[^1]);
 
         var lowPoints = curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
-        startTarget = FindFirstLowPoint(serializedGround.curvePoints, serializedGround.lowPoints, startPointIndex);
+        startTarget = FindFirstLowPoint(serializedGround.curvePoints, startPointIndex);
         if(startTarget == null)
         {
             Debug.LogWarning($"SerializedGroundSegment: No low point camera targets found for segment {name}. Add some.");
@@ -96,7 +96,7 @@ public class SerializedGroundSegment
         
     }
 
-    private LinkedCameraTarget FindFirstLowPoint(List<CurvePoint> curvePoints, List<CurvePoint> lowPoints, int startIndex)
+    private LinkedCameraTarget FindFirstLowPoint(List<CurvePoint> curvePoints, int startIndex)
     {
         for(int i = startIndex; i > 0; i--)
         {
@@ -177,7 +177,7 @@ public class SerializedGroundSegment
         segment.RightFloorAngle = rightFloorAngle;
         segment.StartPointIndex = startPointIndex;
         segment.EndPointIndex = endPointIndex;
-        segment.StartTarget = startTarget;
+        segment.FirstLeftTarget = startTarget;
         segment.StartHighPoint = startHighPoint;
 
         segment.parentGround = ground;

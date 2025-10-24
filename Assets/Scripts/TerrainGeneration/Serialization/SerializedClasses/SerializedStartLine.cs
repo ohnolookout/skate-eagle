@@ -23,8 +23,6 @@ public class SerializedStartLine : IDeserializable
     public SerializedStartLine(StartLine startLine)
     {
         xOffset = startLine.XOffset;
-        startLine.CurvePoint.LinkedCameraTarget.doLowTarget = true;
-
         _curvePoint = startLine.CurvePoint;
         _curvePoint.SaveWorldPosition();
         _camStartPosition = startLine.CamStartPosition;

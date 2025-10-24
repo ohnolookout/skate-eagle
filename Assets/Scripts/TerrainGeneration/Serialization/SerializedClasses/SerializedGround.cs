@@ -16,7 +16,7 @@ public class SerializedGround : IDeserializable
     public int floorAngle;
     public List<SerializedGroundSegment> segmentList;
     public List<CurvePoint> curvePoints;
-    public List<CurvePoint> lowPoints;
+    public List<LinkedCameraTarget> lowTargets;
     public List<CurvePoint> zoomPoints;
     public List<LinkedHighPoint> highPoints;
     public LinkedCameraTarget manualLeftCamTarget;
@@ -37,33 +37,11 @@ public class SerializedGround : IDeserializable
         name = ground.gameObject.name;
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
-        lowPoints = ground.CurvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
+        lowTargets = ground.GetLowTargets();
         highPoints = ground.HighPoints;
 
-        if(highPoints.Count == 0)
-        {
-            Debug.LogWarning($"SerializedGround: Ground {ground.name} has no high points. Add some.");
-        }
-
-        manualLeftCamTarget = ground.ManualLeftTargetObj != null ? ground.ManualLeftTargetObj.LinkedCameraTarget : null;
-        manualRightCamTarget = ground.ManualRightTargetObj != null ? ground.ManualRightTargetObj.LinkedCameraTarget : null;
-
-        if (lowPoints.Count == 0)
-        {
-            Debug.LogWarning($"SerializedGround: Ground {ground.name} has no lowpoint camera targets. Add some.");
-        }
-        else
-        {
-            if (manualLeftCamTarget != null)
-            {
-                lowPoints[0].LinkedCameraTarget.prevTarget = manualLeftCamTarget;
-            }
-
-            if (manualRightCamTarget != null)
-            {
-                lowPoints[^1].LinkedCameraTarget = manualRightCamTarget;
-            }
-        }
+        manualLeftCamTarget = ground.ManualLeftCamTarget;
+        manualRightCamTarget = ground.ManualRightCamTarget;
 
         isInverted = ground.IsInverted;
         hasShadow = ground.HasShadow;
@@ -72,6 +50,7 @@ public class SerializedGround : IDeserializable
         floorAngle = ground.StartFloorAngle;
         SetFloorPoints(ground);
 
+        CameraTargetUtility.BuildGroundCameraTargets(ground);
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
 
@@ -146,6 +125,7 @@ public class SerializedGround : IDeserializable
         }
 
         ground.name = name;
+        ground.transform.position = position;
         ground.IsInverted = isInverted;
         ground.HasShadow = hasShadow;
         ground.FloorType = floorType;
@@ -153,10 +133,26 @@ public class SerializedGround : IDeserializable
         ground.StartFloorAngle = floorAngle;
 
         DeserializeRuntimeSegments(groundManager, ground);
-        ground.LowPoints = lowPoints;
+        ground.LowTargets = lowTargets;
         ground.HighPoints = highPoints;
-        ground.ManualLeftCamTarget = manualLeftCamTarget;
-        ground.ManualRightCamTarget = manualRightCamTarget;
+
+        if(manualLeftCamTarget != null && manualLeftCamTarget.serializedObjectLocation.Count() > 1)
+        {
+            ground.ManualLeftCamTarget = manualLeftCamTarget;
+        }
+        else
+        {
+            ground.ManualLeftCamTarget = null;
+        }
+
+        if(manualRightCamTarget != null && manualRightCamTarget.serializedObjectLocation.Count() > 1)
+        {
+            ground.ManualRightCamTarget = manualRightCamTarget;
+        }
+        else
+        {
+            ground.ManualRightCamTarget = null;
+        }
 
 #if UNITY_EDITOR
 

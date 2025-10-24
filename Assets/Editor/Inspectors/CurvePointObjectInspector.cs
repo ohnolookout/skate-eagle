@@ -9,9 +9,10 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(CurvePointEditObject))]
 public class CurvePointObjectInspector : Editor
 {
+    #region Declarations
+
     private CurvePointEditObject _curvePointObject;
     private SerializedObject _so;
-    private FindAdjacentCurvePointWindow _findAdjacentCurvePointWindow;
     private GroundManager _groundManager;
     private EditManager _editManager;
     private bool _controlHeld = false;
@@ -26,6 +27,7 @@ public class CurvePointObjectInspector : Editor
     public static GUIContent selectButton = new GUIContent("S", "Select Curve Point");
     public static GUIStyle buttonStyle = new GUIStyle();
 
+    #endregion
 
     #region Tool Mgmt
     private void OnEnable()
@@ -289,31 +291,69 @@ public class CurvePointObjectInspector : Editor
         {
             Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
             _curvePointObject.DoTargetLow = doTargetLow;
+            CameraTargetUtility.BuildGroundCameraTargets(_curvePointObject.ParentGround);
         }
 
         EditorGUILayout.EndHorizontal();
 
         if (_curvePointObject.DoTargetLow)
         {
+            EditorGUI.BeginChangeCheck();
 
-            _curvePointObject.LinkedCameraTarget.doUseManualOffsets = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffsets, "Manual Offset", GUILayout.ExpandWidth(false));
-
-            if (_curvePointObject.LinkedCameraTarget.doUseManualOffsets)
+            _curvePointObject.LinkedCameraTarget.doUseManualOffset = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOffset, "Manual Offset", GUILayout.ExpandWidth(false));
+            
+            if(EditorGUI.EndChangeCheck())
             {
-                var yOffset = EditorGUILayout.FloatField("Y Offset", _curvePointObject.LinkedCameraTarget.manualYOffset);
-                yOffset = Mathf.Max(CameraTargetUtility.MinYOffsetT * CameraTargetUtility.DefaultOrthoSize, yOffset);
-                _curvePointObject.LinkedCameraTarget.manualYOffset = yOffset;
+                Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+                _curvePointObject.LinkedCameraTarget.manualYOffset = _curvePointObject.LinkedCameraTarget.yOffset;
 
-
+                if(!_curvePointObject.LinkedCameraTarget.doUseManualOffset)
+                {
+                    CameraTargetUtility.BuildGroundCameraTargets(_curvePointObject.ParentGround);
+                }
             }
 
-            _curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize, "Manual Zoom Ortho Size", GUILayout.ExpandWidth(false));
-
-            if (_curvePointObject.LinkedCameraTarget.doUseManualZoomOrthoSize)
+            if (_curvePointObject.LinkedCameraTarget.doUseManualOffset)
             {
-                var zoomSize = EditorGUILayout.FloatField("Zoom Ortho Size", _curvePointObject.LinkedCameraTarget.manualZoomOrthoSize);
+                EditorGUI.BeginChangeCheck();
+
+                var yOffset = EditorGUILayout.FloatField("Y Offset", _curvePointObject.LinkedCameraTarget.manualYOffset);
+                _curvePointObject.LinkedCameraTarget.manualYOffset = Mathf.Max(CameraTargetUtility.MinYOffsetT, yOffset);
+
+                if(EditorGUI.EndChangeCheck())
+                {
+                    Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+                    CameraTargetUtility.BuildGroundCameraTargets(_curvePointObject.ParentGround);
+                }
+            }
+            EditorGUI.BeginChangeCheck();
+
+            _curvePointObject.LinkedCameraTarget.doUseManualOrthoSize = GUILayout.Toggle(_curvePointObject.LinkedCameraTarget.doUseManualOrthoSize, "Manual Zoom Ortho Size", GUILayout.ExpandWidth(false));
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+                _curvePointObject.LinkedCameraTarget.manualOrthoSize = _curvePointObject.LinkedCameraTarget.orthoSize;
+
+                if (!_curvePointObject.LinkedCameraTarget.doUseManualOrthoSize)
+                {
+                    CameraTargetUtility.BuildGroundCameraTargets(_curvePointObject.ParentGround);
+                }
+            }
+
+            if (_curvePointObject.LinkedCameraTarget.doUseManualOrthoSize)
+            {
+                EditorGUI.BeginChangeCheck();
+
+                var zoomSize = EditorGUILayout.FloatField("Zoom Ortho Size", _curvePointObject.LinkedCameraTarget.manualOrthoSize);
                 zoomSize = Mathf.Max(zoomSize, CameraTargetUtility.DefaultOrthoSize);
-                _curvePointObject.LinkedCameraTarget.manualZoomOrthoSize = zoomSize;
+                _curvePointObject.LinkedCameraTarget.manualOrthoSize = zoomSize;
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RegisterFullObjectHierarchyUndo(_curvePointObject, "Curve Point Target Settings");
+                    CameraTargetUtility.BuildGroundCameraTargets(_curvePointObject.ParentGround);
+                }
             }
         }
 
@@ -491,10 +531,24 @@ public class CurvePointObjectInspector : Editor
             RefreshGround();
         }
 
-        if (_aHeld && curvePointObject.LinkedCameraTarget.doLowTarget)
+        if (curvePointObject.LinkedCameraTarget.doLowTarget)
         {
-            EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
-            DrawTargetInfo(curvePointObject);
+            if (_aHeld)
+            {
+                EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
+            }
+
+            if(curvePointObject.LinkedCameraTarget.prevTarget != null)
+            {
+                DrawTargetInfo(curvePointObject.LinkedCameraTarget.prevTarget);
+            }
+
+            DrawTargetInfo(curvePointObject.LinkedCameraTarget);
+
+            if(curvePointObject.LinkedCameraTarget.nextTarget != null)
+            {
+                DrawTargetInfo(curvePointObject.LinkedCameraTarget.nextTarget);
+            }
         }
     }
 
@@ -662,11 +716,11 @@ public class CurvePointObjectInspector : Editor
         Handles.DrawLine(camBottom, (Vector3)cpObj.CurvePoint.Position);
     }
 
-    public static void DrawTargetInfo(CurvePointEditObject cpObj)
+    public static void DrawTargetInfo(LinkedCameraTarget target)
     {
-        var target = cpObj.LinkedCameraTarget;
-        if (!target.doLowTarget)
+        if (target == null || !target.doLowTarget)
         {
+            Debug.Log("Target is null or not set to low target.");
             return;
         }
         var camCenterX = target.Position.x - (CameraManager.minXOffset/2);
@@ -682,7 +736,14 @@ public class CurvePointObjectInspector : Editor
         var camBottomRight = new Vector3(camRightX, camBottomY);
 
         //Draw camera box
-        Handles.color = Color.white;
+        if(target.doUseManualOffset || target.doUseManualOrthoSize)
+        {
+            Handles.color = Color.yellow;
+        }
+        else
+        {
+            Handles.color = Color.yellowGreen;
+        }
         Handles.DrawLine(camTopLeft, camTopRight);
         Handles.DrawLine(camTopRight, camBottomRight);
         Handles.DrawLine(camBottomRight, camBottomLeft);

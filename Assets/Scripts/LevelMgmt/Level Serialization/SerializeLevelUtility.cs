@@ -98,18 +98,18 @@ public static class SerializeLevelUtility
             transform = transform.parent;
         }
 
-        if (ground == null || ground.LowPoints.Count == 0) 
+        if (ground == null || ground.LowTargets.Count == 0) 
         {
             Debug.LogWarning("No parent ground found for startline");
 
             return (SerializedStartLine)startLine.Serialize();
         }
 
-        var xPos = startLine.CurvePoint.Position.x + startLine.XOffset + CameraManager.minXOffset;
+        var xPos = startLine.StartPositionWithOffset.x + CameraManager.minXOffset;
         var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
         var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
         startLine.FirstCameraTarget = leftTarget;
-        startLine.FirstHighPoint = ground.HighPoints[0];
+        startLine.FirstHighPoint = ground.HighPoints.Count > 0 ? ground.HighPoints[0] : null;
         var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
         startLine.CamStartPosition = new(xPos - (CameraManager.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
         startLine.CamOrthoSize = camParams.orthoSize;

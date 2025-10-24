@@ -10,6 +10,9 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private float _camOrthoSize = 50;
     private LinkedCameraTarget _firstCameraTarget;
     private LinkedHighPoint _firstHighPoint;
+
+    public Vector3 StartPosition => _curvePoint.WorldPosition;
+    public Vector3 StartPositionWithOffset => StartPosition + new Vector3(_xOffset, 0, 0);
     public GameObject GameObject => gameObject;
 
     public CurvePoint CurvePoint { get => _curvePoint; set => _curvePoint = value; }
@@ -40,7 +43,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RecordObject(this, "Set Start Point");
 #endif
-        startPoint.LinkedCameraTarget.doLowTarget = true;
         _curvePoint = startPoint;
         _xOffset = xOffset;
     }
@@ -56,10 +58,10 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
             resyncs.Add(resync);
         }
 
-        if (FirstCameraTarget != null && FirstCameraTarget.parentObject != null)
+        if (FirstCameraTarget != null)
         {
             var resync = new ObjectResync(FirstCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FirstCameraTarget.parentObject.Object.GetComponent<CurvePoint>().Object = obj; };
+            resync.resyncFunc = (obj) => { FirstCameraTarget.parentObject = obj.GetComponent<ICameraTargetable>(); };
             resyncs.Add(resync);
         }
 
