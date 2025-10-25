@@ -281,12 +281,13 @@ public class CameraManager : MonoBehaviour
 
         var collidedTransformParent = collision.transform.parent;
 
-        if (_currentGround != null && collidedTransformParent == _currentGround.transform)
+        if (_currentGround != null && collidedTransformParent.parent == _currentGround.transform)
         {
             return;
         }
 
-        Debug.Log("Updating ground segment and targets on land.");
+        Debug.Log("CameraManager: Player landed on new ground segment, updating camera targets.");
+        Debug.Log("CameraManager: Player landed on new ground segment: " + collidedTransformParent.name);
 
         var playerPos = _player.NormalBody.position;
 

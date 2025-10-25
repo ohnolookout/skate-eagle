@@ -1634,13 +1634,13 @@ MonoBehaviour:
         _blueTime: 8
         _redTime: 6
       _serializedObjects:
-      - rid: 462384765862936754
-      - rid: 462384765862936755
-      - rid: 462384765862936756
-      - rid: 462384765862936757
-      - rid: 462384765862936758
+      - rid: 462384806227607994
+      - rid: 462384806227607995
+      - rid: 462384806227607996
+      - rid: 462384806227607997
+      - rid: 462384806227607998
       _leaderboardKey: Cam Gap Test_leaderboard
-      _killPlaneY: -68.62909
+      _killPlaneY: -84
       _serializedStartLine:
         xOffset: 0
         _curvePoint:
@@ -1674,29 +1674,29 @@ MonoBehaviour:
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 24.870806, z: 0}
-        _camOrthoSize: 52.597282
+        _camStartPosition: {x: -110, y: 31.894957, z: 0}
+        _camOrthoSize: 50
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384765862936760
+            rid: 462384806227607999
           doLowTarget: 1
           doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
+          manualYOffset: 0
+          yOffset: 0.6999999
+          orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
+          manualOrthoSize: 57.3
+          serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
         _firstHighPoint:
           previous:
             rid: -2
           next:
-            rid: 462384765862936761
+            rid: 462384806227608000
           position: {x: -299.99817, y: 30.000002, z: 0}
   _nameToUIDDictionary:
     reorderableList:
@@ -1782,7 +1782,7 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: 
+    _UID: 25d9eb0d-2aa2-4f74-a1ee-61353bf65744
     _name: Cam Gap Test
     _goldRequired: 0
     _medalTimes:
@@ -1792,13 +1792,13 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 462384767228969269
-    - rid: 462384767228969270
-    - rid: 462384767228969271
-    - rid: 462384767228969272
-    - rid: 462384767228969273
+    - rid: 462384806227607994
+    - rid: 462384806227607995
+    - rid: 462384806227607996
+    - rid: 462384806227607997
+    - rid: 462384806227607998
     _leaderboardKey: Cam Gap Test_leaderboard
-    _killPlaneY: -68.62909
+    _killPlaneY: -84
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
@@ -1832,31 +1832,31 @@ MonoBehaviour:
           serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
           SerializedPosition: {x: -120, y: 30, z: 0}
-      _camStartPosition: {x: -110, y: 24.870806, z: 0}
-      _camOrthoSize: 52.597282
+      _camStartPosition: {x: -110, y: 31.894957, z: 0}
+      _camOrthoSize: 50
       _firstCameraTarget:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384765862936762
+          rid: 462384806227607999
         doLowTarget: 1
         doUseManualOffset: 0
-        manualYOffset: 0.44
-        yOffset: 0.53010875
-        orthoSize: 52.597282
+        manualYOffset: 0
+        yOffset: 0.6999999
+        orthoSize: 50
         doUseManualOrthoSize: 0
-        manualOrthoSize: 57.7
-        serializedObjectLocation: 0000000002000000
+        manualOrthoSize: 57.3
+        serializedObjectLocation: 0000000001000000
         targetTransform: {fileID: 0}
-        SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+        SerializedPosition: {x: -120, y: 30, z: 0}
       _firstHighPoint:
         previous:
           rid: -2
         next:
-          rid: 462384765862936761
+          rid: 462384806227608000
         position: {x: -299.99817, y: 30.000002, z: 0}
-  _levelIsDirty: 1
+  _levelIsDirty: 0
   _levelOrderIsDirty: 0
   references:
     version: 2
@@ -14763,2083 +14763,6 @@ MonoBehaviour:
         serializedObjectLocation: 0000000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384765862936754
-      type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
-      data:
-        position: {x: 0, y: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 0}
-        name: Ground 0
-        isInverted: 0
-        hasShadow: 1
-        floorType: 0
-        floorHeight: 192
-        floorAngle: 0
-        segmentList:
-        - name: G0 Segment 0
-          position: {x: 0, y: 0, z: 0}
-          floorPositions: {x: 0, y: 0, z: 0}
-          leftFloorHeight: 0
-          leftFloorAngle: 0
-          rightFloorHeight: 0
-          rightFloorAngle: 0
-          startFloor: {x: 0, y: 0, z: 0}
-          endFloor: {x: 0, y: 0, z: 0}
-          isStart: 0
-          isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
-          startPointIndex: 0
-          endPointIndex: 1
-          startTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384765862936762
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 57.7
-            serializedObjectLocation: 0000000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-          startHighPoint:
-            previous:
-              rid: -2
-            next:
-              rid: 462384765862936761
-            position: {x: -299.99817, y: 30.000002, z: 0}
-          fillSplineCurvePoints:
-          - name: CP
-            position: {x: -300, y: 30, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 1
-            _isSymmetrical: 0
-            _floorHeight: 192
-            _floorAngle: 0
-            _floorPosition: {x: -300, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -120, y: 30, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 2
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -120, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -120, y: -162, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -300, y: -162, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          edgeSplineCurvePoints:
-          - name: CP
-            position: {x: -300, y: 30, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 1
-            _isSymmetrical: 0
-            _floorHeight: 192
-            _floorAngle: 0
-            _floorPosition: {x: -300, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -120, y: 30, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 2
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -120, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          fillSplinePoints: []
-          fillSpineIsOpen: 0
-          edgeSplinePoints: []
-          colliderPoints:
-          - {x: -300, y: 31.2}
-          - {x: -120, y: 31.2}
-          bottomColliderPoints:
-          - {x: -300, y: 31.2}
-          - {x: -300, y: 30}
-          - {x: -300, y: -162}
-          - {x: -300, y: -162}
-          - {x: -120, y: -162}
-          linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 0, z: 0}
-        - name: G0 Segment 1
-          position: {x: 0, y: 0, z: 0}
-          floorPositions: {x: 0, y: 0, z: 0}
-          leftFloorHeight: 0
-          leftFloorAngle: 0
-          rightFloorHeight: 0
-          rightFloorAngle: 0
-          startFloor: {x: 0, y: 0, z: 0}
-          endFloor: {x: 0, y: 0, z: 0}
-          isStart: 0
-          isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
-          startPointIndex: 1
-          endPointIndex: 3
-          startTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384765862936762
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 57.7
-            serializedObjectLocation: 0000000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-          startHighPoint:
-            previous:
-              rid: -2
-            next:
-              rid: 462384765862936761
-            position: {x: -299.99817, y: 30.000002, z: 0}
-          fillSplineCurvePoints:
-          - name: CP
-            position: {x: -120, y: 30, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 2
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -120, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -60, y: -1.2210388, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -60, y: -70, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 0, y: 25.755173, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 0, y: -162, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -120, y: -162, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          edgeSplineCurvePoints:
-          - name: CP
-            position: {x: -120, y: 30, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 2
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -120, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: -60, y: -1.2210388, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -60, y: -70, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 0, y: 25.755173, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: -162, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          fillSplinePoints: []
-          fillSpineIsOpen: 0
-          edgeSplinePoints: []
-          colliderPoints:
-          - {x: -120, y: 31.2}
-          - {x: -117.62114, y: 31.107162}
-          - {x: -115.36814, y: 30.845495}
-          - {x: -113.192444, y: 30.425476}
-          - {x: -111.090645, y: 29.858856}
-          - {x: -109.0588, y: 29.157616}
-          - {x: -107.092575, y: 28.333803}
-          - {x: -105.1871, y: 27.399374}
-          - {x: -103.33728, y: 26.366135}
-          - {x: -101.53765, y: 25.245655}
-          - {x: -99.782684, y: 24.04927}
-          - {x: -98.066826, y: 22.788141}
-          - {x: -96.38448, y: 21.47324}
-          - {x: -94.73012, y: 20.115395}
-          - {x: -93.09836, y: 18.72538}
-          - {x: -91.48382, y: 17.313854}
-          - {x: -89.88129, y: 15.891445}
-          - {x: -88.285645, y: 14.468745}
-          - {x: -86.691864, y: 13.0562935}
-          - {x: -85.09503, y: 11.664589}
-          - {x: -83.49037, y: 10.304096}
-          - {x: -81.87316, y: 8.985182}
-          - {x: -80.23875, y: 7.7181168}
-          - {x: -78.58259, y: 6.513042}
-          - {x: -76.90009, y: 5.379923}
-          - {x: -75.18661, y: 4.328506}
-          - {x: -73.4374, y: 3.3683324}
-          - {x: -71.64741, y: 2.5087106}
-          - {x: -69.811226, y: 1.7587904}
-          - {x: -67.923035, y: 1.1276611}
-          - {x: -65.976494, y: 0.6245011}
-          - {x: -63.9648, y: 0.2587521}
-          - {x: -61.873978, y: 0.040072322}
-          - {x: -59.96129, y: -0.021663308}
-          - {x: -60.040646, y: -0.021727324}
-          - {x: -57.804386, y: 0.05126822}
-          - {x: -55.650265, y: 0.2692386}
-          - {x: -53.571064, y: 0.62261635}
-          - {x: -51.559742, y: 1.1021518}
-          - {x: -49.60955, y: 1.6988142}
-          - {x: -47.714123, y: 2.4036772}
-          - {x: -45.867405, y: 3.2078068}
-          - {x: -44.063644, y: 4.102177}
-          - {x: -42.297306, y: 5.077615}
-          - {x: -40.562996, y: 6.1247826}
-          - {x: -38.855408, y: 7.2341785}
-          - {x: -37.16923, y: 8.396146}
-          - {x: -35.49915, y: 9.600906}
-          - {x: -33.839775, y: 10.838574}
-          - {x: -32.18566, y: 12.0991745}
-          - {x: -30.531265, y: 13.37266}
-          - {x: -28.870953, y: 14.648918}
-          - {x: -27.199005, y: 15.917765}
-          - {x: -25.509619, y: 17.168938}
-          - {x: -23.796923, y: 18.392088}
-          - {x: -22.054985, y: 19.57676}
-          - {x: -20.27787, y: 20.712349}
-          - {x: -18.459667, y: 21.788115}
-          - {x: -16.594551, y: 22.79314}
-          - {x: -14.676868, y: 23.716343}
-          - {x: -12.701195, y: 24.546505}
-          - {x: -10.66241, y: 25.272346}
-          - {x: -8.555759, y: 25.882582}
-          - {x: -6.376809, y: 26.366083}
-          - {x: -4.121413, y: 26.711954}
-          - {x: -1.7955933, y: 26.909412}
-          - {x: -0.030836707, y: 26.954777}
-          bottomColliderPoints:
-          - {x: -120, y: -162}
-          - {x: 0, y: -162}
-          - {x: 0, y: -162}
-          - {x: 0, y: 25.755173}
-          - {x: -0.030836707, y: 26.954777}
-          linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 0, z: 0}
-        curvePoints:
-        - name: CP 0_0
-          position: {x: -300, y: 30, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          _serializedWorldPosition: {x: -300, y: 30, z: 0}
-          _mode: 0
-          _floorPointType: 1
-          _isSymmetrical: 0
-          _floorHeight: 192
-          _floorAngle: 0
-          _floorPosition: {x: -300, y: -162, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0000000000000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -300, y: 30, z: 0}
-        - name: CP 0_1
-          position: {x: -120, y: 30, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: 0, z: 0}
-          _serializedWorldPosition: {x: -120, y: 30, z: 0}
-          _mode: 1
-          _floorPointType: 2
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: -120, y: -162, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384765862936763
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: NaN
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 57.3
-            serializedObjectLocation: 0000000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -120, y: 30, z: 0}
-        - name: CP 0_2_LT
-          position: {x: -60, y: -1.2210388, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: 0, z: 0}
-          _serializedWorldPosition: {x: -60, y: -1.2210388, z: 0}
-          _mode: 1
-          _floorPointType: 0
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: -60, y: -70, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384767228969274
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 57.7
-            serializedObjectLocation: 0000000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-        - name: CP 0_3
-          position: {x: 0, y: 25.755173, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: -0, z: -0}
-          _serializedWorldPosition: {x: 0, y: 25.755173, z: 0}
-          _mode: 1
-          _floorPointType: 1
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 0, y: -162, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0000000003000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 25.755173, z: 0}
-        lowTargets:
-        - forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936762
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-        - forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936764
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 75.1
-          serializedObjectLocation: 0100000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-        zoomPoints: []
-        highPoints:
-        - previous:
-            rid: -2
-          next:
-            rid: 462384765862936761
-          position: {x: -299.99817, y: 30.000002, z: 0}
-        - previous:
-            rid: 462384765862936765
-          next:
-            rid: 462384765862936766
-          position: {x: -119.92505, y: 29.999908, z: 0}
-        - previous:
-            rid: 462384765862936761
-          next:
-            rid: -2
-          position: {x: 0.000008940697, y: 25.755173, z: 0}
-        manualLeftCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: -2
-          doLowTarget: 0
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          serializedObjectLocation: 
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 0, y: 0, z: 0}
-        manualRightCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936764
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 75.1
-          serializedObjectLocation: 0100000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384765862936755
-      type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
-      data:
-        position: {x: 28.6, y: -27.5}
-        rotation: {x: 0, y: 0, z: 0, w: 0}
-        name: Ground 1
-        isInverted: 0
-        hasShadow: 1
-        floorType: 1
-        floorHeight: 131
-        floorAngle: 0
-        segmentList:
-        - name: G1 Segment 0
-          position: {x: 28.6, y: -27.5, z: 0}
-          floorPositions: {x: 0, y: 0, z: 0}
-          leftFloorHeight: 0
-          leftFloorAngle: 0
-          rightFloorHeight: 0
-          rightFloorAngle: 0
-          startFloor: {x: 0, y: 0, z: 0}
-          endFloor: {x: 0, y: 0, z: 0}
-          isStart: 0
-          isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
-          startPointIndex: 0
-          endPointIndex: 2
-          startTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384765862936764
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0.17
-            yOffset: 0.37625113
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 75.1
-            serializedObjectLocation: 0100000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-          startHighPoint:
-            previous:
-              rid: -2
-            next:
-              rid: 462384765862936767
-            position: {x: 73.66481, y: -29.449518, z: 0}
-          fillSplineCurvePoints:
-          - name: CP
-            position: {x: 44.994164, y: -1.9180489, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 23.55423, y: -10.481745, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 131
-            _floorAngle: 0
-            _floorPosition: {x: 44.994164, y: -132.91805, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 111.66505, y: -31.12909, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 115.16087, y: -108.38828, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 181.52632, y: 1.8438476, z: 0}
-            leftTangent: {x: -16.325455, y: -8.313107, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 136
-            _floorAngle: 0
-            _floorPosition: {x: 181.52632, y: -134.15616, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 181.52632, y: -134.15616, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 44.994164, y: -132.91805, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          edgeSplineCurvePoints:
-          - name: CP
-            position: {x: 44.994164, y: -1.9180489, z: 0}
-            leftTangent: {x: -23.55423, y: 10.481745, z: -0}
-            rightTangent: {x: 23.55423, y: -10.481745, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 131
-            _floorAngle: 0
-            _floorPosition: {x: 44.994164, y: -132.91805, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 111.66505, y: -31.12909, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 115.16087, y: -108.38828, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 181.52632, y: 1.8438476, z: 0}
-            leftTangent: {x: -16.325455, y: -8.313107, z: 0}
-            rightTangent: {x: 16.325455, y: 8.313107, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 136
-            _floorAngle: 0
-            _floorPosition: {x: 181.52632, y: -134.15616, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          fillSplinePoints: []
-          fillSpineIsOpen: 0
-          edgeSplinePoints: []
-          colliderPoints:
-          - {x: 45.493546, y: -0.8268944}
-          - {x: 47.523136, y: -1.7560242}
-          - {x: 49.525646, y: -2.7213116}
-          - {x: 51.50285, y: -3.7188516}
-          - {x: 53.456486, y: -4.744749}
-          - {x: 55.388306, y: -5.7951217}
-          - {x: 57.300083, y: -6.866105}
-          - {x: 59.193546, y: -7.9538355}
-          - {x: 61.070454, y: -9.054471}
-          - {x: 62.93254, y: -10.164172}
-          - {x: 64.78157, y: -11.279122}
-          - {x: 66.619225, y: -12.395495}
-          - {x: 68.44726, y: -13.509493}
-          - {x: 70.26734, y: -14.617311}
-          - {x: 72.08119, y: -15.715163}
-          - {x: 73.890495, y: -16.799276}
-          - {x: 75.69692, y: -17.865887}
-          - {x: 77.50214, y: -18.911242}
-          - {x: 79.3078, y: -19.931602}
-          - {x: 81.11558, y: -20.923252}
-          - {x: 82.927086, y: -21.882484}
-          - {x: 84.744026, y: -22.80563}
-          - {x: 86.567986, y: -23.689014}
-          - {x: 88.400665, y: -24.529015}
-          - {x: 90.243744, y: -25.322023}
-          - {x: 92.09889, y: -26.064453}
-          - {x: 93.96785, y: -26.752745}
-          - {x: 95.85237, y: -27.383362}
-          - {x: 97.75427, y: -27.95279}
-          - {x: 99.67537, y: -28.457512}
-          - {x: 101.61759, y: -28.894022}
-          - {x: 103.58292, y: -29.258808}
-          - {x: 105.57334, y: -29.548326}
-          - {x: 107.59092, y: -29.759007}
-          - {x: 109.638725, y: -29.887255}
-          - {x: 111.68967, y: -29.929342}
-          - {x: 111.634186, y: -29.929485}
-          - {x: 113.57461, y: -29.881027}
-          - {x: 115.532196, y: -29.735224}
-          - {x: 117.50516, y: -29.49616}
-          - {x: 119.49165, y: -29.167984}
-          - {x: 121.48981, y: -28.754915}
-          - {x: 123.49759, y: -28.261208}
-          - {x: 125.51307, y: -27.691189}
-          - {x: 127.534256, y: -27.049238}
-          - {x: 129.55916, y: -26.339777}
-          - {x: 131.58578, y: -25.56727}
-          - {x: 133.61217, y: -24.736198}
-          - {x: 135.63634, y: -23.851086}
-          - {x: 137.65636, y: -22.916458}
-          - {x: 139.6703, y: -21.93688}
-          - {x: 141.67625, y: -20.916916}
-          - {x: 143.67232, y: -19.861141}
-          - {x: 145.65663, y: -18.77413}
-          - {x: 147.62732, y: -17.660498}
-          - {x: 149.58252, y: -16.5248}
-          - {x: 151.52043, y: -15.371655}
-          - {x: 153.4392, y: -14.205648}
-          - {x: 155.33702, y: -13.031361}
-          - {x: 157.21213, y: -11.853393}
-          - {x: 159.06274, y: -10.676336}
-          - {x: 160.88707, y: -9.504751}
-          - {x: 162.68341, y: -8.343234}
-          - {x: 164.45003, y: -7.1963477}
-          - {x: 166.18521, y: -6.0686483}
-          - {x: 167.88731, y: -4.964694}
-          - {x: 169.55469, y: -3.8890316}
-          - {x: 171.18571, y: -2.846185}
-          - {x: 172.77887, y: -1.8406733}
-          - {x: 174.33267, y: -0.8770076}
-          - {x: 175.84569, y: 0.04033065}
-          - {x: 177.31665, y: 0.9068574}
-          - {x: 178.74438, y: 1.7181103}
-          - {x: 180.12312, y: 2.4671426}
-          - {x: 180.97311, y: 2.9087214}
-          bottomColliderPoints:
-          - {x: 45.493546, y: -0.8268944}
-          - {x: 44.994164, y: -1.9180489}
-          - {x: 44.994164, y: -132.91805}
-          - {x: 44.994164, y: -132.91805}
-          - {x: 181.52632, y: -134.15616}
-          - {x: 181.52632, y: -134.15616}
-          - {x: 181.52632, y: 1.8438476}
-          - {x: 180.97311, y: 2.9087214}
-          linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 0, z: 0}
-        curvePoints:
-        - name: CP 1_0
-          position: {x: 44.994164, y: -1.9180489, z: 0}
-          leftTangent: {x: -23.55423, y: 10.481745, z: -0}
-          rightTangent: {x: 23.55423, y: -10.481745, z: 0}
-          _serializedWorldPosition: {x: 73.59416, y: -29.418049, z: 0}
-          _mode: 1
-          _floorPointType: 1
-          _isSymmetrical: 1
-          _floorHeight: 131
-          _floorAngle: 0
-          _floorPosition: {x: 44.994164, y: -132.91805, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0100000000000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 73.59416, y: -29.418049, z: 0}
-        - name: CP 1_1_LT
-          position: {x: 111.66505, y: -31.12909, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: -0, z: -0}
-          _serializedWorldPosition: {x: 140.26505, y: -58.62909, z: 0}
-          _mode: 1
-          _floorPointType: 0
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 115.16087, y: -108.38828, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384767228969275
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0.17
-            yOffset: 0.37625113
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 75.1
-            serializedObjectLocation: 0100000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-        - name: CP 1_2
-          position: {x: 181.52632, y: 1.8438476, z: 0}
-          leftTangent: {x: -16.325455, y: -8.313107, z: 0}
-          rightTangent: {x: 16.325455, y: 8.313107, z: -0}
-          _serializedWorldPosition: {x: 210.12633, y: -25.656153, z: 0}
-          _mode: 1
-          _floorPointType: 1
-          _isSymmetrical: 1
-          _floorHeight: 136
-          _floorAngle: 0
-          _floorPosition: {x: 181.52632, y: -134.15616, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0100000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 210.12633, y: -25.656153, z: 0}
-        lowTargets:
-        - forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936762
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-        - forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936764
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 75.1
-          serializedObjectLocation: 0100000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-        - forceZoomTargets: []
-          prevTarget:
-            rid: 462384765862936762
-          nextTarget:
-            rid: -2
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.4737488
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          serializedObjectLocation: 0200000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 355.6, y: -30, z: 0}
-        zoomPoints: []
-        highPoints:
-        - previous:
-            rid: -2
-          next:
-            rid: 462384765862936767
-          position: {x: 73.66481, y: -29.449518, z: 0}
-        - previous:
-            rid: 462384765862936768
-          next:
-            rid: -2
-          position: {x: 210.12633, y: -25.656149, z: 0}
-        manualLeftCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936762
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-        manualRightCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: 462384765862936762
-          nextTarget:
-            rid: -2
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.4737488
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          serializedObjectLocation: 0200000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384765862936756
-      type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
-      data:
-        position: {x: 0, y: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 0}
-        name: Ground 2
-        isInverted: 0
-        hasShadow: 1
-        floorType: 0
-        floorHeight: 158
-        floorAngle: 0
-        segmentList:
-        - name: G2 Segment 0
-          position: {x: 0, y: 0, z: 0}
-          floorPositions: {x: 0, y: 0, z: 0}
-          leftFloorHeight: 0
-          leftFloorAngle: 0
-          rightFloorHeight: 0
-          rightFloorAngle: 0
-          startFloor: {x: 0, y: 0, z: 0}
-          endFloor: {x: 0, y: 0, z: 0}
-          isStart: 0
-          isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
-          startPointIndex: 0
-          endPointIndex: 2
-          startTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: 462384765862936762
-            nextTarget:
-              rid: -2
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.4737488
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 355.6, y: -30, z: 0}
-          startHighPoint:
-            previous:
-              rid: -2
-            next:
-              rid: 462384765862936769
-            position: {x: 295.67496, y: -0.00008994001, z: 0}
-          fillSplineCurvePoints:
-          - name: CP
-            position: {x: 295.6, y: 0, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 2
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 158
-            _floorAngle: 0
-            _floorPosition: {x: 295.6, y: -158, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 355.6, y: -30, z: 0}
-            leftTangent: {x: -31.25, y: 0, z: 0}
-            rightTangent: {x: 31.25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 835.6, y: -30, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 1
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 835.6, y: -158, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 835.6, y: -158, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 295.6, y: -158, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 0
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          edgeSplineCurvePoints:
-          - name: CP
-            position: {x: 295.6, y: 0, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 158
-            _floorAngle: 0
-            _floorPosition: {x: 295.6, y: -158, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 355.6, y: -30, z: 0}
-            leftTangent: {x: -31.25, y: 0, z: 0}
-            rightTangent: {x: 31.25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: 0, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 835.6, y: -30, z: 0}
-            leftTangent: {x: 0, y: 0, z: 0}
-            rightTangent: {x: 0, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 0
-            _floorPointType: 1
-            _isSymmetrical: 0
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 835.6, y: -158, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          fillSplinePoints: []
-          fillSpineIsOpen: 0
-          edgeSplinePoints: []
-          colliderPoints:
-          - {x: 295.6448, y: 1.199164}
-          - {x: 297.99918, y: 1.107693}
-          - {x: 300.24054, y: 0.84706044}
-          - {x: 302.37503, y: 0.42825937}
-          - {x: 304.40884, y: -0.13705277}
-          - {x: 306.3487, y: -0.83668065}
-          - {x: 308.2017, y: -1.6580983}
-          - {x: 309.97568, y: -2.5886889}
-          - {x: 311.6791, y: -3.61601}
-          - {x: 313.32083, y: -4.727865}
-          - {x: 314.90988, y: -5.912375}
-          - {x: 316.45563, y: -7.15804}
-          - {x: 317.9673, y: -8.453569}
-          - {x: 319.45416, y: -9.787973}
-          - {x: 320.92532, y: -11.150391}
-          - {x: 322.38974, y: -12.530119}
-          - {x: 323.85623, y: -13.9165745}
-          - {x: 325.33347, y: -15.299228}
-          - {x: 326.83014, y: -16.667713}
-          - {x: 328.3547, y: -18.011755}
-          - {x: 329.91565, y: -19.321209}
-          - {x: 331.52133, y: -20.58607}
-          - {x: 333.18048, y: -21.796566}
-          - {x: 334.90146, y: -22.942995}
-          - {x: 336.6933, y: -24.015852}
-          - {x: 338.56506, y: -25.005705}
-          - {x: 340.5263, y: -25.903118}
-          - {x: 342.58664, y: -26.698524}
-          - {x: 344.7562, y: -27.382168}
-          - {x: 347.04498, y: -27.94396}
-          - {x: 349.46335, y: -28.373493}
-          - {x: 352.02127, y: -28.660017}
-          - {x: 354.75394, y: -28.792456}
-          - {x: 355.61063, y: -28.800047}
-          - {x: 355.6, y: -28.8}
-          - {x: 835.6, y: -28.8}
-          bottomColliderPoints:
-          - {x: 295.6448, y: 1.199164}
-          - {x: 295.6, y: 0}
-          - {x: 295.6, y: -158}
-          - {x: 295.6, y: -158}
-          - {x: 835.6, y: -158}
-          - {x: 835.6, y: -158}
-          - {x: 835.6, y: -30}
-          - {x: 835.6, y: -28.8}
-          linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 0, z: 0}
-        curvePoints:
-        - name: CP 2_0
-          position: {x: 295.6, y: 0, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: -0, z: -0}
-          _serializedWorldPosition: {x: 295.6, y: 0, z: 0}
-          _mode: 1
-          _floorPointType: 1
-          _isSymmetrical: 1
-          _floorHeight: 158
-          _floorAngle: 0
-          _floorPosition: {x: 295.6, y: -158, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000000000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 295.6, y: 0, z: 0}
-        - name: CP 2_1_LT
-          position: {x: 355.6, y: -30, z: 0}
-          leftTangent: {x: -31.25, y: 0, z: 0}
-          rightTangent: {x: 31.25, y: 0, z: 0}
-          _serializedWorldPosition: {x: 355.6, y: -30, z: 0}
-          _mode: 1
-          _floorPointType: 0
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 0, y: 0, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: 462384767228969274
-            nextTarget:
-              rid: -2
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.4737488
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 355.6, y: -30, z: 0}
-        - name: CP 2_2
-          position: {x: 835.6, y: -30, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          _serializedWorldPosition: {x: 835.6, y: -30, z: 0}
-          _mode: 0
-          _floorPointType: 1
-          _isSymmetrical: 0
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 835.6, y: -158, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 835.6, y: -30, z: 0}
-        lowTargets:
-        - forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936764
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 75.1
-          serializedObjectLocation: 0100000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-        - forceZoomTargets: []
-          prevTarget:
-            rid: 462384765862936762
-          nextTarget:
-            rid: -2
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.4737488
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          serializedObjectLocation: 0200000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 355.6, y: -30, z: 0}
-        zoomPoints: []
-        highPoints:
-        - previous:
-            rid: -2
-          next:
-            rid: 462384765862936769
-          position: {x: 295.67496, y: -0.00008994001, z: 0}
-        - previous:
-            rid: 462384765862936770
-          next:
-            rid: -2
-          position: {x: 376.953, y: -29.999996, z: 0}
-        manualLeftCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936764
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 75.1
-          serializedObjectLocation: 0100000001000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-        manualRightCamTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: -2
-          doLowTarget: 0
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0
-          orthoSize: 50
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          serializedObjectLocation: 
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: 0, y: 0, z: 0}
-    - rid: 462384765862936757
-      type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
-      data:
-        flagPoint:
-          name: CP 2_1_LT
-          position: {x: 355.6, y: -30, z: 0}
-          leftTangent: {x: -31.25, y: 0, z: 0}
-          rightTangent: {x: 31.25, y: 0, z: 0}
-          _serializedWorldPosition: {x: 355.6, y: -30, z: 0}
-          _mode: 1
-          _floorPointType: 0
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 0, y: 0, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.49914765
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 355.6, y: -30, z: 0}
-        flagPointXOffset: 50
-        backstopPoint:
-          name: CP 2_2
-          position: {x: 835.6, y: -30, z: 0}
-          leftTangent: {x: 0, y: 0, z: 0}
-          rightTangent: {x: 0, y: 0, z: 0}
-          _serializedWorldPosition: {x: 835.6, y: -30, z: 0}
-          _mode: 0
-          _floorPointType: 1
-          _isSymmetrical: 0
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: 835.6, y: -100, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: -2
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 0
-            serializedObjectLocation: 0200000002000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: 835.6, y: -30, z: 0}
-        backstopPointXOffset: 0
-        backstopIsActive: 1
-    - rid: 462384765862936758
-      type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
-      data:
-        xOffset: 0
-        _curvePoint:
-          name: CP 0_1
-          position: {x: -120, y: 30, z: 0}
-          leftTangent: {x: -25, y: 0, z: 0}
-          rightTangent: {x: 25, y: 0, z: 0}
-          _serializedWorldPosition: {x: -120, y: 30, z: 0}
-          _mode: 1
-          _floorPointType: 2
-          _isSymmetrical: 1
-          _floorHeight: 100
-          _floorAngle: 0
-          _floorPosition: {x: -120, y: -70, z: 0}
-          _forceNewSegment: 0
-          _blockNewSegment: 0
-          _object: {fileID: 0}
-          _linkedCameraTarget:
-            forceZoomTargets: []
-            prevTarget:
-              rid: -2
-            nextTarget:
-              rid: 462384765862936759
-            doLowTarget: 0
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: NaN
-            orthoSize: 50
-            doUseManualOrthoSize: 0
-            manualOrthoSize: 57.3
-            serializedObjectLocation: 0000000001000000
-            targetTransform: {fileID: 0}
-            SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 24.870806, z: 0}
-        _camOrthoSize: 52.597282
-        _firstCameraTarget:
-          forceZoomTargets: []
-          prevTarget:
-            rid: -2
-          nextTarget:
-            rid: 462384765862936760
-          doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
-          doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
-          targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-        _firstHighPoint:
-          previous:
-            rid: -2
-          next:
-            rid: 462384765862936761
-          position: {x: -299.99817, y: 30.000002, z: 0}
     - rid: 462384765862936759
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
@@ -16858,134 +14781,6 @@ MonoBehaviour:
         serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-    - rid: 462384765862936760
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384765862936772
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0.17
-        yOffset: 0.37625113
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 75.1
-        serializedObjectLocation: 0100000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384765862936761
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384765862936765
-        next:
-          rid: 462384765862936766
-        position: {x: -119.92505, y: 29.999908, z: 0}
-    - rid: 462384765862936762
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384765862936764
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0.17
-        yOffset: 0.37625113
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 75.1
-        serializedObjectLocation: 0100000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384765862936763
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384765862936773
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0.44
-        yOffset: NaN
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 57.7
-        serializedObjectLocation: 0000000002000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-    - rid: 462384765862936764
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384765862936762
-        nextTarget:
-          rid: -2
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.4737488
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0200000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384765862936765
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384765862936761
-        position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384765862936766
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384765862936761
-        next:
-          rid: -2
-        position: {x: 0.000008940697, y: 25.755173, z: 0}
-    - rid: 462384765862936767
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384765862936768
-        next:
-          rid: -2
-        position: {x: 210.12633, y: -25.656149, z: 0}
-    - rid: 462384765862936768
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384765862936767
-        position: {x: 73.66481, y: -29.449518, z: 0}
-    - rid: 462384765862936769
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384765862936770
-        next:
-          rid: -2
-        position: {x: 376.953, y: -29.999996, z: 0}
-    - rid: 462384765862936770
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384765862936769
-        position: {x: 295.67496, y: -0.00008994001, z: 0}
     - rid: 462384765862936771
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
@@ -16994,42 +14789,6 @@ MonoBehaviour:
           rid: -2
         nextTarget:
           rid: 462384765862936774
-        doLowTarget: 1
-        doUseManualOffset: 1
-        manualYOffset: 0.17
-        yOffset: 0.17
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 75.1
-        serializedObjectLocation: 0100000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384765862936772
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384765862936760
-        nextTarget:
-          rid: -2
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.4737488
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0200000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384765862936773
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384765862936775
         doLowTarget: 1
         doUseManualOffset: 1
         manualYOffset: 0.17
@@ -17058,25 +14817,7 @@ MonoBehaviour:
         serializedObjectLocation: 0200000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384765862936775
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384765862936773
-        nextTarget:
-          rid: -2
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: NaN
-        orthoSize: 50
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0200000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384767228969269
+    - rid: 462384806227607994
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -17113,22 +14854,22 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384767228969274
+              rid: 462384806227607999
             doLowTarget: 1
             doUseManualOffset: 0
-            manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
+            manualYOffset: 0
+            yOffset: 0.6999999
+            orthoSize: 50
             doUseManualOrthoSize: 0
-            manualOrthoSize: 57.7
-            serializedObjectLocation: 0000000002000000
+            manualOrthoSize: 57.3
+            serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+            SerializedPosition: {x: -120, y: 30, z: 0}
           startHighPoint:
             previous:
               rid: -2
             next:
-              rid: 462384765862936761
+              rid: 462384806227608000
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -17359,28 +15100,28 @@ MonoBehaviour:
             _lowPoint: {x: 0, y: 0, z: 0}
             _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
-          endPointIndex: 3
+          endPointIndex: 2
           startTarget:
             forceZoomTargets: []
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384767228969274
+              rid: 462384806227607999
             doLowTarget: 1
             doUseManualOffset: 0
-            manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
+            manualYOffset: 0
+            yOffset: 0.6999999
+            orthoSize: 50
             doUseManualOrthoSize: 0
-            manualOrthoSize: 57.7
-            serializedObjectLocation: 0000000002000000
+            manualOrthoSize: 57.3
+            serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+            SerializedPosition: {x: -120, y: 30, z: 0}
           startHighPoint:
             previous:
               rid: -2
             next:
-              rid: 462384765862936761
+              rid: 462384806227608000
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -17414,46 +15155,16 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: -60, y: -1.2210388, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: 0, z: 0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 0
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: -60, y: -70, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 0, y: 25.755173, z: 0}
+            position: {x: -44, y: -74, z: 0}
             leftTangent: {x: -25, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
             _mode: 2
-            _floorPointType: 1
+            _floorPointType: 2
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: 0, y: -162, z: 0}
+            _floorPosition: {x: -44, y: -162, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -17474,7 +15185,7 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 0, y: -162, z: 0}
+            position: {x: -44, y: -162, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -17565,46 +15276,16 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: -60, y: -1.2210388, z: 0}
+            position: {x: -44, y: -74, z: 0}
             leftTangent: {x: -25, y: 0, z: 0}
             rightTangent: {x: 25, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
             _mode: 1
-            _floorPointType: 0
+            _floorPointType: 2
             _isSymmetrical: 1
             _floorHeight: 100
             _floorAngle: 0
-            _floorPosition: {x: -60, y: -70, z: 0}
-            _forceNewSegment: 0
-            _blockNewSegment: 0
-            _object: {fileID: 0}
-            _linkedCameraTarget:
-              forceZoomTargets: []
-              prevTarget:
-                rid: -2
-              nextTarget:
-                rid: -2
-              doLowTarget: 0
-              doUseManualOffset: 0
-              manualYOffset: 0
-              yOffset: 0
-              orthoSize: 50
-              doUseManualOrthoSize: 0
-              manualOrthoSize: 0
-              serializedObjectLocation: 
-              targetTransform: {fileID: 0}
-              SerializedPosition: {x: 0, y: 0, z: 0}
-          - name: CP
-            position: {x: 0, y: 25.755173, z: 0}
-            leftTangent: {x: -25, y: 0, z: 0}
-            rightTangent: {x: 25, y: -0, z: -0}
-            _serializedWorldPosition: {x: 0, y: 0, z: 0}
-            _mode: 1
-            _floorPointType: 1
-            _isSymmetrical: 1
-            _floorHeight: 100
-            _floorAngle: 0
-            _floorPosition: {x: 0, y: -162, z: 0}
+            _floorPosition: {x: -44, y: -162, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -17629,78 +15310,363 @@ MonoBehaviour:
           edgeSplinePoints: []
           colliderPoints:
           - {x: -120, y: 31.2}
-          - {x: -117.62114, y: 31.107162}
-          - {x: -115.36814, y: 30.845495}
-          - {x: -113.192444, y: 30.425476}
-          - {x: -111.090645, y: 29.858856}
-          - {x: -109.0588, y: 29.157616}
-          - {x: -107.092575, y: 28.333803}
-          - {x: -105.1871, y: 27.399374}
-          - {x: -103.33728, y: 26.366135}
-          - {x: -101.53765, y: 25.245655}
-          - {x: -99.782684, y: 24.04927}
-          - {x: -98.066826, y: 22.788141}
-          - {x: -96.38448, y: 21.47324}
-          - {x: -94.73012, y: 20.115395}
-          - {x: -93.09836, y: 18.72538}
-          - {x: -91.48382, y: 17.313854}
-          - {x: -89.88129, y: 15.891445}
-          - {x: -88.285645, y: 14.468745}
-          - {x: -86.691864, y: 13.0562935}
-          - {x: -85.09503, y: 11.664589}
-          - {x: -83.49037, y: 10.304096}
-          - {x: -81.87316, y: 8.985182}
-          - {x: -80.23875, y: 7.7181168}
-          - {x: -78.58259, y: 6.513042}
-          - {x: -76.90009, y: 5.379923}
-          - {x: -75.18661, y: 4.328506}
-          - {x: -73.4374, y: 3.3683324}
-          - {x: -71.64741, y: 2.5087106}
-          - {x: -69.811226, y: 1.7587904}
-          - {x: -67.923035, y: 1.1276611}
-          - {x: -65.976494, y: 0.6245011}
-          - {x: -63.9648, y: 0.2587521}
-          - {x: -61.873978, y: 0.040072322}
-          - {x: -59.96129, y: -0.021663308}
-          - {x: -60.040646, y: -0.021727324}
-          - {x: -57.804386, y: 0.05126822}
-          - {x: -55.650265, y: 0.2692386}
-          - {x: -53.571064, y: 0.62261635}
-          - {x: -51.559742, y: 1.1021518}
-          - {x: -49.60955, y: 1.6988142}
-          - {x: -47.714123, y: 2.4036772}
-          - {x: -45.867405, y: 3.2078068}
-          - {x: -44.063644, y: 4.102177}
-          - {x: -42.297306, y: 5.077615}
-          - {x: -40.562996, y: 6.1247826}
-          - {x: -38.855408, y: 7.2341785}
-          - {x: -37.16923, y: 8.396146}
-          - {x: -35.49915, y: 9.600906}
-          - {x: -33.839775, y: 10.838574}
-          - {x: -32.18566, y: 12.0991745}
-          - {x: -30.531265, y: 13.37266}
-          - {x: -28.870953, y: 14.648918}
-          - {x: -27.199005, y: 15.917765}
-          - {x: -25.509619, y: 17.168938}
-          - {x: -23.796923, y: 18.392088}
-          - {x: -22.054985, y: 19.57676}
-          - {x: -20.27787, y: 20.712349}
-          - {x: -18.459667, y: 21.788115}
-          - {x: -16.594551, y: 22.79314}
-          - {x: -14.676868, y: 23.716343}
-          - {x: -12.701195, y: 24.546505}
-          - {x: -10.66241, y: 25.272346}
-          - {x: -8.555759, y: 25.882582}
-          - {x: -6.376809, y: 26.366083}
-          - {x: -4.121413, y: 26.711954}
-          - {x: -1.7955933, y: 26.909412}
-          - {x: -0.030836707, y: 26.954777}
+          - {x: -118.6125, y: 31.104782}
+          - {x: -117.3141, y: 30.851912}
+          - {x: -116.03101, y: 30.448513}
+          - {x: -114.763596, y: 29.903751}
+          - {x: -113.51076, y: 29.22582}
+          - {x: -112.270515, y: 28.421762}
+          - {x: -111.0408, y: 27.497696}
+          - {x: -109.81965, y: 26.459059}
+          - {x: -108.605354, y: 25.310831}
+          - {x: -107.3965, y: 24.057707}
+          - {x: -106.191925, y: 22.704239}
+          - {x: -104.990654, y: 21.254845}
+          - {x: -103.792046, y: 19.71399}
+          - {x: -102.595505, y: 18.086077}
+          - {x: -101.40058, y: 16.375547}
+          - {x: -100.20688, y: 14.586826}
+          - {x: -99.01415, y: 12.724375}
+          - {x: -97.82225, y: 10.792741}
+          - {x: -96.630875, y: 8.79634}
+          - {x: -95.44006, y: 6.7397966}
+          - {x: -94.24958, y: 4.6275897}
+          - {x: -93.05943, y: 2.4643235}
+          - {x: -91.86954, y: 0.25454366}
+          - {x: -90.6799, y: -1.9971292}
+          - {x: -89.49048, y: -4.286102}
+          - {x: -88.30122, y: -6.607794}
+          - {x: -87.11224, y: -8.957525}
+          - {x: -85.92346, y: -11.330706}
+          - {x: -84.734924, y: -13.722681}
+          - {x: -83.54665, y: -16.128813}
+          - {x: -82.358696, y: -18.54444}
+          - {x: -81.17108, y: -20.964907}
+          - {x: -79.98385, y: -23.385536}
+          - {x: -78.79705, y: -25.801678}
+          - {x: -77.61074, y: -28.208628}
+          - {x: -76.42499, y: -30.60171}
+          - {x: -75.23986, y: -32.97622}
+          - {x: -74.05541, y: -35.327465}
+          - {x: -72.87175, y: -37.650723}
+          - {x: -71.68895, y: -39.941288}
+          - {x: -70.50712, y: -42.194424}
+          - {x: -69.32638, y: -44.405388}
+          - {x: -68.14684, y: -46.569424}
+          - {x: -66.96869, y: -48.68177}
+          - {x: -65.792076, y: -50.737637}
+          - {x: -64.6172, y: -52.73222}
+          - {x: -63.444298, y: -54.660725}
+          - {x: -62.27366, y: -56.518284}
+          - {x: -61.105606, y: -58.300064}
+          - {x: -59.940567, y: -60.00116}
+          - {x: -58.779034, y: -61.61667}
+          - {x: -57.62158, y: -63.141693}
+          - {x: -56.468994, y: -64.571304}
+          - {x: -55.322186, y: -65.9006}
+          - {x: -54.182274, y: -67.12475}
+          - {x: -53.050694, y: -68.23903}
+          - {x: -51.929092, y: -69.23895}
+          - {x: -50.819458, y: -70.12039}
+          - {x: -49.723934, y: -70.87981}
+          - {x: -48.644638, y: -71.5145}
+          - {x: -47.583218, y: -72.02285}
+          - {x: -46.540142, y: -72.404305}
+          - {x: -45.51388, y: -72.659035}
+          - {x: -44.45505, y: -72.78732}
+          - {x: -43.967735, y: -72.80043}
           bottomColliderPoints:
           - {x: -120, y: -162}
-          - {x: 0, y: -162}
-          - {x: 0, y: -162}
-          - {x: 0, y: 25.755173}
-          - {x: -0.030836707, y: 26.954777}
+          - {x: -44, y: -162}
+          linkedCameraTarget:
+            forceZoomTargets: []
+            prevTarget:
+              rid: -2
+            nextTarget:
+              rid: -2
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            serializedObjectLocation: 
+            targetTransform: {fileID: 0}
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        - name: G0 Segment 2
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          curve:
+            curveSections: []
+            _sectionLengths: []
+            _curvePoints: []
+            length: 0
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          startPointIndex: 2
+          endPointIndex: 3
+          startTarget:
+            forceZoomTargets: []
+            prevTarget:
+              rid: -2
+            nextTarget:
+              rid: 462384806227608001
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0.44
+            yOffset: 0.31050414
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 57.7
+            serializedObjectLocation: 0000000002000000
+            targetTransform: {fileID: 0}
+            SerializedPosition: {x: -44, y: -74, z: 0}
+          startHighPoint:
+            previous:
+              rid: 462384806227608002
+            next:
+              rid: 462384806227608003
+            position: {x: -119.925, y: 29.999691, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: -44, y: -74, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -44, y: -162, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          - name: CP
+            position: {x: 16, y: -26.969238, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 16, y: -162, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          - name: CP
+            position: {x: 16, y: -162, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          - name: CP
+            position: {x: -44, y: -162, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: -44, y: -74, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -44, y: -162, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          - name: CP
+            position: {x: 16, y: -26.969238, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 16, y: -162, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _object: {fileID: 0}
+            _linkedCameraTarget:
+              forceZoomTargets: []
+              prevTarget:
+                rid: -2
+              nextTarget:
+                rid: -2
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              serializedObjectLocation: 
+              targetTransform: {fileID: 0}
+              SerializedPosition: {x: 0, y: 0, z: 0}
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: -43.967735, y: -72.80043}
+          - {x: -42.221214, y: -72.71593}
+          - {x: -40.43797, y: -72.45357}
+          - {x: -38.70328, y: -72.022995}
+          - {x: -37.01158, y: -71.432205}
+          - {x: -35.3584, y: -70.68899}
+          - {x: -33.740276, y: -69.801445}
+          - {x: -32.154472, y: -68.77815}
+          - {x: -30.598587, y: -67.628105}
+          - {x: -29.070435, y: -66.36089}
+          - {x: -27.567793, y: -64.98639}
+          - {x: -26.088388, y: -63.51482}
+          - {x: -24.629776, y: -61.956543}
+          - {x: -23.189384, y: -60.322056}
+          - {x: -21.764484, y: -58.621925}
+          - {x: -20.352228, y: -56.866745}
+          - {x: -18.94963, y: -55.067112}
+          - {x: -17.553614, y: -53.233616}
+          - {x: -16.160995, y: -51.376835}
+          - {x: -14.768488, y: -49.50727}
+          - {x: -13.372732, y: -47.63546}
+          - {x: -11.970277, y: -45.771896}
+          - {x: -10.557562, y: -43.92701}
+          - {x: -9.130946, y: -42.111248}
+          - {x: -7.6866627, y: -40.33505}
+          - {x: -6.2208266, y: -38.608845}
+          - {x: -4.729415, y: -36.94311}
+          - {x: -3.2082562, y: -35.34842}
+          - {x: -1.653027, y: -33.83545}
+          - {x: -0.05929786, y: -32.415123}
+          - {x: 1.5774575, y: -31.098629}
+          - {x: 3.2617111, y: -29.897604}
+          - {x: 4.997711, y: -28.824154}
+          - {x: 6.789244, y: -27.8909}
+          - {x: 8.639297, y: -27.110897}
+          - {x: 10.5498295, y: -26.497337}
+          - {x: 12.521654, y: -26.063162}
+          - {x: 14.537805, y: -25.821032}
+          - {x: 15.956886, y: -25.770014}
+          bottomColliderPoints:
+          - {x: -44, y: -162}
+          - {x: 16, y: -162}
+          - {x: 16, y: -162}
+          - {x: 16, y: -26.969238}
+          - {x: 15.956886, y: -25.770014}
           linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
@@ -17748,7 +15714,7 @@ MonoBehaviour:
             serializedObjectLocation: 0000000000000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -300, y: 30, z: 0}
-        - name: CP 0_1
+        - name: CP 0_1_LT
           position: {x: -120, y: 30, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: 0, z: 0}
@@ -17767,11 +15733,11 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384765862936763
-            doLowTarget: 0
+              rid: 462384806227607999
+            doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: NaN
+            yOffset: 0.6999999
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.3
@@ -17779,16 +15745,16 @@ MonoBehaviour:
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
         - name: CP 0_2_LT
-          position: {x: -60, y: -1.2210388, z: 0}
+          position: {x: -44, y: -74, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: 0, z: 0}
-          _serializedWorldPosition: {x: -60, y: -1.2210388, z: 0}
+          _serializedWorldPosition: {x: -44, y: -74, z: 0}
           _mode: 1
-          _floorPointType: 0
+          _floorPointType: 2
           _isSymmetrical: 1
           _floorHeight: 100
           _floorAngle: 0
-          _floorPosition: {x: -60, y: -70, z: 0}
+          _floorPosition: {x: -44, y: -162, z: 0}
           _forceNewSegment: 0
           _blockNewSegment: 0
           _object: {fileID: 0}
@@ -17797,28 +15763,28 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384767228969274
+              rid: 462384806227608001
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.44
-            yOffset: 0.53010875
-            orthoSize: 52.597282
+            yOffset: 0.31050414
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.7
             serializedObjectLocation: 0000000002000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+            SerializedPosition: {x: -44, y: -74, z: 0}
         - name: CP 0_3
-          position: {x: 0, y: 25.755173, z: 0}
+          position: {x: 16, y: -26.969238, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: -0, z: -0}
-          _serializedWorldPosition: {x: 0, y: 25.755173, z: 0}
+          _serializedWorldPosition: {x: 16, y: -26.969238, z: 0}
           _mode: 1
           _floorPointType: 1
           _isSymmetrical: 1
           _floorHeight: 100
           _floorAngle: 0
-          _floorPosition: {x: 0, y: -162, z: 0}
+          _floorPosition: {x: 16, y: -162, z: 0}
           _forceNewSegment: 0
           _blockNewSegment: 0
           _object: {fileID: 0}
@@ -17837,55 +15803,70 @@ MonoBehaviour:
             manualOrthoSize: 0
             serializedObjectLocation: 0000000003000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: 0, y: 25.755173, z: 0}
+            SerializedPosition: {x: 16, y: -26.969238, z: 0}
         lowTargets:
         - forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969274
+            rid: 462384806227607999
           doLowTarget: 1
           doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
+          manualYOffset: 0
+          yOffset: 0.6999999
+          orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
+          manualOrthoSize: 57.3
+          serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
         - forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969275
+            rid: 462384806227608001
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0.44
+          yOffset: 0.31050414
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 57.7
+          serializedObjectLocation: 0000000002000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: -44, y: -74, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: -2
+          nextTarget:
+            rid: 462384806227608004
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
+          yOffset: 0.4558852
+          orthoSize: 59.79666
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+          SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         zoomPoints: []
         highPoints:
         - previous:
             rid: -2
           next:
-            rid: 462384765862936761
+            rid: 462384806227608000
           position: {x: -299.99817, y: 30.000002, z: 0}
         - previous:
-            rid: 462384765862936765
+            rid: 462384806227608002
           next:
-            rid: 462384765862936766
-          position: {x: -119.92505, y: 29.999908, z: 0}
+            rid: 462384806227608003
+          position: {x: -119.925, y: 29.999691, z: 0}
         - previous:
-            rid: 462384765862936761
+            rid: 462384806227608000
           next:
             rid: -2
-          position: {x: 0.000008940697, y: 25.755173, z: 0}
+          position: {x: 16.00001, y: -26.969238, z: 0}
         manualLeftCamTarget:
           forceZoomTargets: []
           prevTarget:
@@ -17907,21 +15888,21 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969275
+            rid: 462384806227608004
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
+          yOffset: 0.4558852
+          orthoSize: 59.79666
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384767228969270
+          SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
+    - rid: 462384806227607995
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
-        position: {x: 28.6, y: -27.5}
+        position: {x: 40.2, y: 21.9}
         rotation: {x: 0, y: 0, z: 0, w: 0}
         name: Ground 1
         isInverted: 0
@@ -17931,7 +15912,7 @@ MonoBehaviour:
         floorAngle: 0
         segmentList:
         - name: G1 Segment 0
-          position: {x: 28.6, y: -27.5, z: 0}
+          position: {x: 40.2, y: 21.9, z: 0}
           floorPositions: {x: 0, y: 0, z: 0}
           leftFloorHeight: 0
           leftFloorAngle: 0
@@ -17955,23 +15936,23 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384767228969275
+              rid: 462384806227608004
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.17
-            yOffset: 0.37625113
-            orthoSize: 50
+            yOffset: 0.4558852
+            orthoSize: 59.79666
             doUseManualOrthoSize: 0
             manualOrthoSize: 75.1
             serializedObjectLocation: 0100000001000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+            SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
           startHighPoint:
             previous:
               rid: -2
             next:
-              rid: 462384765862936767
-            position: {x: 73.66481, y: -29.449518, z: 0}
+              rid: 462384806227608005
+            position: {x: 85.26482, y: 19.95047, z: 0}
           fillSplineCurvePoints:
           - name: CP
             position: {x: 44.994164, y: -1.9180489, z: 0}
@@ -18004,7 +15985,7 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 111.66505, y: -31.12909, z: 0}
+            position: {x: 111.66505, y: -34.738907, z: 0}
             leftTangent: {x: -25, y: 0, z: 0}
             rightTangent: {x: 25, y: -0, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -18155,7 +16136,7 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: 111.66505, y: -31.12909, z: 0}
+            position: {x: 111.66505, y: -34.738907, z: 0}
             leftTangent: {x: -25, y: 0, z: 0}
             rightTangent: {x: 25, y: -0, z: -0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -18218,90 +16199,92 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: 45.493546, y: -0.8268944}
-          - {x: 47.523136, y: -1.7560242}
-          - {x: 49.525646, y: -2.7213116}
-          - {x: 51.50285, y: -3.7188516}
-          - {x: 53.456486, y: -4.744749}
-          - {x: 55.388306, y: -5.7951217}
-          - {x: 57.300083, y: -6.866105}
-          - {x: 59.193546, y: -7.9538355}
-          - {x: 61.070454, y: -9.054471}
-          - {x: 62.93254, y: -10.164172}
-          - {x: 64.78157, y: -11.279122}
-          - {x: 66.619225, y: -12.395495}
-          - {x: 68.44726, y: -13.509493}
-          - {x: 70.26734, y: -14.617311}
-          - {x: 72.08119, y: -15.715163}
-          - {x: 73.890495, y: -16.799276}
-          - {x: 75.69692, y: -17.865887}
-          - {x: 77.50214, y: -18.911242}
-          - {x: 79.3078, y: -19.931602}
-          - {x: 81.11558, y: -20.923252}
-          - {x: 82.927086, y: -21.882484}
-          - {x: 84.744026, y: -22.80563}
-          - {x: 86.567986, y: -23.689014}
-          - {x: 88.400665, y: -24.529015}
-          - {x: 90.243744, y: -25.322023}
-          - {x: 92.09889, y: -26.064453}
-          - {x: 93.96785, y: -26.752745}
-          - {x: 95.85237, y: -27.383362}
-          - {x: 97.75427, y: -27.95279}
-          - {x: 99.67537, y: -28.457512}
-          - {x: 101.61759, y: -28.894022}
-          - {x: 103.58292, y: -29.258808}
-          - {x: 105.57334, y: -29.548326}
-          - {x: 107.59092, y: -29.759007}
-          - {x: 109.638725, y: -29.887255}
-          - {x: 111.68967, y: -29.929342}
-          - {x: 111.634186, y: -29.929485}
-          - {x: 113.57461, y: -29.881027}
-          - {x: 115.532196, y: -29.735224}
-          - {x: 117.50516, y: -29.49616}
-          - {x: 119.49165, y: -29.167984}
-          - {x: 121.48981, y: -28.754915}
-          - {x: 123.49759, y: -28.261208}
-          - {x: 125.51307, y: -27.691189}
-          - {x: 127.534256, y: -27.049238}
-          - {x: 129.55916, y: -26.339777}
-          - {x: 131.58578, y: -25.56727}
-          - {x: 133.61217, y: -24.736198}
-          - {x: 135.63634, y: -23.851086}
-          - {x: 137.65636, y: -22.916458}
-          - {x: 139.6703, y: -21.93688}
-          - {x: 141.67625, y: -20.916916}
-          - {x: 143.67232, y: -19.861141}
-          - {x: 145.65663, y: -18.77413}
-          - {x: 147.62732, y: -17.660498}
-          - {x: 149.58252, y: -16.5248}
-          - {x: 151.52043, y: -15.371655}
-          - {x: 153.4392, y: -14.205648}
-          - {x: 155.33702, y: -13.031361}
-          - {x: 157.21213, y: -11.853393}
-          - {x: 159.06274, y: -10.676336}
-          - {x: 160.88707, y: -9.504751}
-          - {x: 162.68341, y: -8.343234}
-          - {x: 164.45003, y: -7.1963477}
-          - {x: 166.18521, y: -6.0686483}
-          - {x: 167.88731, y: -4.964694}
-          - {x: 169.55469, y: -3.8890316}
-          - {x: 171.18571, y: -2.846185}
-          - {x: 172.77887, y: -1.8406733}
-          - {x: 174.33267, y: -0.8770076}
-          - {x: 175.84569, y: 0.04033065}
-          - {x: 177.31665, y: 0.9068574}
-          - {x: 178.74438, y: 1.7181103}
-          - {x: 180.12312, y: 2.4671426}
-          - {x: 180.97311, y: 2.9087214}
+          - {x: 45.497097, y: -0.8285266}
+          - {x: 47.487473, y: -1.7477515}
+          - {x: 49.451267, y: -2.717551}
+          - {x: 51.390186, y: -3.7332745}
+          - {x: 53.30589, y: -4.790284}
+          - {x: 55.200096, y: -5.8839765}
+          - {x: 57.074497, y: -7.009764}
+          - {x: 58.93076, y: -8.1630745}
+          - {x: 60.77058, y: -9.339356}
+          - {x: 62.59563, y: -10.534071}
+          - {x: 64.40756, y: -11.742691}
+          - {x: 66.20804, y: -12.960707}
+          - {x: 67.998665, y: -14.183606}
+          - {x: 69.78107, y: -15.406891}
+          - {x: 71.55685, y: -16.626081}
+          - {x: 73.32757, y: -17.836681}
+          - {x: 75.09484, y: -19.03424}
+          - {x: 76.860176, y: -20.214287}
+          - {x: 78.62511, y: -21.372375}
+          - {x: 80.39116, y: -22.504074}
+          - {x: 82.159836, y: -23.604969}
+          - {x: 83.93264, y: -24.670666}
+          - {x: 85.71101, y: -25.696789}
+          - {x: 87.49648, y: -26.679005}
+          - {x: 89.29051, y: -27.613005}
+          - {x: 91.094574, y: -28.494509}
+          - {x: 92.910194, y: -29.319292}
+          - {x: 94.73892, y: -30.08316}
+          - {x: 96.58232, y: -30.78196}
+          - {x: 98.44203, y: -31.411566}
+          - {x: 100.31977, y: -31.96789}
+          - {x: 102.21734, y: -32.44686}
+          - {x: 104.13662, y: -32.84439}
+          - {x: 106.07956, y: -33.156376}
+          - {x: 108.04825, y: -33.378674}
+          - {x: 110.05128, y: -33.507175}
+          - {x: 111.68847, y: -33.539135}
+          - {x: 111.63046, y: -33.539406}
+          - {x: 113.51924, y: -33.486774}
+          - {x: 115.425255, y: -33.32783}
+          - {x: 117.34693, y: -33.066967}
+          - {x: 119.28256, y: -32.708652}
+          - {x: 121.230316, y: -32.257412}
+          - {x: 123.18832, y: -31.717897}
+          - {x: 125.15463, y: -31.094791}
+          - {x: 127.12733, y: -30.392862}
+          - {x: 129.10449, y: -29.616964}
+          - {x: 131.08417, y: -28.771996}
+          - {x: 133.06444, y: -27.862862}
+          - {x: 135.04341, y: -26.89454}
+          - {x: 137.01923, y: -25.872017}
+          - {x: 138.99002, y: -24.80032}
+          - {x: 140.95398, y: -23.684439}
+          - {x: 142.9093, y: -22.529455}
+          - {x: 144.85417, y: -21.340393}
+          - {x: 146.78682, y: -20.122295}
+          - {x: 148.70555, y: -18.88024}
+          - {x: 150.6086, y: -17.61927}
+          - {x: 152.49422, y: -16.344442}
+          - {x: 154.36073, y: -15.060801}
+          - {x: 156.2065, y: -13.773401}
+          - {x: 158.02982, y: -12.487293}
+          - {x: 159.82904, y: -11.207507}
+          - {x: 161.60255, y: -9.939077}
+          - {x: 163.34875, y: -8.6870365}
+          - {x: 165.06607, y: -7.456386}
+          - {x: 166.75296, y: -6.2521386}
+          - {x: 168.40791, y: -5.07928}
+          - {x: 170.02945, y: -3.9427955}
+          - {x: 171.61618, y: -2.847641}
+          - {x: 173.16678, y: -1.7987679}
+          - {x: 174.68, y: -0.8011122}
+          - {x: 176.15468, y: 0.14042282}
+          - {x: 177.58989, y: 1.0209014}
+          - {x: 178.98483, y: 1.8354253}
+          - {x: 180.32993, y: 2.5743332}
+          - {x: 180.97278, y: 2.9085517}
           bottomColliderPoints:
-          - {x: 45.493546, y: -0.8268944}
+          - {x: 45.497097, y: -0.8285266}
           - {x: 44.994164, y: -1.9180489}
           - {x: 44.994164, y: -132.91805}
           - {x: 44.994164, y: -132.91805}
           - {x: 181.52632, y: -134.15616}
           - {x: 181.52632, y: -134.15616}
           - {x: 181.52632, y: 1.8438476}
-          - {x: 180.97311, y: 2.9087214}
+          - {x: 180.97278, y: 2.9085517}
           linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
@@ -18323,7 +16306,7 @@ MonoBehaviour:
           position: {x: 44.994164, y: -1.9180489, z: 0}
           leftTangent: {x: -23.55423, y: 10.481745, z: -0}
           rightTangent: {x: 23.55423, y: -10.481745, z: 0}
-          _serializedWorldPosition: {x: 73.59416, y: -29.418049, z: 0}
+          _serializedWorldPosition: {x: 85.19417, y: 19.98195, z: 0}
           _mode: 1
           _floorPointType: 1
           _isSymmetrical: 1
@@ -18348,12 +16331,12 @@ MonoBehaviour:
             manualOrthoSize: 0
             serializedObjectLocation: 0100000000000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: 73.59416, y: -29.418049, z: 0}
+            SerializedPosition: {x: 85.19417, y: 19.98195, z: 0}
         - name: CP 1_1_LT
-          position: {x: 111.66505, y: -31.12909, z: 0}
+          position: {x: 111.66505, y: -34.738907, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: -0, z: -0}
-          _serializedWorldPosition: {x: 140.26505, y: -58.62909, z: 0}
+          _serializedWorldPosition: {x: 151.86505, y: -12.838907, z: 0}
           _mode: 1
           _floorPointType: 0
           _isSymmetrical: 1
@@ -18368,22 +16351,22 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384767228969275
+              rid: 462384806227608004
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.17
-            yOffset: 0.37625113
-            orthoSize: 50
+            yOffset: 0.4558852
+            orthoSize: 59.79666
             doUseManualOrthoSize: 0
             manualOrthoSize: 75.1
             serializedObjectLocation: 0100000001000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+            SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         - name: CP 1_2
           position: {x: 181.52632, y: 1.8438476, z: 0}
           leftTangent: {x: -16.325455, y: -8.313107, z: 0}
           rightTangent: {x: 16.325455, y: 8.313107, z: -0}
-          _serializedWorldPosition: {x: 210.12633, y: -25.656153, z: 0}
+          _serializedWorldPosition: {x: 221.72632, y: 23.743847, z: 0}
           _mode: 1
           _floorPointType: 1
           _isSymmetrical: 1
@@ -18408,47 +16391,47 @@ MonoBehaviour:
             manualOrthoSize: 0
             serializedObjectLocation: 0100000002000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: 210.12633, y: -25.656153, z: 0}
+            SerializedPosition: {x: 221.72632, y: 23.743847, z: 0}
         lowTargets:
         - forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969274
+            rid: 462384806227608001
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
+          yOffset: 0.31050414
+          orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.7
           serializedObjectLocation: 0000000002000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+          SerializedPosition: {x: -44, y: -74, z: 0}
         - forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969275
+            rid: 462384806227608004
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
+          yOffset: 0.4558852
+          orthoSize: 59.79666
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+          SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         - forceZoomTargets: []
           prevTarget:
-            rid: 462384767228969274
+            rid: 462384806227608001
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.4737488
+          yOffset: 0.39411476
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
@@ -18460,46 +16443,46 @@ MonoBehaviour:
         - previous:
             rid: -2
           next:
-            rid: 462384765862936767
-          position: {x: 73.66481, y: -29.449518, z: 0}
+            rid: 462384806227608005
+          position: {x: 85.26482, y: 19.95047, z: 0}
         - previous:
-            rid: 462384765862936768
+            rid: 462384806227608006
           next:
             rid: -2
-          position: {x: 210.12633, y: -25.656149, z: 0}
+          position: {x: 221.72632, y: 23.74385, z: 0}
         manualLeftCamTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969274
+            rid: 462384806227608001
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
+          yOffset: 0.31050414
+          orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.7
           serializedObjectLocation: 0000000002000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+          SerializedPosition: {x: -44, y: -74, z: 0}
         manualRightCamTarget:
           forceZoomTargets: []
           prevTarget:
-            rid: 462384767228969274
+            rid: 462384806227608001
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.4737488
+          yOffset: 0.39411476
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
           serializedObjectLocation: 0200000001000000
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384767228969271
+    - rid: 462384806227607996
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -18534,13 +16517,13 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384767228969274
+              rid: 462384806227608001
             nextTarget:
               rid: -2
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.4737488
+            yOffset: 0.39411476
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
@@ -18551,7 +16534,7 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384765862936769
+              rid: 462384806227608007
             position: {x: 295.67496, y: -0.00008994001, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -18908,13 +16891,13 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384767228969274
+              rid: 462384806227608001
             nextTarget:
               rid: -2
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.4737488
+            yOffset: 0.39411476
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
@@ -18956,26 +16939,26 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969275
+            rid: 462384806227608004
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
+          yOffset: 0.4558852
+          orthoSize: 59.79666
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+          SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         - forceZoomTargets: []
           prevTarget:
-            rid: 462384767228969274
+            rid: 462384806227608001
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.4737488
+          yOffset: 0.39411476
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
@@ -18987,10 +16970,10 @@ MonoBehaviour:
         - previous:
             rid: -2
           next:
-            rid: 462384765862936769
+            rid: 462384806227608007
           position: {x: 295.67496, y: -0.00008994001, z: 0}
         - previous:
-            rid: 462384765862936770
+            rid: 462384806227608008
           next:
             rid: -2
           position: {x: 376.953, y: -29.999996, z: 0}
@@ -18999,17 +16982,17 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384767228969275
+            rid: 462384806227608004
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.37625113
-          orthoSize: 50
+          yOffset: 0.4558852
+          orthoSize: 59.79666
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+          SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         manualRightCamTarget:
           forceZoomTargets: []
           prevTarget:
@@ -19026,7 +17009,7 @@ MonoBehaviour:
           serializedObjectLocation: 
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 0, y: 0, z: 0}
-    - rid: 462384767228969272
+    - rid: 462384806227607997
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -19094,7 +17077,7 @@ MonoBehaviour:
             SerializedPosition: {x: 835.6, y: -30, z: 0}
         backstopPointXOffset: 0
         backstopIsActive: 1
-    - rid: 462384767228969273
+    - rid: 462384806227607998
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -19129,66 +17112,140 @@ MonoBehaviour:
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 24.870806, z: 0}
-        _camOrthoSize: 52.597282
+        _camStartPosition: {x: -110, y: 31.894957, z: 0}
+        _camOrthoSize: 50
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384765862936762
+            rid: 462384806227607999
           doLowTarget: 1
           doUseManualOffset: 0
-          manualYOffset: 0.44
-          yOffset: 0.53010875
-          orthoSize: 52.597282
+          manualYOffset: 0
+          yOffset: 0.6999999
+          orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 57.7
-          serializedObjectLocation: 0000000002000000
+          manualOrthoSize: 57.3
+          serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
         _firstHighPoint:
           previous:
             rid: -2
           next:
-            rid: 462384765862936761
+            rid: 462384806227608000
           position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384767228969274
+    - rid: 462384806227607999
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384767228969275
+          rid: 462384806227608001
         doLowTarget: 1
         doUseManualOffset: 0
-        manualYOffset: 0.17
-        yOffset: 0.37625113
+        manualYOffset: 0.44
+        yOffset: 0.31050414
         orthoSize: 50
         doUseManualOrthoSize: 0
-        manualOrthoSize: 75.1
-        serializedObjectLocation: 0100000001000000
+        manualOrthoSize: 57.7
+        serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
-        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384767228969275
+        SerializedPosition: {x: -44, y: -74, z: 0}
+    - rid: 462384806227608000
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384806227608002
+        next:
+          rid: 462384806227608003
+        position: {x: -119.925, y: 29.999691, z: 0}
+    - rid: 462384806227608001
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384767228969274
+          rid: -2
+        nextTarget:
+          rid: 462384806227608004
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0.17
+        yOffset: 0.4558852
+        orthoSize: 59.79666
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 75.1
+        serializedObjectLocation: 0100000001000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
+    - rid: 462384806227608002
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384806227608000
+        position: {x: -299.99817, y: 30.000002, z: 0}
+    - rid: 462384806227608003
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384806227608000
+        next:
+          rid: -2
+        position: {x: 16.00001, y: -26.969238, z: 0}
+    - rid: 462384806227608004
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384806227608001
         nextTarget:
           rid: -2
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 0.4737488
+        yOffset: 0.39411476
         orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0200000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 355.6, y: -30, z: 0}
+    - rid: 462384806227608005
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384806227608006
+        next:
+          rid: -2
+        position: {x: 221.72632, y: 23.74385, z: 0}
+    - rid: 462384806227608006
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384806227608005
+        position: {x: 85.26482, y: 19.95047, z: 0}
+    - rid: 462384806227608007
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384806227608008
+        next:
+          rid: -2
+        position: {x: 376.953, y: -29.999996, z: 0}
+    - rid: 462384806227608008
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384806227608007
+        position: {x: 295.67496, y: -0.00008994001, z: 0}
     - rid: 1160017312686538764
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
