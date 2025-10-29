@@ -1562,9 +1562,9 @@ MonoBehaviour:
         _blueTime: 8
         _redTime: 6
       _serializedObjects:
-      - rid: 462384645053088166
-      - rid: 462384645053088167
-      - rid: 462384645053088168
+      - rid: 462384860535718742
+      - rid: 462384860535718743
+      - rid: 462384860535718744
       _leaderboardKey: Camera Change Test_leaderboard
       _killPlaneY: -94.478836
       _serializedStartLine:
@@ -1589,40 +1589,40 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384607937954119
+              rid: 462384860535718583
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.2852914
-            orthoSize: 64.26457
+            yOffset: 0.6
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 16.025429, z: 0}
-        _camOrthoSize: 65.25296
+        _camStartPosition: {x: -110, y: 54.334892, z: 0}
+        _camOrthoSize: 51.457214
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: -2
-          doLowTarget: 0
+            rid: 462384860535718586
+          doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0
+          yOffset: 0.15
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
-          serializedObjectLocation: 
+          serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 0, y: 0, z: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
         _firstHighPoint:
           previous:
             rid: -2
           next:
-            rid: 462384607937954122
+            rid: 462384860535718745
           position: {x: -299.99817, y: 30.000002, z: 0}
     - _UID: 25d9eb0d-2aa2-4f74-a1ee-61353bf65744
       _name: Cam Gap Test
@@ -1634,11 +1634,11 @@ MonoBehaviour:
         _blueTime: 8
         _redTime: 6
       _serializedObjects:
-      - rid: 462384806227607994
-      - rid: 462384806227607995
-      - rid: 462384806227607996
-      - rid: 462384806227607997
-      - rid: 462384806227607998
+      - rid: 462384881816043551
+      - rid: 462384881816043552
+      - rid: 462384881816043553
+      - rid: 462384881816043554
+      - rid: 462384881816043555
       _leaderboardKey: Cam Gap Test_leaderboard
       _killPlaneY: -84
       _serializedStartLine:
@@ -1663,7 +1663,7 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384765862936759
+              rid: 462384859660943616
             doLowTarget: 0
             doUseManualOffset: 0
             manualYOffset: 0
@@ -1674,19 +1674,19 @@ MonoBehaviour:
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 31.894957, z: 0}
-        _camOrthoSize: 50
+        _camStartPosition: {x: -110, y: 14.776146, z: 0}
+        _camOrthoSize: 57.458225
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227607999
+            rid: 462384880782672559
           doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.6999999
-          orthoSize: 50
+          doUseManualOffset: 1
+          manualYOffset: 1.18
+          yOffset: 1.18
+          orthoSize: 58.999996
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.3
           serializedObjectLocation: 0000000001000000
@@ -1696,8 +1696,8 @@ MonoBehaviour:
           previous:
             rid: -2
           next:
-            rid: 462384806227608000
-          position: {x: -299.99817, y: 30.000002, z: 0}
+            rid: 462384880782672560
+          position: {x: -474.09222, y: 30.000002, z: 0}
   _nameToUIDDictionary:
     reorderableList:
       canAdd: 0
@@ -1792,11 +1792,11 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 462384806227607994
-    - rid: 462384806227607995
-    - rid: 462384806227607996
-    - rid: 462384806227607997
-    - rid: 462384806227607998
+    - rid: 462384881816043551
+    - rid: 462384881816043552
+    - rid: 462384881816043553
+    - rid: 462384881816043554
+    - rid: 462384881816043555
     _leaderboardKey: Cam Gap Test_leaderboard
     _killPlaneY: -84
     _serializedStartLine:
@@ -1821,7 +1821,7 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384765862936759
+            rid: 462384859660943616
           doLowTarget: 0
           doUseManualOffset: 0
           manualYOffset: 0
@@ -1832,19 +1832,19 @@ MonoBehaviour:
           serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
           SerializedPosition: {x: -120, y: 30, z: 0}
-      _camStartPosition: {x: -110, y: 31.894957, z: 0}
-      _camOrthoSize: 50
+      _camStartPosition: {x: -110, y: 14.776146, z: 0}
+      _camOrthoSize: 57.458225
       _firstCameraTarget:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384806227607999
+          rid: 462384880782672559
         doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.6999999
-        orthoSize: 50
+        doUseManualOffset: 1
+        manualYOffset: 1.18
+        yOffset: 1.18
+        orthoSize: 58.999996
         doUseManualOrthoSize: 0
         manualOrthoSize: 57.3
         serializedObjectLocation: 0000000001000000
@@ -1854,8 +1854,8 @@ MonoBehaviour:
         previous:
           rid: -2
         next:
-          rid: 462384806227608000
-        position: {x: -299.99817, y: 30.000002, z: 0}
+          rid: 462384880782672560
+        position: {x: -474.09222, y: 30.000002, z: 0}
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   references:
@@ -9005,455 +9005,403 @@ MonoBehaviour:
           next:
             rid: -2
           position: {x: 0, y: 0, z: 0}
-    - rid: 462384607937954119
+    - rid: 462384859660943616
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954141
+          rid: -2
         nextTarget:
-          rid: 462384607937954142
+          rid: 462384859660943629
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0.44
+        yOffset: NaN
+        orthoSize: 50
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 57.7
+        serializedObjectLocation: 0000000002000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: -60, y: -1.2210388, z: 0}
+    - rid: 462384859660943629
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: -2
+        nextTarget:
+          rid: 462384859660943631
+        doLowTarget: 1
+        doUseManualOffset: 1
+        manualYOffset: 0.17
+        yOffset: 0.17
+        orthoSize: 50
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 75.1
+        serializedObjectLocation: 0100000001000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
+    - rid: 462384859660943631
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384859660943629
+        nextTarget:
+          rid: -2
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.3042853
-        orthoSize: 68.07693
+        yOffset: NaN
+        orthoSize: 50
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0200000001000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 355.6, y: -30, z: 0}
+    - rid: 462384860535718583
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718606
+        nextTarget:
+          rid: 462384860535718607
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 1.2777278
+        orthoSize: 89.49982
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -60, y: -26.764572, z: 0}
-    - rid: 462384607937954120
+    - rid: 462384860535718586
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954120
+          rid: 462384860535718587
         nextTarget:
-          rid: 462384607937954121
+          rid: 462384860535718588
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.2852914
-        orthoSize: 64.26457
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384607937954121
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954120
-        nextTarget:
-          rid: 462384607937954123
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.3042853
-        orthoSize: 68.07693
+        yOffset: 0.52843046
+        orthoSize: 55.620678
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -60, y: -26.764572, z: 0}
-    - rid: 462384607937954122
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954124
-        next:
-          rid: 462384607937954125
-        position: {x: -119.92505, y: 29.999832, z: 0}
-    - rid: 462384607937954123
+    - rid: 462384860535718587
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954121
+          rid: -2
         nextTarget:
-          rid: 462384607937954126
+          rid: 462384860535718586
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
         yOffset: 0.15
-        orthoSize: 78.07693
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000004000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 61, y: -84.478836, z: 0}
-    - rid: 462384607937954124
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384607937954122
-        position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384607937954125
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954122
-        next:
-          rid: 462384607937954127
-        position: {x: 0.074915245, y: -3.479079, z: 0}
-    - rid: 462384607937954126
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954123
-        nextTarget:
-          rid: 462384607937954128
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.4163557
-        orthoSize: 109.075836
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000006000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 181, y: -21.161049, z: 0}
-    - rid: 462384607937954127
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954125
-        next:
-          rid: 462384607937954129
-        position: {x: 121.07497, y: 9.521072, z: 0}
-    - rid: 462384607937954128
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954126
-        nextTarget:
-          rid: 462384607937954130
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.4910436
-        orthoSize: 109.075836
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000008000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
-    - rid: 462384607937954129
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954127
-        next:
-          rid: 462384607937954131
-        position: {x: 243.19551, y: 78.521034, z: 0}
-    - rid: 462384607937954130
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954128
-        nextTarget:
-          rid: 462384607937954132
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.15
-        orthoSize: 88.58559
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 000000000a000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 421, y: -34.707905, z: 0}
-    - rid: 462384607937954131
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954129
-        next:
-          rid: 462384607937954133
-        position: {x: 361.07492, y: 72.95303, z: 0}
-    - rid: 462384607937954132
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954130
-        nextTarget:
-          rid: 462384607937954134
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.0566211
-        orthoSize: 95.850174
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 000000000c000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 541, y: 10.623146, z: 0}
-    - rid: 462384607937954133
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954131
-        next:
-          rid: 462384607937954135
-        position: {x: 481.07495, y: 55.48188, z: 0}
-    - rid: 462384607937954134
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954132
-        nextTarget:
-          rid: 462384607937954136
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.4815996
-        orthoSize: 95.850174
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 000000000e000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 661, y: 69.647964, z: 0}
-    - rid: 462384607937954135
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954133
-        next:
-          rid: 462384607937954137
-        position: {x: 601.075, y: 101.28517, z: 0}
-    - rid: 462384607937954136
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954134
-        nextTarget:
-          rid: 462384607937954138
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.15
-        orthoSize: 84.59005
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000010000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 781, y: 3.0679855, z: 0}
-    - rid: 462384607937954137
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954135
-        next:
-          rid: 462384607937954139
-        position: {x: 721.075, y: 105.53475, z: 0}
-    - rid: 462384607937954138
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384607937954136
-        nextTarget:
-          rid: -2
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.8815996
-        orthoSize: 56.9846
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000012000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: 901, y: 39.647964, z: 0}
-    - rid: 462384607937954139
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954137
-        next:
-          rid: 462384607937954140
-        position: {x: 841.0751, y: 69.64788, z: 0}
-    - rid: 462384607937954140
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384607937954139
-        next:
-          rid: -2
-        position: {x: 901.19257, y: 39.647964, z: 0}
-    - rid: 462384607937954141
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
-      data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: -2
-        nextTarget:
-          rid: 462384607937954119
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.2852914
-        orthoSize: 64.26457
+        orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384607937954142
+    - rid: 462384860535718588
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954119
+          rid: 462384860535718586
         nextTarget:
-          rid: 462384607937954143
+          rid: 462384860535718591
         doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.15
-        orthoSize: 78.07693
+        doUseManualOffset: 1
+        manualYOffset: 0.51
+        yOffset: 0.51
+        orthoSize: 64.35079
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000004000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 61, y: -84.478836, z: 0}
-    - rid: 462384607937954143
+    - rid: 462384860535718591
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954142
+          rid: 462384860535718588
         nextTarget:
-          rid: 462384607937954144
+          rid: 462384860535718593
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.4163557
-        orthoSize: 109.075836
+        yOffset: 0.6
+        orthoSize: 65.89385
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000006000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 181, y: -21.161049, z: 0}
-    - rid: 462384607937954144
+    - rid: 462384860535718593
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954143
+          rid: 462384860535718591
         nextTarget:
-          rid: 462384607937954145
+          rid: 462384860535718595
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.4910436
-        orthoSize: 109.075836
+        yOffset: 0.37193632
+        orthoSize: 68.0856
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000008000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
-    - rid: 462384607937954145
+    - rid: 462384860535718595
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954144
+          rid: 462384860535718593
         nextTarget:
-          rid: 462384607937954146
+          rid: 462384860535718597
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 0.15
-        orthoSize: 88.58559
+        yOffset: 0.35276267
+        orthoSize: 68.0856
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 000000000a000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 421, y: -34.707905, z: 0}
-    - rid: 462384607937954146
+    - rid: 462384860535718597
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954145
+          rid: 462384860535718595
         nextTarget:
-          rid: 462384607937954147
+          rid: 462384860535718599
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.0566211
-        orthoSize: 95.850174
+        yOffset: 0.6
+        orthoSize: 65.24533
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 000000000c000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 541, y: 10.623146, z: 0}
-    - rid: 462384607937954147
+    - rid: 462384860535718599
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954146
+          rid: 462384860535718597
         nextTarget:
-          rid: 462384607937954148
+          rid: 462384860535718601
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 1.4815996
-        orthoSize: 95.850174
+        yOffset: 0.35611212
+        orthoSize: 62.41301
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 000000000e000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 661, y: 69.647964, z: 0}
-    - rid: 462384607937954148
+    - rid: 462384860535718601
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954147
+          rid: 462384860535718599
         nextTarget:
-          rid: 462384607937954149
+          rid: 462384860535718603
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 0.15
-        orthoSize: 84.59005
+        yOffset: 0.37193328
+        orthoSize: 62.41301
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000010000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 781, y: 3.0679855, z: 0}
-    - rid: 462384607937954149
+    - rid: 462384860535718603
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384607937954148
+          rid: 462384860535718601
         nextTarget:
           rid: -2
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 0.8815996
-        orthoSize: 56.9846
+        yOffset: 0.46644998
+        orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0000000012000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 901, y: 39.647964, z: 0}
-    - rid: 462384645053088166
+    - rid: 462384860535718606
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: -2
+        nextTarget:
+          rid: 462384860535718583
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.6
+        orthoSize: 50
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0000000001000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: -120, y: 30, z: 0}
+    - rid: 462384860535718607
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718583
+        nextTarget:
+          rid: 462384860535718610
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.5783087
+        orthoSize: 99.96699
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0000000004000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 61, y: -84.478836, z: 0}
+    - rid: 462384860535718610
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718607
+        nextTarget:
+          rid: 462384860535718612
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 1.9316351
+        orthoSize: 138.72949
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0000000008000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
+    - rid: 462384860535718612
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718610
+        nextTarget:
+          rid: 462384860535718614
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.35276267
+        orthoSize: 118.81206
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 000000000a000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 421, y: -34.707905, z: 0}
+    - rid: 462384860535718614
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718612
+        nextTarget:
+          rid: 462384860535718616
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.3407656
+        orthoSize: 97.00803
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 000000000c000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 541, y: 10.623146, z: 0}
+    - rid: 462384860535718616
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718614
+        nextTarget:
+          rid: 462384860535718618
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 1.4815996
+        orthoSize: 105.01399
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 000000000e000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 661, y: 69.647964, z: 0}
+    - rid: 462384860535718618
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718616
+        nextTarget:
+          rid: 462384860535718620
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.37193328
+        orthoSize: 105.01399
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0000000010000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 781, y: 3.0679855, z: 0}
+    - rid: 462384860535718620
+      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+      data:
+        forceZoomTargets: []
+        prevTarget:
+          rid: 462384860535718618
+        nextTarget:
+          rid: -2
+        doLowTarget: 1
+        doUseManualOffset: 0
+        manualYOffset: 0
+        yOffset: 0.46644998
+        orthoSize: 62.954155
+        doUseManualOrthoSize: 0
+        manualOrthoSize: 0
+        serializedObjectLocation: 0000000012000000
+        targetTransform: {fileID: 0}
+        SerializedPosition: {x: 901, y: 39.647964, z: 0}
+    - rid: 462384860535718742
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -9488,14 +9436,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384645053088169
+              rid: -2
             nextTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.2852914
-            orthoSize: 64.26457
+            yOffset: 0.15
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000001000000
@@ -9505,7 +9453,7 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384607937954122
+              rid: 462384860535718745
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -9740,14 +9688,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384645053088169
+              rid: -2
             nextTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.2852914
-            orthoSize: 64.26457
+            yOffset: 0.15
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000001000000
@@ -9757,7 +9705,7 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384607937954122
+              rid: 462384860535718745
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -10030,14 +9978,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954120
+              rid: 462384860535718587
             nextTarget:
-              rid: 462384607937954123
+              rid: 462384860535718588
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.3042853
-            orthoSize: 68.07693
+            yOffset: 0.52843046
+            orthoSize: 55.620678
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000002000000
@@ -10045,9 +9993,9 @@ MonoBehaviour:
             SerializedPosition: {x: -60, y: -26.764572, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954124
+              rid: 462384860535718746
             next:
-              rid: 462384607937954125
+              rid: 462384860535718747
             position: {x: -119.92505, y: 29.999832, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -10453,14 +10401,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             nextTarget:
-              rid: 462384607937954126
+              rid: 462384860535718591
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 78.07693
+            doUseManualOffset: 1
+            manualYOffset: 0.51
+            yOffset: 0.51
+            orthoSize: 64.35079
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000004000000
@@ -10468,9 +10416,9 @@ MonoBehaviour:
             SerializedPosition: {x: 61, y: -84.478836, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954122
+              rid: 462384860535718745
             next:
-              rid: 462384607937954127
+              rid: 462384860535718748
             position: {x: 0.074915245, y: -3.479079, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -10759,14 +10707,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             nextTarget:
-              rid: 462384607937954126
+              rid: 462384860535718591
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 78.07693
+            doUseManualOffset: 1
+            manualYOffset: 0.51
+            yOffset: 0.51
+            orthoSize: 64.35079
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000004000000
@@ -10774,9 +10722,9 @@ MonoBehaviour:
             SerializedPosition: {x: 61, y: -84.478836, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954122
+              rid: 462384860535718745
             next:
-              rid: 462384607937954127
+              rid: 462384860535718748
             position: {x: 0.074915245, y: -3.479079, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -11192,14 +11140,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954123
+              rid: 462384860535718588
             nextTarget:
-              rid: 462384607937954128
+              rid: 462384860535718593
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4163557
-            orthoSize: 109.075836
+            yOffset: 0.6
+            orthoSize: 65.89385
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000006000000
@@ -11207,9 +11155,9 @@ MonoBehaviour:
             SerializedPosition: {x: 181, y: -21.161049, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954125
+              rid: 462384860535718747
             next:
-              rid: 462384607937954129
+              rid: 462384860535718749
             position: {x: 121.07497, y: 9.521072, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -11606,14 +11554,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954126
+              rid: 462384860535718591
             nextTarget:
-              rid: 462384607937954130
+              rid: 462384860535718595
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4910436
-            orthoSize: 109.075836
+            yOffset: 0.37193632
+            orthoSize: 68.0856
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000008000000
@@ -11621,9 +11569,9 @@ MonoBehaviour:
             SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954127
+              rid: 462384860535718748
             next:
-              rid: 462384607937954131
+              rid: 462384860535718750
             position: {x: 243.19551, y: 78.521034, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -11917,14 +11865,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954128
+              rid: 462384860535718593
             nextTarget:
-              rid: 462384607937954132
+              rid: 462384860535718597
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 88.58559
+            yOffset: 0.35276267
+            orthoSize: 68.0856
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000a000000
@@ -11932,9 +11880,9 @@ MonoBehaviour:
             SerializedPosition: {x: 421, y: -34.707905, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954129
+              rid: 462384860535718749
             next:
-              rid: 462384607937954133
+              rid: 462384860535718751
             position: {x: 361.07492, y: 72.95303, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -12222,14 +12170,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954128
+              rid: 462384860535718593
             nextTarget:
-              rid: 462384607937954132
+              rid: 462384860535718597
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 88.58559
+            yOffset: 0.35276267
+            orthoSize: 68.0856
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000a000000
@@ -12237,9 +12185,9 @@ MonoBehaviour:
             SerializedPosition: {x: 421, y: -34.707905, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954129
+              rid: 462384860535718749
             next:
-              rid: 462384607937954133
+              rid: 462384860535718751
             position: {x: 361.07492, y: 72.95303, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -12624,14 +12572,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954130
+              rid: 462384860535718595
             nextTarget:
-              rid: 462384607937954134
+              rid: 462384860535718599
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.0566211
-            orthoSize: 95.850174
+            yOffset: 0.6
+            orthoSize: 65.24533
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000c000000
@@ -12639,9 +12587,9 @@ MonoBehaviour:
             SerializedPosition: {x: 541, y: 10.623146, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954131
+              rid: 462384860535718750
             next:
-              rid: 462384607937954135
+              rid: 462384860535718752
             position: {x: 481.07495, y: 55.48188, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -13001,14 +12949,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954132
+              rid: 462384860535718597
             nextTarget:
-              rid: 462384607937954136
+              rid: 462384860535718601
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4815996
-            orthoSize: 95.850174
+            yOffset: 0.35611212
+            orthoSize: 62.41301
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000e000000
@@ -13016,9 +12964,9 @@ MonoBehaviour:
             SerializedPosition: {x: 661, y: 69.647964, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954133
+              rid: 462384860535718751
             next:
-              rid: 462384607937954137
+              rid: 462384860535718753
             position: {x: 601.075, y: 101.28517, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -13310,14 +13258,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954134
+              rid: 462384860535718599
             nextTarget:
-              rid: 462384607937954138
+              rid: 462384860535718603
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 84.59005
+            yOffset: 0.37193328
+            orthoSize: 62.41301
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000010000000
@@ -13325,9 +13273,9 @@ MonoBehaviour:
             SerializedPosition: {x: 781, y: 3.0679855, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954135
+              rid: 462384860535718752
             next:
-              rid: 462384607937954139
+              rid: 462384860535718754
             position: {x: 721.075, y: 105.53475, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -13604,14 +13552,14 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954134
+              rid: 462384860535718599
             nextTarget:
-              rid: 462384607937954138
+              rid: 462384860535718603
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 84.59005
+            yOffset: 0.37193328
+            orthoSize: 62.41301
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000010000000
@@ -13619,9 +13567,9 @@ MonoBehaviour:
             SerializedPosition: {x: 781, y: 3.0679855, z: 0}
           startHighPoint:
             previous:
-              rid: 462384607937954135
+              rid: 462384860535718752
             next:
-              rid: 462384607937954139
+              rid: 462384860535718754
             position: {x: 721.075, y: 105.53475, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -13975,14 +13923,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384645053088169
+              rid: -2
             nextTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.2852914
-            orthoSize: 64.26457
+            yOffset: 0.15
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000001000000
@@ -14005,14 +13953,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954120
+              rid: 462384860535718587
             nextTarget:
-              rid: 462384607937954123
+              rid: 462384860535718588
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.3042853
-            orthoSize: 68.07693
+            yOffset: 0.52843046
+            orthoSize: 55.620678
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000002000000
@@ -14065,14 +14013,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954121
+              rid: 462384860535718586
             nextTarget:
-              rid: 462384607937954126
+              rid: 462384860535718591
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 78.07693
+            doUseManualOffset: 1
+            manualYOffset: 0.51
+            yOffset: 0.51
+            orthoSize: 64.35079
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000004000000
@@ -14125,14 +14073,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954123
+              rid: 462384860535718588
             nextTarget:
-              rid: 462384607937954128
+              rid: 462384860535718593
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4163557
-            orthoSize: 109.075836
+            yOffset: 0.6
+            orthoSize: 65.89385
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000006000000
@@ -14185,14 +14133,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954126
+              rid: 462384860535718591
             nextTarget:
-              rid: 462384607937954130
+              rid: 462384860535718595
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4910436
-            orthoSize: 109.075836
+            yOffset: 0.37193632
+            orthoSize: 68.0856
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000008000000
@@ -14245,14 +14193,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954128
+              rid: 462384860535718593
             nextTarget:
-              rid: 462384607937954132
+              rid: 462384860535718597
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 88.58559
+            yOffset: 0.35276267
+            orthoSize: 68.0856
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000a000000
@@ -14305,14 +14253,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954130
+              rid: 462384860535718595
             nextTarget:
-              rid: 462384607937954134
+              rid: 462384860535718599
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.0566211
-            orthoSize: 95.850174
+            yOffset: 0.6
+            orthoSize: 65.24533
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000c000000
@@ -14365,14 +14313,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954132
+              rid: 462384860535718597
             nextTarget:
-              rid: 462384607937954136
+              rid: 462384860535718601
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.4815996
-            orthoSize: 95.850174
+            yOffset: 0.35611212
+            orthoSize: 62.41301
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 000000000e000000
@@ -14425,14 +14373,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954134
+              rid: 462384860535718599
             nextTarget:
-              rid: 462384607937954138
+              rid: 462384860535718603
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.15
-            orthoSize: 84.59005
+            yOffset: 0.37193328
+            orthoSize: 62.41301
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000010000000
@@ -14485,14 +14433,14 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384607937954136
+              rid: 462384860535718601
             nextTarget:
               rid: -2
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.8815996
-            orthoSize: 56.9846
+            yOffset: 0.46644998
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000012000000
@@ -14528,61 +14476,211 @@ MonoBehaviour:
             serializedObjectLocation: 0000000013000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: 1381, y: 39.647964, z: 0}
-        lowTargets: []
+        lowTargets:
+        - forceZoomTargets: []
+          prevTarget:
+            rid: -2
+          nextTarget:
+            rid: 462384860535718586
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.15
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000001000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718587
+          nextTarget:
+            rid: 462384860535718588
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.52843046
+          orthoSize: 55.620678
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000002000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: -60, y: -26.764572, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718586
+          nextTarget:
+            rid: 462384860535718591
+          doLowTarget: 1
+          doUseManualOffset: 1
+          manualYOffset: 0.51
+          yOffset: 0.51
+          orthoSize: 64.35079
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000004000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 61, y: -84.478836, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718588
+          nextTarget:
+            rid: 462384860535718593
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.6
+          orthoSize: 65.89385
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000006000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 181, y: -21.161049, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718591
+          nextTarget:
+            rid: 462384860535718595
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.37193632
+          orthoSize: 68.0856
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000008000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718593
+          nextTarget:
+            rid: 462384860535718597
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.35276267
+          orthoSize: 68.0856
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 000000000a000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 421, y: -34.707905, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718595
+          nextTarget:
+            rid: 462384860535718599
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.6
+          orthoSize: 65.24533
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 000000000c000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 541, y: 10.623146, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718597
+          nextTarget:
+            rid: 462384860535718601
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.35611212
+          orthoSize: 62.41301
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 000000000e000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 661, y: 69.647964, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718599
+          nextTarget:
+            rid: 462384860535718603
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.37193328
+          orthoSize: 62.41301
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000010000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 781, y: 3.0679855, z: 0}
+        - forceZoomTargets: []
+          prevTarget:
+            rid: 462384860535718601
+          nextTarget:
+            rid: -2
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0.46644998
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          serializedObjectLocation: 0000000012000000
+          targetTransform: {fileID: 0}
+          SerializedPosition: {x: 901, y: 39.647964, z: 0}
         zoomPoints: []
         highPoints:
         - previous:
             rid: -2
           next:
-            rid: 462384607937954122
+            rid: 462384860535718745
           position: {x: -299.99817, y: 30.000002, z: 0}
         - previous:
-            rid: 462384607937954124
+            rid: 462384860535718746
           next:
-            rid: 462384607937954125
+            rid: 462384860535718747
           position: {x: -119.92505, y: 29.999832, z: 0}
         - previous:
-            rid: 462384607937954122
+            rid: 462384860535718745
           next:
-            rid: 462384607937954127
+            rid: 462384860535718748
           position: {x: 0.074915245, y: -3.479079, z: 0}
         - previous:
-            rid: 462384607937954125
+            rid: 462384860535718747
           next:
-            rid: 462384607937954129
+            rid: 462384860535718749
           position: {x: 121.07497, y: 9.521072, z: 0}
         - previous:
-            rid: 462384607937954127
+            rid: 462384860535718748
           next:
-            rid: 462384607937954131
+            rid: 462384860535718750
           position: {x: 243.19551, y: 78.521034, z: 0}
         - previous:
-            rid: 462384607937954129
+            rid: 462384860535718749
           next:
-            rid: 462384607937954133
+            rid: 462384860535718751
           position: {x: 361.07492, y: 72.95303, z: 0}
         - previous:
-            rid: 462384607937954131
+            rid: 462384860535718750
           next:
-            rid: 462384607937954135
+            rid: 462384860535718752
           position: {x: 481.07495, y: 55.48188, z: 0}
         - previous:
-            rid: 462384607937954133
+            rid: 462384860535718751
           next:
-            rid: 462384607937954137
+            rid: 462384860535718753
           position: {x: 601.075, y: 101.28517, z: 0}
         - previous:
-            rid: 462384607937954135
+            rid: 462384860535718752
           next:
-            rid: 462384607937954139
+            rid: 462384860535718754
           position: {x: 721.075, y: 105.53475, z: 0}
         - previous:
-            rid: 462384607937954137
+            rid: 462384860535718753
           next:
-            rid: 462384607937954140
+            rid: 462384860535718755
           position: {x: 841.0751, y: 69.64788, z: 0}
         - previous:
-            rid: 462384607937954139
+            rid: 462384860535718754
           next:
             rid: -2
           position: {x: 901.19257, y: 39.647964, z: 0}
@@ -14618,7 +14716,7 @@ MonoBehaviour:
           serializedObjectLocation: 
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 0, y: 0, z: 0}
-    - rid: 462384645053088167
+    - rid: 462384860535718743
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -14686,7 +14784,7 @@ MonoBehaviour:
             SerializedPosition: {x: 1381, y: 39.647964, z: 0}
         backstopPointXOffset: 0
         backstopIsActive: 1
-    - rid: 462384645053088168
+    - rid: 462384860535718744
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -14710,114 +14808,240 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384607937954119
+              rid: 462384860535718583
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 1.2852914
-            orthoSize: 64.26457
+            yOffset: 0.6
+            orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 16.025429, z: 0}
-        _camOrthoSize: 65.25296
+        _camStartPosition: {x: -110, y: 54.334892, z: 0}
+        _camOrthoSize: 51.457214
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: -2
-          doLowTarget: 0
+            rid: 462384860535718586
+          doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0
+          yOffset: 0.15
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
-          serializedObjectLocation: 
+          serializedObjectLocation: 0000000001000000
           targetTransform: {fileID: 0}
-          SerializedPosition: {x: 0, y: 0, z: 0}
+          SerializedPosition: {x: -120, y: 30, z: 0}
         _firstHighPoint:
           previous:
             rid: -2
           next:
-            rid: 462384607937954122
+            rid: 462384860535718745
           position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384645053088169
-      type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
+    - rid: 462384860535718745
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
-        forceZoomTargets: []
-        prevTarget:
-          rid: 462384645053088169
-        nextTarget:
-          rid: 462384607937954121
-        doLowTarget: 1
-        doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 1.2852914
-        orthoSize: 64.26457
-        doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        serializedObjectLocation: 0000000001000000
-        targetTransform: {fileID: 0}
-        SerializedPosition: {x: -120, y: 30, z: 0}
-    - rid: 462384765862936759
+        previous:
+          rid: 462384860535718746
+        next:
+          rid: 462384860535718747
+        position: {x: -119.92505, y: 29.999832, z: 0}
+    - rid: 462384860535718746
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384860535718745
+        position: {x: -299.99817, y: 30.000002, z: 0}
+    - rid: 462384860535718747
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718745
+        next:
+          rid: 462384860535718748
+        position: {x: 0.074915245, y: -3.479079, z: 0}
+    - rid: 462384860535718748
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718747
+        next:
+          rid: 462384860535718749
+        position: {x: 121.07497, y: 9.521072, z: 0}
+    - rid: 462384860535718749
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718748
+        next:
+          rid: 462384860535718750
+        position: {x: 243.19551, y: 78.521034, z: 0}
+    - rid: 462384860535718750
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718749
+        next:
+          rid: 462384860535718751
+        position: {x: 361.07492, y: 72.95303, z: 0}
+    - rid: 462384860535718751
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718750
+        next:
+          rid: 462384860535718752
+        position: {x: 481.07495, y: 55.48188, z: 0}
+    - rid: 462384860535718752
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718751
+        next:
+          rid: 462384860535718753
+        position: {x: 601.075, y: 101.28517, z: 0}
+    - rid: 462384860535718753
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718752
+        next:
+          rid: 462384860535718754
+        position: {x: 721.075, y: 105.53475, z: 0}
+    - rid: 462384860535718754
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718753
+        next:
+          rid: 462384860535718755
+        position: {x: 841.0751, y: 69.64788, z: 0}
+    - rid: 462384860535718755
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384860535718754
+        next:
+          rid: -2
+        position: {x: 901.19257, y: 39.647964, z: 0}
+    - rid: 462384880782672559
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384765862936771
+          rid: 462384880782672561
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0.44
-        yOffset: NaN
+        yOffset: 0.69736844
         orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 57.7
         serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
-        SerializedPosition: {x: -60, y: -1.2210388, z: 0}
-    - rid: 462384765862936771
+        SerializedPosition: {x: -44, y: -74, z: 0}
+    - rid: 462384880782672560
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384880782672562
+        next:
+          rid: 462384880782672563
+        position: {x: -119.925, y: 29.999691, z: 0}
+    - rid: 462384880782672561
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384765862936774
+          rid: 462384880782672564
         doLowTarget: 1
-        doUseManualOffset: 1
+        doUseManualOffset: 0
         manualYOffset: 0.17
-        yOffset: 0.17
-        orthoSize: 50
+        yOffset: 0.4434087
+        orthoSize: 57.23738
         doUseManualOrthoSize: 0
         manualOrthoSize: 75.1
         serializedObjectLocation: 0100000001000000
         targetTransform: {fileID: 0}
-        SerializedPosition: {x: 140.26505, y: -58.62909, z: 0}
-    - rid: 462384765862936774
+        SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
+    - rid: 462384880782672562
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384880782672560
+        position: {x: -474.09222, y: 30.000002, z: 0}
+    - rid: 462384880782672563
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384880782672560
+        next:
+          rid: -2
+        position: {x: 16.00001, y: -26.969238, z: 0}
+    - rid: 462384880782672564
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384765862936771
+          rid: 462384880782672561
         nextTarget:
           rid: -2
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: NaN
+        yOffset: 0.34973028
         orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0200000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384806227607994
+    - rid: 462384880782672565
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384880782672566
+        next:
+          rid: -2
+        position: {x: 221.72632, y: 23.74385, z: 0}
+    - rid: 462384880782672566
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384880782672565
+        position: {x: 85.26482, y: 19.95047, z: 0}
+    - rid: 462384880782672567
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: 462384880782672568
+        next:
+          rid: -2
+        position: {x: 376.953, y: -29.999996, z: 0}
+    - rid: 462384880782672568
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        previous:
+          rid: -2
+        next:
+          rid: 462384880782672567
+        position: {x: 295.67496, y: -0.00008994001, z: 0}
+    - rid: 462384881816043551
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -14854,12 +15078,12 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227607999
+              rid: 462384881816043556
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.6999999
-            orthoSize: 50
+            doUseManualOffset: 1
+            manualYOffset: 1.18
+            yOffset: 1.18
+            orthoSize: 58.999996
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.3
             serializedObjectLocation: 0000000001000000
@@ -14869,11 +15093,11 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384806227608000
-            position: {x: -299.99817, y: 30.000002, z: 0}
+              rid: 462384880782672560
+            position: {x: -474.09222, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
-            position: {x: -300, y: 30, z: 0}
+            position: {x: -474.09613, y: 30, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -14882,7 +15106,7 @@ MonoBehaviour:
             _isSymmetrical: 0
             _floorHeight: 192
             _floorAngle: 0
-            _floorPosition: {x: -300, y: -162, z: 0}
+            _floorPosition: {x: -474.09613, y: -162, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -14963,7 +15187,7 @@ MonoBehaviour:
               targetTransform: {fileID: 0}
               SerializedPosition: {x: 0, y: 0, z: 0}
           - name: CP
-            position: {x: -300, y: -162, z: 0}
+            position: {x: -474.09613, y: -162, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -14994,7 +15218,7 @@ MonoBehaviour:
               SerializedPosition: {x: 0, y: 0, z: 0}
           edgeSplineCurvePoints:
           - name: CP
-            position: {x: -300, y: 30, z: 0}
+            position: {x: -474.09613, y: 30, z: 0}
             leftTangent: {x: 0, y: 0, z: 0}
             rightTangent: {x: 0, y: 0, z: 0}
             _serializedWorldPosition: {x: 0, y: 0, z: 0}
@@ -15003,7 +15227,7 @@ MonoBehaviour:
             _isSymmetrical: 0
             _floorHeight: 192
             _floorAngle: 0
-            _floorPosition: {x: -300, y: -162, z: 0}
+            _floorPosition: {x: -474.09613, y: -162, z: 0}
             _forceNewSegment: 0
             _blockNewSegment: 0
             _object: {fileID: 0}
@@ -15057,13 +15281,13 @@ MonoBehaviour:
           fillSpineIsOpen: 0
           edgeSplinePoints: []
           colliderPoints:
-          - {x: -300, y: 31.2}
+          - {x: -474.09613, y: 31.2}
           - {x: -120, y: 31.2}
           bottomColliderPoints:
-          - {x: -300, y: 31.2}
-          - {x: -300, y: 30}
-          - {x: -300, y: -162}
-          - {x: -300, y: -162}
+          - {x: -474.09613, y: 31.2}
+          - {x: -474.09613, y: 30}
+          - {x: -474.09613, y: -162}
+          - {x: -474.09613, y: -162}
           - {x: -120, y: -162}
           linkedCameraTarget:
             forceZoomTargets: []
@@ -15106,12 +15330,12 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227607999
+              rid: 462384881816043556
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.6999999
-            orthoSize: 50
+            doUseManualOffset: 1
+            manualYOffset: 1.18
+            yOffset: 1.18
+            orthoSize: 58.999996
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.3
             serializedObjectLocation: 0000000001000000
@@ -15121,8 +15345,8 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384806227608000
-            position: {x: -299.99817, y: 30.000002, z: 0}
+              rid: 462384880782672560
+            position: {x: -474.09222, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
             position: {x: -120, y: 30, z: 0}
@@ -15419,11 +15643,11 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227608001
+              rid: 462384881816043557
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.44
-            yOffset: 0.31050414
+            yOffset: 0.69736844
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.7
@@ -15432,9 +15656,9 @@ MonoBehaviour:
             SerializedPosition: {x: -44, y: -74, z: 0}
           startHighPoint:
             previous:
-              rid: 462384806227608002
+              rid: 462384880782672562
             next:
-              rid: 462384806227608003
+              rid: 462384880782672563
             position: {x: -119.925, y: 29.999691, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -15685,16 +15909,16 @@ MonoBehaviour:
             SerializedPosition: {x: 0, y: 0, z: 0}
         curvePoints:
         - name: CP 0_0
-          position: {x: -300, y: 30, z: 0}
+          position: {x: -474.09613, y: 30, z: 0}
           leftTangent: {x: 0, y: 0, z: 0}
           rightTangent: {x: 0, y: 0, z: 0}
-          _serializedWorldPosition: {x: -300, y: 30, z: 0}
+          _serializedWorldPosition: {x: -474.09613, y: 30, z: 0}
           _mode: 0
           _floorPointType: 1
           _isSymmetrical: 0
           _floorHeight: 192
           _floorAngle: 0
-          _floorPosition: {x: -300, y: -162, z: 0}
+          _floorPosition: {x: -474.09613, y: -162, z: 0}
           _forceNewSegment: 0
           _blockNewSegment: 0
           _object: {fileID: 0}
@@ -15713,7 +15937,7 @@ MonoBehaviour:
             manualOrthoSize: 0
             serializedObjectLocation: 0000000000000000
             targetTransform: {fileID: 0}
-            SerializedPosition: {x: -300, y: 30, z: 0}
+            SerializedPosition: {x: -474.09613, y: 30, z: 0}
         - name: CP 0_1_LT
           position: {x: -120, y: 30, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
@@ -15733,12 +15957,12 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227607999
+              rid: 462384881816043556
             doLowTarget: 1
-            doUseManualOffset: 0
-            manualYOffset: 0
-            yOffset: 0.6999999
-            orthoSize: 50
+            doUseManualOffset: 1
+            manualYOffset: 1.18
+            yOffset: 1.18
+            orthoSize: 58.999996
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.3
             serializedObjectLocation: 0000000001000000
@@ -15763,11 +15987,11 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227608001
+              rid: 462384881816043557
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.44
-            yOffset: 0.31050414
+            yOffset: 0.69736844
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 57.7
@@ -15809,12 +16033,12 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227607999
+            rid: 462384881816043556
           doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.6999999
-          orthoSize: 50
+          doUseManualOffset: 1
+          manualYOffset: 1.18
+          yOffset: 1.18
+          orthoSize: 58.999996
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.3
           serializedObjectLocation: 0000000001000000
@@ -15824,11 +16048,11 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.44
-          yOffset: 0.31050414
+          yOffset: 0.69736844
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.7
@@ -15839,12 +16063,12 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608004
+            rid: 462384881816043558
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.4558852
-          orthoSize: 59.79666
+          yOffset: 0.4434087
+          orthoSize: 57.23738
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
@@ -15855,15 +16079,15 @@ MonoBehaviour:
         - previous:
             rid: -2
           next:
-            rid: 462384806227608000
-          position: {x: -299.99817, y: 30.000002, z: 0}
+            rid: 462384880782672560
+          position: {x: -474.09222, y: 30.000002, z: 0}
         - previous:
-            rid: 462384806227608002
+            rid: 462384880782672562
           next:
-            rid: 462384806227608003
+            rid: 462384880782672563
           position: {x: -119.925, y: 29.999691, z: 0}
         - previous:
-            rid: 462384806227608000
+            rid: 462384880782672560
           next:
             rid: -2
           position: {x: 16.00001, y: -26.969238, z: 0}
@@ -15888,18 +16112,18 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608004
+            rid: 462384881816043558
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.4558852
-          orthoSize: 59.79666
+          yOffset: 0.4434087
+          orthoSize: 57.23738
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
-    - rid: 462384806227607995
+    - rid: 462384881816043552
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 40.2, y: 21.9}
@@ -15936,12 +16160,12 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227608004
+              rid: 462384881816043558
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.17
-            yOffset: 0.4558852
-            orthoSize: 59.79666
+            yOffset: 0.4434087
+            orthoSize: 57.23738
             doUseManualOrthoSize: 0
             manualOrthoSize: 75.1
             serializedObjectLocation: 0100000001000000
@@ -15951,7 +16175,7 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384806227608005
+              rid: 462384880782672565
             position: {x: 85.26482, y: 19.95047, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -16351,12 +16575,12 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384806227608004
+              rid: 462384881816043558
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0.17
-            yOffset: 0.4558852
-            orthoSize: 59.79666
+            yOffset: 0.4434087
+            orthoSize: 57.23738
             doUseManualOrthoSize: 0
             manualOrthoSize: 75.1
             serializedObjectLocation: 0100000001000000
@@ -16397,11 +16621,11 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.44
-          yOffset: 0.31050414
+          yOffset: 0.69736844
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.7
@@ -16412,12 +16636,12 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608004
+            rid: 462384881816043558
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.4558852
-          orthoSize: 59.79666
+          yOffset: 0.4434087
+          orthoSize: 57.23738
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
@@ -16425,13 +16649,13 @@ MonoBehaviour:
           SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         - forceZoomTargets: []
           prevTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.39411476
+          yOffset: 0.34973028
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
@@ -16443,10 +16667,10 @@ MonoBehaviour:
         - previous:
             rid: -2
           next:
-            rid: 462384806227608005
+            rid: 462384880782672565
           position: {x: 85.26482, y: 19.95047, z: 0}
         - previous:
-            rid: 462384806227608006
+            rid: 462384880782672566
           next:
             rid: -2
           position: {x: 221.72632, y: 23.74385, z: 0}
@@ -16455,11 +16679,11 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.44
-          yOffset: 0.31050414
+          yOffset: 0.69736844
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.7
@@ -16469,20 +16693,20 @@ MonoBehaviour:
         manualRightCamTarget:
           forceZoomTargets: []
           prevTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.39411476
+          yOffset: 0.34973028
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
           serializedObjectLocation: 0200000001000000
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384806227607996
+    - rid: 462384881816043553
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -16517,13 +16741,13 @@ MonoBehaviour:
           startTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384806227608001
+              rid: 462384881816043557
             nextTarget:
               rid: -2
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.39411476
+            yOffset: 0.34973028
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
@@ -16534,7 +16758,7 @@ MonoBehaviour:
             previous:
               rid: -2
             next:
-              rid: 462384806227608007
+              rid: 462384880782672567
             position: {x: 295.67496, y: -0.00008994001, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -16891,13 +17115,13 @@ MonoBehaviour:
           _linkedCameraTarget:
             forceZoomTargets: []
             prevTarget:
-              rid: 462384806227608001
+              rid: 462384881816043557
             nextTarget:
               rid: -2
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
-            yOffset: 0.39411476
+            yOffset: 0.34973028
             orthoSize: 50
             doUseManualOrthoSize: 0
             manualOrthoSize: 0
@@ -16939,12 +17163,12 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608004
+            rid: 462384881816043558
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.4558852
-          orthoSize: 59.79666
+          yOffset: 0.4434087
+          orthoSize: 57.23738
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
@@ -16952,13 +17176,13 @@ MonoBehaviour:
           SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
         - forceZoomTargets: []
           prevTarget:
-            rid: 462384806227608001
+            rid: 462384881816043557
           nextTarget:
             rid: -2
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0
-          yOffset: 0.39411476
+          yOffset: 0.34973028
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
@@ -16970,10 +17194,10 @@ MonoBehaviour:
         - previous:
             rid: -2
           next:
-            rid: 462384806227608007
+            rid: 462384880782672567
           position: {x: 295.67496, y: -0.00008994001, z: 0}
         - previous:
-            rid: 462384806227608008
+            rid: 462384880782672568
           next:
             rid: -2
           position: {x: 376.953, y: -29.999996, z: 0}
@@ -16982,12 +17206,12 @@ MonoBehaviour:
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227608004
+            rid: 462384881816043558
           doLowTarget: 1
           doUseManualOffset: 0
           manualYOffset: 0.17
-          yOffset: 0.4558852
-          orthoSize: 59.79666
+          yOffset: 0.4434087
+          orthoSize: 57.23738
           doUseManualOrthoSize: 0
           manualOrthoSize: 75.1
           serializedObjectLocation: 0100000001000000
@@ -17009,7 +17233,7 @@ MonoBehaviour:
           serializedObjectLocation: 
           targetTransform: {fileID: 0}
           SerializedPosition: {x: 0, y: 0, z: 0}
-    - rid: 462384806227607997
+    - rid: 462384881816043554
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -17077,7 +17301,7 @@ MonoBehaviour:
             SerializedPosition: {x: 835.6, y: -30, z: 0}
         backstopPointXOffset: 0
         backstopIsActive: 1
-    - rid: 462384806227607998
+    - rid: 462384881816043555
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -17101,7 +17325,7 @@ MonoBehaviour:
             prevTarget:
               rid: -2
             nextTarget:
-              rid: 462384765862936759
+              rid: 462384859660943616
             doLowTarget: 0
             doUseManualOffset: 0
             manualYOffset: 0
@@ -17112,19 +17336,19 @@ MonoBehaviour:
             serializedObjectLocation: 0000000001000000
             targetTransform: {fileID: 0}
             SerializedPosition: {x: -120, y: 30, z: 0}
-        _camStartPosition: {x: -110, y: 31.894957, z: 0}
-        _camOrthoSize: 50
+        _camStartPosition: {x: -110, y: 14.776146, z: 0}
+        _camOrthoSize: 57.458225
         _firstCameraTarget:
           forceZoomTargets: []
           prevTarget:
             rid: -2
           nextTarget:
-            rid: 462384806227607999
+            rid: 462384880782672559
           doLowTarget: 1
-          doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.6999999
-          orthoSize: 50
+          doUseManualOffset: 1
+          manualYOffset: 1.18
+          yOffset: 1.18
+          orthoSize: 58.999996
           doUseManualOrthoSize: 0
           manualOrthoSize: 57.3
           serializedObjectLocation: 0000000001000000
@@ -17134,118 +17358,62 @@ MonoBehaviour:
           previous:
             rid: -2
           next:
-            rid: 462384806227608000
-          position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384806227607999
+            rid: 462384880782672560
+          position: {x: -474.09222, y: 30.000002, z: 0}
+    - rid: 462384881816043556
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384806227608001
+          rid: 462384881816043557
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0.44
-        yOffset: 0.31050414
+        yOffset: 0.69736844
         orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 57.7
         serializedObjectLocation: 0000000002000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: -44, y: -74, z: 0}
-    - rid: 462384806227608000
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384806227608002
-        next:
-          rid: 462384806227608003
-        position: {x: -119.925, y: 29.999691, z: 0}
-    - rid: 462384806227608001
+    - rid: 462384881816043557
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
           rid: -2
         nextTarget:
-          rid: 462384806227608004
+          rid: 462384881816043558
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0.17
-        yOffset: 0.4558852
-        orthoSize: 59.79666
+        yOffset: 0.4434087
+        orthoSize: 57.23738
         doUseManualOrthoSize: 0
         manualOrthoSize: 75.1
         serializedObjectLocation: 0100000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 151.86505, y: -12.838907, z: 0}
-    - rid: 462384806227608002
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384806227608000
-        position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 462384806227608003
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384806227608000
-        next:
-          rid: -2
-        position: {x: 16.00001, y: -26.969238, z: 0}
-    - rid: 462384806227608004
+    - rid: 462384881816043558
       type: {class: LinkedCameraTarget, ns: , asm: Assembly-CSharp}
       data:
         forceZoomTargets: []
         prevTarget:
-          rid: 462384806227608001
+          rid: 462384881816043557
         nextTarget:
           rid: -2
         doLowTarget: 1
         doUseManualOffset: 0
         manualYOffset: 0
-        yOffset: 0.39411476
+        yOffset: 0.34973028
         orthoSize: 50
         doUseManualOrthoSize: 0
         manualOrthoSize: 0
         serializedObjectLocation: 0200000001000000
         targetTransform: {fileID: 0}
         SerializedPosition: {x: 355.6, y: -30, z: 0}
-    - rid: 462384806227608005
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384806227608006
-        next:
-          rid: -2
-        position: {x: 221.72632, y: 23.74385, z: 0}
-    - rid: 462384806227608006
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384806227608005
-        position: {x: 85.26482, y: 19.95047, z: 0}
-    - rid: 462384806227608007
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: 462384806227608008
-        next:
-          rid: -2
-        position: {x: 376.953, y: -29.999996, z: 0}
-    - rid: 462384806227608008
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        previous:
-          rid: -2
-        next:
-          rid: 462384806227608007
-        position: {x: 295.67496, y: -0.00008994001, z: 0}
     - rid: 1160017312686538764
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:

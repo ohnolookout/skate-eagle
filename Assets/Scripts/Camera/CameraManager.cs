@@ -2,6 +2,7 @@ using Com.LuisPedroFonseca.ProCamera2D;
 using GooglePlayGames.BasicApi;
 using System.Collections.Generic;
 using Unity.Hierarchy;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -75,7 +76,7 @@ public class CameraManager : MonoBehaviour
         else
         {
             UpdateCurrentHighPoint();
-            CheckDirectionChange();
+            CheckHighPointExit();
         }
 
         MoveToTargetPos();
@@ -84,7 +85,46 @@ public class CameraManager : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        Gizmos.color = Color.orange;
+        if(_currentHighPoint != null)
+        {
+            Gizmos.DrawSphere(_currentHighPoint.position, 2f);
 
+            Gizmos.color = Color.darkOrange;
+            if (_currentHighPoint.next != null)
+            {
+                Gizmos.DrawSphere(_currentHighPoint.next.position, 2f);
+            }
+        }
+
+        Gizmos.color = Color.lightGreen;
+        if(_currentLeftTarget != null)
+        {
+            Gizmos.DrawSphere(_currentLeftTarget.Position, 2f);
+        }
+
+        Gizmos.color = Color.darkOliveGreen;
+        if(_nextLeftTarget != null)
+        {
+            Gizmos.DrawSphere(_nextLeftTarget.Position, 2f);
+        }
+
+        if(_player == null || _playerTransform == null)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.blue;
+        var directionalXOffset = _player.FacingForward ? _xOffset : -_xOffset;
+        var targetX = _playerTransform.position.x + directionalXOffset;
+        var bottomY = _camera.transform.position.y - _camera.orthographicSize;
+        Gizmos.DrawLine(new Vector3(targetX, bottomY), new Vector3(targetX, bottomY + 5));
+
+        Gizmos.color = Color.darkRed;
+        Gizmos.DrawSphere(_targetPosition, 2f);
+
+        Gizmos.color = Color.lightPink;
+        Gizmos.DrawLine(_camera.transform.position, _targetPosition);
     }
 
     private void AddPlayer(IPlayer player)
@@ -155,6 +195,7 @@ public class CameraManager : MonoBehaviour
 #if UNITY_EDITOR
         int searchCount = 0;
 #endif
+        Debug.Assert(_prevLeftTarget != null, "CameraManager: Prev left target is null.");
         while (_prevLeftTarget != null && _currentLeftTarget.Position.x > xPos)
         {
 #if UNITY_EDITOR
@@ -167,6 +208,7 @@ public class CameraManager : MonoBehaviour
             AssignPrevAndNextTargets(_currentLeftTarget, _prevLeftTarget, false);
         }
 
+        Debug.Assert(_nextLeftTarget != null, "CameraManager: Next left target is null.");
 
         while (_nextLeftTarget != null && xPos > _nextLeftTarget.Position.x)
         {
@@ -227,8 +269,14 @@ public class CameraManager : MonoBehaviour
     }
 
     private void OnSwitchPlayerDirection(IPlayer player)
-    {
+    {        
+        if (_doCheckHighPointExit)
+        {
+            return;
+        }
+
         UpdateCurrentHighPoint();
+
         float targetX;
 
         if(_currentHighPoint.next != null)
@@ -251,7 +299,7 @@ public class CameraManager : MonoBehaviour
 
     }
 
-    private void CheckDirectionChange()
+    private void CheckHighPointExit()
     {
         var playerX = _playerTransform.position.x;
         var camDist = Mathf.Abs(playerX - _camera.transform.position.x);
@@ -286,9 +334,6 @@ public class CameraManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("CameraManager: Player landed on new ground segment, updating camera targets.");
-        Debug.Log("CameraManager: Player landed on new ground segment: " + collidedTransformParent.name);
-
         var playerPos = _player.NormalBody.position;
 
         var collidedSeg = collidedTransformParent.GetComponent<GroundSegment>();
@@ -315,6 +360,7 @@ public class CameraManager : MonoBehaviour
         FreezeCamera();
         Camera.main.transform.position = level.SerializedStartLine.CamStartPosition;
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
+        _currentGround = null;
         _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
         _prevLeftTarget = _currentLeftTarget.prevTarget;
         _nextLeftTarget = _currentLeftTarget.nextTarget;
@@ -344,7 +390,7 @@ public class CameraManager : MonoBehaviour
         if (moveRight)
         {
             _prevLeftTarget = currentTarget;
-
+            Debug.Log("Prev left target assigned to current target. New prev left target: " + _prevLeftTarget);
             if (newTarget.nextTarget != null)
             {
                 _nextLeftTarget = newTarget.nextTarget;
@@ -389,7 +435,6 @@ public class CameraManager : MonoBehaviour
     {
         _currentLeftTarget = newTarget;
 
-
         if (newTarget.nextTarget != null)
         {
             _nextLeftTarget = newTarget.nextTarget;
@@ -414,6 +459,7 @@ public class CameraManager : MonoBehaviour
         else
         {
             var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+            Debug.Log($"Index of current left target in ground low targets: {currentIndex}");
             if (currentIndex > 0)
             {
                 _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];
