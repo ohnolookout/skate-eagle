@@ -4,13 +4,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectResync //Add CurvePointResync for LinkedTarget left and right targets
+public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectResync, IResyncable //Add CurvePointResync for LinkedTarget left and right targets
 {
     #region Declarations
     private Ground _parentGround;
-    public List<GameObject> zoomTargetObjects = new();
-    public GameObject manualLeftTargetObject;
-    public GameObject manualRightTargetObject;
+    private List<ResyncRef<ICameraTargetable>> _zoomTargetObjectRefs = new();
+    public string UID { get; set; }
     public CurvePoint CurvePoint => _parentGround.CurvePoints[transform.GetSiblingIndex()];
     public Ground ParentGround {
         get
@@ -23,9 +22,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         }
         set => _parentGround = value; }
     public GameObject Object => gameObject;
-    public List<GameObject> ZoomTargetObjects { get => zoomTargetObjects; set => zoomTargetObjects = value; }
-    public GameObject ManualLeftTargetObject { get => manualLeftTargetObject; set => manualLeftTargetObject = value; }
-    public GameObject ManualRightTargetObject { get => manualRightTargetObject; set => manualRightTargetObject = value; }
+    public List<ResyncRef<ICameraTargetable>> ZoomTargetObjects { get => _zoomTargetObjectRefs; set => _zoomTargetObjectRefs = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
     public bool DoTargetLow { get => LinkedCameraTarget.doLowTarget; set => LinkedCameraTarget.doLowTarget = value; }
 
@@ -84,8 +81,11 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public void SetCurvePoint(CurvePoint curvePoint)
     {        
         curvePoint.Object = gameObject; // Set the object reference in the CurvePoint
+        UID = curvePoint.CPObjRef.UID;
         transform.position = curvePoint.Position + ParentGround.transform.position;
         AddObjectToTarget();
+        curvePoint.RegisterResync();
+        RegisterResync();
     }
 
 #if UNITY_EDITOR
@@ -157,7 +157,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     #region Targeting
     public void AddObjectToTarget()
     {
-        LinkedCameraTarget.targetTransform = transform;
         LinkedCameraTarget.SerializedPosition = transform.position;
         LinkedCameraTarget.parentObject = this;
     }
@@ -182,7 +181,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
             var resync = new ObjectResync(target.serializedObjectLocation);
             resync.resyncFunc = (obj) => 
             {
-                target.targetTransform = obj.transform;
+                target.parentObject = obj.GetComponent<ICameraTargetable>();
             };
             resyncs.Add(resync);
         }
@@ -190,6 +189,11 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         return resyncs;
     }
     #endregion
+
+    public void RegisterResync()
+    {
+        LevelManager.ResyncHub.RegisterResync(this);
+    }
 }
 
 

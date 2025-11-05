@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class LinkedCameraTarget
+public class LinkedCameraTarget: IResyncable
 {
     [SerializeReference] public List<CurvePoint> forceZoomTargets = new();
     [SerializeReference] public LinkedCameraTarget prevTarget;
     [SerializeReference] public LinkedCameraTarget nextTarget;
+    [SerializeField] private ResyncRef<LinkedCameraTarget> _prevTargetRef = new();
+    [SerializeField] private ResyncRef<LinkedCameraTarget> _nextTargetRef = new();
+    [SerializeReference] private List<ResyncRef<CurvePoint>> _forceZoomTargetRefs = new();
+    [SerializeField] private ResyncRef<ICameraTargetable> _parentObjectRef = new();
+
     public bool doLowTarget = false;
     public bool doUseManualOffset = false;
     public float manualYOffset = 0f;
@@ -16,15 +21,16 @@ public class LinkedCameraTarget
     public bool doUseManualOrthoSize = false;
     public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
-    public Transform targetTransform;
+    //public Transform targetTransform;
     public ICameraTargetable parentObject;
+    public string UID { get; set; }
     public Vector3 Position
     {
         get
         {
-            if (targetTransform != null)
+            if (parentObject != null)
             {
-                return SerializedPosition = targetTransform.position;
+                return SerializedPosition = parentObject.Object.transform.position;
             }
             else
             {
@@ -39,26 +45,31 @@ public class LinkedCameraTarget
     {
         serializedObjectLocation = new int[0];
     }
-
-    public LinkedCameraTarget DeepCopy()
+    public void RegisterResync()
     {
-        LinkedCameraTarget copy = new()
-        {
-            serializedObjectLocation = (int[])serializedObjectLocation.Clone(),
-            SerializedPosition = SerializedPosition,
-            targetTransform = targetTransform,
-            doLowTarget = doLowTarget,
-            doUseManualOffset = doUseManualOffset,
-            manualYOffset = manualYOffset,
-            yOffset = yOffset,
-            orthoSize = orthoSize,
-            manualOrthoSize = manualOrthoSize,
-            doUseManualOrthoSize = doUseManualOrthoSize,
-            forceZoomTargets = new List<CurvePoint>(forceZoomTargets),
-            prevTarget = prevTarget,
-            nextTarget = nextTarget
-        };
-        return copy;
-    }
+        //if(prevTarget != null)
+        //{
+        //    _prevTargetRef.Value = prevTarget;
+        //}
+        //if (nextTarget != null)
+        //{
+        //    _nextTargetRef.Value = nextTarget;
+        //}
 
+        //if(forceZoomTargets.Count > 0)
+        //{
+        //    _forceZoomTargetRefs = new();
+        //    foreach(var point in forceZoomTargets)
+        //    {
+        //        _forceZoomTargetRefs.Add(new ResyncRef<CurvePoint>(point));
+        //    }
+        //}
+
+        //if(parentObject != null)
+        //{
+        //    _parentObjectRef.Value = parentObject;
+        //}
+
+        LevelManager.ResyncHub.RegisterResync(this);
+    }
 }

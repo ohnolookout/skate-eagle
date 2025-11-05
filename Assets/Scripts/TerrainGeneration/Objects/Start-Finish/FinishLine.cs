@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +9,8 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private GameObject _flag;
     [SerializeField] private SpriteRenderer _flagRenderer;
     [SerializeField] private GameObject _backstop;
+    private ResyncRef<CurvePoint> _flagPointRef;
+    private ResyncRef<CurvePoint> _backstopPointRef;
     private CurvePoint _flagPoint;
     private CurvePoint _backstopPoint;
     private int _flagXOffset = 50;
@@ -24,6 +24,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     private Func<float, bool> _isXBetween;
     private IPlayer _player;
     private Rigidbody2D _playerBody;
+    public string UID { get; set; }
 
     public CurvePoint FlagPoint => _flagPoint;
     public CurvePoint BackstopPoint => _backstopPoint;
@@ -31,6 +32,8 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public int BackstopXOffset => _backstopXOffset;
     public bool BackstopIsActive => _backstop.activeSelf;
     public GameObject GameObject => gameObject;
+    public ResyncRef<CurvePoint> FlagPointRef { get => _flagPointRef; set => _flagPointRef = value; }
+    public ResyncRef<CurvePoint> BackstopPointRef { get => _flagPointRef; set => _flagPointRef = value; }
     #endregion
 
     #region Monobehaviours
@@ -113,6 +116,9 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
             return;
         }
 #endif
+
+        _flagPointRef = parameters.flagPointRef;
+        _backstopPointRef = parameters.backstopPointRef;
 
         gameObject.SetActive(true);
 
@@ -197,7 +203,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
         flagPoint.LinkedCameraTarget.doLowTarget = true;
         _flagPoint = flagPoint;
-
+        _flagPointRef.Value = flagPoint;
         _flag.SetActive(true);
         UpdateFlagPosition();
 
@@ -240,6 +246,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
+        _backstopPointRef.Value = backstopPoint;
         _backstopPoint = backstopPoint;
         _backstop.SetActive(true);
         UpdateBackstopPosition();
@@ -367,4 +374,19 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     }
 #endif
     #endregion
+
+    public void RegisterResync()
+    {
+        if(_flagPoint != null)
+        {
+            _flagPointRef.Value = _flagPoint;
+        }
+
+        if(_backstopPoint != null)
+        {
+            _backstopPointRef.Value = _backstopPoint;
+        }
+
+        LevelManager.ResyncHub.RegisterResync(this);
+    }
 }

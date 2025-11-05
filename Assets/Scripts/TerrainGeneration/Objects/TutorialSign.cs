@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System;
+using UnityEngine.UIElements;
 
 public enum SignType
 {
@@ -14,6 +15,7 @@ public class TutorialSign: MonoBehaviour, ISerializable
     [SerializeField] private TMP_Text _text;
     [SerializeField] private SignType _type = SignType.ArrowSquare;
     [SerializeField] private Transform _imageTransform;
+    public string UID { get; set; }
     public GameObject GameObject => gameObject;
 
     public TMP_Text SignText
@@ -28,10 +30,12 @@ public class TutorialSign: MonoBehaviour, ISerializable
         set => _imageTransform = value;
     }
 
+    public SignType Type => _type;
+
     public IDeserializable Serialize()
     {
 
-        return new SerializedTutorialSign(gameObject.name, _type, _text.text, new Vector2(transform.position.x, transform.position.y), _imageTransform.rotation.eulerAngles.z);
+        return new SerializedTutorialSign(this);
     }
 
     public void Clear()
@@ -43,5 +47,10 @@ public class TutorialSign: MonoBehaviour, ISerializable
     public void Refresh(GroundManager _)
     {
         return;
+    }
+
+    public void RegisterResync()
+    {
+        LevelManager.ResyncHub.RegisterResync(this);
     }
 }

@@ -11,6 +11,8 @@ public class SerializedFinishLine: IDeserializable
     public CurvePoint backstopPoint;
     public int backstopPointXOffset;
     public bool backstopIsActive;
+    public ResyncRef<CurvePoint> flagPointRef;
+    public ResyncRef<CurvePoint> backstopPointRef;
 
     public SerializedFinishLine(FinishLine finishLine)
     {
@@ -19,6 +21,8 @@ public class SerializedFinishLine: IDeserializable
         backstopPoint = finishLine.BackstopPoint;
         backstopPointXOffset = finishLine.BackstopXOffset;
         backstopIsActive = finishLine.BackstopIsActive;
+        flagPointRef = finishLine.FlagPointRef;
+        backstopPointRef = finishLine.BackstopPointRef;
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

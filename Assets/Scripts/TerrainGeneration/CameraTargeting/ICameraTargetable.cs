@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Com.LuisPedroFonseca.ProCamera2D;
-using System;
-
-public interface ICameraTargetable
+public interface ICameraTargetable : IResyncable
 {
     void AddObjectToTarget();
     

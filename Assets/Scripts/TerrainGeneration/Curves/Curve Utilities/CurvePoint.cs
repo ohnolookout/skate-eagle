@@ -11,7 +11,7 @@ public enum  FloorPointType
 }
 
 [Serializable]
-public class CurvePoint
+public class CurvePoint: IResyncable
 {
     public string name = "CP";
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
@@ -24,10 +24,20 @@ public class CurvePoint
     [SerializeField] private Vector3 _floorPosition;
     [SerializeField] private bool _forceNewSegment;
     [SerializeField] private bool _blockNewSegment;
+    [SerializeField] private ResyncRef<CurvePointEditObject> _cpObjectRef = new();
     [SerializeField] private GameObject _object;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
+    public string UID {get; set;}
 
-    public GameObject Object { get => _object; set => _object = value; }
+    public GameObject Object
+    {
+        get => _object; 
+        set
+        {
+            _object = value;
+            _cpObjectRef.Value = value.GetComponent<CurvePointEditObject>();
+        }
+    }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
     public Vector3 WorldPosition
@@ -77,6 +87,7 @@ public class CurvePoint
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
     public Vector3 FloorPosition { get => _floorPosition; set => _floorPosition = value; }
     public FloorPointType FloorPointType { get => _floorPointType; set => _floorPointType = value; }
+    public ResyncRef<CurvePointEditObject> CPObjRef { get => _cpObjectRef; }
 
     public CurvePoint()
     {
@@ -222,9 +233,24 @@ public class CurvePoint
         copy.FloorPosition = _floorPosition;
         copy.ForceNewSegment = _forceNewSegment;
         copy.BlockNewSegment = _blockNewSegment;
+        copy.UID = UID;
 
         return copy;
 
 
+    }
+
+    public void RegisterResync()
+    {
+        if (_object != null)
+        {
+            _cpObjectRef.Value = _object.GetComponent<CurvePointEditObject>();
+        }
+
+        if (_linkedCameraTarget != null)
+        {
+            _linkedCameraTarget.RegisterResync();
+        }
+        LevelManager.ResyncHub.RegisterResync(this);
     }
 }

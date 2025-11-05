@@ -22,6 +22,13 @@ public class SerializedGround : IDeserializable
     public LinkedCameraTarget manualLeftCamTarget;
     public LinkedCameraTarget manualRightCamTarget;
     public List<ICameraTargetable> cameraTargets; //List of camera targets for this ground
+    public ResyncRef<CurvePointEditObject> leftEndTargetObjRef = new();
+    public ResyncRef<CurvePointEditObject> rightEndTargetObjRef = new();
+    public ResyncRef<LinkedCameraTarget> leftEndCamTargetRef = new();
+    public ResyncRef<LinkedCameraTarget> rightEndCamTargetRef = new();
+    public List<ResyncRef<CurvePoint>> zoomPointRefs = new();
+    public List<ResyncRef<LinkedHighPoint>> highTargetRefs = new();
+    public List<LinkedHighPoint> highTargets = new();
     public bool IsFloating => floorType == FloorType.Floating;
 
     #region Serialization
@@ -51,6 +58,14 @@ public class SerializedGround : IDeserializable
         SetFloorPoints(ground);
 
         CameraTargetUtility.BuildGroundCameraTargets(ground);
+
+        leftEndCamTargetRef = ground.LeftEndCamTargetRef;
+        rightEndCamTargetRef = ground.RightEndCamTargetRef;
+        leftEndTargetObjRef = ground.LeftEndTargetObjRef;
+        rightEndTargetObjRef = ground.RightEndTargetObjRef;
+        zoomPointRefs = ground.ZoomPointRefs;
+        highTargetRefs = ground.HighTargetRefs;
+
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
 
@@ -131,6 +146,13 @@ public class SerializedGround : IDeserializable
         ground.FloorType = floorType;
         ground.StartFloorHeight = floorHeight;
         ground.StartFloorAngle = floorAngle;
+
+        ground.LeftEndCamTargetRef = leftEndCamTargetRef;
+        ground.RightEndCamTargetRef = rightEndCamTargetRef;
+        ground.LeftEndTargetObjRef = leftEndTargetObjRef;
+        ground.RightEndTargetObjRef = rightEndTargetObjRef;
+        ground.ZoomPointRefs = zoomPointRefs;
+        ground.HighTargetRefs = highTargetRefs;
 
         DeserializeRuntimeSegments(groundManager, ground);
         ground.LowTargets = lowTargets;

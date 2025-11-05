@@ -19,7 +19,7 @@ public static class CameraTargetUtility
     public const float MaxSlopeDeltaForOffset = .75f;
     public const float DefaultAspectRatio = 16f / 9f;
     public const float DefaultOrthoSize = 50;
-    private static float maxSlope = (DefaultOrthoSize * 1.6f)/ CameraManager.maxXOffset; //Max slope to keep target within camera view
+    //private static float maxSlope = (DefaultOrthoSize * 1.6f)/ CameraManager.maxXOffset; //Max slope to keep target within camera view
 
     #endregion
     #region Runtime Methods

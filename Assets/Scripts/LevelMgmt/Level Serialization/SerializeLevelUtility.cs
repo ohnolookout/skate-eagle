@@ -26,6 +26,7 @@ public static class SerializeLevelUtility
 
         foreach (var serializable in serializables)
         {
+            serializable.RegisterResync();
             serializedObjects.Add(serializable.Serialize());
         }
 
@@ -326,26 +327,33 @@ public static class SerializeLevelUtility
     /// </summary>
     private static void ProcessSerializedObject(IDeserializable deserializable, GroundManager groundManager)
     {
+        ISerializable serializable;
         switch (deserializable)
         {
             case SerializedGround:
                 var ground = groundManager.groundSpawner.AddGround();
-                deserializable.Deserialize(ground.gameObject, groundManager.gameObject);
+                serializable = deserializable.Deserialize(ground.gameObject, groundManager.gameObject);
                 break;
             case SerializedFinishLine:
-                deserializable.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
+                serializable = deserializable.Deserialize(groundManager.FinishLine.gameObject, groundManager.gameObject);
                 break;
             case SerializedStartLine:
-                deserializable.Deserialize(groundManager.StartLine.gameObject, groundManager.gameObject);
+                serializable = deserializable.Deserialize(groundManager.StartLine.gameObject, groundManager.gameObject);
                 break;
             case SerializedTutorialSign:
                 var isSquare = ((SerializedTutorialSign)deserializable).Type;
                 var tutorialSign = groundManager.groundSpawner.AddTutorialSign(isSquare);
-                deserializable.Deserialize(tutorialSign.gameObject, groundManager.gameObject);
+                serializable = deserializable.Deserialize(tutorialSign.gameObject, groundManager.gameObject);
                 break;
             default:
+                serializable = null;
                 Debug.Log($"DeserializeLevel: Unhandled type {deserializable} during deserialization.");
                 break;
+        }
+
+        if (serializable != null)
+        {
+            serializable.RegisterResync();
         }
     }
 

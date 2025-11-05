@@ -35,10 +35,10 @@ public class PlayFabAuthService
     public static event PlayFabErrorEvent OnPlayFabError;
 
     public delegate void DisplayNameUpdateEvent(UpdateUserTitleDisplayNameResult result);
-    public static event DisplayNameUpdateEvent OnDisplayNameUpdate;
+    //public static event DisplayNameUpdateEvent OnDisplayNameUpdate;
 
     public delegate void DisplayNameErrorEvent(PlayFabError error);
-    public static event DisplayNameErrorEvent OnDisplayNameError;
+    //public static event DisplayNameErrorEvent OnDisplayNameError;
 
     // These are fields that we set when we are using the service.
     public string Email;

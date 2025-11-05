@@ -11,6 +11,9 @@ public class SerializedStartLine : IDeserializable
     [SerializeField] private float _camOrthoSize = 50;
     [SerializeField] private LinkedCameraTarget _firstCameraTarget;
     [SerializeField] private LinkedHighPoint _firstHighPoint;
+    public ResyncRef<CurvePoint> curvePointRef = new();
+    public ResyncRef<LinkedCameraTarget> firstCameraTargetRef = new();
+    public ResyncRef<LinkedHighPoint> firstHighPointRef = new();
 
     public Vector3 StartPosition => _curvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(xOffset, 0, 0);
@@ -29,6 +32,9 @@ public class SerializedStartLine : IDeserializable
         _camOrthoSize = startLine.CamOrthoSize;
         _firstCameraTarget = startLine.FirstCameraTarget;
         _firstHighPoint = startLine.FirstHighPoint;
+        curvePointRef = startLine.CurvePointRef;
+        firstCameraTargetRef = startLine.FirstCamTargetRef;
+        firstHighPointRef = startLine.FirstHighPointRef;
 
     }
 

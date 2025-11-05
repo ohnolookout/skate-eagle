@@ -10,17 +10,49 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private float _camOrthoSize = 50;
     private LinkedCameraTarget _firstCameraTarget;
     private LinkedHighPoint _firstHighPoint;
+    private ResyncRef<CurvePoint> _curvePointRef = new();
+    private ResyncRef<LinkedCameraTarget> _firstCamTargetRef = new();
+    private ResyncRef<LinkedHighPoint> _firstHighPointRef = new();
+    public string UID { get; set; }
 
     public Vector3 StartPosition => _curvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(_xOffset, 0, 0);
     public GameObject GameObject => gameObject;
 
-    public CurvePoint CurvePoint { get => _curvePoint; set => _curvePoint = value; }
-    public float XOffset {get => _xOffset; set => _xOffset = value; }
+    public CurvePoint CurvePoint
+    {
+        get => _curvePoint;
+        set
+        {
+            _curvePointRef.Value = value;
+            _curvePoint = value;
+        }
+    }
+    public float XOffset { get => _xOffset; set => _xOffset = value; }
     public Vector3 CamStartPosition { get => _camStartPosition; set => _camStartPosition = value; }
     public float CamOrthoSize { get => _camOrthoSize; set => _camOrthoSize = value; }
-    public LinkedCameraTarget FirstCameraTarget { get => _firstCameraTarget; set => _firstCameraTarget = value; }
-    public LinkedHighPoint FirstHighPoint { get => _firstHighPoint; set => _firstHighPoint = value; }
+    public LinkedCameraTarget FirstCameraTarget
+    {
+        get => _firstCameraTarget;
+        set
+        {
+            _firstCamTargetRef.Value = value;
+            _firstCameraTarget = value;
+        }
+    }
+    public LinkedHighPoint FirstHighPoint
+    {
+        get => _firstHighPoint;
+        set
+        {
+            _firstHighPointRef.Value = value;
+            _firstHighPoint = value;
+        }
+    }
+
+    public ResyncRef<CurvePoint> CurvePointRef { get => _curvePointRef; set => _curvePointRef = value; }
+    public ResyncRef<LinkedCameraTarget> FirstCamTargetRef { get => _firstCamTargetRef; set => _firstCamTargetRef = value; }
+    public ResyncRef<LinkedHighPoint> FirstHighPointRef { get => _firstHighPointRef; set => _firstHighPointRef = value; }
 
     private void OnDrawGizmosSelected()
     {
@@ -36,6 +68,9 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _camOrthoSize = serializedStartLine.CamOrthoSize;
         _firstCameraTarget = serializedStartLine.FirstCameraTarget;
         _firstHighPoint = serializedStartLine.FirstHighPoint;
+        _curvePointRef = serializedStartLine.curvePointRef;
+        _firstCamTargetRef = serializedStartLine.firstCameraTargetRef;
+        _firstHighPointRef = serializedStartLine.firstHighPointRef;
     }
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)
@@ -97,4 +132,21 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     }
 
 #endif
+
+    public void RegisterResync()
+    {
+        if(_curvePoint != null)
+        {
+            _curvePointRef.Value = _curvePoint;
+        }
+        if(_firstCameraTarget != null)
+        {
+            _firstCamTargetRef.Value = _firstCameraTarget;
+        }
+        if(_firstHighPoint != null)
+        {
+            _firstHighPointRef.Value = _firstHighPoint;
+        }
+        LevelManager.ResyncHub.RegisterResync(this);
+    }
 }
