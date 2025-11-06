@@ -388,18 +388,18 @@ public class GroundInspector : Editor
         ground.ManualLeftCamTarget = null;
         ground.ManualRightCamTarget = null;
 
-        ground.ZoomPoints = new();
+        ground.ZoomPointRefs = new();
 
         foreach(var target in ground.LowTargets)
         {
-            target.nextTarget = null;
-            target.prevTarget = null;
+            target.NextTarget = null;
+            target.PrevTarget = null;
         }
 
         foreach(var cp in ground.CurvePoints)
         {
-            cp.LinkedCameraTarget.nextTarget = null;
-            cp.LinkedCameraTarget.prevTarget = null;
+            cp.LinkedCameraTarget.NextTarget = null;
+            cp.LinkedCameraTarget.PrevTarget = null;
         }
 
         CameraTargetUtility.BuildGroundCameraTargets(ground);

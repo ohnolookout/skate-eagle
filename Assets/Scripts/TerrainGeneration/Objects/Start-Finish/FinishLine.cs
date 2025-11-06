@@ -26,8 +26,23 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     private Rigidbody2D _playerBody;
     public string UID { get; set; }
 
-    public CurvePoint FlagPoint => _flagPoint;
-    public CurvePoint BackstopPoint => _backstopPoint;
+    public CurvePoint FlagPoint
+    {
+        get => _flagPoint;
+        set
+        {
+            _flagPoint = value;
+            _flagPointRef.Value = value;
+        }
+    }
+    public CurvePoint BackstopPoint
+    {
+        get => _backstopPoint;
+        set
+        {
+            _backstopPoint = value;
+        }
+    }
     public int FlagXOffset => _flagXOffset;
     public int BackstopXOffset => _backstopXOffset;
     public bool BackstopIsActive => _backstop.activeSelf;
@@ -68,13 +83,13 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     {
         Gizmos.color = Color.red;
 
-        if (_flagPoint == null || _backstopPoint == null)
+        if (FlagPoint == null || BackstopPoint == null)
         {
             return;
         }
 
-        var flagPosition = _flagPoint.WorldPosition + new Vector3(_flagXOffset, 0);
-        var backstopPosition = _backstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
+        var flagPosition = FlagPoint.WorldPosition + new Vector3(_flagXOffset, 0);
+        var backstopPosition = BackstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
 
         var lowerLeftPoint = new Vector2(flagPosition.x, flagPosition.y - _lowerYTolerance);
         var upperLeftPoint = new Vector2(flagPosition.x, flagPosition.y + _upperYTolerance);
@@ -161,17 +176,17 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public List<ObjectResync> GetObjectResyncs()
     {
         List<ObjectResync> resyncs = new();
-        if (_flagPoint != null)
+        if (FlagPoint != null)
         {
-            var resync = new ObjectResync(_flagPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { _flagPoint.Object = obj; };
+            var resync = new ObjectResync(FlagPoint.LinkedCameraTarget.serializedObjectLocation);
+            resync.resyncFunc = (obj) => { FlagPoint.Object = obj; };
             resyncs.Add(resync);
         }
 
         if (_backstop != null)
         {
-            var resync = new ObjectResync(_backstopPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { _backstopPoint.Object = obj; };
+            var resync = new ObjectResync(BackstopPoint.LinkedCameraTarget.serializedObjectLocation);
+            resync.resyncFunc = (obj) => { BackstopPoint.Object = obj; };
             resyncs.Add(resync);
         }
 
@@ -202,8 +217,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         Undo.RecordObject(this, "Set Finish Flag and Backstop");
 #endif
         flagPoint.LinkedCameraTarget.doLowTarget = true;
-        _flagPoint = flagPoint;
-        _flagPointRef.Value = flagPoint;
+        FlagPoint = flagPoint;
         _flag.SetActive(true);
         UpdateFlagPosition();
 
@@ -233,7 +247,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
-        _flag.transform.position = _flagPoint.WorldPosition + new Vector3(_flagXOffset, 0) + _flagSpriteOffset;
+        _flag.transform.position = FlagPoint.WorldPosition + new Vector3(_flagXOffset, 0) + _flagSpriteOffset;
     }
 
     /// <summary>
@@ -246,8 +260,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
-        _backstopPointRef.Value = backstopPoint;
-        _backstopPoint = backstopPoint;
+        BackstopPoint = backstopPoint;
         _backstop.SetActive(true);
         UpdateBackstopPosition();
 
@@ -277,7 +290,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
-        _backstop.transform.position = _backstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
+        _backstop.transform.position = BackstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
     }
 
     /// <summary>
@@ -286,13 +299,13 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public void UpdateIsForward()
     {
 #if UNITY_EDITOR
-        if (_flagPoint == null || _backstopPoint == null)
+        if (FlagPoint == null || BackstopPoint == null)
         {
             return;
         }
 #endif
-        var flagX = _flagPoint.WorldPosition.x + _flagXOffset;
-        var backstopX = _backstopPoint.WorldPosition.x + _backstopXOffset;
+        var flagX = FlagPoint.WorldPosition.x + _flagXOffset;
+        var backstopX = BackstopPoint.WorldPosition.x + _backstopXOffset;
         bool isForward = flagX < backstopX;
         _isXBetween = isForward
             ? (x => x > flagX && x < backstopX)
@@ -307,7 +320,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     /// <param name="doActivate">Whether to activate the backstop.</param>
     public void ActivateBackstop(bool doActivate)
     {
-        if (_backstopPoint == null)
+        if (BackstopPoint == null)
         {
             doActivate = false;
             Debug.LogWarning("FinishLine: Attempted to activate backstop without a backstop point set.");
@@ -336,7 +349,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
-        _backstopPoint = null;
+        BackstopPoint = null;
         _backstopXOffset = 0;
         _backstop.transform.position = Vector2.zero;
         _backstop.SetActive(false);
@@ -350,7 +363,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
-        _flagPoint = null;
+        FlagPoint = null;
         _flagXOffset = 50;
         _flagRenderer.flipX = false;
         _flag.transform.position = Vector2.zero;
@@ -364,12 +377,12 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     /// <returns>True if the object is the parent ground, false otherwise.</returns>
     public bool IsParentGround(GameObject obj)
     {
-        if (_flagPoint == null || _flagPoint.Object == null)
+        if (FlagPoint == null || FlagPoint.Object == null)
         {
             return false;
         }
 
-        var cpObj = _flagPoint.Object.GetComponent<CurvePointEditObject>();
+        var cpObj = FlagPoint.Object.GetComponent<CurvePointEditObject>();
         return obj.GetComponent<Ground>() == cpObj.ParentGround;
     }
 #endif
@@ -377,16 +390,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void RegisterResync()
     {
-        if(_flagPoint != null)
-        {
-            _flagPointRef.Value = _flagPoint;
-        }
-
-        if(_backstopPoint != null)
-        {
-            _backstopPointRef.Value = _backstopPoint;
-        }
-
         LevelManager.ResyncHub.RegisterResync(this);
     }
 }

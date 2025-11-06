@@ -26,7 +26,7 @@ public class SerializedGround : IDeserializable
     public ResyncRef<CurvePointEditObject> rightEndTargetObjRef = new();
     public ResyncRef<LinkedCameraTarget> leftEndCamTargetRef = new();
     public ResyncRef<LinkedCameraTarget> rightEndCamTargetRef = new();
-    public List<ResyncRef<CurvePoint>> zoomPointRefs = new();
+    public List<ResyncRef<CurvePointEditObject>> zoomPointRefs = new();
     public List<ResyncRef<LinkedHighPoint>> highTargetRefs = new();
     public List<LinkedHighPoint> highTargets = new();
     public bool IsFloating => floorType == FloorType.Floating;

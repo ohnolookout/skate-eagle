@@ -33,7 +33,7 @@ public static class CameraTargetUtility
 
         float camBottomY;
         float orthoSize;
-        if (leftTarget.nextTarget == null || leftTarget.Position.x > posX)
+        if (leftTarget.NextTarget == null || leftTarget.Position.x > posX)
         {
             //Use target bottom y if there is no next target or if target is to the left of found target (bc found target is leftmost target in the chain)
             camBottomY = leftTarget.CamBottomPosition.y;
@@ -41,10 +41,10 @@ public static class CameraTargetUtility
         }
         else
         {
-            var t = (posX - leftTarget.Position.x) / (leftTarget.nextTarget.Position.x - leftTarget.Position.x);
+            var t = (posX - leftTarget.Position.x) / (leftTarget.NextTarget.Position.x - leftTarget.Position.x);
             t = Mathf.Clamp01(t);
-            orthoSize = Mathf.SmoothStep(leftTarget.orthoSize, leftTarget.nextTarget.orthoSize, t);
-            camBottomY = Mathf.SmoothStep(leftTarget.CamBottomPosition.y, leftTarget.nextTarget.CamBottomPosition.y, t);
+            orthoSize = Mathf.SmoothStep(leftTarget.orthoSize, leftTarget.NextTarget.orthoSize, t);
+            camBottomY = Mathf.SmoothStep(leftTarget.CamBottomPosition.y, leftTarget.NextTarget.CamBottomPosition.y, t);
         }
         return (camBottomY, orthoSize);
 
@@ -83,8 +83,9 @@ public static class CameraTargetUtility
         //Calculate y offset for each low point
         foreach (var target in lowTargets)
         {
-            sectionPositionDict[target] = (GetSectionPositions(target, cpTargets, ground.ZoomPoints, targetIndices[target].currentIndex, targetIndices[target].prevIndex, targetIndices[target].nextIndex, false),
-                GetSectionPositions(target, cpTargets, ground.ZoomPoints, targetIndices[target].currentIndex, targetIndices[target].prevIndex, targetIndices[target].nextIndex, true));
+            var zoomPoints = ground.GetZoomPoints();
+            sectionPositionDict[target] = (GetSectionPositions(target, cpTargets, zoomPoints, targetIndices[target].currentIndex, targetIndices[target].prevIndex, targetIndices[target].nextIndex, false),
+                GetSectionPositions(target, cpTargets, zoomPoints, targetIndices[target].currentIndex, targetIndices[target].prevIndex, targetIndices[target].nextIndex, true));
 
             if (IsManualEndpoint(target, ground))
             {
@@ -142,7 +143,7 @@ public static class CameraTargetUtility
         var prevIndex = 0;
         int nextIndex = 0;
 
-        currentTarget.prevTarget = null;
+        currentTarget.PrevTarget = null;
 
         for (int i = 1; i < lowPoints.Count(); i++)
         {
@@ -152,11 +153,11 @@ public static class CameraTargetUtility
             //Set prev and next targets for current and next CP
             if (!IsManualEndpoint(currentTarget, ground))
             {
-                currentTarget.nextTarget = nextTarget;
+                currentTarget.NextTarget = nextTarget;
             }
             if (!IsManualEndpoint(nextTarget, ground))
             {
-                nextTarget.prevTarget = currentTarget;
+                nextTarget.PrevTarget = currentTarget;
             }
 
             //Set prev and next indices for currentCP
@@ -174,7 +175,7 @@ public static class CameraTargetUtility
         return targetIndices;
     }
 
-    public static IEnumerable<Vector3> GetSectionPositions(LinkedCameraTarget target, List<LinkedCameraTarget> cpTargets, List<CurvePoint> allZoomPoints, int currentIndex, int prev, int next, bool doUseMidpoints)
+    public static IEnumerable<Vector3> GetSectionPositions(LinkedCameraTarget target, List<LinkedCameraTarget> cpTargets, List<LinkedCameraTarget> allZoomPoints, int currentIndex, int prev, int next, bool doUseMidpoints)
     {
         List<LinkedCameraTarget> allSectionPoints;
 
@@ -195,9 +196,9 @@ public static class CameraTargetUtility
         });
 
         var zoomPoints = allZoomPoints.Where(z => z.Position.x > cpTargets[prev].Position.x && z.Position.x < cpTargets[next].Position.x);
-        zoomPoints.Concat(target.forceZoomTargets);
+        zoomPoints.Concat(target.GetZoomTargets());
         zoomPoints = zoomPoints.Distinct();
-        var zoomPositions = zoomPoints.Select(z => z.LinkedCameraTarget.Position);
+        var zoomPositions = zoomPoints.Select(z => z.Position);
 
         return sectionPositions.Concat(zoomPositions);
     }
@@ -214,17 +215,15 @@ public static class CameraTargetUtility
         }
 
 
-        var prevPos = target.prevTarget != null ? target.prevTarget.Position - new Vector3(0, MinYOffsetT * DefaultOrthoSize) : target.Position - new Vector3(1, MinYOffsetT * DefaultOrthoSize);
-        var nextPos = target.nextTarget != null ? target.nextTarget.Position - new Vector3(0, MinYOffsetT * DefaultOrthoSize) : target.Position - new Vector3(-1, MinYOffsetT * DefaultOrthoSize);
+        var prevPos = target.PrevTarget != null ? target.PrevTarget.Position - new Vector3(0, MinYOffsetT * DefaultOrthoSize) : target.Position - new Vector3(1, MinYOffsetT * DefaultOrthoSize);
+        var nextPos = target.NextTarget != null ? target.NextTarget.Position - new Vector3(0, MinYOffsetT * DefaultOrthoSize) : target.Position - new Vector3(-1, MinYOffsetT * DefaultOrthoSize);
         var targetAdjustedPos = target.Position - new Vector3(0, MinYOffsetT * DefaultOrthoSize);
 
         var lowestYIntercept = float.PositiveInfinity;
-        Debug.Log($"Calculating yOffset for target at x={target.Position.x}, y={target.Position.y}");
         foreach (var pos in positions)
         {
             if (pos == target.Position || pos == prevPos || pos == nextPos)
             {
-                Debug.Log("Skipping point at x=" + pos.x + " y=" + pos.y + " because it matches prev or next pos");
                 continue;
             }
             //Calculate slope from previous or next point
@@ -234,7 +233,6 @@ public static class CameraTargetUtility
             var adjustedPos = pos - new Vector3(0, MinYOffsetT * DefaultOrthoSize);
             if (adjustedPos == prevPos || adjustedPos == nextPos)
             {
-                Debug.Log("Skipping point at x=" + pos.x + " y=" + pos.y + " because it matches prev or next pos");
                 continue;
             }
             if (pos.x < target.Position.x)
@@ -248,10 +246,6 @@ public static class CameraTargetUtility
 
             var yIntercept = adjustedPos.y + slope * Mathf.Abs(target.Position.x - adjustedPos.x);
 
-            if (lowestYIntercept > yIntercept)
-            {
-                Debug.Log($"Target at x={target.Position.x} found lower yIntercept: {yIntercept} from point at x={pos.x}, y={pos.y} with slope {slope}");
-            }
             lowestYIntercept = Mathf.Min(lowestYIntercept, yIntercept);
         }
 
@@ -264,15 +258,6 @@ public static class CameraTargetUtility
         var interceptFromLeftXOffset = leftTargetPos.y + slopeToNext * Mathf.Abs(targetAdjustedPos.x - leftTargetPos.x);
         var interceptFromRightXOffset = rightTargetPos.y + slopeFromPrev * Mathf.Abs(targetAdjustedPos.x - rightTargetPos.x);
 
-        if(interceptFromLeftXOffset < lowestYIntercept)
-        {
-            Debug.Log($"Target at x={target.Position.x} found lower yIntercept from left xOffset: {interceptFromLeftXOffset}");
-        }
-        else if (interceptFromRightXOffset < lowestYIntercept)
-        {
-            Debug.Log($"Target at x={target.Position.x} found lower yIntercept from right xOffset: {interceptFromRightXOffset}");
-        }
-
         lowestYIntercept = Mathf.Min(lowestYIntercept, interceptFromLeftXOffset, interceptFromRightXOffset);
 
         var lowestPointOffsetT = (target.Position.y - lowestYIntercept) / DefaultOrthoSize;
@@ -282,18 +267,6 @@ public static class CameraTargetUtility
 
         var slopeOffsetT = MinYOffsetT + (MaxYOffsetT - MinYOffsetT) * slopeDeltaT;        
         target.yOffset = Mathf.Max(slopeOffsetT, lowestPointOffsetT, MinYOffsetT);
-
-        if(target.yOffset == slopeOffsetT)
-        {
-            Debug.Log($"Target at x={target.Position.x} using slope-based yOffset: {slopeOffsetT} (lowestPointOffset: {lowestPointOffsetT})");
-        } else if(target.yOffset == lowestPointOffsetT)
-        {
-            Debug.Log($"Target at x={target.Position.x} using lowest-point-based yOffset: {lowestPointOffsetT} (slopeOffset: {slopeOffsetT})");
-        }
-        else
-        {
-            Debug.Log($"Target at x={target.Position.x} using MinYOffsetT: {MinYOffsetT} (slopeOffset: {slopeOffsetT}, lowestPointOffset: {lowestPointOffsetT})");
-        }
 
     }
     #endregion
@@ -337,15 +310,15 @@ public static class CameraTargetUtility
         }
                 
         float camBottomY;
-        if (target.nextTarget == null || target.Position.x > posX)
+        if (target.NextTarget == null || target.Position.x > posX)
         {
             //Use target bottom y if there is no next target or if target is to the left of found target (bc found target is leftmost target in the chain)
             camBottomY = target.CamBottomPosition.y;
         }
         else
         {
-            var t = (posX - target.Position.x) / (target.nextTarget.Position.x - target.Position.x);
-            camBottomY = Mathf.Lerp(target.CamBottomPosition.y, target.nextTarget.CamBottomPosition.y, t);
+            var t = (posX - target.Position.x) / (target.NextTarget.Position.x - target.Position.x);
+            camBottomY = Mathf.Lerp(target.CamBottomPosition.y, target.NextTarget.CamBottomPosition.y, t);
         }
 
         return new(posX, camBottomY);
@@ -402,8 +375,8 @@ public static class CameraTargetUtility
 
                 if(result.Count > 0)
                 {
-                    result[^1].next = highPoint;
-                    highPoint.previous = result.Count > 0 ? result[^1] : null;
+                    result[^1].Next = highPoint;
+                    highPoint.Previous = result.Count > 0 ? result[^1] : null;
                 }
                 result.Add(highPoint);
                 highPointFound = false;

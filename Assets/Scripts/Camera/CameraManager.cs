@@ -91,9 +91,9 @@ public class CameraManager : MonoBehaviour
             Gizmos.DrawSphere(_currentHighPoint.position, 2f);
 
             Gizmos.color = Color.darkOrange;
-            if (_currentHighPoint.next != null)
+            if (_currentHighPoint.Next != null)
             {
-                Gizmos.DrawSphere(_currentHighPoint.next.position, 2f);
+                Gizmos.DrawSphere(_currentHighPoint.Next.position, 2f);
             }
         }
 
@@ -236,7 +236,7 @@ public class CameraManager : MonoBehaviour
         }
 
         bool hasChanged = false;
-        while(_currentHighPoint.previous != null && _playerTransform.position.x < _currentHighPoint.position.x)
+        while(_currentHighPoint.Previous != null && _playerTransform.position.x < _currentHighPoint.position.x)
         {
 #if UNITY_EDITOR
             searchCount++;
@@ -246,10 +246,10 @@ public class CameraManager : MonoBehaviour
             }
 #endif
             hasChanged = true;
-            _currentHighPoint = _currentHighPoint.previous;
+            _currentHighPoint = _currentHighPoint.Previous;
         }
 
-        while(_currentHighPoint.next != null && _playerTransform.position.x > _currentHighPoint.next.position.x)
+        while(_currentHighPoint.Next != null && _playerTransform.position.x > _currentHighPoint.Next.position.x)
         {
 #if UNITY_EDITOR
             searchCount++;
@@ -259,7 +259,7 @@ public class CameraManager : MonoBehaviour
             }
 #endif
             hasChanged = true;
-            _currentHighPoint = _currentHighPoint.next;
+            _currentHighPoint = _currentHighPoint.Next;
         }
 
         if(hasChanged == true && _doCheckHighPointExit == true)
@@ -279,9 +279,9 @@ public class CameraManager : MonoBehaviour
 
         float targetX;
 
-        if(_currentHighPoint.next != null)
+        if(_currentHighPoint.Next != null)
         {
-            targetX = _currentHighPoint.position.x + ((_currentHighPoint.next.position.x - _currentHighPoint.position.x) / 2);            
+            targetX = _currentHighPoint.position.x + ((_currentHighPoint.Next.position.x - _currentHighPoint.position.x) / 2);            
         }
         else
         {
@@ -362,8 +362,8 @@ public class CameraManager : MonoBehaviour
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
         _currentGround = null;
         _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
-        _prevLeftTarget = _currentLeftTarget.prevTarget;
-        _nextLeftTarget = _currentLeftTarget.nextTarget;
+        _prevLeftTarget = _currentLeftTarget.PrevTarget;
+        _nextLeftTarget = _currentLeftTarget.NextTarget;
         _currentHighPoint = level.SerializedStartLine.FirstHighPoint;
         _doDirectionChangeDampen = false;
         _doCheckHighPointExit = false;
@@ -391,9 +391,9 @@ public class CameraManager : MonoBehaviour
         {
             _prevLeftTarget = currentTarget;
             Debug.Log("Prev left target assigned to current target. New prev left target: " + _prevLeftTarget);
-            if (newTarget.nextTarget != null)
+            if (newTarget.NextTarget != null)
             {
-                _nextLeftTarget = newTarget.nextTarget;
+                _nextLeftTarget = newTarget.NextTarget;
             }
             else
             {
@@ -412,9 +412,9 @@ public class CameraManager : MonoBehaviour
         {
             _nextLeftTarget = currentTarget;
 
-            if (newTarget.prevTarget != null)
+            if (newTarget.PrevTarget != null)
             {
-                _prevLeftTarget = newTarget.prevTarget;
+                _prevLeftTarget = newTarget.PrevTarget;
             }
             else
             {
@@ -435,9 +435,9 @@ public class CameraManager : MonoBehaviour
     {
         _currentLeftTarget = newTarget;
 
-        if (newTarget.nextTarget != null)
+        if (newTarget.NextTarget != null)
         {
-            _nextLeftTarget = newTarget.nextTarget;
+            _nextLeftTarget = newTarget.NextTarget;
         }
         else
         {
@@ -452,9 +452,9 @@ public class CameraManager : MonoBehaviour
             }
         }
 
-        if (newTarget.prevTarget != null)
+        if (newTarget.PrevTarget != null)
         {
-            _prevLeftTarget = newTarget.prevTarget;
+            _prevLeftTarget = newTarget.PrevTarget;
         }
         else
         {

@@ -96,7 +96,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         if (FirstCameraTarget != null)
         {
             var resync = new ObjectResync(FirstCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FirstCameraTarget.parentObject = obj.GetComponent<ICameraTargetable>(); };
+            resync.resyncFunc = (obj) => { FirstCameraTarget.ParentObject = obj.GetComponent<ICameraTargetable>(); };
             resyncs.Add(resync);
         }
 

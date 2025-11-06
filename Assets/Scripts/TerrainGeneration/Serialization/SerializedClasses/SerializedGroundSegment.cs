@@ -131,14 +131,14 @@ public class SerializedGroundSegment
 
         var currentNode = highPoints[0];
 
-        while (currentNode.next != null)
+        while (currentNode.Next != null)
         {
-            if(currentNode.next.position.x > segStartPos.x)
+            if(currentNode.Next.position.x > segStartPos.x)
             {
                 break;
             }
 
-            currentNode = currentNode.next;
+            currentNode = currentNode.Next;
         }
 
         return currentNode;

@@ -23,7 +23,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
     private List<LinkedCameraTarget> _lowTargets = new();
-    [SerializeField] private List<CurvePoint> _zoomPoints = new();
     private CurvePointEditObject _manualLeftTargetObj;
     private CurvePointEditObject _manualRightTargetObj;
     private LinkedCameraTarget _manualLeftCamTarget;
@@ -32,7 +31,7 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     private ResyncRef<CurvePointEditObject> _rightEndTargetObjRef = new();
     private ResyncRef<LinkedCameraTarget> _leftEndCamTargetRef = new();
     private ResyncRef<LinkedCameraTarget> _rightEndCamTargetRef = new();
-    private List<ResyncRef<CurvePoint>> _zoomPointRefs = new();
+    private List<ResyncRef<CurvePointEditObject>> _zoomPointRefs = new();
     private List<ResyncRef<LinkedHighPoint>> _highTargetRefs = new();
     private List<LinkedHighPoint> _highTargets = new();
     private FloorType _floorType = FloorType.Flat;
@@ -49,19 +48,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints {  get => _curvePoints; set => _curvePoints = value; }
     public List<LinkedCameraTarget> LowTargets { get => _lowTargets; set => _lowTargets = value; }
-    public List<CurvePoint> ZoomPoints 
-    { 
-        get => _zoomPoints;
-        set 
-        {
-            _zoomPointRefs = new();
-            foreach(var zoomPoint in value)
-            {
-                _zoomPointRefs.Add(new(zoomPoint));
-            }
-            _zoomPoints = value; 
-        }
-    }
     public List<LinkedHighPoint> HighPoints 
     { 
         get => _highTargets;
@@ -222,7 +208,7 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public ResyncRef<CurvePointEditObject> RightEndTargetObjRef { get => _rightEndTargetObjRef; set => _rightEndTargetObjRef = value; }
     public ResyncRef<LinkedCameraTarget> LeftEndCamTargetRef { get => _leftEndCamTargetRef; set => _leftEndCamTargetRef = value; }
     public ResyncRef<LinkedCameraTarget> RightEndCamTargetRef { get => _rightEndCamTargetRef; set => _rightEndCamTargetRef = value; }
-    public List<ResyncRef<CurvePoint>> ZoomPointRefs { get => _zoomPointRefs; set => _zoomPointRefs = value; }
+    public List<ResyncRef<CurvePointEditObject>> ZoomPointRefs { get => _zoomPointRefs; set => _zoomPointRefs = value; }
     public List<ResyncRef<LinkedHighPoint>> HighTargetRefs { get => _highTargetRefs; set => _highTargetRefs = value; }
     #endregion
 
@@ -358,6 +344,10 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         return lowPoints;
     }
 
+    public List<LinkedCameraTarget> GetZoomPoints()
+    {
+        return _zoomPointRefs.Select(z => z.Value.LinkedCameraTarget).ToList();
+    }
     public void RegisterResync()
     {
         LevelManager.ResyncHub.RegisterResync(this);

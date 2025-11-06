@@ -8,7 +8,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 {
     #region Declarations
     private Ground _parentGround;
-    private List<ResyncRef<ICameraTargetable>> _zoomTargetObjectRefs = new();
     public string UID { get; set; }
     public CurvePoint CurvePoint => _parentGround.CurvePoints[transform.GetSiblingIndex()];
     public Ground ParentGround {
@@ -22,7 +21,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
         }
         set => _parentGround = value; }
     public GameObject Object => gameObject;
-    public List<ResyncRef<ICameraTargetable>> ZoomTargetObjects { get => _zoomTargetObjectRefs; set => _zoomTargetObjectRefs = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => CurvePoint.LinkedCameraTarget; set => CurvePoint.LinkedCameraTarget = value; }
     public bool DoTargetLow { get => LinkedCameraTarget.doLowTarget; set => LinkedCameraTarget.doLowTarget = value; }
 
@@ -158,7 +156,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
     public void AddObjectToTarget()
     {
         LinkedCameraTarget.SerializedPosition = transform.position;
-        LinkedCameraTarget.parentObject = this;
+        LinkedCameraTarget.ParentObject = this;
     }
 
     public List<ObjectResync> GetObjectResyncs()
@@ -174,14 +172,14 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
         targets.Add(LinkedCameraTarget);
 
-        targets.AddRange(LinkedCameraTarget.forceZoomTargets.Select(t => t.LinkedCameraTarget));
+        targets.AddRange(LinkedCameraTarget.GetZoomTargets());
 
         foreach (var target in targets)
         {
             var resync = new ObjectResync(target.serializedObjectLocation);
             resync.resyncFunc = (obj) => 
             {
-                target.parentObject = obj.GetComponent<ICameraTargetable>();
+                target.ParentObject = obj.GetComponent<ICameraTargetable>();
             };
             resyncs.Add(resync);
         }

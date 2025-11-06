@@ -538,16 +538,16 @@ public class CurvePointObjectInspector : Editor
                 EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
             }
 
-            if(curvePointObject.LinkedCameraTarget.prevTarget != null)
+            if(curvePointObject.LinkedCameraTarget.PrevTarget != null)
             {
-                DrawTargetInfo(curvePointObject.LinkedCameraTarget.prevTarget);
+                DrawTargetInfo(curvePointObject.LinkedCameraTarget.PrevTarget);
             }
 
             DrawTargetInfo(curvePointObject.LinkedCameraTarget);
 
-            if(curvePointObject.LinkedCameraTarget.nextTarget != null)
+            if(curvePointObject.LinkedCameraTarget.NextTarget != null)
             {
-                DrawTargetInfo(curvePointObject.LinkedCameraTarget.nextTarget);
+                DrawTargetInfo(curvePointObject.LinkedCameraTarget.NextTarget);
             }
         }
     }
@@ -751,24 +751,24 @@ public class CurvePointObjectInspector : Editor
 
         //Draw to prev/next targets with offset size
         Handles.color = Color.magenta;
-        if (target.prevTarget != null)
+        if (target.PrevTarget != null)
         {
-            Handles.DrawLine(target.CamBottomPosition, target.prevTarget.CamBottomPosition);
+            Handles.DrawLine(target.CamBottomPosition, target.PrevTarget.CamBottomPosition);
         }
 
         Handles.color = Color.cyan;
-        if (target.nextTarget != null)
+        if (target.NextTarget != null)
         {
-            Handles.DrawLine(target.CamBottomPosition, target.nextTarget.CamBottomPosition);
+            Handles.DrawLine(target.CamBottomPosition, target.NextTarget.CamBottomPosition);
         }
 
         //Draw unoffset target positions
 
         Handles.color = Color.beige;
 
-        if (target.nextTarget != null)
+        if (target.NextTarget != null)
         {
-            Handles.DrawLine(target.Position, target.nextTarget.Position);
+            Handles.DrawLine(target.Position, target.NextTarget.Position);
         }
 
 

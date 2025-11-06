@@ -48,44 +48,6 @@ public class Level
         _killPlaneY = 0;
     }
 
-    //Reserialization utility for old level system
-
-    //public void Reserialize()
-    //{
-    //    Debug.Log("Reserializing Level: " + _name);
-    //    if (_serializedObjects != null)
-    //    {
-    //        Debug.Log("Serialized objects at start: " + _serializedObjects.Count);
-    //    } else
-    //    {
-    //        Debug.Log("Serialized objects is null, initializing new list.");
-    //    }
-    //    _serializedObjects = new();
-
-    //    foreach(var ground in _serializedGrounds)
-    //    {
-    //        if (ground.serializedObjectList == null)
-    //        {
-    //            ground.serializedObjectList = new();
-    //        }
-
-    //        foreach (var serializedSegment in ground.segmentList)
-    //        {
-    //            if (ground.serializedObjectList.Contains(serializedSegment))
-    //            {
-    //                continue;
-    //            }
-
-    //            ground.serializedObjectList.Add(serializedSegment);
-    //        }
-
-    //        _serializedObjects.Add(ground);
-    //    }
-
-    //    _serializedObjects.Add(_serializedFinishLine);
-
-    //    Debug.Log("Serialized objects after reserialize: " + _serializedObjects.Count);
-    //}
 
     //Uncomment this method to populate curve points for serialized grounds
     public void PopulateGroundCurvePoints()

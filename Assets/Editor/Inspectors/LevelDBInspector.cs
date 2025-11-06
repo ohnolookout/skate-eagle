@@ -12,12 +12,14 @@ public class LevelDBInspector : Editor
     private SerializedProperty _levelOrder;
     private LevelDatabase _levelDB;
     private CopyLevelWindow _copyLevelWindow;
+    private EditManager _editManager;
 
     private void OnEnable()
     {
         _so = new SerializedObject(target);
         _levelOrder = _so.FindProperty("_levelOrder");
         _levelDB = (LevelDatabase)target;
+        _editManager = FindFirstObjectByType<EditManager>();
         BuildDoPublishDict();
 
         foreach(var entry in _levelDB.LevelDictionary)
@@ -101,12 +103,12 @@ public class LevelDBInspector : Editor
             _copyLevelWindow.Init(_levelDB);
         }
 
-        //Reserialization utility for old level format
+        //Reserialization utility 
 
-        //if (GUILayout.Button("Update Serialization Format", GUILayout.ExpandWidth(false)))
-        //{
-        //    UpdateSerializationFormat();
-        //}
+        if (GUILayout.Button("Resave All", GUILayout.ExpandWidth(false)))
+        {
+            ResaveAll();
+        }
 
 
         //Curve points utility for old ground system
@@ -298,15 +300,16 @@ public class LevelDBInspector : Editor
         Debug.Log("Updated medals in " + levelUpdatedCount + " levels.");
     }
 
-    //private void UpdateSerializationFormat()
-    //{
-    //    var levels = _levelDB.LevelDictionary.Values.ToList();
-    //    foreach (var level in levels)
-    //    {
-    //        level.Reserialize();
-    //    }
-    //    EditorUtility.SetDirty(_levelDB);
-    //}
+    private void ResaveAll()
+    {
+        var levels = _levelDB.LevelDictionary.Values.ToList();
+        foreach (var level in levels)
+        {
+            _editManager.LoadLevel(level);
+            _editManager.SaveLevel();
+        }
+        EditorUtility.SetDirty(_levelDB);
+    }
 
     private void PopulateGroundCurvePoints()
     {

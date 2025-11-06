@@ -5,13 +5,13 @@ using UnityEngine;
 [Serializable]
 public class LinkedCameraTarget: IResyncable
 {
-    [SerializeReference] public List<CurvePoint> forceZoomTargets = new();
-    [SerializeReference] public LinkedCameraTarget prevTarget;
-    [SerializeReference] public LinkedCameraTarget nextTarget;
+    [SerializeReference] public LinkedCameraTarget _prevTarget;
+    [SerializeReference] public LinkedCameraTarget _nextTarget;
     [SerializeField] private ResyncRef<LinkedCameraTarget> _prevTargetRef = new();
     [SerializeField] private ResyncRef<LinkedCameraTarget> _nextTargetRef = new();
-    [SerializeReference] private List<ResyncRef<CurvePoint>> _forceZoomTargetRefs = new();
+    [SerializeReference] private List<ResyncRef<LinkedCameraTarget>> _forceZoomTargetRefs = new();
     [SerializeField] private ResyncRef<ICameraTargetable> _parentObjectRef = new();
+
 
     public bool doLowTarget = false;
     public bool doUseManualOffset = false;
@@ -22,15 +22,15 @@ public class LinkedCameraTarget: IResyncable
     public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
     //public Transform targetTransform;
-    public ICameraTargetable parentObject;
+    public ICameraTargetable _parentObject;
     public string UID { get; set; }
     public Vector3 Position
     {
         get
         {
-            if (parentObject != null)
+            if (ParentObject != null)
             {
-                return SerializedPosition = parentObject.Object.transform.position;
+                return SerializedPosition = ParentObject.Object.transform.position;
             }
             else
             {
@@ -39,11 +39,51 @@ public class LinkedCameraTarget: IResyncable
         }
     }
 
+    public ICameraTargetable ParentObject
+    {
+        get => _parentObject;
+        set
+        {
+            _parentObject = value;
+            _parentObjectRef.Value = value;
+        }
+    }
+    public List<ResyncRef<LinkedCameraTarget>> ForceZoomTargetRefs { get => _forceZoomTargetRefs; set => _forceZoomTargetRefs = value; }
+    public LinkedCameraTarget PrevTarget
+    {
+        get => _prevTarget;
+        set
+        {
+            _prevTargetRef.Value = value;
+            _prevTarget = value;
+        }
+    }
+    public LinkedCameraTarget NextTarget
+    {
+        get => _nextTarget;
+        set
+        {
+            _nextTargetRef.Value = value;
+            _nextTarget = value;
+        }
+    }
+
     public Vector3 CamBottomPosition => Position - new Vector3(0, yOffset * CameraTargetUtility.DefaultOrthoSize);
     public Vector3 SerializedPosition;
     public LinkedCameraTarget()
     {
         serializedObjectLocation = new int[0];
+    }
+
+    public List<LinkedCameraTarget> GetZoomTargets()
+    {
+        List<LinkedCameraTarget> zoomTargets = new();
+        foreach (var targetRef in _forceZoomTargetRefs)
+        {
+            zoomTargets.Add(targetRef.Value);
+        }
+
+        return zoomTargets;
     }
     public void RegisterResync()
     {
