@@ -9,12 +9,13 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private GameObject _flag;
     [SerializeField] private SpriteRenderer _flagRenderer;
     [SerializeField] private GameObject _backstop;
-    private ResyncRef<CurvePoint> _flagPointRef;
-    private ResyncRef<CurvePoint> _backstopPointRef;
+    private ResyncRef<CurvePoint> _flagPointRef = new();
+    private ResyncRef<CurvePoint> _backstopPointRef = new();
     private CurvePoint _flagPoint;
     private CurvePoint _backstopPoint;
     private int _flagXOffset = 50;
     private int _backstopXOffset = 0;
+    private bool _backstopIsActive;
     private static Vector3 _flagSpriteOffset = new(1.5f, 1f);
     public Action DoFinish;
     private const float _upperYTolerance = 10;
@@ -28,7 +29,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 
     public CurvePoint FlagPoint
     {
-        get => _flagPoint;
+        get => _flagPointRef.Value;
         set
         {
             _flagPoint = value;
@@ -37,18 +38,19 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     }
     public CurvePoint BackstopPoint
     {
-        get => _backstopPoint;
+        get => _backstopPointRef.Value;
         set
         {
             _backstopPoint = value;
+            _backstopPointRef.Value = value;
         }
     }
     public int FlagXOffset => _flagXOffset;
     public int BackstopXOffset => _backstopXOffset;
-    public bool BackstopIsActive => _backstop.activeSelf;
+    public bool BackstopIsActive => _backstopIsActive;
     public GameObject GameObject => gameObject;
     public ResyncRef<CurvePoint> FlagPointRef { get => _flagPointRef; set => _flagPointRef = value; }
-    public ResyncRef<CurvePoint> BackstopPointRef { get => _flagPointRef; set => _flagPointRef = value; }
+    public ResyncRef<CurvePoint> BackstopPointRef { get => _backstopPointRef; set => _backstopPointRef = value; }
     #endregion
 
     #region Monobehaviours
@@ -135,23 +137,30 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _flagPointRef = parameters.flagPointRef;
         _backstopPointRef = parameters.backstopPointRef;
 
-        gameObject.SetActive(true);
 
         _flagXOffset = parameters.flagPointXOffset;
         _backstopXOffset = parameters.backstopPointXOffset;
+        _backstopIsActive = parameters.backstopIsActive;
+        UID = parameters.uid;
 
-        SetFlagPoint(parameters.flagPoint);
-        SetBackstopPoint(parameters.backstopPoint);
+        SerializeLevelUtility.OnDeserializationComplete += OnDeserializationComplete;
+    }
+    public void OnDeserializationComplete()
+    {
+        SerializeLevelUtility.OnDeserializationComplete -= OnDeserializationComplete;
+        gameObject.SetActive(true);
+        SetFlagPoint(FlagPoint);
 
-        _backstop.SetActive(parameters.backstopIsActive);
+        if (BackstopIsActive)
+        {
+            _backstop.SetActive(BackstopIsActive);
+            SetBackstopPoint(BackstopPoint);
+        }
 
         UpdateIsForward();
     }
 
-    /// <summary>
-    /// Callback for when the player is created. Stores references to player and its Rigidbody2D.
-    /// </summary>
-    /// <param name="player">The player instance.</param>
+
     private void OnPlayerCreated(IPlayer player)
     {
         _player = player;
@@ -160,43 +169,32 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     #endregion
 
     #region Edit Utilities
-    /// <summary>
-    /// Serializes the finish line to a serializable object.
-    /// </summary>
-    /// <returns>Serialized finish line.</returns>
     public IDeserializable Serialize()
     {
         return new SerializedFinishLine(this);
     }
 
-    /// <summary>
-    /// Gets the list of object resyncs for the finish line.
-    /// </summary>
-    /// <returns>List of ObjectResync.</returns>
     public List<ObjectResync> GetObjectResyncs()
     {
+        return new();
         List<ObjectResync> resyncs = new();
         if (FlagPoint != null)
         {
             var resync = new ObjectResync(FlagPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FlagPoint.Object = obj; };
+            resync.resyncFunc = (obj) => { FlagPoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
             resyncs.Add(resync);
         }
 
         if (_backstop != null)
         {
             var resync = new ObjectResync(BackstopPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { BackstopPoint.Object = obj; };
+            resync.resyncFunc = (obj) => { BackstopPoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
             resyncs.Add(resync);
         }
 
         return resyncs;
     }
 
-    /// <summary>
-    /// Refreshes the finish line's flag and backstop positions.
-    /// </summary>
-    /// <param name="_">Optional ground manager (unused).</param>
     public void Refresh(GroundManager _ = null)
     {
 #if UNITY_EDITOR
@@ -206,17 +204,12 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         UpdateBackstopPosition();
     }
 
-    /// <summary>
-    /// Sets the flag point and updates its position.
-    /// </summary>
-    /// <param name="flagPoint">The new flag point.</param>
     public void SetFlagPoint(CurvePoint flagPoint)
     {
         gameObject.SetActive(true);
 #if UNITY_EDITOR
         Undo.RecordObject(this, "Set Finish Flag and Backstop");
 #endif
-        flagPoint.LinkedCameraTarget.doLowTarget = true;
         FlagPoint = flagPoint;
         _flag.SetActive(true);
         UpdateFlagPosition();
@@ -226,10 +219,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
     }
 
-    /// <summary>
-    /// Sets the flag's X offset and updates its position.
-    /// </summary>
-    /// <param name="flagXOffset">The new X offset.</param>
     public void SetFlagOffset(int flagXOffset)
     {
 #if UNITY_EDITOR
@@ -239,21 +228,18 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         UpdateFlagPosition();
     }
 
-    /// <summary>
-    /// Updates the flag's world position.
-    /// </summary>
     public void UpdateFlagPosition()
     {
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
+        if(FlagPoint == null)
+        {
+            return;
+        }
         _flag.transform.position = FlagPoint.WorldPosition + new Vector3(_flagXOffset, 0) + _flagSpriteOffset;
     }
 
-    /// <summary>
-    /// Sets the backstop point and updates its position.
-    /// </summary>
-    /// <param name="backstopPoint">The new backstop point.</param>
     public void SetBackstopPoint(CurvePoint backstopPoint)
     {
         gameObject.SetActive(true);
@@ -261,7 +247,7 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
         BackstopPoint = backstopPoint;
-        _backstop.SetActive(true);
+        ActivateBackstop(true);
         UpdateBackstopPosition();
 
 #if UNITY_EDITOR
@@ -269,10 +255,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
 #endif
     }
 
-    /// <summary>
-    /// Sets the backstop's X offset and updates its position.
-    /// </summary>
-    /// <param name="backstopXOffset">The new X offset.</param>
     public void SetBackstopOffset(int backstopXOffset)
     {
 #if UNITY_EDITOR
@@ -282,25 +264,24 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         UpdateBackstopPosition();
     }
 
-    /// <summary>
-    /// Updates the backstop's world position.
-    /// </summary>
     public void UpdateBackstopPosition()
     {
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
+        if (BackstopPoint == null)
+        {
+            return;
+        }
         _backstop.transform.position = BackstopPoint.WorldPosition + new Vector3(_backstopXOffset, 0);
     }
 
-    /// <summary>
-    /// Updates the direction of the finish line and sets the flag's flip state.
-    /// </summary>
     public void UpdateIsForward()
     {
 #if UNITY_EDITOR
         if (FlagPoint == null || BackstopPoint == null)
         {
+            Debug.Log("Flagpoint or backstoppoint is null. Can't calculate isForward");
             return;
         }
 #endif
@@ -314,23 +295,12 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _flagRenderer.flipX = !isForward;
     }
 
-    /// <summary>
-    /// Activates or deactivates the backstop.
-    /// </summary>
-    /// <param name="doActivate">Whether to activate the backstop.</param>
     public void ActivateBackstop(bool doActivate)
     {
-        if (BackstopPoint == null)
-        {
-            doActivate = false;
-            Debug.LogWarning("FinishLine: Attempted to activate backstop without a backstop point set.");
-        }
+        _backstopIsActive = doActivate;
         _backstop.SetActive(doActivate);
     }
 
-    /// <summary>
-    /// Clears the finish line, flag, and backstop.
-    /// </summary>
     public void Clear()
     {
 #if UNITY_EDITOR
@@ -341,9 +311,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Clears the backstop and resets its state.
-    /// </summary>
     public void ClearBackstop()
     {
 #if UNITY_EDITOR
@@ -355,9 +322,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         _backstop.SetActive(false);
     }
 
-    /// <summary>
-    /// Clears the flag and resets its state.
-    /// </summary>
     public void ClearFlag()
     {
 #if UNITY_EDITOR
@@ -370,19 +334,14 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     }
 
 #if UNITY_EDITOR
-    /// <summary>
-    /// Checks if the given object is the parent ground of the flag point.
-    /// </summary>
-    /// <param name="obj">The object to check.</param>
-    /// <returns>True if the object is the parent ground, false otherwise.</returns>
     public bool IsParentGround(GameObject obj)
     {
-        if (FlagPoint == null || FlagPoint.Object == null)
+        if (FlagPoint == null || FlagPoint.CPObject == null)
         {
             return false;
         }
 
-        var cpObj = FlagPoint.Object.GetComponent<CurvePointEditObject>();
+        var cpObj = FlagPoint.CPObject;
         return obj.GetComponent<Ground>() == cpObj.ParentGround;
     }
 #endif

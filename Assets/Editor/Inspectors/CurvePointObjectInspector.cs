@@ -720,7 +720,6 @@ public class CurvePointObjectInspector : Editor
     {
         if (target == null || !target.doLowTarget)
         {
-            Debug.Log("Target is null or not set to low target.");
             return;
         }
         var camCenterX = target.Position.x - (CameraManager.minXOffset/2);

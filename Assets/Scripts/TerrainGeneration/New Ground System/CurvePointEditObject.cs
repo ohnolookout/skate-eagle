@@ -77,9 +77,9 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
 
     #region Set Values
     public void SetCurvePoint(CurvePoint curvePoint)
-    {        
-        curvePoint.Object = gameObject; // Set the object reference in the CurvePoint
-        UID = curvePoint.CPObjRef.UID;
+    {
+        UID = curvePoint.UID + "-editObj";
+        curvePoint.CPObject = this; // Set the object reference in the CurvePoint
         transform.position = curvePoint.Position + ParentGround.transform.position;
         AddObjectToTarget();
         curvePoint.RegisterResync();
@@ -179,7 +179,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectRes
             var resync = new ObjectResync(target.serializedObjectLocation);
             resync.resyncFunc = (obj) => 
             {
-                target.ParentObject = obj.GetComponent<ICameraTargetable>();
+                target.ParentObject = obj.GetComponent<CurvePointEditObject>();
             };
             resyncs.Add(resync);
         }

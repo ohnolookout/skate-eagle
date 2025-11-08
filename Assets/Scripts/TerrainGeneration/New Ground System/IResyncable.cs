@@ -9,13 +9,13 @@ public interface IResyncable
 }
 
 [Serializable]
-public class ResyncRef<T> where T : IResyncable
+public class ResyncRef<T> where T : class, IResyncable
 {
 
     [SerializeField] private string _uid;
-    [SerializeField] private bool _valueSet = false;
-    [NonSerialized] private T _localValue = default;
-    public bool HasValue => _valueSet;
+    [NonSerialized] private bool _valueSet = false;
+    [NonSerialized] private T _localValue = null;
+    public bool ValueSet { get => _valueSet; set => _valueSet = value; }
     public string UID => _uid;
 
     public T Value
@@ -26,21 +26,16 @@ public class ResyncRef<T> where T : IResyncable
             {
                 return _localValue;
             }
-            else
-            {
-                var val = LevelManager.ResyncHub.GetResync<T>(_uid, out _valueSet);
-                if (_valueSet)
-                {
-                    _localValue = val;
-                }
-                return _localValue;
-            }
+
+            _localValue = (T)LevelManager.ResyncHub.GetResync(_uid, out _valueSet);
+            return _localValue;
+            
         }
         set
         {
             if(value == null)
             {
-                Debug.Log("Null value added to resync ref");
+                _localValue = null;
                 return;
             }
 
@@ -54,11 +49,6 @@ public class ResyncRef<T> where T : IResyncable
         }
     }
 
-    public ResyncRef(T value)
-    {
-        Value = value;
-    }
-
     public ResyncRef(string uid)
     {
         _uid = uid;
@@ -69,6 +59,45 @@ public class ResyncRef<T> where T : IResyncable
         _localValue = default;
     }
 
+    public ResyncRef<T> FreshCopy()
+    {
+        return new(UID);
+    }
+
+}
+public class ResyncHub
+{
+    private Dictionary<string, IResyncable> _resyncDict = new();
+
+    public void RegisterResync(IResyncable obj)
+    {
+        if (string.IsNullOrEmpty(obj.UID))
+        {
+            obj.UID = Guid.NewGuid().ToString();
+            Debug.Log("Generating GUID for resync obj: " + obj.UID);
+        }
+
+        _resyncDict[obj.UID] = obj;
+    }
+
+    public IResyncable GetResync(string uid, out bool valueFound)
+    {
+        if (uid == null || !_resyncDict.ContainsKey(uid))
+        {
+            //Debug.LogWarning($"ResyncHub: No resyncable found for UID {uid}");
+            valueFound = false;
+            return null;
+        }
+
+        var val = _resyncDict[uid];
+
+        if (val == null)
+        {
+            Debug.Log("Null value found in resyncDict for uid " +  uid);
+        }
+        valueFound = val != null;
+        return val;
+    }
 }
 
 

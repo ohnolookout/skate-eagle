@@ -9,11 +9,13 @@ public class SerializedGround : IDeserializable
     public Vector2 position;
     public Quaternion rotation;
     public string name;
+    public string UID;
     public bool isInverted = false;
     public bool hasShadow = true;
     public FloorType floorType;
     public int floorHeight;
     public int floorAngle;
+    public int lastObjCount;
     public List<SerializedGroundSegment> segmentList;
     public List<CurvePoint> curvePoints;
     public List<LinkedCameraTarget> lowTargets;
@@ -27,7 +29,6 @@ public class SerializedGround : IDeserializable
     public ResyncRef<LinkedCameraTarget> leftEndCamTargetRef = new();
     public ResyncRef<LinkedCameraTarget> rightEndCamTargetRef = new();
     public List<ResyncRef<CurvePointEditObject>> zoomPointRefs = new();
-    public List<ResyncRef<LinkedHighPoint>> highTargetRefs = new();
     public List<LinkedHighPoint> highTargets = new();
     public bool IsFloating => floorType == FloorType.Floating;
 
@@ -42,10 +43,12 @@ public class SerializedGround : IDeserializable
         }
 
         name = ground.gameObject.name;
+        UID = ground.UID;
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
+        lastObjCount = ground.lastCPObjCount;
         lowTargets = ground.GetLowTargets();
-        highPoints = ground.HighPoints;
+        highPoints = ground.HighTargets;
 
         manualLeftCamTarget = ground.ManualLeftCamTarget;
         manualRightCamTarget = ground.ManualRightCamTarget;
@@ -59,12 +62,22 @@ public class SerializedGround : IDeserializable
 
         CameraTargetUtility.BuildGroundCameraTargets(ground);
 
-        leftEndCamTargetRef = ground.LeftEndCamTargetRef;
-        rightEndCamTargetRef = ground.RightEndCamTargetRef;
-        leftEndTargetObjRef = ground.LeftEndTargetObjRef;
-        rightEndTargetObjRef = ground.RightEndTargetObjRef;
+        //Make copies of all target refs
+
+        foreach(var cp in curvePoints)
+        {
+            cp.SerializeResyncs();
+        }
+
+        leftEndCamTargetRef = ground.LeftEndCamTargetRef.FreshCopy();
+        rightEndCamTargetRef = ground.RightEndCamTargetRef.FreshCopy();
+        leftEndTargetObjRef = ground.LeftEndTargetObjRef.FreshCopy();
+        rightEndTargetObjRef = ground.RightEndTargetObjRef.FreshCopy();
         zoomPointRefs = ground.ZoomPointRefs;
-        highTargetRefs = ground.HighTargetRefs;
+        foreach(var z in zoomPointRefs)
+        {
+            z.FreshCopy();
+        }
 
         SerializeLevelUtility.SerializeGroundSegments(this);
     }
@@ -140,25 +153,27 @@ public class SerializedGround : IDeserializable
         }
 
         ground.name = name;
+        ground.UID = UID;
         ground.transform.position = position;
         ground.IsInverted = isInverted;
         ground.HasShadow = hasShadow;
         ground.FloorType = floorType;
         ground.StartFloorHeight = floorHeight;
         ground.StartFloorAngle = floorAngle;
+        ground.lastCPObjCount = lastObjCount;
 
         ground.LeftEndCamTargetRef = leftEndCamTargetRef;
         ground.RightEndCamTargetRef = rightEndCamTargetRef;
         ground.LeftEndTargetObjRef = leftEndTargetObjRef;
         ground.RightEndTargetObjRef = rightEndTargetObjRef;
         ground.ZoomPointRefs = zoomPointRefs;
-        ground.HighTargetRefs = highTargetRefs;
 
-        DeserializeRuntimeSegments(groundManager, ground);
+        DeserializeSegments(groundManager, ground);
         ground.LowTargets = lowTargets;
-        ground.HighPoints = highPoints;
+        ground.HighTargets = highPoints;
 
-        if(manualLeftCamTarget != null && manualLeftCamTarget.serializedObjectLocation.Count() > 1)
+        //if(manualLeftCamTarget != null && manualLeftCamTarget.serializedObjectLocation.Count() > 1)
+        if (manualLeftCamTarget != null)
         {
             ground.ManualLeftCamTarget = manualLeftCamTarget;
         }
@@ -167,7 +182,9 @@ public class SerializedGround : IDeserializable
             ground.ManualLeftCamTarget = null;
         }
 
-        if(manualRightCamTarget != null && manualRightCamTarget.serializedObjectLocation.Count() > 1)
+        //if(manualRightCamTarget != null && manualRightCamTarget.serializedObjectLocation.Count() > 1)
+
+        if (manualRightCamTarget != null)
         {
             ground.ManualRightCamTarget = manualRightCamTarget;
         }
@@ -183,14 +200,10 @@ public class SerializedGround : IDeserializable
             ground.SetCurvePoint(curvePoint);
         }
 #endif
-
-
-
-
         return ground;
     }
 
-    public void DeserializeRuntimeSegments(GroundManager groundManager, Ground ground)
+    public void DeserializeSegments(GroundManager groundManager, Ground ground)
     {
         foreach (var serializedSegment in segmentList)
         {

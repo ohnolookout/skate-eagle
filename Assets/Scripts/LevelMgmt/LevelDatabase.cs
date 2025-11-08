@@ -18,6 +18,7 @@ public class LevelDatabase : ScriptableObject
     [SerializeField] private bool _levelIsDirty = false;
     [SerializeField] private bool _levelOrderIsDirty = false;
     private Level _lastLevelLoaded;
+    public bool doCheckOverwrite = true;
     public SerializableDictionaryBase<string, Level> LevelDictionary => _levelDictionary; //Levels stored by UID
     public SerializableDictionaryBase<string, string> NameToUIDDictionary => _nameToUIDDictionary;
     public List<string> LevelOrder => _levelOrder;
@@ -51,11 +52,15 @@ public class LevelDatabase : ScriptableObject
         }
         if (LevelNameExists(level.Name))
         {
-            bool overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Are you sure you want to overwrite {level.Name}?", "Yes", "No");
-            if (!overwrite)
+            if (doCheckOverwrite)
             {
-                return false;
+                bool overwrite = EditorUtility.DisplayDialog("Overwrite Level", $"Are you sure you want to overwrite {level.Name}?", "Yes", "No");
+                if (!overwrite)
+                {
+                    return false;
+                }
             }
+
 
             level.UID = _nameToUIDDictionary[level.Name];
 

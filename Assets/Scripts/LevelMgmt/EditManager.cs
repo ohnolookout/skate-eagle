@@ -93,6 +93,7 @@ public class EditManager : MonoBehaviour
 
         SerializeLevelUtility.DeserializeLevel(level, _groundManager);
         Undo.ClearAll();
+        Debug.Log($"Level {level.Name} loaded");
     }
 
     public void NewLevel(string levelName = "New Level")
@@ -207,9 +208,9 @@ public class EditManager : MonoBehaviour
             var nextCP = ground.CurvePoints[index];
             pos = BezierMath.Lerp(prevCP, nextCP, 0.5f);
             var prevRightTang = (prevCP.RightTangent.magnitude / 2) * prevCP.RightTangent.normalized;
-            prevCP.Object.GetComponent<CurvePointEditObject>().RightTangentChanged(prevCP.Position + prevRightTang);
+            prevCP.CPObject.RightTangentChanged(prevCP.Position + prevRightTang);
             var nextLeftTang = (nextCP.LeftTangent.magnitude / 2) * nextCP.LeftTangent.normalized;
-            nextCP.Object.GetComponent<CurvePointEditObject>().LeftTangentChanged(nextCP.Position + nextLeftTang);
+            nextCP.CPObject.LeftTangentChanged(nextCP.Position + nextLeftTang);
             leftTang = (prevCP.Position - pos) / 4;
             var invertedRightTang = (pos - nextCP.Position) / 4;
             leftTang = (leftTang + invertedRightTang) / 2;

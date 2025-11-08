@@ -8,6 +8,7 @@ using UnityEngine.U2D;
 /// </summary>
 public static class SerializeLevelUtility
 {
+    public static Action OnDeserializationComplete;
     #region Serialization
 
     /// <summary>
@@ -15,10 +16,9 @@ public static class SerializeLevelUtility
     /// </summary>
     public static List<IDeserializable> SerializeGroundManager(GroundManager groundManager, out SerializedStartLine startLine)
     {
+        startLine = null;
         var grounds = groundManager.GetGrounds();
         GenerateGroundIndices(grounds);
-
-        startLine = GetSerializedStartLine(groundManager.StartLine, grounds);
 
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
@@ -27,7 +27,20 @@ public static class SerializeLevelUtility
         foreach (var serializable in serializables)
         {
             serializable.RegisterResync();
-            serializedObjects.Add(serializable.Serialize());
+
+            IDeserializable serializedObj;
+
+            if(serializable.GetType() == typeof(StartLine))
+            {
+                serializedObj = GetSerializedStartLine((StartLine)serializable, grounds);
+                startLine = (SerializedStartLine)serializedObj;
+            }
+            else
+            {
+                serializedObj = serializable.Serialize();
+            }
+
+            serializedObjects.Add(serializedObj);
         }
 
         return serializedObjects;
@@ -75,16 +88,19 @@ public static class SerializeLevelUtility
             {
                 startLine.SetStartLine(grounds[0].CurvePoints[0]);
             }
-        }
 
-        //Get ground associated with startline
-        if(startLine.CurvePoint.Object == null)
+            return (SerializedStartLine)startLine.Serialize();
+        }
+        else if(startLine.CurvePoint.CPObject == null)
         {
             Debug.LogWarning("No object associated with curvepoint for startline.");
             return (SerializedStartLine)startLine.Serialize();
         }
 
-        var transform = startLine.CurvePoint.Object.transform;
+        //Get ground associated with startline
+
+
+        var transform = startLine.CurvePoint.CPObject.transform;
         Ground ground = null;
 
         while (transform.parent != null)
@@ -110,7 +126,7 @@ public static class SerializeLevelUtility
         var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
         var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
         startLine.FirstCameraTarget = leftTarget;
-        startLine.FirstHighPoint = ground.HighPoints.Count > 0 ? ground.HighPoints[0] : null;
+        startLine.FirstHighPoint = ground.HighTargets.Count > 0 ? ground.HighTargets[0] : null;
         var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
         startLine.CamStartPosition = new(xPos - (CameraManager.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
         startLine.CamOrthoSize = camParams.orthoSize;
@@ -311,15 +327,17 @@ public static class SerializeLevelUtility
 
 #if UNITY_EDITOR
 
-        if (Application.isPlaying)
+        if (!Application.isPlaying)
         {
-            return;
+            ResyncObjects(groundManager);
         }
 
         //CameraTargetBuilder.DeserializeCameraTargets(groundManager);
-        ResyncObjects(groundManager);
+
 
 #endif
+        OnDeserializationComplete?.Invoke();
+        OnDeserializationComplete = null;
     }
 
     /// <summary>

@@ -10,7 +10,7 @@ public class LinkedCameraTarget: IResyncable
     [SerializeField] private ResyncRef<LinkedCameraTarget> _prevTargetRef = new();
     [SerializeField] private ResyncRef<LinkedCameraTarget> _nextTargetRef = new();
     [SerializeReference] private List<ResyncRef<LinkedCameraTarget>> _forceZoomTargetRefs = new();
-    [SerializeField] private ResyncRef<ICameraTargetable> _parentObjectRef = new();
+    [SerializeField] private ResyncRef<CurvePointEditObject> _parentObjectRef = new();
 
 
     public bool doLowTarget = false;
@@ -22,7 +22,7 @@ public class LinkedCameraTarget: IResyncable
     public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
     //public Transform targetTransform;
-    public ICameraTargetable _parentObject;
+    public CurvePointEditObject _parentObject;
     public string UID { get; set; }
     public Vector3 Position
     {
@@ -39,9 +39,9 @@ public class LinkedCameraTarget: IResyncable
         }
     }
 
-    public ICameraTargetable ParentObject
+    public CurvePointEditObject ParentObject
     {
-        get => _parentObject;
+        get => _parentObjectRef.Value;
         set
         {
             _parentObject = value;
@@ -51,7 +51,7 @@ public class LinkedCameraTarget: IResyncable
     public List<ResyncRef<LinkedCameraTarget>> ForceZoomTargetRefs { get => _forceZoomTargetRefs; set => _forceZoomTargetRefs = value; }
     public LinkedCameraTarget PrevTarget
     {
-        get => _prevTarget;
+        get => _prevTargetRef.Value;
         set
         {
             _prevTargetRef.Value = value;
@@ -60,7 +60,7 @@ public class LinkedCameraTarget: IResyncable
     }
     public LinkedCameraTarget NextTarget
     {
-        get => _nextTarget;
+        get => _nextTargetRef.Value;
         set
         {
             _nextTargetRef.Value = value;
@@ -85,31 +85,35 @@ public class LinkedCameraTarget: IResyncable
 
         return zoomTargets;
     }
+
+    public void SerializeResyncs()
+    {
+        if (_prevTargetRef != null)
+        {
+            _prevTargetRef = _prevTargetRef.FreshCopy();
+        }
+
+        if (_nextTargetRef != null)
+        {
+            _nextTargetRef = _nextTargetRef.FreshCopy();
+        }
+
+        if (_parentObjectRef != null)
+        {
+            _parentObjectRef = _parentObjectRef.FreshCopy();
+        }
+
+        for (int i = 0; i < _forceZoomTargetRefs.Count; i++)
+        {
+            if (_forceZoomTargetRefs[i] != null)
+            {
+                _forceZoomTargetRefs[i] = _forceZoomTargetRefs[i].FreshCopy();
+            }
+        }
+    }
+
     public void RegisterResync()
     {
-        //if(prevTarget != null)
-        //{
-        //    _prevTargetRef.Value = prevTarget;
-        //}
-        //if (nextTarget != null)
-        //{
-        //    _nextTargetRef.Value = nextTarget;
-        //}
-
-        //if(forceZoomTargets.Count > 0)
-        //{
-        //    _forceZoomTargetRefs = new();
-        //    foreach(var point in forceZoomTargets)
-        //    {
-        //        _forceZoomTargetRefs.Add(new ResyncRef<CurvePoint>(point));
-        //    }
-        //}
-
-        //if(parentObject != null)
-        //{
-        //    _parentObjectRef.Value = parentObject;
-        //}
-
         LevelManager.ResyncHub.RegisterResync(this);
     }
 }

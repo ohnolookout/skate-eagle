@@ -110,6 +110,11 @@ public class LevelDBInspector : Editor
             ResaveAll();
         }
 
+        if (GUILayout.Button("Purge Dead Levels", GUILayout.ExpandWidth(false)))
+        {
+            PurgeDeletedLevels();
+        }
+
 
         //Curve points utility for old ground system
         //if (GUILayout.Button("Populate Curve Points", GUILayout.ExpandWidth(false)))
@@ -179,7 +184,7 @@ public class LevelDBInspector : Editor
         var dictUIDs = _levelDB.LevelDictionary.Keys.ToList();
         foreach (var uid in dictUIDs)
         {
-            if (!_levelDB.NameToUIDDictionary.ContainsKey(_levelDB.LevelDictionary[uid].Name) 
+            if (!_levelDB.NameToUIDDictionary.ContainsKey(_levelDB.LevelDictionary[uid].Name)
                 || !_levelDB.NameToUIDDictionary.ContainsValue(uid))
             {
                 _levelDB.LevelDictionary.Remove(uid);
@@ -303,12 +308,19 @@ public class LevelDBInspector : Editor
     private void ResaveAll()
     {
         var levels = _levelDB.LevelDictionary.Values.ToList();
+        _levelDB.doCheckOverwrite = false;
+        Debug.Log("Resaving levels...");
+
         foreach (var level in levels)
         {
             _editManager.LoadLevel(level);
             _editManager.SaveLevel();
+            Debug.Log($"Level {level.Name} resaved");
         }
+
+        _levelDB.doCheckOverwrite = true;
         EditorUtility.SetDirty(_levelDB);
+        Debug.Log("Resave levels complete.");
     }
 
     private void PopulateGroundCurvePoints()

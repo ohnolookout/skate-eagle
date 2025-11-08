@@ -25,17 +25,17 @@ public class CurvePoint: IResyncable
     [SerializeField] private bool _forceNewSegment;
     [SerializeField] private bool _blockNewSegment;
     [SerializeField] private ResyncRef<CurvePointEditObject> _cpObjectRef = new();
-    [SerializeField] private GameObject _object;
+    [SerializeField] private CurvePointEditObject _cpObject;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     public string UID {get; set;}
 
-    public GameObject Object
+    public CurvePointEditObject CPObject
     {
-        get => _object; 
+        get => _cpObjectRef.Value; 
         set
         {
-            _object = value;
-            _cpObjectRef.Value = value.GetComponent<CurvePointEditObject>();
+            _cpObject = value;
+            _cpObjectRef.Value = value;
         }
     }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
@@ -44,9 +44,9 @@ public class CurvePoint: IResyncable
     {
         get
         {
-            if(_object != null)
+            if(_cpObject != null)
             {
-                return _object.transform.position;
+                return _serializedWorldPosition = _cpObject.transform.position;
             }
 
             return _serializedWorldPosition;
@@ -211,13 +211,6 @@ public class CurvePoint: IResyncable
         return direction * magnitude;
     }
 
-    public void SaveWorldPosition()
-    {
-        if (_object != null)
-        {
-            _serializedWorldPosition = _object.transform.position;
-        }
-    }
 
     public CurvePoint DeepCopy()
     {
@@ -233,20 +226,24 @@ public class CurvePoint: IResyncable
         copy.FloorPosition = _floorPosition;
         copy.ForceNewSegment = _forceNewSegment;
         copy.BlockNewSegment = _blockNewSegment;
-        copy.UID = UID;
+        //copy.UID = UID;
 
         return copy;
 
 
     }
 
+    public void SerializeResyncs()
+    {
+        if (_cpObject != null)
+        {
+            _cpObjectRef = _cpObjectRef.FreshCopy();
+        }
+        _linkedCameraTarget.SerializeResyncs();
+    }
+
     public void RegisterResync()
     {
-        if (_object != null)
-        {
-            _cpObjectRef.Value = _object.GetComponent<CurvePointEditObject>();
-        }
-
         if (_linkedCameraTarget != null)
         {
             _linkedCameraTarget.RegisterResync();

@@ -192,51 +192,5 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     #endregion
 }
-public class ResyncHub
-{
-    private Dictionary<Type, Dictionary<string, IResyncable>> _resyncDict = new();
-
-    public void RegisterResync<T>(T obj) where T : IResyncable
-    {
-        if (string.IsNullOrEmpty(obj.UID))
-        {
-            Debug.Log("Generating UID for resyncable");
-            obj.UID = Guid.NewGuid().ToString();
-        }
-
-        var type = obj.GetType();
-        if (!_resyncDict.ContainsKey(type))
-        {
-            _resyncDict[type] = new Dictionary<string, IResyncable>();
-        }
-
-        _resyncDict[type][obj.UID] = obj;
-    }
-
-    public T GetResync<T>(string uid, out bool valueFound)
-    {
-        var type = typeof(T);
-#if UNITY_EDITOR
-        if (!_resyncDict.ContainsKey(type))
-        {
-            Debug.LogWarning($"ResyncHub: No {type} found for UID {uid}");
-            valueFound = false;
-            return default(T);
-        }
-#endif
-        var val = _resyncDict[type][uid];
-
-#if UNITY_EDITOR
-        if (val == null)
-        {
-            Debug.LogWarning($"ResyncHub: No {type} found for UID {uid}");
-            valueFound = false;
-            return default(T);
-        }
-#endif
-        valueFound = true;
-        return (T)val;
-    }
-}
 
 

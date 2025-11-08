@@ -195,7 +195,7 @@ public class CameraManager : MonoBehaviour
 #if UNITY_EDITOR
         int searchCount = 0;
 #endif
-        Debug.Assert(_prevLeftTarget != null, "CameraManager: Prev left target is null.");
+        //Debug.Assert(_prevLeftTarget != null, "CameraManager: Prev left target is null.");
         while (_prevLeftTarget != null && _currentLeftTarget.Position.x > xPos)
         {
 #if UNITY_EDITOR
@@ -208,7 +208,7 @@ public class CameraManager : MonoBehaviour
             AssignPrevAndNextTargets(_currentLeftTarget, _prevLeftTarget, false);
         }
 
-        Debug.Assert(_nextLeftTarget != null, "CameraManager: Next left target is null.");
+        //Debug.Assert(_nextLeftTarget != null, "CameraManager: Next left target is null.");
 
         while (_nextLeftTarget != null && xPos > _nextLeftTarget.Position.x)
         {
@@ -390,7 +390,6 @@ public class CameraManager : MonoBehaviour
         if (moveRight)
         {
             _prevLeftTarget = currentTarget;
-            Debug.Log("Prev left target assigned to current target. New prev left target: " + _prevLeftTarget);
             if (newTarget.NextTarget != null)
             {
                 _nextLeftTarget = newTarget.NextTarget;
@@ -459,7 +458,6 @@ public class CameraManager : MonoBehaviour
         else
         {
             var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
-            Debug.Log($"Index of current left target in ground low targets: {currentIndex}");
             if (currentIndex > 0)
             {
                 _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];

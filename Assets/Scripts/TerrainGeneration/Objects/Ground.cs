@@ -32,7 +32,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     private ResyncRef<LinkedCameraTarget> _leftEndCamTargetRef = new();
     private ResyncRef<LinkedCameraTarget> _rightEndCamTargetRef = new();
     private List<ResyncRef<CurvePointEditObject>> _zoomPointRefs = new();
-    private List<ResyncRef<LinkedHighPoint>> _highTargetRefs = new();
     private List<LinkedHighPoint> _highTargets = new();
     private FloorType _floorType = FloorType.Flat;
     public GameObject curvePointContainer;
@@ -48,22 +47,16 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public GroundSegment LastSegment => _segmentList.Count > 0 ? _segmentList[^1] : null;
     public List<CurvePoint> CurvePoints {  get => _curvePoints; set => _curvePoints = value; }
     public List<LinkedCameraTarget> LowTargets { get => _lowTargets; set => _lowTargets = value; }
-    public List<LinkedHighPoint> HighPoints 
-    { 
-        get => _highTargets;
-        set
-        {
-            _highTargetRefs = new();
-            foreach(var highPoint in value)
-            {
-                _highTargetRefs.Add(new(highPoint));
-            }
-            _highTargets = value;
-        }
-    }
+    public List<LinkedHighPoint> HighTargets { get => _highTargets; set => _highTargets = value; }
     public CurvePointEditObject ManualLeftTargetObj 
-    { 
-        get => _manualLeftTargetObj;
+    {
+        get
+        {
+            return _leftEndTargetObjRef.Value;
+            var checkVal = _leftEndTargetObjRef.Value;
+            Debug.Assert(checkVal != null, "Left end curveobjectref not found for " + name);
+            return _manualLeftTargetObj;
+        }
         set
         {
             _leftEndTargetObjRef.Value = value;
@@ -71,8 +64,14 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         }
     }
     public CurvePointEditObject ManualRightTargetObj 
-    { 
-        get => _manualRightTargetObj;
+    {
+        get
+        {
+            return _rightEndTargetObjRef.Value;
+            var checkVal = _rightEndTargetObjRef.Value;
+            Debug.Assert(checkVal != null, "Right end curveobjectref not found for " + name);
+            return _manualRightTargetObj;
+        }
         set
         {
             _rightEndTargetObjRef.Value = value;
@@ -82,14 +81,19 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
     public GameObject GameObject => gameObject;
     public LinkedCameraTarget ManualLeftCamTarget {
-        get 
+        //get
+        get
         {
-            if(ManualLeftTargetObj != null)
+            if (ManualLeftTargetObj != null)
             {
                 _manualLeftCamTarget = ManualLeftTargetObj.LinkedCameraTarget;
+                _leftEndCamTargetRef.Value = ManualLeftTargetObj.LinkedCameraTarget;
+                return _leftEndCamTargetRef.Value;
                 return _manualLeftCamTarget;
-            } else
+            }
+            else
             {
+                return _leftEndCamTargetRef.Value;
                 return _manualLeftCamTarget;
             }
         }
@@ -106,10 +110,13 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
             if (ManualRightTargetObj != null)
             {
                 _manualRightCamTarget = ManualRightTargetObj.LinkedCameraTarget;
+                _rightEndCamTargetRef.Value = ManualRightTargetObj.LinkedCameraTarget;
+                return _rightEndCamTargetRef.Value;
                 return _manualRightCamTarget;
             }
             else
             {
+                return _rightEndCamTargetRef.Value;
                 return _manualRightCamTarget;
             }
         }
@@ -209,7 +216,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public ResyncRef<LinkedCameraTarget> LeftEndCamTargetRef { get => _leftEndCamTargetRef; set => _leftEndCamTargetRef = value; }
     public ResyncRef<LinkedCameraTarget> RightEndCamTargetRef { get => _rightEndCamTargetRef; set => _rightEndCamTargetRef = value; }
     public List<ResyncRef<CurvePointEditObject>> ZoomPointRefs { get => _zoomPointRefs; set => _zoomPointRefs = value; }
-    public List<ResyncRef<LinkedHighPoint>> HighTargetRefs { get => _highTargetRefs; set => _highTargetRefs = value; }
     #endregion
 
     public IDeserializable Serialize()
@@ -237,7 +243,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
 
         pointObject.SetCurvePoint(curvePoint);
 
-
         return pointObject;
     }
 
@@ -247,6 +252,8 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
 
     public List<ObjectResync> GetObjectResyncs()
     {
+
+        return new();
         List<ObjectResync> resyncs = new();
 
         if (ManualLeftCamTarget != null)
@@ -309,7 +316,7 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     public void Refresh(GroundManager groundManager)
     {
 #if UNITY_EDITOR
-        _curvePoints = _curvePoints.Where( cp => cp.Object != null).ToList();
+        _curvePoints = _curvePoints.Where( cp => cp.CPObject != null).ToList();
         _lowTargets = GetLowTargets();
         var serializedGround = (SerializedGround)Serialize();
 
@@ -320,7 +327,7 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
 
         _segmentList = new();
 
-        serializedGround.DeserializeRuntimeSegments(groundManager, this);
+        serializedGround.DeserializeSegments(groundManager, this);
         lastCPObjCount = curvePointContainer.transform.childCount;
 #endif
     }

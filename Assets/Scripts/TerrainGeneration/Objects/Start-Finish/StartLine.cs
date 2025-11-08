@@ -12,7 +12,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     private LinkedHighPoint _firstHighPoint;
     private ResyncRef<CurvePoint> _curvePointRef = new();
     private ResyncRef<LinkedCameraTarget> _firstCamTargetRef = new();
-    private ResyncRef<LinkedHighPoint> _firstHighPointRef = new();
     public string UID { get; set; }
 
     public Vector3 StartPosition => _curvePoint.WorldPosition;
@@ -21,7 +20,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
     public CurvePoint CurvePoint
     {
-        get => _curvePoint;
+        get => _curvePointRef.Value;
         set
         {
             _curvePointRef.Value = value;
@@ -33,26 +32,16 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     public float CamOrthoSize { get => _camOrthoSize; set => _camOrthoSize = value; }
     public LinkedCameraTarget FirstCameraTarget
     {
-        get => _firstCameraTarget;
+        get => _firstCamTargetRef.Value;
         set
         {
             _firstCamTargetRef.Value = value;
             _firstCameraTarget = value;
         }
     }
-    public LinkedHighPoint FirstHighPoint
-    {
-        get => _firstHighPoint;
-        set
-        {
-            _firstHighPointRef.Value = value;
-            _firstHighPoint = value;
-        }
-    }
-
+    public LinkedHighPoint FirstHighPoint { get => _firstHighPoint; set => _firstHighPoint = value; }
     public ResyncRef<CurvePoint> CurvePointRef { get => _curvePointRef; set => _curvePointRef = value; }
     public ResyncRef<LinkedCameraTarget> FirstCamTargetRef { get => _firstCamTargetRef; set => _firstCamTargetRef = value; }
-    public ResyncRef<LinkedHighPoint> FirstHighPointRef { get => _firstHighPointRef; set => _firstHighPointRef = value; }
 
     private void OnDrawGizmosSelected()
     {
@@ -70,7 +59,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _firstHighPoint = serializedStartLine.FirstHighPoint;
         _curvePointRef = serializedStartLine.curvePointRef;
         _firstCamTargetRef = serializedStartLine.firstCameraTargetRef;
-        _firstHighPointRef = serializedStartLine.firstHighPointRef;
+        UID = serializedStartLine.uid;
     }
 
     public void SetStartLine(CurvePoint startPoint, float xOffset = 0)
@@ -89,14 +78,14 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         if (_curvePoint != null)
         {
             var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { _curvePoint.Object = obj; };
+            resync.resyncFunc = (obj) => { _curvePoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
             resyncs.Add(resync);
         }
 
         if (FirstCameraTarget != null)
         {
             var resync = new ObjectResync(FirstCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FirstCameraTarget.ParentObject = obj.GetComponent<ICameraTargetable>(); };
+            resync.resyncFunc = (obj) => { FirstCameraTarget.ParentObject = obj.GetComponent<CurvePointEditObject>(); };
             resyncs.Add(resync);
         }
 
@@ -122,12 +111,12 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
     public bool IsParentGround(GameObject obj)
     {
-        if (_curvePoint.Object == null)
+        if (_curvePoint.CPObject == null)
         {
             return false;
         }
 
-        var cpObj = _curvePoint.Object.GetComponent<CurvePointEditObject>();
+        var cpObj = _curvePoint.CPObject;
         return obj.GetComponent<Ground>() == cpObj.ParentGround;
     }
 
@@ -135,18 +124,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void RegisterResync()
     {
-        if(_curvePoint != null)
-        {
-            _curvePointRef.Value = _curvePoint;
-        }
-        if(_firstCameraTarget != null)
-        {
-            _firstCamTargetRef.Value = _firstCameraTarget;
-        }
-        if(_firstHighPoint != null)
-        {
-            _firstHighPointRef.Value = _firstHighPoint;
-        }
         LevelManager.ResyncHub.RegisterResync(this);
     }
 }

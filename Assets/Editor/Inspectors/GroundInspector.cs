@@ -281,7 +281,7 @@ public class GroundInspector : Editor
                 CurvePointObjectInspector.DrawTargetInfo(lowPoint);
             }
 
-            foreach (var highPoint in ground.HighPoints)
+            foreach (var highPoint in ground.HighTargets)
             {
                 Handles.color = Color.magenta;
                 Handles.SphereHandleCap(0, highPoint.position, Quaternion.identity, 2f, EventType.Repaint);

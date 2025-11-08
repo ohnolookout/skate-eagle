@@ -13,11 +13,11 @@ public class SerializedStartLine : IDeserializable
     [SerializeField] private LinkedHighPoint _firstHighPoint;
     public ResyncRef<CurvePoint> curvePointRef = new();
     public ResyncRef<LinkedCameraTarget> firstCameraTargetRef = new();
-    public ResyncRef<LinkedHighPoint> firstHighPointRef = new();
+    public string uid;
 
     public Vector3 StartPosition => _curvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(xOffset, 0, 0);
-    public CurvePoint CurvePoint => _curvePoint;
+    public CurvePoint CurvePoint => curvePointRef.Value;
     public Vector3 CamStartPosition => _camStartPosition;
     public float CamOrthoSize => _camOrthoSize;
     public LinkedCameraTarget FirstCameraTarget => _firstCameraTarget;
@@ -27,15 +27,13 @@ public class SerializedStartLine : IDeserializable
     {
         xOffset = startLine.XOffset;
         _curvePoint = startLine.CurvePoint;
-        _curvePoint.SaveWorldPosition();
         _camStartPosition = startLine.CamStartPosition;
         _camOrthoSize = startLine.CamOrthoSize;
         _firstCameraTarget = startLine.FirstCameraTarget;
         _firstHighPoint = startLine.FirstHighPoint;
-        curvePointRef = startLine.CurvePointRef;
-        firstCameraTargetRef = startLine.FirstCamTargetRef;
-        firstHighPointRef = startLine.FirstHighPointRef;
-
+        curvePointRef = startLine.CurvePointRef.FreshCopy();
+        firstCameraTargetRef = startLine.FirstCamTargetRef.FreshCopy();
+        uid = startLine.UID;
     }
 
     public ISerializable Deserialize(GameObject targetObject, GameObject contextObject)

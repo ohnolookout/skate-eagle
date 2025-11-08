@@ -48,6 +48,7 @@ public static class CameraTargetUtility
         }
         return (camBottomY, orthoSize);
 
+
     }
 
     #endregion
@@ -121,7 +122,7 @@ public static class CameraTargetUtility
             }
         }
 
-        ground.HighPoints = BuildHighPointList(ground);
+        ground.HighTargets = BuildHighPointList(ground);
 
     }
 
