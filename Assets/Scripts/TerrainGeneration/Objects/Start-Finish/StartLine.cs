@@ -67,12 +67,13 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
         Undo.RecordObject(this, "Set Start Point");
 #endif
-        _curvePoint = startPoint;
+        CurvePoint = startPoint;
         _xOffset = xOffset;
     }
 
     public List<ObjectResync> GetObjectResyncs()
     {
+        return new();
         List<ObjectResync> resyncs = new();
 
         if (_curvePoint != null)
