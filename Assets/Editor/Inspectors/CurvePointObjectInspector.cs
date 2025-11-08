@@ -368,6 +368,7 @@ public class CurvePointObjectInspector : Editor
         GUI.backgroundColor = Color.lightGreen;
         if (GUILayout.Button("Start", GUILayout.ExpandWidth(true)))
         {
+            Debug.Log("Startpoint set to " + _curvePointObject.name);
             _groundManager.StartLine.SetStartLine(_curvePointObject.CurvePoint);
         }
 
@@ -375,11 +376,13 @@ public class CurvePointObjectInspector : Editor
         if (GUILayout.Button("Finish", GUILayout.ExpandWidth(true)))
         {
             _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
+            Debug.Log("Flagpoint set to " + _curvePointObject.name);
 
             var nextCurvePoint = NextCurvePoint(_curvePointObject);
             if (nextCurvePoint != null)
             {
                 _groundManager.FinishLine.SetBackstopPoint(nextCurvePoint.CurvePoint);
+                Debug.Log("Backstop point set to " + nextCurvePoint.name);
             }
             else
             {
@@ -391,12 +394,15 @@ public class CurvePointObjectInspector : Editor
         if (GUILayout.Button("Flag", GUILayout.ExpandWidth(true)))
         {
             _groundManager.FinishLine.SetFlagPoint(_curvePointObject.CurvePoint);
+            Debug.Log("Flagpoint set to " + _curvePointObject.name);
         }
 
         if (GUILayout.Button("Backstop", GUILayout.ExpandWidth(true)))
         {
             _groundManager.FinishLine.SetBackstopPoint(_curvePointObject.CurvePoint);
+            Debug.Log("Backstop point set to " + _curvePointObject.name);
         }
+
         GUI.backgroundColor = originalColor;
 
         GUILayout.EndHorizontal();

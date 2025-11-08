@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class CurvePointEditObject : MonoBehaviour, ICameraTargetable, IObjectResync, IResyncable //Add CurvePointResync for LinkedTarget left and right targets
+public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
 {
     #region Declarations
     private Ground _parentGround;

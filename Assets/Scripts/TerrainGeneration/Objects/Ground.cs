@@ -12,7 +12,7 @@ public enum FloorType
     Floating
 }
 
-public class Ground : MonoBehaviour, ISerializable, IObjectResync
+public class Ground : MonoBehaviour, ISerializable
 {
     #region Declarations
     [SerializeField] private List<GroundSegment> _segmentList;
@@ -23,10 +23,6 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private GameObject _curvePointEditObjectPrefab;    
     [SerializeField] private List<CurvePoint> _curvePoints = new();
     private List<LinkedCameraTarget> _lowTargets = new();
-    private CurvePointEditObject _manualLeftTargetObj;
-    private CurvePointEditObject _manualRightTargetObj;
-    private LinkedCameraTarget _manualLeftCamTarget;
-    private LinkedCameraTarget _manualRightCamTarget;
     private ResyncRef<CurvePointEditObject> _leftEndTargetObjRef = new();
     private ResyncRef<CurvePointEditObject> _rightEndTargetObjRef = new();
     private ResyncRef<LinkedCameraTarget> _leftEndCamTargetRef = new();
@@ -53,14 +49,10 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         get
         {
             return _leftEndTargetObjRef.Value;
-            var checkVal = _leftEndTargetObjRef.Value;
-            Debug.Assert(checkVal != null, "Left end curveobjectref not found for " + name);
-            return _manualLeftTargetObj;
         }
         set
         {
             _leftEndTargetObjRef.Value = value;
-            _manualLeftTargetObj = value;
         }
     }
     public CurvePointEditObject ManualRightTargetObj 
@@ -68,14 +60,10 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         get
         {
             return _rightEndTargetObjRef.Value;
-            var checkVal = _rightEndTargetObjRef.Value;
-            Debug.Assert(checkVal != null, "Right end curveobjectref not found for " + name);
-            return _manualRightTargetObj;
         }
         set
         {
             _rightEndTargetObjRef.Value = value;
-            _manualRightTargetObj = value;
         }
     }
     public CurvePointEditObject[] CurvePointObjects => curvePointContainer.GetComponentsInChildren<CurvePointEditObject>();
@@ -86,20 +74,16 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         {
             if (ManualLeftTargetObj != null)
             {
-                _manualLeftCamTarget = ManualLeftTargetObj.LinkedCameraTarget;
                 _leftEndCamTargetRef.Value = ManualLeftTargetObj.LinkedCameraTarget;
                 return _leftEndCamTargetRef.Value;
-                return _manualLeftCamTarget;
             }
             else
             {
                 return _leftEndCamTargetRef.Value;
-                return _manualLeftCamTarget;
             }
         }
         set
         {
-            _manualLeftCamTarget = value;
             _leftEndCamTargetRef.Value = value;
         }
     }
@@ -109,21 +93,17 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
         {
             if (ManualRightTargetObj != null)
             {
-                _manualRightCamTarget = ManualRightTargetObj.LinkedCameraTarget;
                 _rightEndCamTargetRef.Value = ManualRightTargetObj.LinkedCameraTarget;
                 return _rightEndCamTargetRef.Value;
-                return _manualRightCamTarget;
             }
             else
             {
                 return _rightEndCamTargetRef.Value;
-                return _manualRightCamTarget;
             }
         }
         set
         {
             _rightEndCamTargetRef.Value = value;
-            _manualRightCamTarget = value;
         }
     }
     public int StartFloorHeight
@@ -254,30 +234,30 @@ public class Ground : MonoBehaviour, ISerializable, IObjectResync
     {
 
         return new();
-        List<ObjectResync> resyncs = new();
+        //List<ObjectResync> resyncs = new();
 
-        if (ManualLeftCamTarget != null)
-        {
-            var leftResync = new ObjectResync(ManualLeftCamTarget.serializedObjectLocation);
-            leftResync.resyncFunc = (obj) =>
-            {
-                ManualLeftTargetObj = obj.GetComponent<CurvePointEditObject>();
-            };
+        //if (ManualLeftCamTarget != null)
+        //{
+        //    var leftResync = new ObjectResync(ManualLeftCamTarget.serializedObjectLocation);
+        //    leftResync.resyncFunc = (obj) =>
+        //    {
+        //        ManualLeftTargetObj = obj.GetComponent<CurvePointEditObject>();
+        //    };
 
-            resyncs.Add(leftResync);
-        }
+        //    resyncs.Add(leftResync);
+        //}
 
-        if (ManualRightCamTarget != null)
-        {
-            var rightResync = new ObjectResync(ManualRightCamTarget.serializedObjectLocation);
-            rightResync.resyncFunc = (obj) =>
-            {
-                ManualRightTargetObj = obj.GetComponent<CurvePointEditObject>();
-            };
-            resyncs.Add(rightResync);
-        }
+        //if (ManualRightCamTarget != null)
+        //{
+        //    var rightResync = new ObjectResync(ManualRightCamTarget.serializedObjectLocation);
+        //    rightResync.resyncFunc = (obj) =>
+        //    {
+        //        ManualRightTargetObj = obj.GetComponent<CurvePointEditObject>();
+        //    };
+        //    resyncs.Add(rightResync);
+        //}
 
-        return resyncs;
+        //return resyncs;
     }
 
     #endregion

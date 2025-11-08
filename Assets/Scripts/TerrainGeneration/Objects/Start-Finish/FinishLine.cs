@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
+public class FinishLine : MonoBehaviour, ISerializable
 {
     #region Declarations
     [SerializeField] private GameObject _flag;
@@ -11,8 +11,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     [SerializeField] private GameObject _backstop;
     private ResyncRef<CurvePoint> _flagPointRef = new();
     private ResyncRef<CurvePoint> _backstopPointRef = new();
-    private CurvePoint _flagPoint;
-    private CurvePoint _backstopPoint;
     private int _flagXOffset = 50;
     private int _backstopXOffset = 0;
     private bool _backstopIsActive;
@@ -32,7 +30,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         get => _flagPointRef.Value;
         set
         {
-            _flagPoint = value;
             _flagPointRef.Value = value;
         }
     }
@@ -41,7 +38,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
         get => _backstopPointRef.Value;
         set
         {
-            _backstopPoint = value;
             _backstopPointRef.Value = value;
         }
     }
@@ -172,27 +168,6 @@ public class FinishLine : MonoBehaviour, ISerializable, IObjectResync
     public IDeserializable Serialize()
     {
         return new SerializedFinishLine(this);
-    }
-
-    public List<ObjectResync> GetObjectResyncs()
-    {
-        return new();
-        List<ObjectResync> resyncs = new();
-        if (FlagPoint != null)
-        {
-            var resync = new ObjectResync(FlagPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FlagPoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
-            resyncs.Add(resync);
-        }
-
-        if (_backstop != null)
-        {
-            var resync = new ObjectResync(BackstopPoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { BackstopPoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
-            resyncs.Add(resync);
-        }
-
-        return resyncs;
     }
 
     public void Refresh(GroundManager _ = null)

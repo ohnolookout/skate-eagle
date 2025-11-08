@@ -25,7 +25,6 @@ public class CurvePoint: IResyncable
     [SerializeField] private bool _forceNewSegment;
     [SerializeField] private bool _blockNewSegment;
     [SerializeField] private ResyncRef<CurvePointEditObject> _cpObjectRef = new();
-    [SerializeField] private CurvePointEditObject _cpObject;
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     public string UID {get; set;}
 
@@ -34,7 +33,6 @@ public class CurvePoint: IResyncable
         get => _cpObjectRef.Value; 
         set
         {
-            _cpObject = value;
             _cpObjectRef.Value = value;
         }
     }
@@ -44,9 +42,9 @@ public class CurvePoint: IResyncable
     {
         get
         {
-            if(_cpObject != null)
+            if(CPObject != null)
             {
-                return _serializedWorldPosition = _cpObject.transform.position;
+                return _serializedWorldPosition = CPObject.transform.position;
             }
 
             return _serializedWorldPosition;
@@ -226,7 +224,6 @@ public class CurvePoint: IResyncable
         copy.FloorPosition = _floorPosition;
         copy.ForceNewSegment = _forceNewSegment;
         copy.BlockNewSegment = _blockNewSegment;
-        //copy.UID = UID;
 
         return copy;
 
@@ -235,7 +232,7 @@ public class CurvePoint: IResyncable
 
     public void SerializeResyncs()
     {
-        if (_cpObject != null)
+        if (_cpObjectRef != null)
         {
             _cpObjectRef = _cpObjectRef.FreshCopy();
         }

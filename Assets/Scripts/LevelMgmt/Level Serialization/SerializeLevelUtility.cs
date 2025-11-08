@@ -325,17 +325,6 @@ public static class SerializeLevelUtility
             ProcessSerializedObject(serializedObject, groundManager);
         }
 
-#if UNITY_EDITOR
-
-        if (!Application.isPlaying)
-        {
-            ResyncObjects(groundManager);
-        }
-
-        //CameraTargetBuilder.DeserializeCameraTargets(groundManager);
-
-
-#endif
         OnDeserializationComplete?.Invoke();
         OnDeserializationComplete = null;
     }
@@ -408,38 +397,6 @@ public static class SerializeLevelUtility
     {
         var groundLocalzedPosition = (segment.position + curvePoint.Position) - (Vector3)ground.position;
         return new CurvePoint(groundLocalzedPosition, curvePoint.LeftTangent, curvePoint.RightTangent);
-    }
-
-    /// <summary>
-    /// Resynchronizes objects that implement IObjectResync by invoking their resync functions.
-    /// </summary>
-    private static void ResyncObjects(GroundManager groundManager)
-    {
-        var iResyncObjects = groundManager.GetComponentsInChildren<IObjectResync>();
-
-        List<ObjectResync> objectResyncs = new();
-        foreach (var resyncObject in iResyncObjects)
-        {
-            var resyncs = resyncObject.GetObjectResyncs();
-            if (resyncs != null && resyncs.Count > 0)
-            {
-                objectResyncs.AddRange(resyncs);
-            }
-        }
-
-        foreach (var resync in objectResyncs)
-        {
-            var gameObject = groundManager.GetGameObjectByIndices(resync.serializedLocation);
-
-            if (gameObject != null)
-            {
-                resync.resyncFunc(gameObject);         
-            }
-            else
-            {
-                Debug.Log($"Gameobject is null. Resync failed.");
-            }
-        }
     }
 
     #endregion

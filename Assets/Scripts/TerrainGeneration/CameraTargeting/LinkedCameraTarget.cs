@@ -5,8 +5,6 @@ using UnityEngine;
 [Serializable]
 public class LinkedCameraTarget: IResyncable
 {
-    [SerializeReference] public LinkedCameraTarget _prevTarget;
-    [SerializeReference] public LinkedCameraTarget _nextTarget;
     [SerializeField] private ResyncRef<LinkedCameraTarget> _prevTargetRef = new();
     [SerializeField] private ResyncRef<LinkedCameraTarget> _nextTargetRef = new();
     [SerializeReference] private List<ResyncRef<LinkedCameraTarget>> _forceZoomTargetRefs = new();
@@ -21,7 +19,6 @@ public class LinkedCameraTarget: IResyncable
     public bool doUseManualOrthoSize = false;
     public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
-    //public Transform targetTransform;
     public CurvePointEditObject _parentObject;
     public string UID { get; set; }
     public Vector3 Position
@@ -55,7 +52,6 @@ public class LinkedCameraTarget: IResyncable
         set
         {
             _prevTargetRef.Value = value;
-            _prevTarget = value;
         }
     }
     public LinkedCameraTarget NextTarget
@@ -64,7 +60,6 @@ public class LinkedCameraTarget: IResyncable
         set
         {
             _nextTargetRef.Value = value;
-            _nextTarget = value;
         }
     }
 

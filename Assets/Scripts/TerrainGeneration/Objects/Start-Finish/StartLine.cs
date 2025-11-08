@@ -2,19 +2,17 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class StartLine : MonoBehaviour, ISerializable, IObjectResync
+public class StartLine : MonoBehaviour, ISerializable
 {
-    [SerializeField] private CurvePoint _curvePoint;
     [SerializeField] private float _xOffset = 0;
     [SerializeField] private Vector3 _camStartPosition = new();
     [SerializeField] private float _camOrthoSize = 50;
-    private LinkedCameraTarget _firstCameraTarget;
     private LinkedHighPoint _firstHighPoint;
     private ResyncRef<CurvePoint> _curvePointRef = new();
     private ResyncRef<LinkedCameraTarget> _firstCamTargetRef = new();
     public string UID { get; set; }
 
-    public Vector3 StartPosition => _curvePoint.WorldPosition;
+    public Vector3 StartPosition => CurvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(_xOffset, 0, 0);
     public GameObject GameObject => gameObject;
 
@@ -24,7 +22,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         set
         {
             _curvePointRef.Value = value;
-            _curvePoint = value;
         }
     }
     public float XOffset { get => _xOffset; set => _xOffset = value; }
@@ -36,7 +33,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         set
         {
             _firstCamTargetRef.Value = value;
-            _firstCameraTarget = value;
         }
     }
     public LinkedHighPoint FirstHighPoint { get => _firstHighPoint; set => _firstHighPoint = value; }
@@ -46,19 +42,17 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(_curvePoint.WorldPosition + new Vector3(XOffset, 0), 2f);
+        Gizmos.DrawSphere(CurvePoint.WorldPosition + new Vector3(XOffset, 0), 2f);
     }
 
     public void SetStartLine(SerializedStartLine serializedStartLine)
     {
         _xOffset = serializedStartLine.xOffset;
-        _curvePoint = serializedStartLine.CurvePoint;
         _camStartPosition = serializedStartLine.CamStartPosition;
         _camOrthoSize = serializedStartLine.CamOrthoSize;
-        _firstCameraTarget = serializedStartLine.FirstCameraTarget;
         _firstHighPoint = serializedStartLine.FirstHighPoint;
-        _curvePointRef = serializedStartLine.curvePointRef;
-        _firstCamTargetRef = serializedStartLine.firstCameraTargetRef;
+        CurvePointRef = serializedStartLine.curvePointRef;
+        FirstCamTargetRef = serializedStartLine.firstCameraTargetRef;
         UID = serializedStartLine.uid;
     }
 
@@ -71,28 +65,6 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
         _xOffset = xOffset;
     }
 
-    public List<ObjectResync> GetObjectResyncs()
-    {
-        return new();
-        List<ObjectResync> resyncs = new();
-
-        if (_curvePoint != null)
-        {
-            var resync = new ObjectResync(_curvePoint.LinkedCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { _curvePoint.CPObject = obj.GetComponent<CurvePointEditObject>(); };
-            resyncs.Add(resync);
-        }
-
-        if (FirstCameraTarget != null)
-        {
-            var resync = new ObjectResync(FirstCameraTarget.serializedObjectLocation);
-            resync.resyncFunc = (obj) => { FirstCameraTarget.ParentObject = obj.GetComponent<CurvePointEditObject>(); };
-            resyncs.Add(resync);
-        }
-
-        return resyncs;
-    }
-
     public IDeserializable Serialize()
     {
         return new SerializedStartLine(this);
@@ -100,7 +72,7 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 
     public void Clear()
     {
-        _curvePoint = null;
+        CurvePoint = null;
         _xOffset = 0;
     }
 
@@ -112,12 +84,12 @@ public class StartLine : MonoBehaviour, ISerializable, IObjectResync
 #if UNITY_EDITOR
     public bool IsParentGround(GameObject obj)
     {
-        if (_curvePoint.CPObject == null)
+        if (CurvePoint == null || CurvePoint.CPObject == null)
         {
             return false;
         }
 
-        var cpObj = _curvePoint.CPObject;
+        var cpObj = CurvePoint.CPObject;
         return obj.GetComponent<Ground>() == cpObj.ParentGround;
     }
 
