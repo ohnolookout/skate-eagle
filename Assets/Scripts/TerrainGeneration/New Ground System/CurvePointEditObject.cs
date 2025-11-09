@@ -82,7 +82,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
         curvePoint.CPObject = this; // Set the object reference in the CurvePoint
         transform.position = curvePoint.Position + ParentGround.transform.position;
         AddObjectToTarget();
-        curvePoint.RegisterResync();
         RegisterResync();
     }
 
@@ -155,8 +154,8 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
     #region Targeting
     public void AddObjectToTarget()
     {
-        LinkedCameraTarget.SerializedPosition = transform.position;
-        LinkedCameraTarget.ParentObject = this;
+        //LinkedCameraTarget.SerializedPosition = transform.position;
+        //LinkedCameraTarget.ParentObject = this;
     }
 
     public List<ObjectResync> GetObjectResyncs()

@@ -19,7 +19,7 @@ public class LinkedCameraTarget: IResyncable
     public bool doUseManualOrthoSize = false;
     public float manualOrthoSize = 0f;
     public int[] serializedObjectLocation;
-    public CurvePointEditObject _parentObject;
+    [field: SerializeField]
     public string UID { get; set; }
     public Vector3 Position
     {
@@ -41,7 +41,6 @@ public class LinkedCameraTarget: IResyncable
         get => _parentObjectRef.Value;
         set
         {
-            _parentObject = value;
             _parentObjectRef.Value = value;
         }
     }

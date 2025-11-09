@@ -46,6 +46,11 @@ public class ResyncRef<T> where T : class, IResyncable
             _valueSet = true;
             _localValue = value;
             _uid = value.UID;
+
+            if(value.GetType() == typeof(CurvePoint))
+            {
+                Debug.Log($"CP uid set: " + _uid);
+            }
         }
     }
 

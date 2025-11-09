@@ -88,10 +88,7 @@ public class LevelDatabase : ScriptableObject
             MedalTimes = levelToCopy.MedalTimes,
             SerializedObjects = levelToCopy.SerializedObjects,
             LeaderboardKey = levelToCopy.LeaderboardKey,
-            //CameraStartPosition = levelToCopy.CameraStartPosition,
             KillPlaneY = levelToCopy.KillPlaneY,
-            //StartTarget = levelToCopy.StartTarget,
-            //RootCameraTarget = levelToCopy.RootCameraTarget
         };
 
         if (UIDExists(copiedLevel.UID))

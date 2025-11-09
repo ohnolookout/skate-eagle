@@ -26,8 +26,8 @@ public class CurvePoint: IResyncable
     [SerializeField] private bool _blockNewSegment;
     [SerializeField] private ResyncRef<CurvePointEditObject> _cpObjectRef = new();
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
+    [field: SerializeField]
     public string UID {get; set;}
-
     public CurvePointEditObject CPObject
     {
         get => _cpObjectRef.Value; 
