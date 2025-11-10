@@ -2,6 +2,10 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.Events;
+using Mono.Cecil;
+using System.Linq;
 
 [CustomEditor(typeof(Ground))]
 public class GroundInspector : Editor
@@ -12,14 +16,18 @@ public class GroundInspector : Editor
     private bool _controlHeld = false;
     private bool _altHeld = false;
     private bool _aHeld = false;
+    private bool _cHeld = false;
     private bool _showCPTransform = true;
-    public static GUIContent rightTargetButton = new GUIContent("R", "Add/Remove Right Target");
-    public static GUIContent leftTargetButton = new GUIContent("L", "Add/Remove Left Target");
+    public static GUIContent rightTargetButton = new GUIContent("R", "Add/Remove Right End Target");
+    public static GUIContent leftTargetButton = new GUIContent("L", "Add/Remove Left End Target");
     public static GUIContent zoomTargetButton = new GUIContent("Z", "Add/Remove Zoom Target");
     public static GUIContent doHighButton = new GUIContent("/\\", "Set High Target");
     public static GUIContent doLowButton = new GUIContent("\\/", "Set Low Target");
     public static GUIContent selectButton = new GUIContent("S", "Select Curve Point");
     public static GUIStyle buttonStyle = new GUIStyle();
+
+    private const int _rectWidth = 20;
+    private const int _rectHeight = 20;
     public override void OnInspectorGUI()
     {
         if (_editManager == null)
@@ -240,6 +248,14 @@ public class GroundInspector : Editor
         {
             _aHeld = false;
         }
+        if (Event.current.keyCode == KeyCode.C && Event.current.type == EventType.KeyDown)
+        {
+            _cHeld = true;
+        }
+        else if (Event.current.keyCode == KeyCode.C && Event.current.type == EventType.KeyUp)
+        {
+            _cHeld = false;
+        }
 
         if (_editManager == null)
         {
@@ -268,17 +284,9 @@ public class GroundInspector : Editor
 
         if (_aHeld)
         {
-            foreach (var cpObj in ground.CurvePointObjects)
-            {
-                if (TargetButtons(cpObj))
-                {
-                    CameraTargetUtility.BuildGroundCameraTargets(ground);
-                }
-            }
-
             foreach(var lowPoint in ground.LowTargets)
             {
-                CurvePointObjectInspector.DrawTargetInfo(lowPoint);
+                CurvePointObjectInspector.DrawCameraInfo(lowPoint);
             }
 
             foreach (var highPoint in ground.HighTargets)
@@ -286,6 +294,11 @@ public class GroundInspector : Editor
                 Handles.color = Color.magenta;
                 Handles.SphereHandleCap(0, highPoint.position, Quaternion.identity, 2f, EventType.Repaint);
             }
+        }
+
+        if (_cHeld)
+        {
+            EditManagerInspector.DrawAllCamTargetOptions(_editManager, ground);
         }
 
     }
@@ -307,80 +320,160 @@ public class GroundInspector : Editor
         }
     }
 
-    public static void DrawCamTargetOptions(Ground ground, CurvePointEditObject currentCPObject)
+    public static void DrawCamTargetOptions(Ground thisGround, Ground targetGround)
     {
-        if(currentCPObject == null || !currentCPObject.DoTargetLow)
+        var zoomTargets = targetGround.GetZoomPoints();
+        foreach (var cpObj in thisGround.CurvePointObjects)
         {
-            return;
-        }
-
-        foreach(var cpObj in ground.CurvePointObjects)
-        {
-            if(cpObj == currentCPObject)
+            if (TargetOptionButtons(cpObj, targetGround, zoomTargets))
             {
-                continue;
+                CameraTargetUtility.BuildGroundCameraTargets(targetGround);
             }
-
-            CurvePointObjectInspector.DrawCamTargetButtons(currentCPObject, cpObj);
         }
     }
 
-    private bool TargetButtons(CurvePointEditObject cpObj)
+    private static bool TargetOptionButtons(CurvePointEditObject cpObj, Ground currentGround, List<LinkedCameraTarget> zoomTargets)
     {
-
-        var targetObj = cpObj.gameObject;
-
         if (cpObj == null)
         {
             return false;
         }
 
-        var objPos = targetObj.transform.position;
-
-        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
-        rect.position = new Vector2(rect.position.x - rect.width, rect.position.y + rect.height);
-
-        Handles.BeginGUI();
-        //Button to select curve point
-        GUI.backgroundColor = Color.cyan;
-        if (GUI.Button(rect, selectButton))
+        if (cpObj.ParentGround == currentGround)
         {
-            Selection.activeObject = cpObj;
-        }
-
-        //Buttons for low target settings
-        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-        if (cpObj.LinkedCameraTarget.doLowTarget)
-        {
-            GUI.backgroundColor = Color.lightGreen;
-            if (GUI.Button(rect, doLowButton))
-            {
-                Undo.RecordObject(cpObj, "Turn off doTargetLow");
-                cpObj.LinkedCameraTarget.doLowTarget = false;
-                CameraTargetUtility.BuildGroundCameraTargets(cpObj.ParentGround);
-                return true;
-            }
+            return TargetButtonsCurrentGround(cpObj, currentGround);
         }
         else
         {
-            GUI.backgroundColor = Color.orangeRed;
-            if (GUI.Button(rect, doLowButton))
-            {
-                Undo.RecordObject(cpObj, "Turn on doTargetLow");
-                cpObj.LinkedCameraTarget.doLowTarget = true;
-                CameraTargetUtility.BuildGroundCameraTargets(cpObj.ParentGround);
-                return true;
-            }
+            return TargetButtonsOtherGround(cpObj, currentGround, zoomTargets);
         }
 
-        //Buttons for high target settings
-        rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+
+     
+    }
+
+    private static bool TargetButtonsCurrentGround(CurvePointEditObject cpObj, Ground currentGround)
+    {
+        Rect rect = DefaultRect(cpObj.transform.position, 2);
+
+        Handles.BeginGUI();
+
+        //Button to select curve point
+        Button(selectButton, rect, Color.cyan, () => Selection.activeObject = cpObj, currentGround);
+        
+        //Buttons for low target settings
+
+        rect.position = ShiftRect(rect);
+
+        if (ToggleButtons(doLowButton, rect, cpObj.DoTargetLow, 
+            () => cpObj.DoTargetLow = false, () => cpObj.DoTargetLow = true, currentGround))
+        {
+            return true;
+        }
 
         Handles.EndGUI();
+
+        return false;
+    }
+
+    private static bool TargetButtonsOtherGround(CurvePointEditObject cpObj, Ground currentGround, List<LinkedCameraTarget> zoomTargets)
+    {
+        var buttonCount = 1;
+        if (cpObj.DoTargetLow)
+        {
+            buttonCount = 3;
+        }
+        var rect = DefaultRect(cpObj.transform.position, buttonCount);
+
+        Handles.BeginGUI();
+        //Buttons for make left or right end target
+        if (cpObj.DoTargetLow)
+        {
+            var isLeftEndTarget = cpObj == currentGround.ManualLeftTargetObj;
+
+            if (ToggleButtons(leftTargetButton, rect, isLeftEndTarget, 
+                () => currentGround.ManualLeftTargetObj = null, () => currentGround.ManualLeftTargetObj = cpObj, currentGround))
+            {
+                return true;
+            }
+
+            rect.position = ShiftRect(rect);
+
+            var isRightEndTarget = cpObj == currentGround.ManualRightTargetObj;
+
+            if (ToggleButtons(rightTargetButton, rect, isRightEndTarget, 
+                () => currentGround.ManualRightTargetObj = null, () => currentGround.ManualRightTargetObj = cpObj, currentGround))
+            {
+                return true;
+            }
+
+            rect.position = ShiftRect(rect);
+        }
+
+        //Buttons for force zoom settings
+
+        UnityAction removeZoomPoint = () =>
+        {
+            for (int i = 0; i < currentGround.ZoomPointRefs.Count; i++)
+            {
+                if (currentGround.ZoomPointRefs[i].Value == cpObj)
+                {
+                    currentGround.ZoomPointRefs.RemoveAt(i);
+                    break;
+                }
+            }
+        };
+
+        var isZoomTarget = zoomTargets.Contains(cpObj.LinkedCameraTarget);
+        if (ToggleButtons(zoomTargetButton, rect, isZoomTarget, 
+            removeZoomPoint, () => currentGround.ZoomPointRefs.Add(new(cpObj)), currentGround))
+        {
+            return true;
+        }
+
+        Handles.EndGUI();
+
         return false;
     }
     #endregion
 
+    private static bool Button(GUIContent button, Rect rect, Color color, UnityAction onPress, Ground currentGround)
+    {
+        GUI.backgroundColor = color;
+        if (GUI.Button(rect, button))
+        {
+            Undo.RecordObject(currentGround, "Add or removed via scene gui button");
+            onPress();
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool ToggleButtons(GUIContent button, Rect rect, bool toggleVal, UnityAction onPressTrue, UnityAction onPressFalse, Ground currentGround)
+    {
+        if (toggleVal)
+        {
+            return Button(button, rect, Color.lightGreen, onPressTrue, currentGround);
+        }
+        else
+        {
+            return Button(button, rect, Color.orangeRed, onPressFalse, currentGround);
+        }
+    }
+
+    private static Rect DefaultRect(Vector3 worldPos, int buttonCount)
+    {
+        var screenPos = HandleUtility.WorldToGUIPoint(worldPos);
+        screenPos = new Vector2(screenPos.x - (_rectWidth * 1.1f * buttonCount/2), screenPos.y + (_rectHeight / 2));
+        
+        return new Rect(screenPos, new(_rectWidth, _rectHeight));
+    }
+
+    private static Vector3 ShiftRect(Rect rect)
+    {
+        return new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
+    }
     private static void ClearCurvePointTargets(Ground ground, EditManager editManager)
     {
         ground.ManualLeftTargetObj = null;

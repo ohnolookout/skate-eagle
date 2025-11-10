@@ -50,12 +50,6 @@ public class EditManagerInspector : Editor
                 _editManager.medalTimes.Bronze = EditorGUILayout.FloatField("Bronze", _editManager.medalTimes.Bronze, GUILayout.ExpandWidth(false));
             }
 
-            //_showCamStart = EditorGUILayout.Foldout(_showCamStart, "Camera Start Position");
-            //if (_showCamStart)
-            //{
-            //    _editManager.cameraStartPosition = EditorGUILayout.Vector2Field("Camera Start Point", _editManager.cameraStartPosition);
-            //}
-
             if (EditorGUI.EndChangeCheck())
             {
                 _editManager.UpdateEditorLevel();
@@ -167,11 +161,11 @@ public class EditManagerInspector : Editor
         GUILayout.EndHorizontal();
     }
 
-    public static void DrawCamTargetOptions(EditManager editManager, CurvePointEditObject currentCPObj)
+    public static void DrawAllCamTargetOptions(EditManager editManager, Ground currentGround)
     {
         foreach(var ground in editManager.GroundManager.GetGrounds())
         {
-            GroundInspector.DrawCamTargetOptions(ground, currentCPObj);
+            GroundInspector.DrawCamTargetOptions(ground, currentGround);
         }
     }
 }

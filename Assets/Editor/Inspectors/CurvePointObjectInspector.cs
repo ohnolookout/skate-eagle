@@ -541,19 +541,19 @@ public class CurvePointObjectInspector : Editor
         {
             if (_aHeld)
             {
-                EditManagerInspector.DrawCamTargetOptions(_editManager, curvePointObject);
+                //EditManagerInspector.DrawZoomTargetOptions(_editManager, curvePointObject);
             }
 
             if(curvePointObject.LinkedCameraTarget.PrevTarget != null)
             {
-                DrawTargetInfo(curvePointObject.LinkedCameraTarget.PrevTarget);
+                DrawCameraInfo(curvePointObject.LinkedCameraTarget.PrevTarget);
             }
 
-            DrawTargetInfo(curvePointObject.LinkedCameraTarget);
+            DrawCameraInfo(curvePointObject.LinkedCameraTarget);
 
             if(curvePointObject.LinkedCameraTarget.NextTarget != null)
             {
-                DrawTargetInfo(curvePointObject.LinkedCameraTarget.NextTarget);
+                DrawCameraInfo(curvePointObject.LinkedCameraTarget.NextTarget);
             }
         }
     }
@@ -688,29 +688,9 @@ public class CurvePointObjectInspector : Editor
         return handlesChanged;
     }
 
-    public static void DrawCamTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
+    public static void DrawZoomTargetButtons(CurvePointEditObject currentCPObj, CurvePointEditObject targetCPObj)
     {
-        var targetObj = targetCPObj.gameObject;
-
-        if (targetCPObj == null)
-        {
-            return;
-        }
-
-        var objPos = targetObj.transform.position;
-
-        var rect = HandleUtility.WorldPointToSizedRect(objPos, rightTargetButton, buttonStyle);
-        float xMod = targetCPObj.DoTargetLow ? 0.5f : 0;
-        rect.position = new Vector2(rect.position.x - rect.width * xMod, rect.position.y + rect.height);
-
-        Handles.BeginGUI();
-
-        if (xMod != 0)
-        {
-            rect.position = new Vector2(rect.position.x + rect.width * 1.1f, rect.position.y);
-        }
-
-        Handles.EndGUI();
+        //Change to add option to target for force zoom from ground or CP.
     }
 
     public static void DrawCamBottomIntercept(CurvePointEditObject cpObj)
@@ -722,7 +702,7 @@ public class CurvePointObjectInspector : Editor
         Handles.DrawLine(camBottom, (Vector3)cpObj.CurvePoint.Position);
     }
 
-    public static void DrawTargetInfo(LinkedCameraTarget target)
+    public static void DrawCameraInfo(LinkedCameraTarget target)
     {
         if (target == null || !target.doLowTarget)
         {

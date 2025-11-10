@@ -47,11 +47,6 @@ public class SerializedGround : IDeserializable
         position = ground.transform.position;
         curvePoints = ground.CurvePoints;
 
-        foreach(var cp in curvePoints)
-        {
-            Debug.Log($"{cp.name} serialized for {ground.name} with UID: {cp.UID}");
-        }
-
         lastObjCount = ground.lastCPObjCount;
         lowTargets = ground.GetLowTargets();
         highPoints = ground.HighTargets;
@@ -202,7 +197,6 @@ public class SerializedGround : IDeserializable
 
         foreach (var curvePoint in curvePoints)
         {
-            Debug.Log($"Adding {curvePoint.name} to {ground.name} with UID: " + curvePoint.UID);
             curvePoint.RegisterResync();
 #if UNITY_EDITOR
             ground.SetCurvePoint(curvePoint);
