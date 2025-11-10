@@ -28,53 +28,14 @@ public class CurvePoint: IResyncable
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     [field: SerializeField]
     public string UID {get; set;}
-    public CurvePointEditObject CPObject
-    {
-        get => _cpObjectRef.Value; 
-        set
-        {
-            _cpObjectRef.Value = value;
-        }
-    }
+    public CurvePointEditObject CPObject { get => _cpObjectRef.Value; set => _cpObjectRef.Value = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
-    public Vector3 WorldPosition
-    {
-        get
-        {
-            if(CPObject != null)
-            {
-                return _serializedWorldPosition = CPObject.transform.position;
-            }
-
-            return _serializedWorldPosition;
-        }
-        set { _serializedWorldPosition = value; }
-    }
-    public Vector3 LeftTangent 
-    { 
-        get 
-        {
-            if(_mode == ShapeTangentMode.Linear)
-            {
-                return new(0, 0);
-            }
-            return leftTangent;
-        }
-        set => leftTangent = value; 
-    }
-    public Vector3 RightTangent 
-    {
-        get
-        {
-            if (_mode == ShapeTangentMode.Linear)
-            {
-                return new(0, 0);
-            }
-            return rightTangent;
-        }
-        set => rightTangent = value; 
-    }
+    public Vector3 WorldPosition { get => CPObject != null ? _serializedWorldPosition = CPObject.transform.position 
+            : _serializedWorldPosition;
+        set => _serializedWorldPosition = value; }
+    public Vector3 LeftTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : leftTangent; set => leftTangent = value; }
+    public Vector3 RightTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : rightTangent; set => rightTangent = value; }
     public Vector3 LeftTangentPosition => position + leftTangent;
     public Vector3 RightTangentPosition => position + rightTangent;
     public ShapeTangentMode TangentMode { get => _mode; set => _mode = value; }

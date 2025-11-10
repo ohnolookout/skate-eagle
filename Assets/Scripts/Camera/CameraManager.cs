@@ -360,7 +360,7 @@ public class CameraManager : MonoBehaviour
         FreezeCamera();
         Camera.main.transform.position = level.SerializedStartLine.CamStartPosition;
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
-        _currentGround = null;
+        _currentGround = level.SerializedStartLine.groundRef.Value;
         _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
         _prevLeftTarget = _currentLeftTarget.PrevTarget;
         _nextLeftTarget = _currentLeftTarget.NextTarget;
