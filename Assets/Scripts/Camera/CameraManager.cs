@@ -1,23 +1,11 @@
-using Com.LuisPedroFonseca.ProCamera2D;
-using GooglePlayGames.BasicApi;
-using System.Collections.Generic;
-using Unity.Android.Types;
-using Unity.Hierarchy;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CameraManager : MonoBehaviour
 {
     private CompoundTarget _lookaheadTarget = new();
     private CompoundTarget _playerTarget = new();
-    //private LinkedCameraTarget _currentLookaheadLeftTarget;
-    //private LinkedCameraTarget _prevLookaheadLeftTarget;
-    //private LinkedCameraTarget _nextLookaheadLeftTarget;
-    //private LinkedCameraTarget _currentPlayerLeftTarget;
-    //private LinkedCameraTarget _prevPlayerLeftTarget;
-    //private LinkedCameraTarget _nextPlayerLeftTarget;
     private LinkedHighPoint _currentHighPoint;
+    private (float camBottomY, float orthoSize) _lastCamParams;
     private Camera _camera;
     private Vector3 _targetPosition;
     private float _targetOrthoSize;
@@ -37,18 +25,21 @@ public class CameraManager : MonoBehaviour
     private float _xOffset;
     private const float _defaultXDampen = 0.35f;
     private float _xDampen;
-    private float _xDampenOnDirectionChange = 0.005f;
+    private float _xDampenOnDirectionChange = 0.1f;
     private const float _defaultYDampen = 0.2f;
     private float _yDampenOnDirectionChange = 0.2f;
     private float _yDampen;
     private const float _defaultZoomDampen = 0.2f;
-    private float _zoomDampenOnDirectionChange = 0.04f;
+    private float _zoomDampenOnDirectionChange = 0.2f;
     private float _zoomDampen;
     private float _aspectRatio;
     private float _xBufferT = 0.7f;
     private const float _xOffsetDampen = 0.05f;
     private float _targetXOffset;
     private const float _maxYDampen = 0.2f;
+    private const float _maxXDelta = 5;
+    private const float _maxYDelta = 2;
+    private const float _maxOrthoDelta = 1;
 
     void Awake()
     {
@@ -85,12 +76,12 @@ public class CameraManager : MonoBehaviour
         }
         else
         {
+            UpdateTargetDuringDirectionChange();
             UpdateCurrentHighPoint();
             CheckHighPointExit();
         }
 
         MoveToTargetPos();
-
     }
 
     private void OnDrawGizmosSelected()
@@ -176,20 +167,20 @@ public class CameraManager : MonoBehaviour
         UpdateTarget(playerX, _playerTarget);
         UpdateCurrentHighPoint();
 
-        var camParams = CameraTargetUtility.GetCamParams(lookaheadX, _lookaheadTarget.current);   
-        camParams = ProcessMaxY(playerX, lookaheadX, camParams);
+        var camParams = CameraTargetUtility.GetCamParams(lookaheadX, _lookaheadTarget.current);
+        camParams = ProcessMaxY(lookaheadX, camParams);
 
-        var adjustedOrthoSize = CheckPlayerZoom(camParams.orthoSize, camParams.camBottomY);
-        Vector3 centerPosition = new(camX, camParams.camBottomY + adjustedOrthoSize);
+        camParams = CheckPlayerZoom(camParams);
+        Vector3 centerPosition = new(camX, camParams.camBottomY + camParams.orthoSize);
 
-        _targetOrthoSize = adjustedOrthoSize;
+        _targetOrthoSize = camParams.orthoSize;
+        _lastCamParams = camParams;
         _targetPosition = centerPosition;
     }
 
-    private (float orthoSize, float camBottomY) ProcessMaxY(float playerX, float lookaheadX, (float camBottomY, float orthoSize) camParams)
+    private (float orthoSize, float camBottomY) ProcessMaxY(float lookaheadX, (float camBottomY, float orthoSize) camParams)
     {
-        var playerMaxY = CameraTargetUtility.GetMaxCamY(playerX, lookaheadX, _playerTarget.current);
-
+        var playerMaxY = CameraTargetUtility.GetMaxCamY(_playerTransform.position, lookaheadX, _playerTarget.current);
         if (playerMaxY < camParams.camBottomY)
         {
             _doLerpLastMaxY = true;
@@ -199,7 +190,6 @@ public class CameraManager : MonoBehaviour
         }
         else if (_doLerpLastMaxY)
         {
-            Debug.Log("Lerping from last maxY");
             _lastMaxY = Mathf.SmoothStep(_lastMaxY, camParams.camBottomY, _maxYDampen);
 
             if (camParams.camBottomY > _lastMaxY + 2)
@@ -230,9 +220,9 @@ public class CameraManager : MonoBehaviour
         if (_doDirectionChangeDampen)
         {
             _xDampen = Mathf.SmoothStep(_xDampen, _defaultXDampen, 0.1f);
-            _yDampen = Mathf.SmoothStep(_yDampen, _defaultYDampen, 0.1f);
-            _zoomDampen = Mathf.SmoothStep(_zoomDampen, _defaultZoomDampen, 0.1f);
-            if (Mathf.Abs(_defaultXDampen - _xDampen) < 0.02 && Mathf.Abs(_defaultYDampen - _yDampen) < 0.02)
+            //_yDampen = Mathf.SmoothStep(_yDampen, _defaultYDampen, 0.1f);
+            //_zoomDampen = Mathf.SmoothStep(_zoomDampen, _defaultZoomDampen, 0.1f);
+            if (Mathf.Abs(_defaultXDampen - _xDampen) < 0.02) //&& Mathf.Abs(_defaultYDampen - _yDampen) < 0.02)
             {
                 _xDampen = _defaultXDampen;
                 _yDampen = _defaultYDampen;
@@ -241,12 +231,31 @@ public class CameraManager : MonoBehaviour
             }
         }
         var camPos = _camera.transform.position;
+
         var newY = Mathf.SmoothStep(camPos.y, _targetPosition.y, _yDampen);
+        if(Mathf.Abs(newY - camPos.y) > _maxYDelta)
+        {
+            Debug.Log("Clamping cam Y speed");
+            newY = camPos.y + (_maxYDelta * Mathf.Sign(newY - camPos.y));
+        }
+
         var newX = Mathf.SmoothStep(camPos.x, _targetPosition.x, _xDampen);
+        if (Mathf.Abs(newX - camPos.x) > _maxXDelta)
+        {
+            Debug.Log("Clamping cam X speed");
+            newX = camPos.x + (_maxXDelta * Mathf.Sign(newX - camPos.x));
+        }
+
         var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSize, _zoomDampen);
+        if (Mathf.Abs(_camera.orthographicSize - newOrthoSize) > _maxOrthoDelta)
+        {
+            Debug.Log("Clamping cam zoom speed");
+            newOrthoSize = _camera.orthographicSize + (_maxOrthoDelta * Mathf.Sign(newOrthoSize - _camera.orthographicSize));
+        }
 
         _camera.transform.position = new(newX, newY);
         _camera.orthographicSize = newOrthoSize;
+
     }
 
 
@@ -281,6 +290,17 @@ public class CameraManager : MonoBehaviour
 #endif
             AssignPrevAndNextTargets(target, target.next, true);
         }
+
+    }
+
+    private void UpdateTargetDuringDirectionChange()
+    {
+        var newParams = CheckPlayerZoom(_lastCamParams);
+        Vector3 centerPosition = new(_targetPosition.x, newParams.camBottomY + newParams.orthoSize);
+
+        _targetOrthoSize = newParams.orthoSize;
+        _targetPosition = centerPosition;
+        _lastCamParams = newParams;
 
     }
 
@@ -349,14 +369,15 @@ public class CameraManager : MonoBehaviour
         }
         UpdateTarget(targetX, _lookaheadTarget);
         var camParams = CameraTargetUtility.GetCamParams(targetX,_lookaheadTarget.current);
-        var maxCamY = CameraTargetUtility.GetMaxCamY(_playerTransform.position.x, targetX, _playerTarget.current);
+        camParams = ProcessMaxY(targetX, camParams);
         _targetPosition = new Vector3(targetX, camParams.camBottomY + camParams.orthoSize);
         _targetOrthoSize = camParams.orthoSize;
+        _lastCamParams = camParams;
 
         _doCheckHighPointExit = true;
         _xDampen = _defaultXDampen/4;
-        _yDampen = _defaultYDampen/2;
-        _zoomDampen = _defaultZoomDampen/2;
+        //_yDampen = _defaultYDampen/2;
+        //_zoomDampen = _defaultZoomDampen/2;
 
     }
 
@@ -379,8 +400,8 @@ public class CameraManager : MonoBehaviour
         _doDirectionChangeDampen = true;
         _doCheckHighPointExit = false;
         _xDampen = _xDampenOnDirectionChange;
-        _yDampen = _yDampenOnDirectionChange;
-        _zoomDampen = _zoomDampenOnDirectionChange;
+        //_yDampen = _yDampenOnDirectionChange;
+        //_zoomDampen = _zoomDampenOnDirectionChange;
 
     }
 
@@ -443,13 +464,15 @@ public class CameraManager : MonoBehaviour
         _lastMaxY = float.PositiveInfinity;
 }
 
-    private float CheckPlayerZoom(float targetOrthoSize, float camBottomY)
+    private (float camBottomY, float orthoSize) CheckPlayerZoom((float camBottomY, float orthoSize) camParams)
     {
         var playerY = _playerTransform.position.y;
-        var yDist = playerY - camBottomY;
+        var yDist = playerY - camParams.camBottomY;
         var playerZoomSize = yDist / (1 + CameraTargetUtility.PlayerHighYT);
 
-        return Mathf.Max(playerZoomSize, targetOrthoSize);
+        camParams.orthoSize = Mathf.Max(playerZoomSize, camParams.orthoSize);
+
+        return camParams;
     }
 
     private void AssignPrevAndNextTargets(CompoundTarget currentTarget, LinkedCameraTarget newTarget, bool moveRight)

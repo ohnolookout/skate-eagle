@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public static class CameraTargetUtility
 {
@@ -50,12 +51,16 @@ public static class CameraTargetUtility
         return (camBottomY, orthoSize);
     }
 
-    public static float GetMaxCamY(float playerX, float lookaheadX, LinkedCameraTarget leftTarget)
+    public static float GetMaxCamY(Vector3 playerPos, float lookaheadX, LinkedCameraTarget leftTarget)
     {
         if(leftTarget == null)
         {
             return float.PositiveInfinity;
         }
+
+        var playerX = playerPos.x;
+        var playerCamY = playerPos.y - MinAbsoluteYBuffer;
+
 
         float leftX;
         float rightX;
@@ -84,7 +89,7 @@ public static class CameraTargetUtility
             rightMaxY = leftTarget.NextTarget.Position.y - MinAbsoluteYBuffer;
         }
 
-        return Mathf.Min(leftMaxY, rightMaxY);
+        return Mathf.Min(leftMaxY, rightMaxY, playerCamY);
     }
 
     private static bool IsXBetween(float leftX, float rightX, float targetX)

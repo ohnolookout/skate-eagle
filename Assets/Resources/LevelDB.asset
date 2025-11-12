@@ -1091,9 +1091,9 @@ MonoBehaviour:
         _blueTime: 8
         _redTime: 6
       _serializedObjects:
-      - rid: 4583741103951839305
-      - rid: 4583741103951839306
-      - rid: 4583741103951839307
+      - rid: 4583741104504439178
+      - rid: 4583741104504439179
+      - rid: 4583741104504439180
       _leaderboardKey: Camera Change Test_leaderboard
       _killPlaneY: -94.478836
       _serializedStartLine:
@@ -1155,7 +1155,7 @@ MonoBehaviour:
           _previous:
             rid: -2
           _next:
-            rid: 4583741103951839308
+            rid: 4583741104504439181
           position: {x: -299.99817, y: 30.000002, z: 0}
         curvePointRef:
           _uid: 65764226-f640-46ce-9b78-517167a81dfb
@@ -1327,8 +1327,8 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: 775c498c-3de5-4672-8dee-68563b60f57d
-    _name: Camera Change Test
+    _UID: 88396b75-05bb-44ed-a5f0-fad02b8d060a
+    _name: Cam Gap Test
     _goldRequired: 0
     _medalTimes:
       _bronzeTime: 20
@@ -1337,11 +1337,13 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 4583741103951839305
-    - rid: 4583741103951839306
-    - rid: 4583741103951839307
-    _leaderboardKey: Camera Change Test_leaderboard
-    _killPlaneY: -94.478836
+    - rid: 4583741103951839293
+    - rid: 4583741103951839294
+    - rid: 4583741103951839295
+    - rid: 4583741103951839296
+    - rid: 4583741103951839297
+    _leaderboardKey: Cam Gap Test_leaderboard
+    _killPlaneY: -84
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
@@ -1355,61 +1357,61 @@ MonoBehaviour:
         _isSymmetrical: 1
         _floorHeight: 100
         _floorAngle: 0
-        _floorPosition: {x: -120, y: -174, z: 0}
+        _floorPosition: {x: -120, y: -162, z: 0}
         _forceNewSegment: 0
         _blockNewSegment: 0
         _cpObjectRef:
-          _uid: 65764226-f640-46ce-9b78-517167a81dfb-editObj
+          _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46-editObj
         _linkedCameraTarget:
           _prevTargetRef:
             _uid: 
           _nextTargetRef:
-            _uid: 2f75fbc2-4be9-4496-abde-c8193f71225d
+            _uid: f1925560-bba2-4977-a404-5efba32c6eb8
           _forceZoomTargetRefs: []
           _parentObjectRef:
-            _uid: 64150c2c-680d-41fd-9533-f8bf61c7fa33-editObj
-          doLowTarget: 0
+            _uid: fb2ee58a-d601-41e8-9a74-ea8880024e87-editObj
+          doLowTarget: 1
           doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.15
+          manualYOffset: 1.18
+          yOffset: 0.6
           orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          <UID>k__BackingField: 1d418bba-2523-419c-be22-364d580dbb6c
+          manualOrthoSize: 57.3
+          <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
           SerializedPosition: {x: -120, y: 30, z: 0}
-        <UID>k__BackingField: 65764226-f640-46ce-9b78-517167a81dfb
-      _camStartPosition: {x: -110, y: 17.500568, z: 0}
-      _camOrthoSize: 62.497135
+        <UID>k__BackingField: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
+      _camStartPosition: {x: -110, y: 36.038414, z: 0}
+      _camOrthoSize: 50
       _firstCameraTarget:
         _prevTargetRef:
           _uid: 
         _nextTargetRef:
-          _uid: af9e5464-b05f-48cb-8614-1babf6e73b66
+          _uid: f1925560-bba2-4977-a404-5efba32c6eb8
         _forceZoomTargetRefs: []
         _parentObjectRef:
-          _uid: c250d4a0-886b-496d-a91f-43aecda99f03-editObj
+          _uid: fb2ee58a-d601-41e8-9a74-ea8880024e87-editObj
         doLowTarget: 1
         doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.36463985
-        orthoSize: 62.497135
+        manualYOffset: 1.18
+        yOffset: 0.6
+        orthoSize: 50
         doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        <UID>k__BackingField: 2f75fbc2-4be9-4496-abde-c8193f71225d
-        SerializedPosition: {x: -60, y: -26.764572, z: 0}
+        manualOrthoSize: 57.3
+        <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
+        SerializedPosition: {x: -120, y: 30, z: 0}
       _firstHighPoint:
         _previous:
           rid: -2
         _next:
-          rid: 4583741103951839308
-        position: {x: -299.99817, y: 30.000002, z: 0}
+          rid: 4583741103951839298
+        position: {x: -474.09222, y: 30.000002, z: 0}
       curvePointRef:
-        _uid: 65764226-f640-46ce-9b78-517167a81dfb
+        _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
       firstCameraTargetRef:
-        _uid: 2f75fbc2-4be9-4496-abde-c8193f71225d
+        _uid: e28e4397-378c-480f-b2da-334d5de42166
       groundRef:
-        _uid: b7df7235-666a-495c-91a7-c92fc5cd7390
-      uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
+        _uid: ae56af35-82f6-418e-a627-9d818feaab19
+      uid: d55c8ec9-8d4f-488c-a76e-2933311e53b9
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   doCheckOverwrite: 1
@@ -51271,7 +51273,7 @@ MonoBehaviour:
         _next:
           rid: -2
         position: {x: 16.00001, y: -26.969238, z: 0}
-    - rid: 4583741103951839305
+    - rid: 4583741104504439178
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -56959,7 +56961,7 @@ MonoBehaviour:
           _uid: 06d5305d-7e70-43e4-94c3-d16e5d97afd0
         zoomPointRefs: []
         highTargets: []
-    - rid: 4583741103951839306
+    - rid: 4583741104504439179
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -57038,7 +57040,7 @@ MonoBehaviour:
         backstopPointRef:
           _uid: b7be9051-eb05-490e-8338-b18e96af12c0
         uid: 9caa907b-43f4-4b55-8158-117a73a787e7
-    - rid: 4583741103951839307
+    - rid: 4583741104504439180
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -57099,7 +57101,7 @@ MonoBehaviour:
           _previous:
             rid: -2
           _next:
-            rid: 4583741103951839308
+            rid: 4583741104504439181
           position: {x: -299.99817, y: 30.000002, z: 0}
         curvePointRef:
           _uid: 65764226-f640-46ce-9b78-517167a81dfb
@@ -57108,91 +57110,91 @@ MonoBehaviour:
         groundRef:
           _uid: b7df7235-666a-495c-91a7-c92fc5cd7390
         uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
-    - rid: 4583741103951839308
+    - rid: 4583741104504439181
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839309
+          rid: 4583741104504439182
         _next:
-          rid: 4583741103951839310
+          rid: 4583741104504439183
         position: {x: -119.92505, y: 29.999832, z: 0}
-    - rid: 4583741103951839309
+    - rid: 4583741104504439182
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
           rid: -2
         _next:
-          rid: 4583741103951839308
+          rid: 4583741104504439181
         position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 4583741103951839310
+    - rid: 4583741104504439183
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839308
+          rid: 4583741104504439181
         _next:
-          rid: 4583741103951839311
+          rid: 4583741104504439184
         position: {x: 0.074915245, y: -3.479079, z: 0}
-    - rid: 4583741103951839311
+    - rid: 4583741104504439184
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839310
+          rid: 4583741104504439183
         _next:
-          rid: 4583741103951839312
+          rid: 4583741104504439185
         position: {x: 121.07497, y: 9.521072, z: 0}
-    - rid: 4583741103951839312
+    - rid: 4583741104504439185
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839311
+          rid: 4583741104504439184
         _next:
-          rid: 4583741103951839313
+          rid: 4583741104504439186
         position: {x: 243.19551, y: 78.521034, z: 0}
-    - rid: 4583741103951839313
+    - rid: 4583741104504439186
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839312
+          rid: 4583741104504439185
         _next:
-          rid: 4583741103951839314
+          rid: 4583741104504439187
         position: {x: 361.07492, y: 72.95303, z: 0}
-    - rid: 4583741103951839314
+    - rid: 4583741104504439187
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839313
+          rid: 4583741104504439186
         _next:
-          rid: 4583741103951839315
+          rid: 4583741104504439188
         position: {x: 481.07495, y: 55.48188, z: 0}
-    - rid: 4583741103951839315
+    - rid: 4583741104504439188
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839314
+          rid: 4583741104504439187
         _next:
-          rid: 4583741103951839316
+          rid: 4583741104504439189
         position: {x: 601.075, y: 101.28517, z: 0}
-    - rid: 4583741103951839316
+    - rid: 4583741104504439189
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839315
+          rid: 4583741104504439188
         _next:
-          rid: 4583741103951839317
+          rid: 4583741104504439190
         position: {x: 721.075, y: 105.53475, z: 0}
-    - rid: 4583741103951839317
+    - rid: 4583741104504439190
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839316
+          rid: 4583741104504439189
         _next:
-          rid: 4583741103951839318
+          rid: 4583741104504439191
         position: {x: 841.0751, y: 69.64788, z: 0}
-    - rid: 4583741103951839318
+    - rid: 4583741104504439191
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741103951839317
+          rid: 4583741104504439190
         _next:
           rid: -2
         position: {x: 901.19257, y: 39.647964, z: 0}
