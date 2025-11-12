@@ -228,40 +228,6 @@ public class Ground : MonoBehaviour, ISerializable
 
     #endregion
 
-    #region Resync
-
-    public List<ObjectResync> GetObjectResyncs()
-    {
-
-        return new();
-        //List<ObjectResync> resyncs = new();
-
-        //if (ManualLeftCamTarget != null)
-        //{
-        //    var leftResync = new ObjectResync(ManualLeftCamTarget.serializedObjectLocation);
-        //    leftResync.resyncFunc = (obj) =>
-        //    {
-        //        ManualLeftTargetObj = obj.GetComponent<CurvePointEditObject>();
-        //    };
-
-        //    resyncs.Add(leftResync);
-        //}
-
-        //if (ManualRightCamTarget != null)
-        //{
-        //    var rightResync = new ObjectResync(ManualRightCamTarget.serializedObjectLocation);
-        //    rightResync.resyncFunc = (obj) =>
-        //    {
-        //        ManualRightTargetObj = obj.GetComponent<CurvePointEditObject>();
-        //    };
-        //    resyncs.Add(rightResync);
-        //}
-
-        //return resyncs;
-    }
-
-    #endregion
-
 #endif
     #region Refresh Utilities
     public void Clear()

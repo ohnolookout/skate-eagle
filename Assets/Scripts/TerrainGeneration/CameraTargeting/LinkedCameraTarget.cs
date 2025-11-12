@@ -18,7 +18,7 @@ public class LinkedCameraTarget: IResyncable
     public float orthoSize = 50f;
     public bool doUseManualOrthoSize = false;
     public float manualOrthoSize = 0f;
-    public int[] serializedObjectLocation;
+    //public int[] serializedObjectLocation;
     [field: SerializeField]
     public string UID { get; set; }
     public Vector3 Position
@@ -66,7 +66,6 @@ public class LinkedCameraTarget: IResyncable
     public Vector3 SerializedPosition;
     public LinkedCameraTarget()
     {
-        serializedObjectLocation = new int[0];
     }
 
     public List<LinkedCameraTarget> GetZoomTargets()

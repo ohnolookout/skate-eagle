@@ -1,10 +1,6 @@
-using AYellowpaper.SerializedCollections.Editor.Data;
-using Com.LuisPedroFonseca.ProCamera2D;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
 
 public static class CameraTargetUtility
@@ -13,42 +9,87 @@ public static class CameraTargetUtility
 
     public const float MinYOffsetT = 0.15f;
     public const float MaxYOffsetT = 0.6f;
-    public const float HighYT = 0.4f;
+    public const float HighYT = 0.2f;
     public const float PlayerHighYT = 0.7f;
-    public const float MinSlopeDeltaForOffset = -.75f;
-    public const float MaxSlopeDeltaForOffset = .75f;
+    public const float MinSlopeDeltaForOffset = 0;
+    public const float MaxSlopeDeltaForOffset = 1;
     public const float DefaultAspectRatio = 16f / 9f;
     public const float DefaultOrthoSize = 50;
-    //private static float maxSlope = (DefaultOrthoSize * 1.6f)/ CameraManager.maxXOffset; //Max slope to keep target within camera view
+    public const float MinAbsoluteYBuffer = MinYOffsetT * DefaultOrthoSize;
+    public const float PlayerXBuffer = MinYOffsetT * DefaultOrthoSize * DefaultAspectRatio;
 
     #endregion
     #region Runtime Methods
-    public static (float camBottomY, float orthoSize) GetCamParams(float posX, LinkedCameraTarget leftTarget)
+    public static (float camBottomY, float orthoSize) GetCamParams(float lookaheadX, LinkedCameraTarget leftLookaheadTarget)
     {
-        if (leftTarget == null)
+        if (leftLookaheadTarget == null)
         {
             Debug.LogWarning("No target added...");
             return (-DefaultOrthoSize, DefaultOrthoSize);
         }
 
+        
         float camBottomY;
         float orthoSize;
-        if (leftTarget.NextTarget == null || leftTarget.Position.x > posX)
+        if (leftLookaheadTarget.NextTarget == null || leftLookaheadTarget.Position.x > lookaheadX)
         {
             //Use target bottom y if there is no next target or if target is to the left of found target (bc found target is leftmost target in the chain)
-            camBottomY = leftTarget.CamBottomPosition.y;
-            orthoSize = leftTarget.orthoSize;
+            camBottomY = leftLookaheadTarget.CamBottomPosition.y;
+            orthoSize = leftLookaheadTarget.orthoSize;
         }
         else
         {
-            var t = (posX - leftTarget.Position.x) / (leftTarget.NextTarget.Position.x - leftTarget.Position.x);
+            var t = (lookaheadX - leftLookaheadTarget.Position.x) / (leftLookaheadTarget.NextTarget.Position.x - leftLookaheadTarget.Position.x);
             t = Mathf.Clamp01(t);
-            orthoSize = Mathf.SmoothStep(leftTarget.orthoSize, leftTarget.NextTarget.orthoSize, t);
-            camBottomY = Mathf.SmoothStep(leftTarget.CamBottomPosition.y, leftTarget.NextTarget.CamBottomPosition.y, t);
+            orthoSize = Mathf.SmoothStep(leftLookaheadTarget.orthoSize, leftLookaheadTarget.NextTarget.orthoSize, t);
+            camBottomY = Mathf.SmoothStep(leftLookaheadTarget.CamBottomPosition.y, leftLookaheadTarget.NextTarget.CamBottomPosition.y, t);
         }
+
+        
+
         return (camBottomY, orthoSize);
+    }
 
+    public static float GetMaxCamY(float playerX, float lookaheadX, LinkedCameraTarget leftTarget)
+    {
+        if(leftTarget == null)
+        {
+            return float.PositiveInfinity;
+        }
 
+        float leftX;
+        float rightX;
+
+        if (playerX > lookaheadX)
+        {
+            leftX = lookaheadX;
+            rightX = playerX + PlayerXBuffer;
+        }
+        else
+        {
+            leftX = playerX - PlayerXBuffer;
+            rightX = lookaheadX;
+        }
+
+        float leftMaxY = float.PositiveInfinity;
+        float rightMaxY = float.PositiveInfinity;
+
+        if (IsXBetween(leftX, rightX, leftTarget.Position.x))
+        {
+            leftMaxY = leftTarget.Position.y - MinAbsoluteYBuffer;
+        }
+
+        if (leftTarget.NextTarget != null && IsXBetween(leftX, rightX, leftTarget.NextTarget.Position.x))
+        {
+            rightMaxY = leftTarget.NextTarget.Position.y - MinAbsoluteYBuffer;
+        }
+
+        return Mathf.Min(leftMaxY, rightMaxY);
+    }
+
+    private static bool IsXBetween(float leftX, float rightX, float targetX)
+    {
+        return (targetX - leftX) * (rightX - targetX) > 0;
     }
 
     #endregion
@@ -58,6 +99,12 @@ public static class CameraTargetUtility
     {
         var lowTargets = ground.GetLowTargets();
 
+        Dictionary<LinkedCameraTarget, (IEnumerable<Vector3> allPositions, IEnumerable<Vector3> midpointPositions)> sectionPositionDict = new();
+        if (lowTargets.Count() == 0)
+        {
+            Debug.LogWarning("No low points found for ground: " + ground.name);
+            return;
+        }
 
         var cpTargets = ground.CurvePoints.Select(cp => cp.LinkedCameraTarget).ToList();
 
@@ -69,15 +116,7 @@ public static class CameraTargetUtility
         if (ground.ManualRightTargetObj != null)
         {
             cpTargets.Add(ground.ManualRightCamTarget);
-        }
-
-
-        Dictionary<LinkedCameraTarget, (IEnumerable<Vector3> allPositions, IEnumerable<Vector3> midpointPositions)> sectionPositionDict = new();
-        if (lowTargets.Count() == 0)
-        {
-            Debug.LogWarning("No low points found for ground: " + ground.name);
-            return;
-        }
+        } 
 
         var targetIndices = BuildAllPrevAndNextTargets(cpTargets, lowTargets, ground);
 
@@ -144,7 +183,10 @@ public static class CameraTargetUtility
         var prevIndex = 0;
         int nextIndex = 0;
 
-        currentTarget.PrevTarget = null;
+        if(!IsManualEndpoint(currentTarget, ground))
+        {
+            currentTarget.PrevTarget = null;
+        }
 
         for (int i = 1; i < lowPoints.Count(); i++)
         {
@@ -172,6 +214,10 @@ public static class CameraTargetUtility
         }
 
         targetIndices[currentTarget] = (currentIndex, prevIndex, cpTargets.Count - 1);
+        if (!IsManualEndpoint(currentTarget, ground))
+        {
+            currentTarget.NextTarget = null;
+        }
 
         return targetIndices;
     }
@@ -251,20 +297,15 @@ public static class CameraTargetUtility
         }
 
         var slopeFromPrev = (targetAdjustedPos.y - prevPos.y) / (targetAdjustedPos.x - prevPos.x);
-        var slopeToNext = (targetAdjustedPos.y - nextPos.y) / (nextPos.x - targetAdjustedPos.x);
-
-        var leftTargetPos = target.Position + new Vector3(-CameraManager.minXOffset, -MinYOffsetT * DefaultOrthoSize);
-        var rightTargetPos = target.Position + new Vector3(CameraManager.minXOffset, -MinYOffsetT * DefaultOrthoSize);
-
-        var interceptFromLeftXOffset = leftTargetPos.y + slopeToNext * Mathf.Abs(targetAdjustedPos.x - leftTargetPos.x);
-        var interceptFromRightXOffset = rightTargetPos.y + slopeFromPrev * Mathf.Abs(targetAdjustedPos.x - rightTargetPos.x);
-
-        lowestYIntercept = Mathf.Min(lowestYIntercept, interceptFromLeftXOffset, interceptFromRightXOffset);
+        var slopeToNext = (nextPos.y - targetAdjustedPos.y) / (nextPos.x - targetAdjustedPos.x);
 
         var lowestPointOffsetT = (target.Position.y - lowestYIntercept) / DefaultOrthoSize;
 
         var slopeDelta = slopeFromPrev - slopeToNext;
         var slopeDeltaT = Mathf.Clamp01((slopeDelta - MinSlopeDeltaForOffset) / (MaxSlopeDeltaForOffset - MinSlopeDeltaForOffset));
+
+        Debug.Log($"Calculating y offset for target. Slope delta: {slopeDelta}");
+        Debug.Log($"Slope from prev {slopeFromPrev} Slope to next {slopeToNext} Slope delta T: {slopeDeltaT}");
 
         var slopeOffsetT = MinYOffsetT + (MaxYOffsetT - MinYOffsetT) * slopeDeltaT;        
         target.yOffset = Mathf.Max(slopeOffsetT, lowestPointOffsetT, MinYOffsetT);

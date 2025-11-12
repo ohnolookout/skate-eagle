@@ -81,7 +81,6 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
         UID = curvePoint.UID + "-editObj";
         curvePoint.CPObject = this; // Set the object reference in the CurvePoint
         transform.position = curvePoint.Position + ParentGround.transform.position;
-        AddObjectToTarget();
         RegisterResync();
     }
 
@@ -152,39 +151,7 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
 #endregion
 
     #region Targeting
-    public void AddObjectToTarget()
-    {
-        //LinkedCameraTarget.SerializedPosition = transform.position;
-        //LinkedCameraTarget.ParentObject = this;
-    }
 
-    public List<ObjectResync> GetObjectResyncs()
-    {
-        List<ObjectResync> resyncs = new();
-
-        if (!LinkedCameraTarget.doLowTarget)
-        {
-            return resyncs;
-        }
-
-        var targets = new List<LinkedCameraTarget>();
-
-        targets.Add(LinkedCameraTarget);
-
-        targets.AddRange(LinkedCameraTarget.GetZoomTargets());
-
-        foreach (var target in targets)
-        {
-            var resync = new ObjectResync(target.serializedObjectLocation);
-            resync.resyncFunc = (obj) => 
-            {
-                target.ParentObject = obj.GetComponent<CurvePointEditObject>();
-            };
-            resyncs.Add(resync);
-        }
-
-        return resyncs;
-    }
     #endregion
 
     public void RegisterResync()

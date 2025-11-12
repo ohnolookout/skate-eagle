@@ -29,12 +29,6 @@ public class Level
     {
         _name = name;
         _medalTimes = medalTimes;
-
-        foreach(var targetable in groundManager.CameraTargetables)
-        {
-            targetable.AddObjectToTarget();
-        }
-
         _serializedObjects = SerializeLevelUtility.SerializeGroundManager(groundManager, out _serializedStartLine);
         _leaderboardKey = _name + "_leaderboard";
         _killPlaneY = GetKillPlaneY(groundManager);

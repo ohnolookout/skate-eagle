@@ -1,15 +1,22 @@
 using Com.LuisPedroFonseca.ProCamera2D;
 using GooglePlayGames.BasicApi;
 using System.Collections.Generic;
+using Unity.Android.Types;
 using Unity.Hierarchy;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CameraManager : MonoBehaviour
 {
-    private LinkedCameraTarget _currentLeftTarget;
-    private LinkedCameraTarget _prevLeftTarget;
-    private LinkedCameraTarget _nextLeftTarget;
+    private CompoundTarget _lookaheadTarget = new();
+    private CompoundTarget _playerTarget = new();
+    //private LinkedCameraTarget _currentLookaheadLeftTarget;
+    //private LinkedCameraTarget _prevLookaheadLeftTarget;
+    //private LinkedCameraTarget _nextLookaheadLeftTarget;
+    //private LinkedCameraTarget _currentPlayerLeftTarget;
+    //private LinkedCameraTarget _prevPlayerLeftTarget;
+    //private LinkedCameraTarget _nextPlayerLeftTarget;
     private LinkedHighPoint _currentHighPoint;
     private Camera _camera;
     private Vector3 _targetPosition;
@@ -21,6 +28,8 @@ public class CameraManager : MonoBehaviour
     private Ground _currentGround;
     private bool _doCheckHighPointExit = false;
     private bool _doDirectionChangeDampen = false;
+    private bool _doLerpLastMaxY = false;
+    private float _lastMaxY = float.PositiveInfinity;
     public const float minXOffset = 20;
     public const float maxXOffset = 110;
     private const float _minOffsetVel = 0;
@@ -30,15 +39,16 @@ public class CameraManager : MonoBehaviour
     private float _xDampen;
     private float _xDampenOnDirectionChange = 0.005f;
     private const float _defaultYDampen = 0.2f;
-    private float _yDampenOnDirectionChange = 0.05f;
+    private float _yDampenOnDirectionChange = 0.2f;
     private float _yDampen;
     private const float _defaultZoomDampen = 0.2f;
-    private float _zoomDampenOnDirectionChange = 0.03f;
+    private float _zoomDampenOnDirectionChange = 0.04f;
     private float _zoomDampen;
     private float _aspectRatio;
     private float _xBufferT = 0.7f;
     private const float _xOffsetDampen = 0.05f;
     private float _targetXOffset;
+    private const float _maxYDampen = 0.2f;
 
     void Awake()
     {
@@ -98,20 +108,34 @@ public class CameraManager : MonoBehaviour
         }
 
         Gizmos.color = Color.lightGreen;
-        if(_currentLeftTarget != null)
+        if(_lookaheadTarget.current != null)
         {
-            Gizmos.DrawSphere(_currentLeftTarget.Position, 2f);
+            Gizmos.DrawSphere(_lookaheadTarget.current.Position, 2f);
         }
 
         Gizmos.color = Color.darkOliveGreen;
-        if(_nextLeftTarget != null)
+        if(_lookaheadTarget.next != null)
         {
-            Gizmos.DrawSphere(_nextLeftTarget.Position, 2f);
+            Gizmos.DrawSphere(_lookaheadTarget.next.Position, 2f);
         }
 
         if(_player == null || _playerTransform == null)
         {
             return;
+        }
+
+        var lowerTargetDelta = new Vector3(0, 2);
+
+        Gizmos.color = Color.lightPink;
+        if (_lookaheadTarget.current != null)
+        {
+            Gizmos.DrawSphere(_playerTarget.current.Position - lowerTargetDelta, 2f);
+        }
+
+        Gizmos.color = Color.rebeccaPurple;
+        if (_lookaheadTarget.next != null)
+        {
+            Gizmos.DrawSphere(_playerTarget.next.Position - lowerTargetDelta, 2f);
         }
 
         Gizmos.color = Color.blue;
@@ -143,13 +167,17 @@ public class CameraManager : MonoBehaviour
             return;
         }
         _xOffset = GetXOffset();
+        var playerX = _playerTransform.position.x;
         var directionalXOffset = _player.FacingForward ? _xOffset : -_xOffset;
-        var targetX = _playerTransform.position.x + directionalXOffset;
-        var camX = _playerTransform.position.x + (directionalXOffset / 2);
+        var lookaheadX = playerX + directionalXOffset;
+        var camX = playerX + (directionalXOffset / 2);
 
-        UpdateCurrentTarget(targetX);
+        UpdateTarget(lookaheadX, _lookaheadTarget);
+        UpdateTarget(playerX, _playerTarget);
         UpdateCurrentHighPoint();
-        var camParams = CameraTargetUtility.GetCamParams(targetX, _currentLeftTarget);
+
+        var camParams = CameraTargetUtility.GetCamParams(lookaheadX, _lookaheadTarget.current);   
+        camParams = ProcessMaxY(playerX, lookaheadX, camParams);
 
         var adjustedOrthoSize = CheckPlayerZoom(camParams.orthoSize, camParams.camBottomY);
         Vector3 centerPosition = new(camX, camParams.camBottomY + adjustedOrthoSize);
@@ -158,12 +186,44 @@ public class CameraManager : MonoBehaviour
         _targetPosition = centerPosition;
     }
 
+    private (float orthoSize, float camBottomY) ProcessMaxY(float playerX, float lookaheadX, (float camBottomY, float orthoSize) camParams)
+    {
+        var playerMaxY = CameraTargetUtility.GetMaxCamY(playerX, lookaheadX, _playerTarget.current);
+
+        if (playerMaxY < camParams.camBottomY)
+        {
+            _doLerpLastMaxY = true;
+            _lastMaxY = playerMaxY;
+            camParams.orthoSize += (camParams.camBottomY - playerMaxY) / 2;
+            camParams.camBottomY = playerMaxY;
+        }
+        else if (_doLerpLastMaxY)
+        {
+            Debug.Log("Lerping from last maxY");
+            _lastMaxY = Mathf.SmoothStep(_lastMaxY, camParams.camBottomY, _maxYDampen);
+
+            if (camParams.camBottomY > _lastMaxY + 2)
+            {
+                camParams.orthoSize += (camParams.camBottomY - _lastMaxY) / 2;
+                camParams.camBottomY = _lastMaxY;
+            }
+            else
+            {
+                _lastMaxY = float.PositiveInfinity;
+                _doLerpLastMaxY = false;
+            }
+        }
+
+        return camParams;
+    }
+
     private float GetXOffset()
     {
         var velOffsetT = (_player.NormalBody.linearVelocity.magnitude - _minOffsetVel) / (_maxOffsetVel - _minOffsetVel);
         _targetXOffset = Mathf.Lerp(minXOffset, maxXOffset, velOffsetT);
-        return Mathf.Lerp(_xOffset, _targetXOffset, _xOffsetDampen);
+        return Mathf.SmoothStep(_xOffset, _targetXOffset, _xOffsetDampen);
     }
+
 
     private void MoveToTargetPos()
     {
@@ -190,13 +250,13 @@ public class CameraManager : MonoBehaviour
     }
 
 
-    private void UpdateCurrentTarget(float xPos)
+    private void UpdateTarget(float xPos, CompoundTarget target)
     {
 #if UNITY_EDITOR
         int searchCount = 0;
 #endif
         //Debug.Assert(_prevLeftTarget != null, "CameraManager: Prev left target is null.");
-        while (_prevLeftTarget != null && _currentLeftTarget.Position.x > xPos)
+        while (target.prev != null && target.current.Position.x > xPos)
         {
 #if UNITY_EDITOR
             searchCount++;
@@ -205,12 +265,12 @@ public class CameraManager : MonoBehaviour
                 Debug.LogWarning("Cam target search iterations > 1: " + searchCount);
             } 
 #endif
-            AssignPrevAndNextTargets(_currentLeftTarget, _prevLeftTarget, false);
+            AssignPrevAndNextTargets(target, target.prev, false);
         }
 
         //Debug.Assert(_nextLeftTarget != null, "CameraManager: Next left target is null.");
 
-        while (_nextLeftTarget != null && xPos > _nextLeftTarget.Position.x)
+        while (target.next != null && xPos > target.next.Position.x)
         {
 #if UNITY_EDITOR
             searchCount++;
@@ -219,7 +279,7 @@ public class CameraManager : MonoBehaviour
                 Debug.LogWarning("Cam target search iterations > 1: " + searchCount);
             }
 #endif
-            AssignPrevAndNextTargets(_currentLeftTarget, _nextLeftTarget, true);
+            AssignPrevAndNextTargets(target, target.next, true);
         }
 
     }
@@ -287,8 +347,9 @@ public class CameraManager : MonoBehaviour
         {
             targetX = _currentHighPoint.position.x;
         }
-        UpdateCurrentTarget(targetX);
-        var camParams = CameraTargetUtility.GetCamParams(targetX, _currentLeftTarget);
+        UpdateTarget(targetX, _lookaheadTarget);
+        var camParams = CameraTargetUtility.GetCamParams(targetX,_lookaheadTarget.current);
+        var maxCamY = CameraTargetUtility.GetMaxCamY(_playerTransform.position.x, targetX, _playerTarget.current);
         _targetPosition = new Vector3(targetX, camParams.camBottomY + camParams.orthoSize);
         _targetOrthoSize = camParams.orthoSize;
 
@@ -338,7 +399,8 @@ public class CameraManager : MonoBehaviour
 
         var collidedSeg = collidedTransformParent.GetComponent<GroundSegment>();
         _currentGround = collidedSeg.parentGround;
-        AssignPrevAndNextTargets(collidedSeg.FirstLeftTarget);
+        AssignPrevAndNextTargets(_lookaheadTarget, collidedSeg.FirstLeftTarget);
+        AssignPrevAndNextTargets(_playerTarget, collidedSeg.FirstLeftTarget);
         _currentHighPoint = collidedSeg.StartHighPoint;
 
         UpdateTargetPos();
@@ -361,9 +423,15 @@ public class CameraManager : MonoBehaviour
         Camera.main.transform.position = level.SerializedStartLine.CamStartPosition;
         Camera.main.orthographicSize = level.SerializedStartLine.CamOrthoSize;
         _currentGround = level.SerializedStartLine.groundRef.Value;
-        _currentLeftTarget = level.SerializedStartLine.FirstCameraTarget;
-        _prevLeftTarget = _currentLeftTarget.PrevTarget;
-        _nextLeftTarget = _currentLeftTarget.NextTarget;
+
+        _lookaheadTarget.current = level.SerializedStartLine.FirstCameraTarget;
+        _lookaheadTarget.prev = _lookaheadTarget.current.PrevTarget;
+        _lookaheadTarget.next = _lookaheadTarget.current.NextTarget;
+
+        _playerTarget.current = level.SerializedStartLine.FirstCameraTarget;
+        _playerTarget.prev = _playerTarget.current.PrevTarget;
+        _playerTarget.next = _playerTarget.current.NextTarget;
+
         _currentHighPoint = level.SerializedStartLine.FirstHighPoint;
         _doDirectionChangeDampen = false;
         _doCheckHighPointExit = false;
@@ -371,8 +439,9 @@ public class CameraManager : MonoBehaviour
         _yDampen = _defaultYDampen;
         _zoomDampen = _defaultZoomDampen;
         _xOffset = minXOffset;
-
-    }
+        _doLerpLastMaxY = false;
+        _lastMaxY = float.PositiveInfinity;
+}
 
     private float CheckPlayerZoom(float targetOrthoSize, float camBottomY)
     {
@@ -383,90 +452,96 @@ public class CameraManager : MonoBehaviour
         return Mathf.Max(playerZoomSize, targetOrthoSize);
     }
 
-    private void AssignPrevAndNextTargets(LinkedCameraTarget currentTarget, LinkedCameraTarget newTarget, bool moveRight)
+    private void AssignPrevAndNextTargets(CompoundTarget currentTarget, LinkedCameraTarget newTarget, bool moveRight)
     {
-        _currentLeftTarget = newTarget;
+        currentTarget.current = newTarget;
 
         if (moveRight)
         {
-            _prevLeftTarget = currentTarget;
+            currentTarget.prev = currentTarget.current;
             if (newTarget.NextTarget != null)
             {
-                _nextLeftTarget = newTarget.NextTarget;
+                currentTarget.next = newTarget.NextTarget;
             }
             else
             {
-                var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+                var currentIndex = _currentGround.LowTargets.IndexOf(currentTarget.current);
                 if (currentIndex >= 0 && currentIndex < _currentGround.LowTargets.Count - 1)
                 {
-                    _nextLeftTarget = _currentGround.LowTargets[currentIndex + 1];
+                    currentTarget.next = _currentGround.LowTargets[currentIndex + 1];
                 }
                 else
                 {
-                    _nextLeftTarget = null;
+                    currentTarget.next = null;
                 }
             }
         }
         else
         {
-            _nextLeftTarget = currentTarget;
+            currentTarget.next = currentTarget.current;
 
             if (newTarget.PrevTarget != null)
             {
-                _prevLeftTarget = newTarget.PrevTarget;
+                currentTarget.prev = newTarget.PrevTarget;
             }
             else
             {
-                var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+                var currentIndex = _currentGround.LowTargets.IndexOf(currentTarget.current);
                 if (currentIndex > 0)
                 {
-                    _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];
+                    currentTarget.prev = _currentGround.LowTargets[currentIndex - 1];
                 }
                 else
                 {
-                    _prevLeftTarget = null;
+                    currentTarget.prev = null;
                 }
             }
         }
     }
 
-    private void AssignPrevAndNextTargets(LinkedCameraTarget newTarget)
+    private void AssignPrevAndNextTargets(CompoundTarget currentTarget, LinkedCameraTarget newTarget)
     {
-        _currentLeftTarget = newTarget;
+        currentTarget.current = newTarget;
 
         if (newTarget.NextTarget != null)
         {
-            _nextLeftTarget = newTarget.NextTarget;
+            currentTarget.next = newTarget.NextTarget;
         }
         else
         {
-            var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+            var currentIndex = _currentGround.LowTargets.IndexOf(currentTarget.current);
             if (currentIndex < _currentGround.LowTargets.Count - 1)
             {
-                _nextLeftTarget = _currentGround.LowTargets[currentIndex + 1];
+                currentTarget.next = _currentGround.LowTargets[currentIndex + 1];
             }
             else
             {
-                _nextLeftTarget = null;
+                currentTarget.next = null;
             }
         }
 
         if (newTarget.PrevTarget != null)
         {
-            _prevLeftTarget = newTarget.PrevTarget;
+            currentTarget.prev = newTarget.PrevTarget;
         }
         else
         {
-            var currentIndex = _currentGround.LowTargets.IndexOf(_currentLeftTarget);
+            var currentIndex = _currentGround.LowTargets.IndexOf(currentTarget.current);
             if (currentIndex > 0)
             {
-                _prevLeftTarget = _currentGround.LowTargets[currentIndex - 1];
+                currentTarget.prev = _currentGround.LowTargets[currentIndex - 1];
             } else
             {
-                _prevLeftTarget = null;
+                currentTarget.prev = null;
             }
         }
     }
 
 }
 
+public class CompoundTarget
+{
+    public LinkedCameraTarget current;
+    public LinkedCameraTarget prev;
+    public LinkedCameraTarget next;
+}

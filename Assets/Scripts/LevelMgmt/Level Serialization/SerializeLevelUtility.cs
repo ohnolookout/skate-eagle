@@ -18,7 +18,6 @@ public static class SerializeLevelUtility
     {
         startLine = null;
         var grounds = groundManager.GetGrounds();
-        GenerateGroundIndices(grounds);
 
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
@@ -46,29 +45,6 @@ public static class SerializeLevelUtility
         return serializedObjects;
     }
 
-    /// <summary>
-    /// Assigns names and serialized locations to ground and curve point objects for identification.
-    /// </summary>
-    private static void GenerateGroundIndices(Ground[] grounds)
-    {
-        for (int i = 0; i < grounds.Length; i++)
-        {
-            var ground = grounds[i];
-            ground.gameObject.name = "Ground " + i;
-            for (int j = 0; j < ground.CurvePointObjects.Length; j++)
-            {
-                var cpObj = ground.CurvePointObjects[j];
-                cpObj.name = "CP " + i + "_" + j;
-
-                if (cpObj.LinkedCameraTarget.doLowTarget)
-                {
-                    cpObj.name += "_LT";
-                }
-
-                cpObj.LinkedCameraTarget.serializedObjectLocation = new int[2] { i, j };
-            }
-        }
-    }
 
     private static SerializedStartLine GetSerializedStartLine(StartLine startLine, Ground[] grounds)
     {
@@ -402,16 +378,3 @@ public static class SerializeLevelUtility
     #endregion
 }
 
-/// <summary>
-/// Helper class for resynchronizing objects after deserialization.
-/// </summary>
-public class ObjectResync
-{
-    public int[] serializedLocation;
-    public Action<GameObject> resyncFunc;
-
-    public ObjectResync(int[] serializedLocation)
-    {
-        this.serializedLocation = serializedLocation;
-    }
-}

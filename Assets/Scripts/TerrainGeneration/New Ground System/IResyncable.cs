@@ -36,6 +36,7 @@ public class ResyncRef<T> where T : class, IResyncable
             if(value == null)
             {
                 _localValue = null;
+                _uid = null;
                 return;
             }
 
