@@ -8,7 +8,7 @@ public class CameraManager : MonoBehaviour
     private (float camBottomY, float orthoSize) _lastCamParams;
     private Camera _camera;
     private Vector3 _targetPosition;
-    private float _targetOrthoSize;
+    private float _targetOrthoSizePercent;
     public bool doLogPosition = false;
     private bool _doUpdate = true;
     private IPlayer _player;
@@ -37,9 +37,9 @@ public class CameraManager : MonoBehaviour
     private const float _xOffsetDampen = 0.05f;
     private float _targetXOffset;
     private const float _maxYDampen = 0.2f;
-    private const float _maxXDelta = 5;
-    private const float _maxYDelta = 2;
-    private const float _maxOrthoDelta = 1;
+    private const float _maxXDeltaPercent = .075f;
+    private const float _maxYDeltaPercent = .03f;
+    private const float _maxOrthoDeltaPercent = .005f;
 
     void Awake()
     {
@@ -173,7 +173,7 @@ public class CameraManager : MonoBehaviour
         camParams = CheckPlayerZoom(camParams);
         Vector3 centerPosition = new(camX, camParams.camBottomY + camParams.orthoSize);
 
-        _targetOrthoSize = camParams.orthoSize;
+        _targetOrthoSizePercent = camParams.orthoSize;
         _lastCamParams = camParams;
         _targetPosition = centerPosition;
     }
@@ -232,25 +232,28 @@ public class CameraManager : MonoBehaviour
         }
         var camPos = _camera.transform.position;
 
+        var maxYDelta = _maxYDeltaPercent * _camera.orthographicSize;
         var newY = Mathf.SmoothStep(camPos.y, _targetPosition.y, _yDampen);
-        if(Mathf.Abs(newY - camPos.y) > _maxYDelta)
+        if(Mathf.Abs(newY - camPos.y) > maxYDelta)
         {
             Debug.Log("Clamping cam Y speed");
-            newY = camPos.y + (_maxYDelta * Mathf.Sign(newY - camPos.y));
+            newY = camPos.y + (maxYDelta * Mathf.Sign(newY - camPos.y));
         }
 
+        var maxXDelta = _maxXDeltaPercent * _camera.orthographicSize;
         var newX = Mathf.SmoothStep(camPos.x, _targetPosition.x, _xDampen);
-        if (Mathf.Abs(newX - camPos.x) > _maxXDelta)
+        if (Mathf.Abs(newX - camPos.x) > maxXDelta)
         {
             Debug.Log("Clamping cam X speed");
-            newX = camPos.x + (_maxXDelta * Mathf.Sign(newX - camPos.x));
+            newX = camPos.x + (maxXDelta * Mathf.Sign(newX - camPos.x));
         }
 
-        var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSize, _zoomDampen);
-        if (Mathf.Abs(_camera.orthographicSize - newOrthoSize) > _maxOrthoDelta)
+        var maxOrthoDelta = _maxOrthoDeltaPercent * _camera.orthographicSize;
+        var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSizePercent, _zoomDampen);
+        if (Mathf.Abs(_camera.orthographicSize - newOrthoSize) > maxOrthoDelta)
         {
             Debug.Log("Clamping cam zoom speed");
-            newOrthoSize = _camera.orthographicSize + (_maxOrthoDelta * Mathf.Sign(newOrthoSize - _camera.orthographicSize));
+            newOrthoSize = _camera.orthographicSize + (maxOrthoDelta * Mathf.Sign(newOrthoSize - _camera.orthographicSize));
         }
 
         _camera.transform.position = new(newX, newY);
@@ -298,7 +301,7 @@ public class CameraManager : MonoBehaviour
         var newParams = CheckPlayerZoom(_lastCamParams);
         Vector3 centerPosition = new(_targetPosition.x, newParams.camBottomY + newParams.orthoSize);
 
-        _targetOrthoSize = newParams.orthoSize;
+        _targetOrthoSizePercent = newParams.orthoSize;
         _targetPosition = centerPosition;
         _lastCamParams = newParams;
 
@@ -371,7 +374,7 @@ public class CameraManager : MonoBehaviour
         var camParams = CameraTargetUtility.GetCamParams(targetX,_lookaheadTarget.current);
         camParams = ProcessMaxY(targetX, camParams);
         _targetPosition = new Vector3(targetX, camParams.camBottomY + camParams.orthoSize);
-        _targetOrthoSize = camParams.orthoSize;
+        _targetOrthoSizePercent = camParams.orthoSize;
         _lastCamParams = camParams;
 
         _doCheckHighPointExit = true;

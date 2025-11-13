@@ -1327,8 +1327,8 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: 88396b75-05bb-44ed-a5f0-fad02b8d060a
-    _name: Cam Gap Test
+    _UID: 775c498c-3de5-4672-8dee-68563b60f57d
+    _name: Camera Change Test
     _goldRequired: 0
     _medalTimes:
       _bronzeTime: 20
@@ -1337,13 +1337,11 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 4583741103951839293
-    - rid: 4583741103951839294
-    - rid: 4583741103951839295
-    - rid: 4583741103951839296
-    - rid: 4583741103951839297
-    _leaderboardKey: Cam Gap Test_leaderboard
-    _killPlaneY: -84
+    - rid: 4583741104504439178
+    - rid: 4583741104504439179
+    - rid: 4583741104504439180
+    _leaderboardKey: Camera Change Test_leaderboard
+    _killPlaneY: -94.478836
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
@@ -1357,61 +1355,61 @@ MonoBehaviour:
         _isSymmetrical: 1
         _floorHeight: 100
         _floorAngle: 0
-        _floorPosition: {x: -120, y: -162, z: 0}
+        _floorPosition: {x: -120, y: -174, z: 0}
         _forceNewSegment: 0
         _blockNewSegment: 0
         _cpObjectRef:
-          _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46-editObj
+          _uid: 65764226-f640-46ce-9b78-517167a81dfb-editObj
         _linkedCameraTarget:
           _prevTargetRef:
             _uid: 
           _nextTargetRef:
-            _uid: f1925560-bba2-4977-a404-5efba32c6eb8
+            _uid: 2f75fbc2-4be9-4496-abde-c8193f71225d
           _forceZoomTargetRefs: []
           _parentObjectRef:
-            _uid: fb2ee58a-d601-41e8-9a74-ea8880024e87-editObj
-          doLowTarget: 1
+            _uid: 64150c2c-680d-41fd-9533-f8bf61c7fa33-editObj
+          doLowTarget: 0
           doUseManualOffset: 0
-          manualYOffset: 1.18
-          yOffset: 0.6
+          manualYOffset: 0
+          yOffset: 0.15
           orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 57.3
-          <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
+          manualOrthoSize: 0
+          <UID>k__BackingField: 1d418bba-2523-419c-be22-364d580dbb6c
           SerializedPosition: {x: -120, y: 30, z: 0}
-        <UID>k__BackingField: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
-      _camStartPosition: {x: -110, y: 36.038414, z: 0}
-      _camOrthoSize: 50
+        <UID>k__BackingField: 65764226-f640-46ce-9b78-517167a81dfb
+      _camStartPosition: {x: -110, y: 17.500568, z: 0}
+      _camOrthoSize: 62.497135
       _firstCameraTarget:
         _prevTargetRef:
           _uid: 
         _nextTargetRef:
-          _uid: f1925560-bba2-4977-a404-5efba32c6eb8
+          _uid: af9e5464-b05f-48cb-8614-1babf6e73b66
         _forceZoomTargetRefs: []
         _parentObjectRef:
-          _uid: fb2ee58a-d601-41e8-9a74-ea8880024e87-editObj
+          _uid: c250d4a0-886b-496d-a91f-43aecda99f03-editObj
         doLowTarget: 1
         doUseManualOffset: 0
-        manualYOffset: 1.18
-        yOffset: 0.6
-        orthoSize: 50
+        manualYOffset: 0
+        yOffset: 0.36463985
+        orthoSize: 62.497135
         doUseManualOrthoSize: 0
-        manualOrthoSize: 57.3
-        <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
-        SerializedPosition: {x: -120, y: 30, z: 0}
+        manualOrthoSize: 0
+        <UID>k__BackingField: 2f75fbc2-4be9-4496-abde-c8193f71225d
+        SerializedPosition: {x: -60, y: -26.764572, z: 0}
       _firstHighPoint:
         _previous:
           rid: -2
         _next:
-          rid: 4583741103951839298
-        position: {x: -474.09222, y: 30.000002, z: 0}
+          rid: 4583741104504439181
+        position: {x: -299.99817, y: 30.000002, z: 0}
       curvePointRef:
-        _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
+        _uid: 65764226-f640-46ce-9b78-517167a81dfb
       firstCameraTargetRef:
-        _uid: e28e4397-378c-480f-b2da-334d5de42166
+        _uid: 2f75fbc2-4be9-4496-abde-c8193f71225d
       groundRef:
-        _uid: ae56af35-82f6-418e-a627-9d818feaab19
-      uid: d55c8ec9-8d4f-488c-a76e-2933311e53b9
+        _uid: b7df7235-666a-495c-91a7-c92fc5cd7390
+      uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   doCheckOverwrite: 1
