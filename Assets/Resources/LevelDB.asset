@@ -51,6 +51,7 @@ MonoBehaviour:
     - d496a38a-ee59-4d1a-b5e8-2d64d5d76b54
     - 775c498c-3de5-4672-8dee-68563b60f57d
     - 88396b75-05bb-44ed-a5f0-fad02b8d060a
+    - 1286878a-0e38-4ef2-9f52-d2659aff8cff
     _keys:
     - 250a8fc4-5477-4c29-bcc4-e97c440da9c8
     - cfcc0997-d2bc-43a0-95eb-b908eca0a91e
@@ -66,6 +67,7 @@ MonoBehaviour:
     - d496a38a-ee59-4d1a-b5e8-2d64d5d76b54
     - 775c498c-3de5-4672-8dee-68563b60f57d
     - 88396b75-05bb-44ed-a5f0-fad02b8d060a
+    - 1286878a-0e38-4ef2-9f52-d2659aff8cff
     _values:
     - _UID: 250a8fc4-5477-4c29-bcc4-e97c440da9c8
       _name: Growing Up
@@ -1091,9 +1093,9 @@ MonoBehaviour:
         _blueTime: 8
         _redTime: 6
       _serializedObjects:
-      - rid: 4583741104504439178
-      - rid: 4583741104504439179
-      - rid: 4583741104504439180
+      - rid: 4583741129562784607
+      - rid: 4583741129562784608
+      - rid: 4583741129562784609
       _leaderboardKey: Camera Change Test_leaderboard
       _killPlaneY: -94.478836
       _serializedStartLine:
@@ -1155,7 +1157,7 @@ MonoBehaviour:
           _previous:
             rid: -2
           _next:
-            rid: 4583741104504439181
+            rid: 4583741129562784610
           position: {x: -299.99817, y: 30.000002, z: 0}
         curvePointRef:
           _uid: 65764226-f640-46ce-9b78-517167a81dfb
@@ -1249,6 +1251,89 @@ MonoBehaviour:
         groundRef:
           _uid: ae56af35-82f6-418e-a627-9d818feaab19
         uid: d55c8ec9-8d4f-488c-a76e-2933311e53b9
+    - _UID: 1286878a-0e38-4ef2-9f52-d2659aff8cff
+      _name: Direction Change Test
+      _goldRequired: 0
+      _medalTimes:
+        _bronzeTime: 20
+        _silverTime: 14
+        _goldTime: 10
+        _blueTime: 8
+        _redTime: 6
+      _serializedObjects:
+      - rid: 4583741129562784597
+      - rid: 4583741129562784598
+      - rid: 4583741129562784599
+      _leaderboardKey: Direction Change Test_leaderboard
+      _killPlaneY: -10
+      _serializedStartLine:
+        xOffset: 0
+        _curvePoint:
+          name: CP
+          position: {x: -120, y: 30, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: 0, z: 0}
+          _serializedWorldPosition: {x: -120, y: 30, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -120, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 8c70e168-31d5-4401-b244-0a11acb08589-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 9a15c825-17ac-4a0e-8313-aa24cb151220
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 8c70e168-31d5-4401-b244-0a11acb08589
+        _camStartPosition: {x: -110, y: NaN, z: 0}
+        _camOrthoSize: 50
+        _firstCameraTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: NaN
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        _firstHighPoint:
+          _previous:
+            rid: -2
+          _next:
+            rid: 4583741129562784600
+          position: {x: -299.99817, y: 30.000002, z: 0}
+        curvePointRef:
+          _uid: 8c70e168-31d5-4401-b244-0a11acb08589
+        firstCameraTargetRef:
+          _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+        groundRef:
+          _uid: b1d5aad9-bf6a-4e39-9a90-04e033f77ba3
+        uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
   _nameToUIDDictionary:
     reorderableList:
       canAdd: 0
@@ -1288,6 +1373,7 @@ MonoBehaviour:
     - Double Gap
     - Camera Change Test
     - Cam Gap Test
+    - Direction Change Test
     _keys:
     - Triple Gap
     - Growing Up
@@ -1303,6 +1389,7 @@ MonoBehaviour:
     - Double Gap
     - Camera Change Test
     - Cam Gap Test
+    - Direction Change Test
     _values:
     - a76492db-2199-4899-9ceb-acaa770b0658
     - 250a8fc4-5477-4c29-bcc4-e97c440da9c8
@@ -1318,6 +1405,7 @@ MonoBehaviour:
     - d496a38a-ee59-4d1a-b5e8-2d64d5d76b54
     - 775c498c-3de5-4672-8dee-68563b60f57d
     - 88396b75-05bb-44ed-a5f0-fad02b8d060a
+    - 1286878a-0e38-4ef2-9f52-d2659aff8cff
   _levelOrder:
   - Easy Does It
   - Growing Up
@@ -1337,9 +1425,9 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 4583741104504439178
-    - rid: 4583741104504439179
-    - rid: 4583741104504439180
+    - rid: 4583741129562784607
+    - rid: 4583741129562784608
+    - rid: 4583741129562784609
     _leaderboardKey: Camera Change Test_leaderboard
     _killPlaneY: -94.478836
     _serializedStartLine:
@@ -1401,7 +1489,7 @@ MonoBehaviour:
         _previous:
           rid: -2
         _next:
-          rid: 4583741104504439181
+          rid: 4583741129562784610
         position: {x: -299.99817, y: 30.000002, z: 0}
       curvePointRef:
         _uid: 65764226-f640-46ce-9b78-517167a81dfb
@@ -48570,94 +48658,6 @@ MonoBehaviour:
         _next:
           rid: -2
         position: {x: 70.000015, y: 0.0000015317491, z: 0}
-    - rid: 4583741103422047014
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047015
-        _next:
-          rid: 4583741103422047016
-        position: {x: -119.92505, y: 29.999832, z: 0}
-    - rid: 4583741103422047015
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: -2
-        _next:
-          rid: 4583741103422047014
-        position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 4583741103422047016
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047014
-        _next:
-          rid: 4583741103422047017
-        position: {x: 0.074915245, y: -3.479079, z: 0}
-    - rid: 4583741103422047017
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047016
-        _next:
-          rid: 4583741103422047018
-        position: {x: 121.07497, y: 9.521072, z: 0}
-    - rid: 4583741103422047018
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047017
-        _next:
-          rid: 4583741103422047019
-        position: {x: 243.19551, y: 78.521034, z: 0}
-    - rid: 4583741103422047019
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047018
-        _next:
-          rid: 4583741103422047020
-        position: {x: 361.07492, y: 72.95303, z: 0}
-    - rid: 4583741103422047020
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047019
-        _next:
-          rid: 4583741103422047021
-        position: {x: 481.07495, y: 55.48188, z: 0}
-    - rid: 4583741103422047021
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047020
-        _next:
-          rid: 4583741103422047022
-        position: {x: 601.075, y: 101.28517, z: 0}
-    - rid: 4583741103422047022
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047021
-        _next:
-          rid: 4583741103422047023
-        position: {x: 721.075, y: 105.53475, z: 0}
-    - rid: 4583741103422047023
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047022
-        _next:
-          rid: 4583741103422047024
-        position: {x: 841.0751, y: 69.64788, z: 0}
-    - rid: 4583741103422047024
-      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
-      data:
-        _previous:
-          rid: 4583741103422047023
-        _next:
-          rid: -2
-        position: {x: 901.19257, y: 39.647964, z: 0}
     - rid: 4583741103951839290
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
@@ -51271,7 +51271,1780 @@ MonoBehaviour:
         _next:
           rid: -2
         position: {x: 16.00001, y: -26.969238, z: 0}
-    - rid: 4583741104504439178
+    - rid: 4583741129562784566
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784567
+        _next:
+          rid: 4583741129562784568
+        position: {x: -119.925095, y: 29.999912, z: 0}
+    - rid: 4583741129562784567
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: -2
+        _next:
+          rid: 4583741129562784566
+        position: {x: -299.99817, y: 30.000002, z: 0}
+    - rid: 4583741129562784568
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784566
+        _next:
+          rid: 4583741129562784569
+        position: {x: -18.371176, y: 33.484207, z: 0}
+    - rid: 4583741129562784569
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784568
+        _next:
+          rid: -2
+        position: {x: 60.192505, y: 2, z: 0}
+    - rid: 4583741129562784597
+      type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
+      data:
+        position: {x: 0, y: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 0}
+        name: Ground 0
+        UID: b1d5aad9-bf6a-4e39-9a90-04e033f77ba3
+        isInverted: 0
+        hasShadow: 1
+        floorType: 0
+        floorHeight: 92
+        floorAngle: 0
+        lastObjCount: 6
+        segmentList:
+        - name: G0 Segment 0
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          curve:
+            curveSections: []
+            _sectionLengths: []
+            _curvePoints: []
+            length: 0
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          startPointIndex: 0
+          endPointIndex: 1
+          startTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: -2
+            _next:
+              rid: 4583741129562784566
+            position: {x: -299.99817, y: 30.000002, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: -300, y: 30, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 1
+            _isSymmetrical: 0
+            _floorHeight: 92
+            _floorAngle: 0
+            _floorPosition: {x: -300, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -120, y: 30, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -120, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -120, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -300, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: -300, y: 30, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 1
+            _isSymmetrical: 0
+            _floorHeight: 92
+            _floorAngle: 0
+            _floorPosition: {x: -300, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -120, y: 30, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -120, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: -300, y: 31.2}
+          - {x: -120, y: 31.2}
+          bottomColliderPoints:
+          - {x: -300, y: 31.2}
+          - {x: -300, y: 30}
+          - {x: -300, y: -62}
+          - {x: -300, y: -62}
+          - {x: -120, y: -62}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        - name: G0 Segment 1
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          curve:
+            curveSections: []
+            _sectionLengths: []
+            _curvePoints: []
+            length: 0
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          startPointIndex: 1
+          endPointIndex: 3
+          startTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: -2
+            _next:
+              rid: 4583741129562784566
+            position: {x: -299.99817, y: 30.000002, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: -120, y: 30, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -120, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -75.19096, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 0
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -300, y: -70, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -18.446167, y: 33.4843, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -18.446167, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -18.446167, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -120, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: -120, y: 30, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -120, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -75.19096, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 0
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -300, y: -70, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -18.446167, y: 33.4843, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -18.446167, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: -120, y: 31.2}
+          - {x: -117.13832, y: 31.064026}
+          - {x: -114.5608, y: 30.681448}
+          - {x: -112.19873, y: 30.06896}
+          - {x: -110.03935, y: 29.24678}
+          - {x: -108.069405, y: 28.237452}
+          - {x: -106.2738, y: 27.065079}
+          - {x: -104.63517, y: 25.754091}
+          - {x: -103.13413, y: 24.328182}
+          - {x: -101.75, y: 22.809748}
+          - {x: -100.46178, y: 21.220024}
+          - {x: -99.2484, y: 19.579187}
+          - {x: -98.08934, y: 17.906816}
+          - {x: -96.9647, y: 16.222189}
+          - {x: -95.85508, y: 14.544301}
+          - {x: -94.741844, y: 12.892061}
+          - {x: -93.606926, y: 11.28412}
+          - {x: -92.43279, y: 9.738676}
+          - {x: -91.20232, y: 8.273229}
+          - {x: -89.89826, y: 6.9041715}
+          - {x: -88.50275, y: 5.6466174}
+          - {x: -86.99631, y: 4.514517}
+          - {x: -85.35735, y: 3.5213957}
+          - {x: -83.562004, y: 2.6815205}
+          - {x: -81.584984, y: 2.011065}
+          - {x: -79.40099, y: 1.5286086}
+          - {x: -76.96723, y: 1.2543441}
+          - {x: -75.15464, y: 1.1994501}
+          - {x: -75.24093, y: 1.1989595}
+          - {x: -73.06403, y: 1.2853699}
+          - {x: -70.98497, y: 1.5451305}
+          - {x: -68.994415, y: 1.9669997}
+          - {x: -67.08339, y: 2.5404058}
+          - {x: -65.2436, y: 3.2552032}
+          - {x: -63.467472, y: 4.1013966}
+          - {x: -61.74811, y: 5.0688667}
+          - {x: -60.079155, y: 6.1472335}
+          - {x: -58.45457, y: 7.3257647}
+          - {x: -56.868496, y: 8.593375}
+          - {x: -55.31513, y: 9.938698}
+          - {x: -53.78861, y: 11.350131}
+          - {x: -52.28296, y: 12.815893}
+          - {x: -50.792084, y: 14.3241}
+          - {x: -49.309742, y: 15.862786}
+          - {x: -47.829544, y: 17.419945}
+          - {x: -46.344933, y: 18.98353}
+          - {x: -44.849194, y: 20.541473}
+          - {x: -43.335472, y: 22.081644}
+          - {x: -41.796753, y: 23.59187}
+          - {x: -40.225895, y: 25.059843}
+          - {x: -38.61564, y: 26.473122}
+          - {x: -36.958664, y: 27.819035}
+          - {x: -35.247677, y: 29.08463}
+          - {x: -33.47553, y: 30.256607}
+          - {x: -31.63537, y: 31.321327}
+          - {x: -29.720846, y: 32.264866}
+          - {x: -27.726255, y: 33.073116}
+          - {x: -25.646643, y: 33.73209}
+          - {x: -23.477707, y: 34.22816}
+          - {x: -21.215612, y: 34.548336}
+          - {x: -18.897156, y: 34.680763}
+          - {x: -18.455675, y: 34.68426}
+          bottomColliderPoints:
+          - {x: -120, y: -62}
+          - {x: -18.446167, y: -62}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        - name: G0 Segment 2
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          curve:
+            curveSections: []
+            _sectionLengths: []
+            _curvePoints: []
+            length: 0
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          startPointIndex: 3
+          endPointIndex: 4
+          startTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: 4583741129562784567
+            _next:
+              rid: 4583741129562784568
+            position: {x: -119.925095, y: 29.999912, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: -18.446167, y: 33.4843, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -18.446167, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: 2, z: 0}
+            leftTangent: {x: -31.25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -18.446167, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: -18.446167, y: 33.4843, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -18.446167, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: 2, z: 0}
+            leftTangent: {x: -31.25, y: 0, z: 0}
+            rightTangent: {x: 31.25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: -18.455675, y: 34.68426}
+          - {x: -16.493057, y: 34.622902}
+          - {x: -14.5899935, y: 34.44913}
+          - {x: -12.699751, y: 34.16883}
+          - {x: -10.821592, y: 33.78844}
+          - {x: -8.954589, y: 33.31436}
+          - {x: -7.097656, y: 32.752914}
+          - {x: -5.2495737, y: 32.110332}
+          - {x: -3.409057, y: 31.39276}
+          - {x: -1.5747664, y: 30.606245}
+          - {x: 0.25465488, y: 29.756748}
+          - {x: 2.080559, y: 28.85017}
+          - {x: 3.9042993, y: 27.892347}
+          - {x: 5.7271857, y: 26.88906}
+          - {x: 7.5505204, y: 25.84607}
+          - {x: 9.375562, y: 24.769087}
+          - {x: 11.20354, y: 23.66382}
+          - {x: 13.035669, y: 22.535942}
+          - {x: 14.873098, y: 21.39112}
+          - {x: 16.716988, y: 20.235016}
+          - {x: 18.56844, y: 19.073275}
+          - {x: 20.428545, y: 17.91153}
+          - {x: 22.298365, y: 16.755415}
+          - {x: 24.178942, y: 15.610545}
+          - {x: 26.071281, y: 14.482533}
+          - {x: 27.976395, y: 13.376969}
+          - {x: 29.895262, y: 12.299431}
+          - {x: 31.82884, y: 11.255477}
+          - {x: 33.778095, y: 10.250642}
+          - {x: 35.743984, y: 9.290428}
+          - {x: 37.727467, y: 8.380314}
+          - {x: 39.729504, y: 7.5257406}
+          - {x: 41.75108, y: 6.732116}
+          - {x: 43.793247, y: 6.0048046}
+          - {x: 45.857044, y: 5.3491445}
+          - {x: 47.943607, y: 4.7704434}
+          - {x: 50.054134, y: 4.2739854}
+          - {x: 52.18992, y: 3.8650517}
+          - {x: 54.352314, y: 3.5489345}
+          - {x: 56.54278, y: 3.330954}
+          - {x: 58.776688, y: 3.2163782}
+          - {x: 60.01596, y: 3.199894}
+          bottomColliderPoints:
+          - {x: -18.446167, y: -62}
+          - {x: 60, y: -62}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        - name: G0 Segment 3
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          curve:
+            curveSections: []
+            _sectionLengths: []
+            _curvePoints: []
+            length: 0
+            _lowPoint: {x: 0, y: 0, z: 0}
+            _highPoint: {x: 0, y: 0, z: 0}
+          startPointIndex: 4
+          endPointIndex: 5
+          startTarget:
+            _prevTargetRef:
+              _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: 4583741129562784566
+            _next:
+              rid: 4583741129562784569
+            position: {x: -18.371176, y: 33.484207, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: 60, y: 2, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 31.25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 540, y: 2, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 1
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 540, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 540, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: -62, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: 60, y: 2, z: 0}
+            leftTangent: {x: -31.25, y: 0, z: 0}
+            rightTangent: {x: 31.25, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 2
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 540, y: 2, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 1
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 540, y: -62, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: 60.01596, y: 3.199894}
+          - {x: 540.003, y: 3.1999965}
+          bottomColliderPoints:
+          - {x: 60, y: -62}
+          - {x: 540, y: -62}
+          - {x: 540, y: -62}
+          - {x: 540, y: 2}
+          - {x: 540.003, y: 3.1999965}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        curvePoints:
+        - name: CP
+          position: {x: -300, y: 30, z: 0}
+          leftTangent: {x: 0, y: 0, z: 0}
+          rightTangent: {x: 0, y: 0, z: 0}
+          _serializedWorldPosition: {x: -300, y: 30, z: 0}
+          _mode: 0
+          _floorPointType: 1
+          _isSymmetrical: 0
+          _floorHeight: 92
+          _floorAngle: 0
+          _floorPosition: {x: -300, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: f1b48ad9-2c68-4fc5-a387-0469adaa8f5c-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: a3331664-b5a7-4e9b-995f-85156c32a009
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: f1b48ad9-2c68-4fc5-a387-0469adaa8f5c
+        - name: CP
+          position: {x: -120, y: 30, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: 0, z: 0}
+          _serializedWorldPosition: {x: -120, y: 30, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -120, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 8c70e168-31d5-4401-b244-0a11acb08589-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 9a15c825-17ac-4a0e-8313-aa24cb151220
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 8c70e168-31d5-4401-b244-0a11acb08589
+        - name: CP
+          position: {x: -75.19096, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: 0, z: 0}
+          _serializedWorldPosition: {x: -75.19096, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 0
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -300, y: -70, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: f31c8716-6110-4dce-aa43-0667722aab70-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: f31c8716-6110-4dce-aa43-0667722aab70
+        - name: CP
+          position: {x: -18.446167, y: 33.4843, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: -18.446167, y: 33.4843, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -18.446167, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: f0a941c0-6272-4a49-a045-c3de07e32847-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 1478da08-7d66-480a-84be-4a7a07d02f66
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: f0a941c0-6272-4a49-a045-c3de07e32847
+        - name: CP
+          position: {x: 60, y: 2, z: 0}
+          leftTangent: {x: -31.25, y: 0, z: 0}
+          rightTangent: {x: 31.25, y: 0, z: 0}
+          _serializedWorldPosition: {x: 60, y: 2, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 60, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 435e3243-44e4-4135-bbbb-946285e815f1-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 435e3243-44e4-4135-bbbb-946285e815f1
+        - name: CP
+          position: {x: 540, y: 2, z: 0}
+          leftTangent: {x: 0, y: 0, z: 0}
+          rightTangent: {x: 0, y: 0, z: 0}
+          _serializedWorldPosition: {x: 540, y: 2, z: 0}
+          _mode: 0
+          _floorPointType: 1
+          _isSymmetrical: 0
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 540, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 47511d71-0f5e-4e2c-8d8f-688182d963f6-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: d6a71c7a-f473-40ec-8cd7-feaa5a090332
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 47511d71-0f5e-4e2c-8d8f-688182d963f6
+        lowTargets:
+        - _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: NaN
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        - _prevTargetRef:
+            _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: NaN
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        zoomPoints: []
+        highPoints:
+        - _previous:
+            rid: -2
+          _next:
+            rid: 4583741129562784566
+          position: {x: -299.99817, y: 30.000002, z: 0}
+        - _previous:
+            rid: 4583741129562784567
+          _next:
+            rid: 4583741129562784568
+          position: {x: -119.925095, y: 29.999912, z: 0}
+        - _previous:
+            rid: 4583741129562784566
+          _next:
+            rid: 4583741129562784569
+          position: {x: -18.371176, y: 33.484207, z: 0}
+        - _previous:
+            rid: 4583741129562784568
+          _next:
+            rid: -2
+          position: {x: 60.192505, y: 2, z: 0}
+        manualLeftCamTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 0
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: 2819fa61-27a1-48bf-8a35-157ecb7fbf8c
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        manualRightCamTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 0
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: 66e11398-9d97-4262-a021-8cbfcfe700d8
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        leftEndTargetObjRef:
+          _uid: 
+        rightEndTargetObjRef:
+          _uid: 
+        leftEndCamTargetRef:
+          _uid: 2819fa61-27a1-48bf-8a35-157ecb7fbf8c
+        rightEndCamTargetRef:
+          _uid: 66e11398-9d97-4262-a021-8cbfcfe700d8
+        zoomPointRefs: []
+        highTargets: []
+    - rid: 4583741129562784598
+      type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
+      data:
+        flagPoint:
+          name: CP
+          position: {x: 60, y: 2, z: 0}
+          leftTangent: {x: -31.25, y: 0, z: 0}
+          rightTangent: {x: 31.25, y: 0, z: 0}
+          _serializedWorldPosition: {x: 60, y: 2, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 60, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 435e3243-44e4-4135-bbbb-946285e815f1-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 1
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: NaN
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 435e3243-44e4-4135-bbbb-946285e815f1
+        flagPointXOffset: 50
+        backstopPoint:
+          name: CP
+          position: {x: 540, y: 2, z: 0}
+          leftTangent: {x: 0, y: 0, z: 0}
+          rightTangent: {x: 0, y: 0, z: 0}
+          _serializedWorldPosition: {x: 540, y: 2, z: 0}
+          _mode: 0
+          _floorPointType: 1
+          _isSymmetrical: 0
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 540, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 47511d71-0f5e-4e2c-8d8f-688182d963f6-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: d6a71c7a-f473-40ec-8cd7-feaa5a090332
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 47511d71-0f5e-4e2c-8d8f-688182d963f6
+        backstopPointXOffset: 0
+        backstopIsActive: 1
+        flagPointRef:
+          _uid: 435e3243-44e4-4135-bbbb-946285e815f1
+        backstopPointRef:
+          _uid: 47511d71-0f5e-4e2c-8d8f-688182d963f6
+        uid: 9caa907b-43f4-4b55-8158-117a73a787e7
+    - rid: 4583741129562784599
+      type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
+      data:
+        xOffset: 0
+        _curvePoint:
+          name: CP
+          position: {x: -120, y: 30, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: 0, z: 0}
+          _serializedWorldPosition: {x: -120, y: 30, z: 0}
+          _mode: 1
+          _floorPointType: 2
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -120, y: -62, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: 8c70e168-31d5-4401-b244-0a11acb08589-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 9a15c825-17ac-4a0e-8313-aa24cb151220
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: 8c70e168-31d5-4401-b244-0a11acb08589
+        _camStartPosition: {x: -110, y: NaN, z: 0}
+        _camOrthoSize: 50
+        _firstCameraTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: b769e0ca-05a0-4bf7-8d76-36506a23d0a4
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 1
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: NaN
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        _firstHighPoint:
+          _previous:
+            rid: -2
+          _next:
+            rid: 4583741129562784600
+          position: {x: -299.99817, y: 30.000002, z: 0}
+        curvePointRef:
+          _uid: 8c70e168-31d5-4401-b244-0a11acb08589
+        firstCameraTargetRef:
+          _uid: fd2ea0a8-e1a5-4017-9471-ef9bdb91dffb
+        groundRef:
+          _uid: b1d5aad9-bf6a-4e39-9a90-04e033f77ba3
+        uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
+    - rid: 4583741129562784600
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784601
+        _next:
+          rid: 4583741129562784602
+        position: {x: -119.925095, y: 29.999912, z: 0}
+    - rid: 4583741129562784601
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: -2
+        _next:
+          rid: 4583741129562784600
+        position: {x: -299.99817, y: 30.000002, z: 0}
+    - rid: 4583741129562784602
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784600
+        _next:
+          rid: 4583741129562784603
+        position: {x: -18.371176, y: 33.484207, z: 0}
+    - rid: 4583741129562784603
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784602
+        _next:
+          rid: -2
+        position: {x: 60.192505, y: 2, z: 0}
+    - rid: 4583741129562784607
       type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
       data:
         position: {x: 0, y: 0}
@@ -51326,7 +53099,7 @@ MonoBehaviour:
             _previous:
               rid: -2
             _next:
-              rid: 4583741103422047014
+              rid: 4583741129562784611
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -51598,7 +53371,7 @@ MonoBehaviour:
             _previous:
               rid: -2
             _next:
-              rid: 4583741103422047014
+              rid: 4583741129562784611
             position: {x: -299.99817, y: 30.000002, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -51906,9 +53679,9 @@ MonoBehaviour:
             SerializedPosition: {x: -60, y: -26.764572, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047015
+              rid: 4583741129562784612
             _next:
-              rid: 4583741103422047016
+              rid: 4583741129562784613
             position: {x: -119.92505, y: 29.999832, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -52358,9 +54131,9 @@ MonoBehaviour:
             SerializedPosition: {x: 61, y: -84.478836, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047014
+              rid: 4583741129562784611
             _next:
-              rid: 4583741103422047017
+              rid: 4583741129562784614
             position: {x: 0.074915245, y: -3.479079, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -52684,9 +54457,9 @@ MonoBehaviour:
             SerializedPosition: {x: 61, y: -84.478836, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047014
+              rid: 4583741129562784611
             _next:
-              rid: 4583741103422047017
+              rid: 4583741129562784614
             position: {x: 0.074915245, y: -3.479079, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -53146,9 +54919,9 @@ MonoBehaviour:
             SerializedPosition: {x: 181, y: -21.161049, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047016
+              rid: 4583741129562784613
             _next:
-              rid: 4583741103422047018
+              rid: 4583741129562784615
             position: {x: 121.07497, y: 9.521072, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -53589,9 +55362,9 @@ MonoBehaviour:
             SerializedPosition: {x: 288.72284, y: 32.344276, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047017
+              rid: 4583741129562784614
             _next:
-              rid: 4583741103422047019
+              rid: 4583741129562784616
             position: {x: 243.19551, y: 78.521034, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -53920,9 +55693,9 @@ MonoBehaviour:
             SerializedPosition: {x: 421, y: -34.707905, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047018
+              rid: 4583741129562784615
             _next:
-              rid: 4583741103422047020
+              rid: 4583741129562784617
             position: {x: 361.07492, y: 72.95303, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -54245,9 +56018,9 @@ MonoBehaviour:
             SerializedPosition: {x: 421, y: -34.707905, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047018
+              rid: 4583741129562784615
             _next:
-              rid: 4583741103422047020
+              rid: 4583741129562784617
             position: {x: 361.07492, y: 72.95303, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -54673,9 +56446,9 @@ MonoBehaviour:
             SerializedPosition: {x: 541, y: 10.623146, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047019
+              rid: 4583741129562784616
             _next:
-              rid: 4583741103422047021
+              rid: 4583741129562784618
             position: {x: 481.07495, y: 55.48188, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -55076,9 +56849,9 @@ MonoBehaviour:
             SerializedPosition: {x: 661, y: 69.647964, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047020
+              rid: 4583741129562784617
             _next:
-              rid: 4583741103422047022
+              rid: 4583741129562784619
             position: {x: 601.075, y: 101.28517, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -55405,9 +57178,9 @@ MonoBehaviour:
             SerializedPosition: {x: 781, y: 3.0679855, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047021
+              rid: 4583741129562784618
             _next:
-              rid: 4583741103422047023
+              rid: 4583741129562784620
             position: {x: 721.075, y: 105.53475, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -55719,9 +57492,9 @@ MonoBehaviour:
             SerializedPosition: {x: 781, y: 3.0679855, z: 0}
           startHighPoint:
             _previous:
-              rid: 4583741103422047021
+              rid: 4583741129562784618
             _next:
-              rid: 4583741103422047023
+              rid: 4583741129562784620
             position: {x: 721.075, y: 105.53475, z: 0}
           fillSplineCurvePoints:
           - name: CP
@@ -56863,55 +58636,55 @@ MonoBehaviour:
         - _previous:
             rid: -2
           _next:
-            rid: 4583741103422047014
+            rid: 4583741129562784611
           position: {x: -299.99817, y: 30.000002, z: 0}
         - _previous:
-            rid: 4583741103422047015
+            rid: 4583741129562784612
           _next:
-            rid: 4583741103422047016
+            rid: 4583741129562784613
           position: {x: -119.92505, y: 29.999832, z: 0}
         - _previous:
-            rid: 4583741103422047014
+            rid: 4583741129562784611
           _next:
-            rid: 4583741103422047017
+            rid: 4583741129562784614
           position: {x: 0.074915245, y: -3.479079, z: 0}
         - _previous:
-            rid: 4583741103422047016
+            rid: 4583741129562784613
           _next:
-            rid: 4583741103422047018
+            rid: 4583741129562784615
           position: {x: 121.07497, y: 9.521072, z: 0}
         - _previous:
-            rid: 4583741103422047017
+            rid: 4583741129562784614
           _next:
-            rid: 4583741103422047019
+            rid: 4583741129562784616
           position: {x: 243.19551, y: 78.521034, z: 0}
         - _previous:
-            rid: 4583741103422047018
+            rid: 4583741129562784615
           _next:
-            rid: 4583741103422047020
+            rid: 4583741129562784617
           position: {x: 361.07492, y: 72.95303, z: 0}
         - _previous:
-            rid: 4583741103422047019
+            rid: 4583741129562784616
           _next:
-            rid: 4583741103422047021
+            rid: 4583741129562784618
           position: {x: 481.07495, y: 55.48188, z: 0}
         - _previous:
-            rid: 4583741103422047020
+            rid: 4583741129562784617
           _next:
-            rid: 4583741103422047022
+            rid: 4583741129562784619
           position: {x: 601.075, y: 101.28517, z: 0}
         - _previous:
-            rid: 4583741103422047021
+            rid: 4583741129562784618
           _next:
-            rid: 4583741103422047023
+            rid: 4583741129562784620
           position: {x: 721.075, y: 105.53475, z: 0}
         - _previous:
-            rid: 4583741103422047022
+            rid: 4583741129562784619
           _next:
-            rid: 4583741103422047024
+            rid: 4583741129562784621
           position: {x: 841.0751, y: 69.64788, z: 0}
         - _previous:
-            rid: 4583741103422047023
+            rid: 4583741129562784620
           _next:
             rid: -2
           position: {x: 901.19257, y: 39.647964, z: 0}
@@ -56959,7 +58732,7 @@ MonoBehaviour:
           _uid: 06d5305d-7e70-43e4-94c3-d16e5d97afd0
         zoomPointRefs: []
         highTargets: []
-    - rid: 4583741104504439179
+    - rid: 4583741129562784608
       type: {class: SerializedFinishLine, ns: , asm: Assembly-CSharp}
       data:
         flagPoint:
@@ -57038,7 +58811,7 @@ MonoBehaviour:
         backstopPointRef:
           _uid: b7be9051-eb05-490e-8338-b18e96af12c0
         uid: 9caa907b-43f4-4b55-8158-117a73a787e7
-    - rid: 4583741104504439180
+    - rid: 4583741129562784609
       type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
       data:
         xOffset: 0
@@ -57099,7 +58872,7 @@ MonoBehaviour:
           _previous:
             rid: -2
           _next:
-            rid: 4583741104504439181
+            rid: 4583741129562784610
           position: {x: -299.99817, y: 30.000002, z: 0}
         curvePointRef:
           _uid: 65764226-f640-46ce-9b78-517167a81dfb
@@ -57108,91 +58881,179 @@ MonoBehaviour:
         groundRef:
           _uid: b7df7235-666a-495c-91a7-c92fc5cd7390
         uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
-    - rid: 4583741104504439181
+    - rid: 4583741129562784610
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439182
+          rid: 4583741129562784622
         _next:
-          rid: 4583741104504439183
+          rid: 4583741129562784623
         position: {x: -119.92505, y: 29.999832, z: 0}
-    - rid: 4583741104504439182
+    - rid: 4583741129562784611
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784612
+        _next:
+          rid: 4583741129562784613
+        position: {x: -119.92505, y: 29.999832, z: 0}
+    - rid: 4583741129562784612
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
           rid: -2
         _next:
-          rid: 4583741104504439181
+          rid: 4583741129562784611
         position: {x: -299.99817, y: 30.000002, z: 0}
-    - rid: 4583741104504439183
+    - rid: 4583741129562784613
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439181
+          rid: 4583741129562784611
         _next:
-          rid: 4583741104504439184
+          rid: 4583741129562784614
         position: {x: 0.074915245, y: -3.479079, z: 0}
-    - rid: 4583741104504439184
+    - rid: 4583741129562784614
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439183
+          rid: 4583741129562784613
         _next:
-          rid: 4583741104504439185
+          rid: 4583741129562784615
         position: {x: 121.07497, y: 9.521072, z: 0}
-    - rid: 4583741104504439185
+    - rid: 4583741129562784615
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439184
+          rid: 4583741129562784614
         _next:
-          rid: 4583741104504439186
+          rid: 4583741129562784616
         position: {x: 243.19551, y: 78.521034, z: 0}
-    - rid: 4583741104504439186
+    - rid: 4583741129562784616
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439185
+          rid: 4583741129562784615
         _next:
-          rid: 4583741104504439187
+          rid: 4583741129562784617
         position: {x: 361.07492, y: 72.95303, z: 0}
-    - rid: 4583741104504439187
+    - rid: 4583741129562784617
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439186
+          rid: 4583741129562784616
         _next:
-          rid: 4583741104504439188
+          rid: 4583741129562784618
         position: {x: 481.07495, y: 55.48188, z: 0}
-    - rid: 4583741104504439188
+    - rid: 4583741129562784618
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439187
+          rid: 4583741129562784617
         _next:
-          rid: 4583741104504439189
+          rid: 4583741129562784619
         position: {x: 601.075, y: 101.28517, z: 0}
-    - rid: 4583741104504439189
+    - rid: 4583741129562784619
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439188
+          rid: 4583741129562784618
         _next:
-          rid: 4583741104504439190
+          rid: 4583741129562784620
         position: {x: 721.075, y: 105.53475, z: 0}
-    - rid: 4583741104504439190
+    - rid: 4583741129562784620
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439189
+          rid: 4583741129562784619
         _next:
-          rid: 4583741104504439191
+          rid: 4583741129562784621
         position: {x: 841.0751, y: 69.64788, z: 0}
-    - rid: 4583741104504439191
+    - rid: 4583741129562784621
       type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
       data:
         _previous:
-          rid: 4583741104504439190
+          rid: 4583741129562784620
+        _next:
+          rid: -2
+        position: {x: 901.19257, y: 39.647964, z: 0}
+    - rid: 4583741129562784622
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: -2
+        _next:
+          rid: 4583741129562784610
+        position: {x: -299.99817, y: 30.000002, z: 0}
+    - rid: 4583741129562784623
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784610
+        _next:
+          rid: 4583741129562784624
+        position: {x: 0.074915245, y: -3.479079, z: 0}
+    - rid: 4583741129562784624
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784623
+        _next:
+          rid: 4583741129562784625
+        position: {x: 121.07497, y: 9.521072, z: 0}
+    - rid: 4583741129562784625
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784624
+        _next:
+          rid: 4583741129562784626
+        position: {x: 243.19551, y: 78.521034, z: 0}
+    - rid: 4583741129562784626
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784625
+        _next:
+          rid: 4583741129562784627
+        position: {x: 361.07492, y: 72.95303, z: 0}
+    - rid: 4583741129562784627
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784626
+        _next:
+          rid: 4583741129562784628
+        position: {x: 481.07495, y: 55.48188, z: 0}
+    - rid: 4583741129562784628
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784627
+        _next:
+          rid: 4583741129562784629
+        position: {x: 601.075, y: 101.28517, z: 0}
+    - rid: 4583741129562784629
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784628
+        _next:
+          rid: 4583741129562784630
+        position: {x: 721.075, y: 105.53475, z: 0}
+    - rid: 4583741129562784630
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784629
+        _next:
+          rid: 4583741129562784631
+        position: {x: 841.0751, y: 69.64788, z: 0}
+    - rid: 4583741129562784631
+      type: {class: LinkedHighPoint, ns: , asm: Assembly-CSharp}
+      data:
+        _previous:
+          rid: 4583741129562784630
         _next:
           rid: -2
         position: {x: 901.19257, y: 39.647964, z: 0}

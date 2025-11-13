@@ -8,7 +8,7 @@ public class CameraManager : MonoBehaviour
     private (float camBottomY, float orthoSize) _lastCamParams;
     private Camera _camera;
     private Vector3 _targetPosition;
-    private float _targetOrthoSizePercent;
+    private float _targetOrthoSize;
     public bool doLogPosition = false;
     private bool _doUpdate = true;
     private IPlayer _player;
@@ -25,12 +25,9 @@ public class CameraManager : MonoBehaviour
     private float _xOffset;
     private const float _defaultXDampen = 0.35f;
     private float _xDampen;
-    private float _xDampenOnDirectionChange = 0.1f;
     private const float _defaultYDampen = 0.2f;
-    private float _yDampenOnDirectionChange = 0.2f;
     private float _yDampen;
     private const float _defaultZoomDampen = 0.2f;
-    private float _zoomDampenOnDirectionChange = 0.2f;
     private float _zoomDampen;
     private float _aspectRatio;
     private float _xBufferT = 0.7f;
@@ -173,7 +170,7 @@ public class CameraManager : MonoBehaviour
         camParams = CheckPlayerZoom(camParams);
         Vector3 centerPosition = new(camX, camParams.camBottomY + camParams.orthoSize);
 
-        _targetOrthoSizePercent = camParams.orthoSize;
+        _targetOrthoSize = camParams.orthoSize;
         _lastCamParams = camParams;
         _targetPosition = centerPosition;
     }
@@ -220,9 +217,9 @@ public class CameraManager : MonoBehaviour
         if (_doDirectionChangeDampen)
         {
             _xDampen = Mathf.SmoothStep(_xDampen, _defaultXDampen, 0.1f);
-            //_yDampen = Mathf.SmoothStep(_yDampen, _defaultYDampen, 0.1f);
-            //_zoomDampen = Mathf.SmoothStep(_zoomDampen, _defaultZoomDampen, 0.1f);
-            if (Mathf.Abs(_defaultXDampen - _xDampen) < 0.02) //&& Mathf.Abs(_defaultYDampen - _yDampen) < 0.02)
+            _yDampen = Mathf.SmoothStep(_yDampen, _defaultYDampen, 0.1f);
+            _zoomDampen = Mathf.SmoothStep(_zoomDampen, _defaultZoomDampen, 0.1f);
+            if (Mathf.Abs(_defaultXDampen - _xDampen) < 0.02 && Mathf.Abs(_defaultYDampen - _yDampen) < 0.02)
             {
                 _xDampen = _defaultXDampen;
                 _yDampen = _defaultYDampen;
@@ -231,12 +228,11 @@ public class CameraManager : MonoBehaviour
             }
         }
         var camPos = _camera.transform.position;
-
         var maxYDelta = _maxYDeltaPercent * _camera.orthographicSize;
         var newY = Mathf.SmoothStep(camPos.y, _targetPosition.y, _yDampen);
         if(Mathf.Abs(newY - camPos.y) > maxYDelta)
         {
-            Debug.Log("Clamping cam Y speed");
+            //Debug.Log("Clamping cam Y speed");
             newY = camPos.y + (maxYDelta * Mathf.Sign(newY - camPos.y));
         }
 
@@ -244,15 +240,15 @@ public class CameraManager : MonoBehaviour
         var newX = Mathf.SmoothStep(camPos.x, _targetPosition.x, _xDampen);
         if (Mathf.Abs(newX - camPos.x) > maxXDelta)
         {
-            Debug.Log("Clamping cam X speed");
+            //Debug.Log("Clamping cam X speed");
             newX = camPos.x + (maxXDelta * Mathf.Sign(newX - camPos.x));
         }
 
         var maxOrthoDelta = _maxOrthoDeltaPercent * _camera.orthographicSize;
-        var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSizePercent, _zoomDampen);
+        var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSize, _zoomDampen);
         if (Mathf.Abs(_camera.orthographicSize - newOrthoSize) > maxOrthoDelta)
         {
-            Debug.Log("Clamping cam zoom speed");
+            //Debug.Log("Clamping cam zoom speed");
             newOrthoSize = _camera.orthographicSize + (maxOrthoDelta * Mathf.Sign(newOrthoSize - _camera.orthographicSize));
         }
 
@@ -301,7 +297,7 @@ public class CameraManager : MonoBehaviour
         var newParams = CheckPlayerZoom(_lastCamParams);
         Vector3 centerPosition = new(_targetPosition.x, newParams.camBottomY + newParams.orthoSize);
 
-        _targetOrthoSizePercent = newParams.orthoSize;
+        _targetOrthoSize = newParams.orthoSize;
         _targetPosition = centerPosition;
         _lastCamParams = newParams;
 
@@ -351,6 +347,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+
     private void OnSwitchPlayerDirection(IPlayer player)
     {        
         if (_doCheckHighPointExit)
@@ -362,9 +359,11 @@ public class CameraManager : MonoBehaviour
 
         float targetX;
 
+        
+
         if(_currentHighPoint.Next != null)
         {
-            targetX = _currentHighPoint.position.x + ((_currentHighPoint.Next.position.x - _currentHighPoint.position.x) / 2);            
+            targetX = _currentHighPoint.position.x + ((_currentHighPoint.Next.position.x - _currentHighPoint.position.x) / 2);
         }
         else
         {
@@ -374,14 +373,68 @@ public class CameraManager : MonoBehaviour
         var camParams = CameraTargetUtility.GetCamParams(targetX,_lookaheadTarget.current);
         camParams = ProcessMaxY(targetX, camParams);
         _targetPosition = new Vector3(targetX, camParams.camBottomY + camParams.orthoSize);
-        _targetOrthoSizePercent = camParams.orthoSize;
+        _targetOrthoSize = camParams.orthoSize;
         _lastCamParams = camParams;
 
         _doCheckHighPointExit = true;
-        _xDampen = _defaultXDampen/4;
-        //_yDampen = _defaultYDampen/2;
-        //_zoomDampen = _defaultZoomDampen/2;
 
+        Debug.Log("Doing dir change...");
+        var leftHighPointCameraPos = _camera.WorldToViewportPoint(_currentHighPoint.position);
+        var leftHighPointInCamera = PointIsInCamera(leftHighPointCameraPos);
+        var rightHighPointInCamera = true;
+        var nextLowPointInCamera = true;
+
+        if (leftHighPointInCamera)
+        {
+            Debug.Log("Left high point in camera");
+            rightHighPointInCamera = true;
+            if(_currentHighPoint.Next != null)
+            {
+                var rightHighPointCameraPos = _camera.WorldToViewportPoint(_currentHighPoint.Next.position);
+                rightHighPointInCamera = PointIsInCamera(leftHighPointCameraPos);
+            }
+
+            if (rightHighPointInCamera)
+            {
+                Debug.Log("Right high point in camera");
+                Vector3 nextLowPoint;
+                if (_player.FacingForward)
+                {
+                    Debug.Log("Player facing forward...");
+                    nextLowPoint = _playerTarget.next.Position;
+                }
+                else
+                {
+                    Debug.Log("Player facing backward...");
+                    nextLowPoint = _playerTarget.current.Position;
+                }
+
+                var nextLowPointCameraPos = _camera.WorldToViewportPoint(nextLowPoint);
+                nextLowPointInCamera = PointIsInCamera(nextLowPointCameraPos);
+            }
+
+        }
+
+        if (leftHighPointInCamera && rightHighPointInCamera && nextLowPointInCamera)
+        {
+            Debug.Log("All necessary points in cam on dir change");
+            _xDampen = _defaultXDampen / 6;
+            _yDampen = _defaultYDampen / 6;
+            _zoomDampen = _defaultZoomDampen / 4;
+        }
+        else
+        {
+            _xDampen = _defaultXDampen / 4;
+        }
+
+    }
+
+    private bool PointIsInCamera(Vector3 viewportPoint)
+    {
+        return viewportPoint.x >= 0.1f 
+            && viewportPoint.x <= 0.9f 
+            && viewportPoint.y >= 0.03f 
+            && viewportPoint.y <= 0.9f;
     }
 
     private void CheckHighPointExit()
@@ -402,7 +455,7 @@ public class CameraManager : MonoBehaviour
     {
         _doDirectionChangeDampen = true;
         _doCheckHighPointExit = false;
-        _xDampen = _xDampenOnDirectionChange;
+        //_xDampen = _xDampenOnDirectionChange;
         //_yDampen = _yDampenOnDirectionChange;
         //_zoomDampen = _zoomDampenOnDirectionChange;
 

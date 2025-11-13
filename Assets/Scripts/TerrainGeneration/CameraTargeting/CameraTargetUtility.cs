@@ -309,8 +309,6 @@ public static class CameraTargetUtility
         var slopeDelta = slopeFromPrev - slopeToNext;
         var slopeDeltaT = Mathf.Clamp01((slopeDelta - MinSlopeDeltaForOffset) / (MaxSlopeDeltaForOffset - MinSlopeDeltaForOffset));
 
-        Debug.Log($"Calculating y offset for target. Slope delta: {slopeDelta}");
-        Debug.Log($"Slope from prev {slopeFromPrev} Slope to next {slopeToNext} Slope delta T: {slopeDeltaT}");
 
         var slopeOffsetT = MinYOffsetT + (MaxYOffsetT - MinYOffsetT) * slopeDeltaT;        
         target.yOffset = Mathf.Max(slopeOffsetT, lowestPointOffsetT, MinYOffsetT);
