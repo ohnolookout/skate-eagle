@@ -42,49 +42,6 @@ public class Level
         _killPlaneY = 0;
     }
 
-
-    //Uncomment this method to populate curve points for serialized grounds
-    public void PopulateGroundCurvePoints()
-    {
-        var count = 0;
-        var curvePointCount = 0;
-        foreach (var serializable in _serializedObjects)
-        {
-            if (serializable is SerializedGround serializedGround)
-            {
-                serializedGround.curvePoints = SerializeLevelUtility.GenerateCurvePointListFromGround(serializedGround);
-                curvePointCount += serializedGround.curvePoints.Count;
-                count++;
-            }
-        }
-
-        Debug.Log($"Level {Name}: Populated {curvePointCount} curve points for {count} serialized grounds.");
-    }
-
-    public void PopulateSegmentCurvePoints()
-    {
-        Debug.Log($"Populating segment curve points for level: {Name}");
-        var groundCount = 0;
-        foreach (var serializable in _serializedObjects)
-        {
-            if (serializable is SerializedGround serializedGround)
-            {
-                Debug.Log($"Populating segments for serialized ground: {serializedGround.name}");
-
-                if(serializedGround.curvePoints == null || serializedGround.curvePoints.Count == 0)
-                {
-                    Debug.LogWarning($"Serialized ground {serializedGround.name} has no curve points. Skipping segment population.");
-                    continue;
-                }
-
-                SerializeLevelUtility.SerializeGroundSegments(serializedGround);
-                groundCount++;
-
-                Debug.Log($"Populated {serializedGround.segmentList.Count} runtime segments.");
-            }
-        }
-    }
-
     private float GetKillPlaneY(GroundManager groundManager)
     {
         Ground[] grounds = groundManager.groundContainer.GetComponentsInChildren<Ground>();

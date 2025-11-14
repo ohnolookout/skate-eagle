@@ -40,11 +40,6 @@ public static class GroundSplineUtility
 
     public static void AddFloorPoints(List<CurvePoint> curvePoints, List<Vector3> floorPositions)
     {
-        Debug.Log($"~~~~~~~~~ADDING FLOOR POSITIONS~~~~~~~~~~~~~~~");
-        foreach (var floorPos in floorPositions)
-        {
-            Debug.Log(floorPos);
-        }
         if (curvePoints.Count < 2)
         {
             Debug.LogError("Not enough curve points to add corner points.");

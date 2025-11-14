@@ -323,15 +323,6 @@ public class LevelDBInspector : Editor
         Debug.Log("Resave levels complete.");
     }
 
-    private void PopulateGroundCurvePoints()
-    {
-        var levels = _levelDB.LevelDictionary.Values.ToList();
-        foreach (var level in levels)
-        {
-            level.PopulateGroundCurvePoints();
-        }
-        EditorUtility.SetDirty(_levelDB);
-    }
 
 }
 

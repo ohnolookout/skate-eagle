@@ -1502,7 +1502,7 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: b81b4ec7-8bb3-42a7-971d-0956d52edad7
+    _UID: 
     _name: Floor Error Test
     _goldRequired: 0
     _medalTimes:
@@ -1512,14 +1512,14 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 4583741168372940930
-    - rid: 4583741168372940931
+    - rid: 4583741168372940956
+    - rid: 4583741168372940957
     _leaderboardKey: Floor Error Test_leaderboard
     _killPlaneY: -10
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
-        name: CP 0_1
+        name: CP 0_2_S
         position: {x: 60, y: 0, z: 0}
         leftTangent: {x: -25, y: 0, z: 0}
         rightTangent: {x: 25, y: -0, z: -0}
@@ -1533,7 +1533,7 @@ MonoBehaviour:
         _forceNewSegment: 0
         _blockNewSegment: 0
         _cpObjectRef:
-          _uid: -editObj
+          _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
         _linkedCameraTarget:
           _prevTargetRef:
             _uid: 
@@ -1541,7 +1541,7 @@ MonoBehaviour:
             _uid: 
           _forceZoomTargetRefs: []
           _parentObjectRef:
-            _uid: -editObj
+            _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
           doLowTarget: 0
           doUseManualOffset: 0
           manualYOffset: 0
@@ -1549,9 +1549,9 @@ MonoBehaviour:
           orthoSize: 50
           doUseManualOrthoSize: 0
           manualOrthoSize: 0
-          <UID>k__BackingField: 0c130144-1529-4be7-a61d-60890c5a8db8
+          <UID>k__BackingField: 4d79b3b1-7ccd-4e2c-8068-381f533348d0
           SerializedPosition: {x: 0, y: 0, z: 0}
-        <UID>k__BackingField: 03c71053-8ab5-4d62-850e-89e2a3de33d7
+        <UID>k__BackingField: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
       _camStartPosition: {x: -290, y: 71.99152, z: 0}
       _camOrthoSize: 50
       _firstCameraTarget:
@@ -1578,13 +1578,13 @@ MonoBehaviour:
           rid: 4583741168372940928
         position: {x: -299.99817, y: 30.000002, z: 0}
       curvePointRef:
-        _uid: 03c71053-8ab5-4d62-850e-89e2a3de33d7
+        _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
       firstCameraTargetRef:
         _uid: cee22297-d3b1-4ab2-8c34-0304c98b03dc
       groundRef:
-        _uid: c333566a-f0ae-4516-bcca-a97f3d47839d
+        _uid: e8fa964a-be32-496b-b95e-992eb901244a
       uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
-  _levelIsDirty: 0
+  _levelIsDirty: 1
   _levelOrderIsDirty: 0
   doCheckOverwrite: 1
   references:
@@ -2769,13 +2769,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -3041,13 +3034,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 3
           startTarget:
@@ -3442,13 +3428,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 3
           endPointIndex: 5
           startTarget:
@@ -3852,13 +3831,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 6
           startTarget:
@@ -4165,13 +4137,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 6
           endPointIndex: 7
           startTarget:
@@ -4498,13 +4463,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 7
           endPointIndex: 8
           startTarget:
@@ -4829,13 +4787,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 8
           endPointIndex: 9
           startTarget:
@@ -5170,13 +5121,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 9
           endPointIndex: 10
           startTarget:
@@ -5496,13 +5440,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 10
           endPointIndex: 12
           startTarget:
@@ -5899,13 +5836,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 12
           endPointIndex: 13
           startTarget:
@@ -7044,13 +6974,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -7316,13 +7239,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 4
           startTarget:
@@ -7772,13 +7688,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 5
           startTarget:
@@ -8386,13 +8295,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -8989,13 +8891,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 4
           startTarget:
@@ -9536,13 +9431,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 5
           startTarget:
@@ -10317,13 +10205,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -10589,13 +10470,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 2
           startTarget:
@@ -10898,13 +10772,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 2
           endPointIndex: 3
           startTarget:
@@ -11212,7 +11079,7 @@ MonoBehaviour:
               _uid: 
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: e6448655-9f8e-4c5f-87b5-799a9fe35202-editObj
+              _uid: 2c68657e-da24-4af6-a198-ac9d683e7ac1-editObj
             doLowTarget: 0
             doUseManualOffset: 0
             manualYOffset: 0
@@ -11245,7 +11112,7 @@ MonoBehaviour:
               _uid: 43d0701c-6693-417f-927b-70436773d667
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: 4eb269df-e491-4ae5-a9b9-0684d99368e0-editObj
+              _uid: 2825b9c5-7033-42cd-99cb-17726bd32e8d-editObj
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
@@ -11278,7 +11145,7 @@ MonoBehaviour:
               _uid: ba4cc6a1-8c94-49ff-89a4-e141cae58a61
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: c7d9e104-8462-4132-93ce-d3424bc2520d-editObj
+              _uid: 011c6706-f361-442b-a0a3-a3004b3dfd6c-editObj
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
@@ -11311,7 +11178,7 @@ MonoBehaviour:
               _uid: e8ec2608-6070-48a2-b9f2-719ab4c9a73f
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: e9f64b7e-da92-45a5-9be1-8324552e6456-editObj
+              _uid: 39743f2e-2fb7-4fb8-8828-036270fcdade-editObj
             doLowTarget: 0
             doUseManualOffset: 0
             manualYOffset: 0
@@ -11457,13 +11324,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -11729,13 +11589,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 2
           startTarget:
@@ -12068,13 +11921,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 2
           endPointIndex: 3
           startTarget:
@@ -12424,7 +12270,7 @@ MonoBehaviour:
               _uid: 
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: 274a580d-31ba-4304-b3a8-b313f6a191c7-editObj
+              _uid: 30155162-029c-4730-aaf1-8dc7e487b876-editObj
             doLowTarget: 0
             doUseManualOffset: 0
             manualYOffset: 0
@@ -12457,7 +12303,7 @@ MonoBehaviour:
               _uid: fa2e2ab3-4c34-4ba3-b851-c8b6ad2a7033
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: 30b584d3-671c-4a81-92a0-43c167522fcb-editObj
+              _uid: bc6142f2-f656-4e43-a4bc-0c8cd6e8c143-editObj
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
@@ -12490,7 +12336,7 @@ MonoBehaviour:
               _uid: ba4cc6a1-8c94-49ff-89a4-e141cae58a61
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: f2de460c-dc55-4623-9e3d-b5ac3f262f21-editObj
+              _uid: 211ba756-ab25-407a-b750-d012468e440b-editObj
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
@@ -12523,7 +12369,7 @@ MonoBehaviour:
               _uid: 
             _forceZoomTargetRefs: []
             _parentObjectRef:
-              _uid: 4b7048aa-c794-40d9-ae12-087c65174cc0-editObj
+              _uid: 2c0b0370-ff60-468a-a71b-754eea935f60-editObj
             doLowTarget: 1
             doUseManualOffset: 0
             manualYOffset: 0
@@ -12837,13 +12683,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -13109,13 +12948,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 4
           startTarget:
@@ -13561,13 +13393,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 8
           startTarget:
@@ -14092,13 +13917,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 8
           endPointIndex: 12
           startTarget:
@@ -14627,13 +14445,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 12
           endPointIndex: 15
           startTarget:
@@ -15091,13 +14902,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 15
           endPointIndex: 16
           startTarget:
@@ -16376,13 +16180,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -16648,13 +16445,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 5
           startTarget:
@@ -17183,13 +16973,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -17563,13 +17346,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 7
           endPointIndex: 8
           startTarget:
@@ -18466,13 +18242,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -18738,13 +18507,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 5
           startTarget:
@@ -19273,13 +19035,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 10
           startTarget:
@@ -19884,13 +19639,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 10
           endPointIndex: 15
           startTarget:
@@ -20495,13 +20243,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 15
           endPointIndex: 20
           startTarget:
@@ -21107,13 +20848,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 20
           endPointIndex: 22
           startTarget:
@@ -21484,13 +21218,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 22
           endPointIndex: 24
           startTarget:
@@ -23148,13 +22875,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -23507,13 +23227,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 2
           endPointIndex: 7
           startTarget:
@@ -24525,13 +24238,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -25115,13 +24821,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -25705,13 +25404,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 5
           startTarget:
@@ -26324,13 +26016,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -27087,13 +26772,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 5
           startTarget:
@@ -27701,13 +27379,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 6
           startTarget:
@@ -28561,13 +28232,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -28833,13 +28497,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 4
           startTarget:
@@ -29285,13 +28942,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 8
           startTarget:
@@ -29816,13 +29466,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 8
           endPointIndex: 12
           startTarget:
@@ -30351,13 +29994,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 12
           endPointIndex: 15
           startTarget:
@@ -30815,13 +30451,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 15
           endPointIndex: 16
           startTarget:
@@ -32084,13 +31713,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 5
           startTarget:
@@ -32698,13 +32320,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 10
           startTarget:
@@ -33309,13 +32924,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 10
           endPointIndex: 12
           startTarget:
@@ -33691,13 +33299,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 12
           endPointIndex: 13
           startTarget:
@@ -34591,13 +34192,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -34863,13 +34457,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 4
           startTarget:
@@ -35321,13 +34908,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 8
           startTarget:
@@ -35850,13 +35430,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 8
           endPointIndex: 12
           startTarget:
@@ -36379,13 +35952,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 12
           endPointIndex: 15
           startTarget:
@@ -37824,13 +37390,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -38096,13 +37655,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 5
           startTarget:
@@ -38648,13 +38200,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 8
           startTarget:
@@ -39100,13 +38645,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 8
           endPointIndex: 11
           startTarget:
@@ -39583,13 +39121,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 11
           endPointIndex: 12
           startTarget:
@@ -40685,13 +40216,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -40957,13 +40481,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 5
           startTarget:
@@ -41491,13 +41008,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -42263,13 +41773,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -42853,13 +42356,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -43443,13 +42939,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 5
           startTarget:
@@ -44062,13 +43551,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -45022,13 +44504,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -45294,13 +44769,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 5
           startTarget:
@@ -45828,13 +45296,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -46600,13 +46061,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -47190,13 +46644,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 5
           startTarget:
@@ -47809,13 +47256,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -48793,13 +48233,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -49065,13 +48498,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 2
           startTarget:
@@ -49398,13 +48824,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 2
           endPointIndex: 3
           startTarget:
@@ -49964,13 +49383,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -50599,13 +50011,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -51382,13 +50787,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -51654,13 +51052,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 2
           startTarget:
@@ -51964,13 +51355,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 2
           endPointIndex: 4
           startTarget:
@@ -52416,13 +51800,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 5
           startTarget:
@@ -52742,13 +52119,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 5
           endPointIndex: 7
           startTarget:
@@ -53204,13 +52574,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 7
           endPointIndex: 9
           startTarget:
@@ -53647,13 +53010,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 9
           endPointIndex: 10
           startTarget:
@@ -53978,13 +53334,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 10
           endPointIndex: 11
           startTarget:
@@ -54303,13 +53652,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 11
           endPointIndex: 13
           startTarget:
@@ -54731,13 +54073,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 13
           endPointIndex: 15
           startTarget:
@@ -55134,13 +54469,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 15
           endPointIndex: 16
           startTarget:
@@ -55463,13 +54791,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 16
           endPointIndex: 17
           startTarget:
@@ -55777,13 +55098,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 17
           endPointIndex: 19
           startTarget:
@@ -57427,13 +56741,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 1
           startTarget:
@@ -57699,13 +57006,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 1
           endPointIndex: 3
           startTarget:
@@ -58096,13 +57396,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 3
           endPointIndex: 4
           startTarget:
@@ -58405,13 +57698,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 4
           endPointIndex: 5
           startTarget:
@@ -59186,13 +58472,6 @@ MonoBehaviour:
           endFloor: {x: 0, y: 0, z: 0}
           isStart: 0
           isFinish: 0
-          curve:
-            curveSections: []
-            _sectionLengths: []
-            _curvePoints: []
-            length: 0
-            _lowPoint: {x: 0, y: 0, z: 0}
-            _highPoint: {x: 0, y: 0, z: 0}
           startPointIndex: 0
           endPointIndex: 2
           startTarget:
@@ -59553,7 +58832,7 @@ MonoBehaviour:
             <UID>k__BackingField: 
             SerializedPosition: {x: 0, y: 0, z: 0}
         curvePoints:
-        - name: CP 0_0
+        - name: CP 0_1
           position: {x: 0, y: 0, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: -0, z: -0}
@@ -59586,7 +58865,7 @@ MonoBehaviour:
             <UID>k__BackingField: 7b9a29ec-9200-445b-aef5-6d6abe858cba
             SerializedPosition: {x: 0, y: 0, z: 0}
           <UID>k__BackingField: c9e6f367-bdfe-403e-88ac-d2ac168089e6
-        - name: CP 0_1
+        - name: CP 0_2_S
           position: {x: 60, y: 0, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: -0, z: -0}
@@ -59619,7 +58898,7 @@ MonoBehaviour:
             <UID>k__BackingField: 4d79b3b1-7ccd-4e2c-8068-381f533348d0
             SerializedPosition: {x: 0, y: 0, z: 0}
           <UID>k__BackingField: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
-        - name: CP 0_2
+        - name: CP 0_3
           position: {x: 120, y: 0, z: 0}
           leftTangent: {x: -25, y: 0, z: 0}
           rightTangent: {x: 25, y: -0, z: -0}
@@ -59763,9 +59042,1040 @@ MonoBehaviour:
             rid: 4583741168372940928
           position: {x: -299.99817, y: 30.000002, z: 0}
         curvePointRef:
-          _uid: 03c71053-8ab5-4d62-850e-89e2a3de33d7
+          _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
         firstCameraTargetRef:
           _uid: cee22297-d3b1-4ab2-8c34-0304c98b03dc
         groundRef:
-          _uid: c333566a-f0ae-4516-bcca-a97f3d47839d
+          _uid: e8fa964a-be32-496b-b95e-992eb901244a
+        uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58
+    - rid: 4583741168372940956
+      type: {class: SerializedGround, ns: , asm: Assembly-CSharp}
+      data:
+        position: {x: 0, y: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 0}
+        name: Ground 0
+        UID: e8fa964a-be32-496b-b95e-992eb901244a
+        isInverted: 0
+        hasShadow: 1
+        floorType: 0
+        floorHeight: 100
+        floorAngle: 0
+        lastObjCount: 4
+        segmentList:
+        - name: G0 Segment 0
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          startPointIndex: 0
+          endPointIndex: 2
+          startTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: -2
+            _next:
+              rid: -2
+            position: {x: 0, y: 0, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: -60, y: 0, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 0, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 0, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: -60, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: -60, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: -60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 0, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: -60, y: 1.2}
+          - {x: 0, y: 1.2}
+          - {x: 0, y: 1.2}
+          - {x: 60, y: 1.2}
+          bottomColliderPoints:
+          - {x: -60, y: 1.2}
+          - {x: -60, y: 0}
+          - {x: -60, y: -100}
+          - {x: -60, y: -100}
+          - {x: 0, y: -100}
+          - {x: 60, y: -100}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        - name: G0 Segment 1
+          position: {x: 0, y: 0, z: 0}
+          floorPositions: {x: 0, y: 0, z: 0}
+          leftFloorHeight: 0
+          leftFloorAngle: 0
+          rightFloorHeight: 0
+          rightFloorAngle: 0
+          startFloor: {x: 0, y: 0, z: 0}
+          endFloor: {x: 0, y: 0, z: 0}
+          isStart: 0
+          isFinish: 0
+          startPointIndex: 2
+          endPointIndex: 4
+          startTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          startHighPoint:
+            _previous:
+              rid: -2
+            _next:
+              rid: -2
+            position: {x: 0, y: 0, z: 0}
+          fillSplineCurvePoints:
+          - name: CP
+            position: {x: 60, y: 0, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 120, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 120, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 180, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 2
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 180, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 180, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 120, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 60, y: -100, z: 0}
+            leftTangent: {x: 0, y: 0, z: 0}
+            rightTangent: {x: 0, y: 0, z: 0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 0
+            _floorPointType: 0
+            _isSymmetrical: 0
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 0, y: 0, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          edgeSplineCurvePoints:
+          - name: CP
+            position: {x: 60, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 60, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 120, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 120, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          - name: CP
+            position: {x: 180, y: 0, z: 0}
+            leftTangent: {x: -25, y: 0, z: 0}
+            rightTangent: {x: 25, y: -0, z: -0}
+            _serializedWorldPosition: {x: 0, y: 0, z: 0}
+            _mode: 1
+            _floorPointType: 1
+            _isSymmetrical: 1
+            _floorHeight: 100
+            _floorAngle: 0
+            _floorPosition: {x: 180, y: -100, z: 0}
+            _forceNewSegment: 0
+            _blockNewSegment: 0
+            _cpObjectRef:
+              _uid: 
+            _linkedCameraTarget:
+              _prevTargetRef:
+                _uid: 
+              _nextTargetRef:
+                _uid: 
+              _forceZoomTargetRefs: []
+              _parentObjectRef:
+                _uid: 
+              doLowTarget: 0
+              doUseManualOffset: 0
+              manualYOffset: 0
+              yOffset: 0
+              orthoSize: 50
+              doUseManualOrthoSize: 0
+              manualOrthoSize: 0
+              <UID>k__BackingField: 
+              SerializedPosition: {x: 0, y: 0, z: 0}
+            <UID>k__BackingField: 
+          fillSplinePoints: []
+          fillSpineIsOpen: 0
+          edgeSplinePoints: []
+          colliderPoints:
+          - {x: 60, y: 1.2}
+          - {x: 120.023994, y: 1.1997602}
+          - {x: 120, y: 1.2}
+          - {x: 180, y: 1.2}
+          bottomColliderPoints:
+          - {x: 60, y: -100}
+          - {x: 120, y: -100}
+          - {x: 180, y: -100}
+          - {x: 180, y: -100}
+          - {x: 180, y: 0}
+          - {x: 180, y: 1.2}
+          linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: 
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 
+            SerializedPosition: {x: 0, y: 0, z: 0}
+        curvePoints:
+        - name: CP 0_0
+          position: {x: -60, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: -60, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: -60, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: fc3f3d0d-9b65-46ef-8540-fdba04a00f0b-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: fc3f3d0d-9b65-46ef-8540-fdba04a00f0b-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: ce9a1b04-9170-4af3-a6b5-cb4d502f0db6
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: fc3f3d0d-9b65-46ef-8540-fdba04a00f0b
+        - name: CP 0_1
+          position: {x: 0, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: 0, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 0, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: c9e6f367-bdfe-403e-88ac-d2ac168089e6-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: c9e6f367-bdfe-403e-88ac-d2ac168089e6-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 7b9a29ec-9200-445b-aef5-6d6abe858cba
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: c9e6f367-bdfe-403e-88ac-d2ac168089e6
+        - name: CP 0_2_S
+          position: {x: 60, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: 60, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 60, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 4d79b3b1-7ccd-4e2c-8068-381f533348d0
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
+        - name: CP 0_3
+          position: {x: 120, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: 120, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 120, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: ba8010a6-e621-41b0-9d41-720c61fd8508-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: ba8010a6-e621-41b0-9d41-720c61fd8508-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 7072f932-b5ea-4f57-8711-e6b07c3934d2
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: ba8010a6-e621-41b0-9d41-720c61fd8508
+        - name: CP 0_4
+          position: {x: 180, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: 180, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 180, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: b3f7bde1-7bda-45a8-bb30-cf32ec0f7cea-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: b3f7bde1-7bda-45a8-bb30-cf32ec0f7cea-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 82d3e89b-5359-40ca-adc6-4432ebea130c
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: b3f7bde1-7bda-45a8-bb30-cf32ec0f7cea
+        lowTargets: []
+        zoomPoints: []
+        highPoints: []
+        manualLeftCamTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 0
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: 90465f8c-71b8-47b3-8593-40e35243cc1b
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        manualRightCamTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 0
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: 60a6a8e1-d6b5-42de-afb3-13de7b50f233
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        leftEndTargetObjRef:
+          _uid: 
+        rightEndTargetObjRef:
+          _uid: 
+        leftEndCamTargetRef:
+          _uid: 90465f8c-71b8-47b3-8593-40e35243cc1b
+        rightEndCamTargetRef:
+          _uid: 60a6a8e1-d6b5-42de-afb3-13de7b50f233
+        zoomPointRefs: []
+        highTargets: []
+    - rid: 4583741168372940957
+      type: {class: SerializedStartLine, ns: , asm: Assembly-CSharp}
+      data:
+        xOffset: 0
+        _curvePoint:
+          name: CP 0_2_S
+          position: {x: 60, y: 0, z: 0}
+          leftTangent: {x: -25, y: 0, z: 0}
+          rightTangent: {x: 25, y: -0, z: -0}
+          _serializedWorldPosition: {x: 60, y: 0, z: 0}
+          _mode: 1
+          _floorPointType: 1
+          _isSymmetrical: 1
+          _floorHeight: 100
+          _floorAngle: 0
+          _floorPosition: {x: 60, y: -100, z: 0}
+          _forceNewSegment: 0
+          _blockNewSegment: 0
+          _cpObjectRef:
+            _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
+          _linkedCameraTarget:
+            _prevTargetRef:
+              _uid: 
+            _nextTargetRef:
+              _uid: 
+            _forceZoomTargetRefs: []
+            _parentObjectRef:
+              _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b-editObj
+            doLowTarget: 0
+            doUseManualOffset: 0
+            manualYOffset: 0
+            yOffset: 0
+            orthoSize: 50
+            doUseManualOrthoSize: 0
+            manualOrthoSize: 0
+            <UID>k__BackingField: 4d79b3b1-7ccd-4e2c-8068-381f533348d0
+            SerializedPosition: {x: 0, y: 0, z: 0}
+          <UID>k__BackingField: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
+        _camStartPosition: {x: -290, y: 71.99152, z: 0}
+        _camOrthoSize: 50
+        _firstCameraTarget:
+          _prevTargetRef:
+            _uid: 
+          _nextTargetRef:
+            _uid: 
+          _forceZoomTargetRefs: []
+          _parentObjectRef:
+            _uid: 
+          doLowTarget: 0
+          doUseManualOffset: 0
+          manualYOffset: 0
+          yOffset: 0
+          orthoSize: 50
+          doUseManualOrthoSize: 0
+          manualOrthoSize: 0
+          <UID>k__BackingField: 
+          SerializedPosition: {x: 0, y: 0, z: 0}
+        _firstHighPoint:
+          _previous:
+            rid: -2
+          _next:
+            rid: 4583741168372940928
+          position: {x: -299.99817, y: 30.000002, z: 0}
+        curvePointRef:
+          _uid: b5e76bf9-9761-4c3a-8f80-2ae311f1757b
+        firstCameraTargetRef:
+          _uid: cee22297-d3b1-4ab2-8c34-0304c98b03dc
+        groundRef:
+          _uid: e8fa964a-be32-496b-b95e-992eb901244a
         uid: 90eb1451-ca7c-4b41-863f-b8f89e949c58

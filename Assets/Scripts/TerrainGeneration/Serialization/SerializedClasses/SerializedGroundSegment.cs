@@ -29,7 +29,6 @@ public class SerializedGroundSegment
     public bool isFinish;
 
     //Curve contents
-    public Curve curve;
     public int startPointIndex;
     public int endPointIndex;
     public LinkedCameraTarget startTarget = null;

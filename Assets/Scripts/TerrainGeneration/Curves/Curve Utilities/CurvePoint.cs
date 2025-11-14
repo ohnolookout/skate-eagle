@@ -39,9 +39,12 @@ public class CurvePoint: IResyncable
     }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
-    public Vector3 WorldPosition { get => CPObject != null ? _serializedWorldPosition = CPObject.transform.position 
+    public Vector3 WorldPosition 
+    { 
+        get => CPObject != null ? _serializedWorldPosition = CPObject.transform.position 
             : _serializedWorldPosition;
-        set => _serializedWorldPosition = value; }
+        set => _serializedWorldPosition = value; 
+    }
     public Vector3 LeftTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : leftTangent; set => leftTangent = value; }
     public Vector3 RightTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : rightTangent; set => rightTangent = value; }
     public Vector3 LeftTangentPosition => position + leftTangent;
