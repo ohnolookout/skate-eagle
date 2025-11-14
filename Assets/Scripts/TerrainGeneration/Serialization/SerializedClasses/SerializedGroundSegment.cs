@@ -75,10 +75,6 @@ public class SerializedGroundSegment
 
         var lowPoints = curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).ToList();
         startTarget = FindFirstLowPoint(serializedGround.curvePoints, startPointIndex);
-        if(startTarget == null)
-        {
-            Debug.LogWarning($"SerializedGroundSegment: No low point camera targets found for segment {name}. Add some.");
-        }
         startHighPoint = FindFirstHighPoint(serializedGround.highPoints, curvePoints[0].Position);
 
         if (!serializedGround.IsFloating)

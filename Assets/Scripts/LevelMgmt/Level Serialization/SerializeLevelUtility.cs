@@ -19,6 +19,8 @@ public static class SerializeLevelUtility
         startLine = null;
         var grounds = groundManager.GetGrounds();
 
+        NameGroundsAndCPs(grounds, groundManager);     
+
         var serializables = groundManager.GetComponentsInChildren<ISerializable>();
 
         List<IDeserializable> serializedObjects = new();
@@ -45,7 +47,39 @@ public static class SerializeLevelUtility
         return serializedObjects;
     }
 
+    private static void NameGroundsAndCPs(Ground[] grounds, GroundManager groundManager)
+    {
+        //Name all curve point objs
+        for (int i = 0; i < grounds.Length; i++)
+        {
+            grounds[i].gameObject.name = "Ground " + i;
+            for (int j = 0; j < grounds[i].CurvePointObjects.Length; j++)
+            {
+                var cpObj = grounds[i].CurvePointObjects[j];
+                cpObj.name = "CP " + i + "_" + j;
 
+                if (cpObj.LinkedCameraTarget.doLowTarget)
+                {
+                    cpObj.name += "_LT";
+                }
+
+                if(groundManager.StartLine.CurvePoint == cpObj.CurvePoint)
+                {
+                    cpObj.name += "_S";
+                }
+
+                if(groundManager.FinishLine.FlagPoint == cpObj.CurvePoint)
+                {
+                    cpObj.name += "_FF";
+                }
+
+                if (groundManager.FinishLine.BackstopPoint == cpObj.CurvePoint)
+                {
+                    cpObj.name += "_FB";
+                }
+            }
+        }
+    }
     private static SerializedStartLine GetSerializedStartLine(StartLine startLine, Ground[] grounds)
     {
         // Ensure the StartLine has a valid CurvePoint

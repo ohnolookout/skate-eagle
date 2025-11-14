@@ -107,7 +107,6 @@ public static class CameraTargetUtility
         Dictionary<LinkedCameraTarget, (IEnumerable<Vector3> allPositions, IEnumerable<Vector3> midpointPositions)> sectionPositionDict = new();
         if (lowTargets.Count() == 0)
         {
-            Debug.LogWarning("No low points found for ground: " + ground.name);
             return;
         }
 
@@ -309,8 +308,7 @@ public static class CameraTargetUtility
         var slopeDelta = slopeFromPrev - slopeToNext;
         var slopeDeltaT = Mathf.Clamp01((slopeDelta - MinSlopeDeltaForOffset) / (MaxSlopeDeltaForOffset - MinSlopeDeltaForOffset));
 
-
-        var slopeOffsetT = MinYOffsetT + (MaxYOffsetT - MinYOffsetT) * slopeDeltaT;        
+        var slopeOffsetT = MinYOffsetT + (MaxYOffsetT - MinYOffsetT) * slopeDeltaT;
         target.yOffset = Mathf.Max(slopeOffsetT, lowestPointOffsetT, MinYOffsetT);
 
     }

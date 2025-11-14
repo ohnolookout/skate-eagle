@@ -222,7 +222,6 @@ public class Ground : MonoBehaviour, ISerializable
         }
 
         pointObject.SetCurvePoint(curvePoint);
-
         return pointObject;
     }
 
@@ -282,7 +281,6 @@ public class Ground : MonoBehaviour, ISerializable
     public List<LinkedCameraTarget> GetLowTargets()
     {
         var lowPoints = _curvePoints.Where(cp => cp.LinkedCameraTarget.doLowTarget).Select(cp => cp.LinkedCameraTarget).ToList();
-        
         if(ManualLeftTargetObj != null)
         {
             lowPoints.Insert(0, ManualLeftCamTarget);

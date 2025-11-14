@@ -110,7 +110,6 @@ public class SerializedGround : IDeserializable
     public void SetFlatFloorPoints(Ground ground)
     {
         var yValue = ground.CurvePoints[0].Position.y - ground.StartFloorHeight;
-
         ground.CurvePoints[0].FloorPosition = new Vector3(ground.CurvePoints[0].WorldPosition.x, yValue, 0);
         ground.CurvePoints[^1].FloorPosition = new Vector3(ground.CurvePoints[^1].WorldPosition.x, yValue, 0);
     }

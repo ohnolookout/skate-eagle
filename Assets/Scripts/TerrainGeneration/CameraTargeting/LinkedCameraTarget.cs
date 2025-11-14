@@ -9,6 +9,7 @@ public class LinkedCameraTarget: IResyncable
     [SerializeField] private ResyncRef<LinkedCameraTarget> _nextTargetRef = new();
     [SerializeReference] private List<ResyncRef<LinkedCameraTarget>> _forceZoomTargetRefs = new();
     [SerializeField] private ResyncRef<CurvePointEditObject> _parentObjectRef = new();
+    public List<ResyncRef<LinkedCameraTarget>> ForceZoomTargetRefs { get => _forceZoomTargetRefs; set => _forceZoomTargetRefs = value; }
 
 
     public bool doLowTarget = false;
@@ -44,7 +45,6 @@ public class LinkedCameraTarget: IResyncable
             _parentObjectRef.Value = value;
         }
     }
-    public List<ResyncRef<LinkedCameraTarget>> ForceZoomTargetRefs { get => _forceZoomTargetRefs; set => _forceZoomTargetRefs = value; }
     public LinkedCameraTarget PrevTarget
     {
         get => _prevTargetRef.Value;

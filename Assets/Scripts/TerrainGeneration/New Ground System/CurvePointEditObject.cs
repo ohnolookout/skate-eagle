@@ -78,9 +78,10 @@ public class CurvePointEditObject : MonoBehaviour, ICameraTargetable
     #region Set Values
     public void SetCurvePoint(CurvePoint curvePoint)
     {
+        curvePoint.RegisterResync();
         UID = curvePoint.UID + "-editObj";
         curvePoint.CPObject = this; // Set the object reference in the CurvePoint
-        transform.position = curvePoint.Position + ParentGround.transform.position;
+        transform.position = curvePoint.Position + ParentGround.transform.position;        
         RegisterResync();
     }
 

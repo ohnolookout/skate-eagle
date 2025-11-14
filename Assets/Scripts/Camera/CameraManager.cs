@@ -426,13 +426,12 @@ public class CameraManager : MonoBehaviour
         {
             _xDampen = _defaultXDampen / 4;
         }
-
     }
 
     private bool PointIsInCamera(Vector3 viewportPoint)
     {
-        return viewportPoint.x >= 0.1f 
-            && viewportPoint.x <= 0.9f 
+        return viewportPoint.x >= 0.02f 
+            && viewportPoint.x <= 0.98f 
             && viewportPoint.y >= 0.03f 
             && viewportPoint.y <= 0.9f;
     }

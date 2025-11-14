@@ -28,7 +28,15 @@ public class CurvePoint: IResyncable
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     [field: SerializeField]
     public string UID {get; set;}
-    public CurvePointEditObject CPObject { get => _cpObjectRef.Value; set => _cpObjectRef.Value = value; }
+    public CurvePointEditObject CPObject 
+    { 
+        get => _cpObjectRef.Value; 
+        set
+        {
+            _cpObjectRef.Value = value;
+            LinkedCameraTarget.ParentObject = value;
+        }
+    }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
     public Vector3 Position { get => position; set => position = value; }
     public Vector3 WorldPosition { get => CPObject != null ? _serializedWorldPosition = CPObject.transform.position 
