@@ -13,7 +13,6 @@ public class SerializedStartLine : IDeserializable
     [SerializeField] private LinkedHighPoint _firstHighPoint;
     public ResyncRef<CurvePoint> curvePointRef = new();
     public ResyncRef<LinkedCameraTarget> firstCameraTargetRef = new();
-    public ResyncRef<Ground> groundRef = new();
     public string uid;
 
     public Vector3 StartPosition => _curvePoint.WorldPosition;
@@ -34,7 +33,6 @@ public class SerializedStartLine : IDeserializable
         _firstHighPoint = startLine.FirstHighPoint;
         curvePointRef = startLine.CurvePointRef.FreshCopy();
         firstCameraTargetRef = startLine.FirstCamTargetRef.FreshCopy();
-        groundRef = startLine.GroundRef.FreshCopy();
         uid = startLine.UID;
     }
 

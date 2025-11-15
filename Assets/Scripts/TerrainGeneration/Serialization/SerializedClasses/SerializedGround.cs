@@ -38,7 +38,6 @@ public class SerializedGround : IDeserializable
         //Save world position for each curve point
         foreach (var curvePointObj in ground.CurvePointObjects)
         {
-            curvePointObj.CurvePoint.StoreSerializedWorldPosition();
             curvePointObj.CurvePoint.name = curvePointObj.name;
         }
 

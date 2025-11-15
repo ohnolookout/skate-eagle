@@ -15,7 +15,7 @@ public class CurvePoint: IResyncable
 {
     public string name = "CP";
     [SerializeField] private Vector3 position, leftTangent, rightTangent; //Tangents are relative to the position
-    [SerializeField] private Vector3 _serializedWorldPosition;
+    //[SerializeField] private Vector3 _serializedWorldPosition;
     [SerializeField] private ShapeTangentMode _mode;
     [SerializeField] private FloorPointType _floorPointType = FloorPointType.None;
     [SerializeField] private bool _isSymmetrical = true;
@@ -183,7 +183,6 @@ public class CurvePoint: IResyncable
     {
         CurvePoint copy = new CurvePoint();
         copy.Position = position;
-        copy.CopySerializedWorldPosition(_serializedWorldPosition);
         copy.LeftTangent = leftTangent;
         copy.RightTangent = rightTangent;
         copy.TangentMode = _mode;
@@ -196,16 +195,6 @@ public class CurvePoint: IResyncable
         copy.BlockNewSegment = _blockNewSegment;
 
         return copy;
-    }
-
-    public void StoreSerializedWorldPosition()
-    {
-        _serializedWorldPosition = WorldPosition;
-    }
-
-    public void CopySerializedWorldPosition(Vector2 position)
-    {
-        _serializedWorldPosition = position;
     }
 
     public void SerializeResyncs()

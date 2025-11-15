@@ -10,14 +10,12 @@ public class StartLine : MonoBehaviour, ISerializable
     private LinkedHighPoint _firstHighPoint;
     private ResyncRef<CurvePoint> _curvePointRef = new();
     private ResyncRef<LinkedCameraTarget> _firstCamTargetRef = new();
-    private ResyncRef<Ground> _groundRef = new();
     public string UID { get; set; }
 
     public Vector3 StartPosition => CurvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(_xOffset, 0, 0);
     public GameObject GameObject => gameObject;
     public CurvePoint CurvePoint { get => _curvePointRef.Value; set => _curvePointRef.Value = value; }
-    public Ground Ground { get => _groundRef.Value; set => _groundRef.Value = value; }
     public float XOffset { get => _xOffset; set => _xOffset = value; }
     public Vector3 CamStartPosition { get => _camStartPosition; set => _camStartPosition = value; }
     public float CamOrthoSize { get => _camOrthoSize; set => _camOrthoSize = value; }
@@ -25,7 +23,6 @@ public class StartLine : MonoBehaviour, ISerializable
     public LinkedHighPoint FirstHighPoint { get => _firstHighPoint; set => _firstHighPoint = value; }
     public ResyncRef<CurvePoint> CurvePointRef { get => _curvePointRef; set => _curvePointRef = value; }
     public ResyncRef<LinkedCameraTarget> FirstCamTargetRef { get => _firstCamTargetRef; set => _firstCamTargetRef = value; }
-    public ResyncRef<Ground> GroundRef { get => _groundRef; set => _groundRef = value; }
 
     private void OnDrawGizmosSelected()
     {
@@ -41,7 +38,6 @@ public class StartLine : MonoBehaviour, ISerializable
         _firstHighPoint = serializedStartLine.FirstHighPoint;
         CurvePointRef = serializedStartLine.curvePointRef;
         FirstCamTargetRef = serializedStartLine.firstCameraTargetRef;
-        GroundRef = serializedStartLine.groundRef;
         UID = serializedStartLine.uid;
     }
 
@@ -52,12 +48,6 @@ public class StartLine : MonoBehaviour, ISerializable
 #endif
         CurvePoint = startPoint;
         _xOffset = xOffset;
-
-        if (CurvePoint.CPObject != null)
-        {
-            Ground = CurvePoint.CPObject.ParentGround;
-            Debug.Log("Ground saved to startline: " + Ground.name);
-        }
     }
 
     public IDeserializable Serialize()
@@ -78,7 +68,12 @@ public class StartLine : MonoBehaviour, ISerializable
 
     public bool IsParentGround(GameObject obj)
     {
-        return obj.GetComponent<Ground>() == Ground;
+        if (CurvePoint != null)
+        {
+            return obj.GetComponent<Ground>() == CurvePoint.ParentGround;
+        }
+
+        return false;
     }
 
     public void RegisterResync()
