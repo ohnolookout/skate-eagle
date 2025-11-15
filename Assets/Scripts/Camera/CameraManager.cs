@@ -17,6 +17,8 @@ public class CameraManager : MonoBehaviour
     private bool _doCheckHighPointExit = false;
     private bool _doDirectionChangeDampen = false;
     private bool _doLerpLastMaxY = false;
+    private float _groundChangeTimer = 0;
+    private const float _groundChangeTimeLimit = 1;
     private float _lastMaxY = float.PositiveInfinity;
     public const float minXOffset = 20;
     public const float maxXOffset = 110;
@@ -65,6 +67,17 @@ public class CameraManager : MonoBehaviour
         if (!_doUpdate)
         {
             return;
+        }
+
+        if(_groundChangeTimer > 0)
+        {
+            Debug.Log($"Ground change timer: {_groundChangeTimer}");
+            _groundChangeTimer += Time.fixedDeltaTime;
+
+            if(_groundChangeTimer > _groundChangeTimeLimit)
+            {
+                _groundChangeTimer = 0;
+            }    
         }
 
         if (!_doCheckHighPointExit)
@@ -349,8 +362,8 @@ public class CameraManager : MonoBehaviour
 
 
     private void OnSwitchPlayerDirection(IPlayer player)
-    {        
-        if (_doCheckHighPointExit)
+    {
+        if (_doCheckHighPointExit || _groundChangeTimer > 0)
         {
             return;
         }
@@ -454,14 +467,12 @@ public class CameraManager : MonoBehaviour
     {
         _doDirectionChangeDampen = true;
         _doCheckHighPointExit = false;
-        //_xDampen = _xDampenOnDirectionChange;
-        //_yDampen = _yDampenOnDirectionChange;
-        //_zoomDampen = _zoomDampenOnDirectionChange;
 
     }
 
     private void OnPlayerLand(IPlayer _)
     {
+        Debug.Log("CameraManager: OnPlayerLand called.");
         var collision = _player.LastLandCollision;
 
         var collidedTransformParent = collision.transform.parent;
@@ -471,10 +482,13 @@ public class CameraManager : MonoBehaviour
             return;
         }
 
+        Debug.Log("Updating current ground on player land.");
         var playerPos = _player.NormalBody.position;
 
         var collidedSeg = collidedTransformParent.GetComponent<GroundSegment>();
         _currentGround = collidedSeg.parentGround;
+        _groundChangeTimer = .01f;
+
         AssignPrevAndNextTargets(_lookaheadTarget, collidedSeg.FirstLeftTarget);
         AssignPrevAndNextTargets(_playerTarget, collidedSeg.FirstLeftTarget);
         _currentHighPoint = collidedSeg.StartHighPoint;
@@ -501,6 +515,7 @@ public class CameraManager : MonoBehaviour
         
         if (level.SerializedStartLine.CurvePoint != null)
         {
+            Debug.Log("Setting current ground to start line ground");
             _currentGround = level.SerializedStartLine.CurvePoint.ParentGround;
         }
 
@@ -515,6 +530,7 @@ public class CameraManager : MonoBehaviour
         _currentHighPoint = level.SerializedStartLine.FirstHighPoint;
         _doDirectionChangeDampen = false;
         _doCheckHighPointExit = false;
+        _groundChangeTimer = 0;
         _xDampen = _defaultXDampen;
         _yDampen = _defaultYDampen;
         _zoomDampen = _defaultZoomDampen;
