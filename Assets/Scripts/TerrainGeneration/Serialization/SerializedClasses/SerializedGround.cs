@@ -38,7 +38,7 @@ public class SerializedGround : IDeserializable
         //Save world position for each curve point
         foreach (var curvePointObj in ground.CurvePointObjects)
         {
-            curvePointObj.CurvePoint.WorldPosition = curvePointObj.transform.position;
+            curvePointObj.CurvePoint.StoreSerializedWorldPosition();
             curvePointObj.CurvePoint.name = curvePointObj.name;
         }
 
@@ -110,8 +110,10 @@ public class SerializedGround : IDeserializable
     public void SetFlatFloorPoints(Ground ground)
     {
         var yValue = ground.CurvePoints[0].Position.y - ground.StartFloorHeight;
-        ground.CurvePoints[0].FloorPosition = new Vector3(ground.CurvePoints[0].WorldPosition.x, yValue, 0);
-        ground.CurvePoints[^1].FloorPosition = new Vector3(ground.CurvePoints[^1].WorldPosition.x, yValue, 0);
+
+        var endPointHeight = ground.CurvePoints[^1].Position.y - yValue;
+        ground.CurvePoints[0].FloorPosition = GroundSplineUtility.GetPositionFromAngle(ground.CurvePoints[0].Position, ground.StartFloorHeight, 0);
+        ground.CurvePoints[^1].FloorPosition = GroundSplineUtility.GetPositionFromAngle(ground.CurvePoints[^1].Position, (int)endPointHeight, 0);
     }
 
     public void SetSlantedFloorPoints(Ground ground)

@@ -13,6 +13,7 @@ public class SerializedFinishLine: IDeserializable
     public bool backstopIsActive;
     public ResyncRef<CurvePoint> flagPointRef;
     public ResyncRef<CurvePoint> backstopPointRef;
+    public ResyncRef<Ground> groundRef;
     public string uid;
 
     public SerializedFinishLine(FinishLine finishLine)
@@ -24,6 +25,7 @@ public class SerializedFinishLine: IDeserializable
         backstopIsActive = finishLine.BackstopIsActive;
         flagPointRef = finishLine.FlagPointRef.FreshCopy();
         backstopPointRef = finishLine.BackstopPointRef.FreshCopy();
+        groundRef = finishLine.ParentGroundRef.FreshCopy();
         uid = finishLine.UID;
     }
 

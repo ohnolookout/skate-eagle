@@ -25,6 +25,7 @@ public class CurvePoint: IResyncable
     [SerializeField] private bool _forceNewSegment;
     [SerializeField] private bool _blockNewSegment;
     [SerializeField] private ResyncRef<CurvePointEditObject> _cpObjectRef = new();
+    [SerializeField] private ResyncRef<Ground> _groundRef = new();
     [SerializeField] private LinkedCameraTarget _linkedCameraTarget;
     [field: SerializeField]
     public string UID {get; set;}
@@ -35,37 +36,13 @@ public class CurvePoint: IResyncable
         {
             _cpObjectRef.Value = value;
             LinkedCameraTarget.ParentObject = value;
+            ParentGround = _cpObjectRef.Value.ParentGround;
         }
     }
+    public Ground ParentGround { get => _groundRef.Value; set => _groundRef.Value = value; }
     public LinkedCameraTarget LinkedCameraTarget { get => _linkedCameraTarget; set => _linkedCameraTarget = value; }
-    public Vector3 Position { 
-        get
-        {
-            WorldPosition = position;
-            return position;
-        }
-        set 
-        { 
-            WorldPosition = value;
-            position = value;
-        }
-    }
-    public Vector3 WorldPosition
-    {
-        get
-        { 
-            return CPObject != null ? _serializedWorldPosition = CPObject.transform.position
-            : _serializedWorldPosition;
-        }
-        set 
-        {
-            if(CPObject != null)
-            {
-                CPObject.transform.position = value;
-            }
-            _serializedWorldPosition = value; 
-        }
-    }
+    public Vector3 Position { get => position; set => position = value; }
+    public Vector3 WorldPosition => ParentGround.transform.position + Position;
     public Vector3 LeftTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : leftTangent; set => leftTangent = value; }
     public Vector3 RightTangent { get => _mode == ShapeTangentMode.Linear ? new(0, 0) : rightTangent; set => rightTangent = value; }
     public Vector3 LeftTangentPosition => position + leftTangent;
@@ -78,7 +55,6 @@ public class CurvePoint: IResyncable
     public int FloorAngle { get => _floorAngle; set => _floorAngle = value; }
     public Vector3 FloorPosition { get => _floorPosition; set => _floorPosition = value; }
     public FloorPointType FloorPointType { get => _floorPointType; set => _floorPointType = value; }
-    public ResyncRef<CurvePointEditObject> CPObjRef { get => _cpObjectRef; }
 
     public CurvePoint()
     {
@@ -207,6 +183,7 @@ public class CurvePoint: IResyncable
     {
         CurvePoint copy = new CurvePoint();
         copy.Position = position;
+        copy.CopySerializedWorldPosition(_serializedWorldPosition);
         copy.LeftTangent = leftTangent;
         copy.RightTangent = rightTangent;
         copy.TangentMode = _mode;
@@ -219,8 +196,16 @@ public class CurvePoint: IResyncable
         copy.BlockNewSegment = _blockNewSegment;
 
         return copy;
+    }
 
+    public void StoreSerializedWorldPosition()
+    {
+        _serializedWorldPosition = WorldPosition;
+    }
 
+    public void CopySerializedWorldPosition(Vector2 position)
+    {
+        _serializedWorldPosition = position;
     }
 
     public void SerializeResyncs()
@@ -229,6 +214,12 @@ public class CurvePoint: IResyncable
         {
             _cpObjectRef = _cpObjectRef.FreshCopy();
         }
+
+        if(_groundRef != null)
+        {
+            _groundRef = _groundRef.FreshCopy();
+        }
+
         _linkedCameraTarget.SerializeResyncs();
     }
 

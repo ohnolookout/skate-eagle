@@ -11,6 +11,7 @@ public class FinishLine : MonoBehaviour, ISerializable
     [SerializeField] private GameObject _backstop;
     private ResyncRef<CurvePoint> _flagPointRef = new();
     private ResyncRef<CurvePoint> _backstopPointRef = new();
+    private ResyncRef<Ground> _groundRef = new();
     private int _flagXOffset = 50;
     private int _backstopXOffset = 0;
     private bool _backstopIsActive;
@@ -25,28 +26,16 @@ public class FinishLine : MonoBehaviour, ISerializable
     private Rigidbody2D _playerBody;
     public string UID { get; set; }
 
-    public CurvePoint FlagPoint
-    {
-        get => _flagPointRef.Value;
-        set
-        {
-            _flagPointRef.Value = value;
-        }
-    }
-    public CurvePoint BackstopPoint
-    {
-        get => _backstopPointRef.Value;
-        set
-        {
-            _backstopPointRef.Value = value;
-        }
-    }
+    public CurvePoint FlagPoint { get => _flagPointRef.Value; set => _flagPointRef.Value = value; }
+    public CurvePoint BackstopPoint { get => _backstopPointRef.Value; set => _backstopPointRef.Value = value; }
+    public Ground ParentGround { get => _groundRef.Value; set => _groundRef.Value = value; }
     public int FlagXOffset => _flagXOffset;
     public int BackstopXOffset => _backstopXOffset;
     public bool BackstopIsActive => _backstopIsActive;
     public GameObject GameObject => gameObject;
     public ResyncRef<CurvePoint> FlagPointRef { get => _flagPointRef; set => _flagPointRef = value; }
     public ResyncRef<CurvePoint> BackstopPointRef { get => _backstopPointRef; set => _backstopPointRef = value; }
+    public ResyncRef<Ground> ParentGroundRef { get => _groundRef; set => _groundRef = value; }
     #endregion
 
     #region Monobehaviours
@@ -132,6 +121,7 @@ public class FinishLine : MonoBehaviour, ISerializable
 
         _flagPointRef = parameters.flagPointRef;
         _backstopPointRef = parameters.backstopPointRef;
+        _groundRef = parameters.groundRef;
 
 
         _flagXOffset = parameters.flagPointXOffset;
@@ -186,6 +176,11 @@ public class FinishLine : MonoBehaviour, ISerializable
         Undo.RecordObject(this, "Set Finish Flag and Backstop");
 #endif
         FlagPoint = flagPoint;
+
+        if (flagPoint.CPObject != null)
+        {
+            ParentGround = flagPoint.CPObject.ParentGround;
+        }
         _flag.SetActive(true);
         UpdateFlagPosition();
 
@@ -218,6 +213,10 @@ public class FinishLine : MonoBehaviour, ISerializable
     public void SetBackstopPoint(CurvePoint backstopPoint)
     {
         gameObject.SetActive(true);
+
+        if (backstopPoint.CPObject != null) { 
+            ParentGround = backstopPoint.CPObject.ParentGround;
+        }
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
