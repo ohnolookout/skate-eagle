@@ -37,34 +37,31 @@ public class ActiveState : PlayerState
         LevelManager.OnCrossFinish -= CrossFinish;
     }
 
-    public override void UpdateState()
+    public override void FixedUpdateState()
     {
         DirectionCheck();
-        if (_substate != null)
-        {
-            _substate.UpdateStates();
-        }
-        if(_player.Transform.position.y < _player.KillPlaneY)
+
+        if (_player.Transform.position.y < _player.KillPlaneY)
         {
             Fall();
         }
-    }
 
-    public override void FixedUpdateState()
-    {
         _player.MomentumTracker.Update();
+
         if (crouched)
         {
             _playerBody.AddForce(new Vector2(0, -_player.Params.DownForce * 20));
         }
+
         if (doRotate)
         {
             _playerBody.AddTorque(-_player.Params.RotationAccel * _rotationInput.x);
         }
-        if (_substate != null)
-        {
-            _substate.FixedUpdateStates();
-        }
+
+        //if (_substate != null)
+        //{
+        //    _substate.FixedUpdateStates();
+        //}
 
     }
 

@@ -36,15 +36,6 @@ public class PlayerStateMachine
     {
         CurrentState.FixedUpdateStates();
     }
-    public void UpdateCurrentState()
-    {
-        CurrentState.UpdateState();
-    }
-
-    public void FixedUpdateCurrentState()
-    {
-        CurrentState.FixedUpdateState();
-    }
 
 
 

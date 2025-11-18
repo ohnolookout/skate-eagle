@@ -81,10 +81,10 @@ public class Player : MonoBehaviour, IPlayer
         _animator.SetBool("Airborne", false);
     }
 
-    void Update()
-    {
-        _stateMachine.UpdateCurrentState();
-    }
+    //void Update()
+    //{
+    //    _stateMachine.UpdateCurrentStates();
+    //}
 
     private void FixedUpdate()
     {

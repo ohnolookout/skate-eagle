@@ -16,18 +16,16 @@ public class RagdollState : PlayerState
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Die);
     }
 
-    public override void UpdateState()
+    public override void FixedUpdateState()
     {
         DirectionCheck();
-        if(_doCheckFall && _player.RagdollBody.position.y < _player.KillPlaneY)
+
+        if (_doCheckFall && _player.RagdollBody.position.y < _player.KillPlaneY)
         {
             _doCheckFall = false;
             _player.EventAnnouncer.InvokeAction(PlayerEvent.Fall);
         }
-    }
 
-    public override void FixedUpdateState()
-    {
         _player.MomentumTracker.Update();
     }
 

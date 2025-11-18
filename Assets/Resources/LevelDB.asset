@@ -1487,8 +1487,8 @@ MonoBehaviour:
   - Triple Gap
   - Double Gap
   _editorLevel:
-    _UID: 303e084c-4951-4ec4-a129-d55e255fa624
-    _name: Reverse Finish Test
+    _UID: 88396b75-05bb-44ed-a5f0-fad02b8d060a
+    _name: Cam Gap Test
     _goldRequired: 0
     _medalTimes:
       _bronzeTime: 20
@@ -1497,79 +1497,80 @@ MonoBehaviour:
       _blueTime: 8
       _redTime: 6
     _serializedObjects:
-    - rid: 4583741254987415668
-    - rid: 4583741254987415669
-    - rid: 4583741254987415670
-    - rid: 4583741254987415671
-    _leaderboardKey: Reverse Finish Test_leaderboard
-    _killPlaneY: -178.82591
+    - rid: 4583741239951360251
+    - rid: 4583741239951360252
+    - rid: 4583741239951360253
+    - rid: 4583741239951360254
+    - rid: 4583741239951360255
+    _leaderboardKey: Cam Gap Test_leaderboard
+    _killPlaneY: -84
     _serializedStartLine:
       xOffset: 0
       _curvePoint:
         name: CP 0_1_LT_S
-        position: {x: -59, y: 12, z: 0}
-        leftTangent: {x: -34.2, y: 0, z: 0}
-        rightTangent: {x: 34.2, y: 0.000002989859, z: 0}
+        position: {x: -120, y: 30, z: 0}
+        leftTangent: {x: -25, y: 0, z: 0}
+        rightTangent: {x: 25, y: 0, z: 0}
         _mode: 1
         _floorPointType: 2
-        _isSymmetrical: 0
+        _isSymmetrical: 1
         _floorHeight: 100
         _floorAngle: 0
-        _floorPosition: {x: -58.800705, y: -87.699745, z: 0}
+        _floorPosition: {x: -119.987976, y: -161.97777, z: 0}
         _forceNewSegment: 0
         _blockNewSegment: 0
         _cpObjectRef:
-          _uid: 2825b9c5-7033-42cd-99cb-17726bd32e8d-editObj
+          _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46-editObj
         _groundRef:
-          _uid: db5754c7-afbf-4cbb-b957-18056aa3b81e
+          _uid: ae56af35-82f6-418e-a627-9d818feaab19
         _linkedCameraTarget:
           _prevTargetRef:
             _uid: 
           _nextTargetRef:
-            _uid: 43d0701c-6693-417f-927b-70436773d667
+            _uid: f1925560-bba2-4977-a404-5efba32c6eb8
           _forceZoomTargetRefs: []
           _parentObjectRef:
-            _uid: 2825b9c5-7033-42cd-99cb-17726bd32e8d-editObj
+            _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46-editObj
           doLowTarget: 1
           doUseManualOffset: 0
-          manualYOffset: 0
-          yOffset: 0.5933122
+          manualYOffset: 1.18
+          yOffset: 0.6
           orthoSize: 50
           doUseManualOrthoSize: 0
-          manualOrthoSize: 0
-          <UID>k__BackingField: c260a5f8-5b95-48ea-b3ce-6f73614bf9dc
-          SerializedPosition: {x: -59, y: 12, z: 0}
-        <UID>k__BackingField: 2825b9c5-7033-42cd-99cb-17726bd32e8d
-      _camStartPosition: {x: -49, y: 22.723984, z: 0}
+          manualOrthoSize: 57.3
+          <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
+          SerializedPosition: {x: -120, y: 30, z: 0}
+        <UID>k__BackingField: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
+      _camStartPosition: {x: -110, y: 36.038414, z: 0}
       _camOrthoSize: 50
       _firstCameraTarget:
         _prevTargetRef:
           _uid: 
         _nextTargetRef:
-          _uid: 43d0701c-6693-417f-927b-70436773d667
+          _uid: f1925560-bba2-4977-a404-5efba32c6eb8
         _forceZoomTargetRefs: []
         _parentObjectRef:
-          _uid: 2825b9c5-7033-42cd-99cb-17726bd32e8d-editObj
+          _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46-editObj
         doLowTarget: 1
         doUseManualOffset: 0
-        manualYOffset: 0
-        yOffset: 0.5933122
+        manualYOffset: 1.18
+        yOffset: 0.6
         orthoSize: 50
         doUseManualOrthoSize: 0
-        manualOrthoSize: 0
-        <UID>k__BackingField: c260a5f8-5b95-48ea-b3ce-6f73614bf9dc
-        SerializedPosition: {x: -59, y: 12, z: 0}
+        manualOrthoSize: 57.3
+        <UID>k__BackingField: e28e4397-378c-480f-b2da-334d5de42166
+        SerializedPosition: {x: -120, y: 30, z: 0}
       _firstHighPoint:
         _previous:
           rid: -2
         _next:
-          rid: 4583741254987415672
-        position: {x: -208.95679, y: 12.000001, z: 0}
+          rid: 4583741239951360256
+        position: {x: -474.09222, y: 30.000002, z: 0}
       curvePointRef:
-        _uid: 2825b9c5-7033-42cd-99cb-17726bd32e8d
+        _uid: 546f3b7e-081b-4e6a-a5f6-6fad40cf7b46
       firstCameraTargetRef:
-        _uid: c260a5f8-5b95-48ea-b3ce-6f73614bf9dc
-      uid: e5296a48-bb0a-4036-8de9-14fc01a3a659
+        _uid: e28e4397-378c-480f-b2da-334d5de42166
+      uid: d55c8ec9-8d4f-488c-a76e-2933311e53b9
   _levelIsDirty: 0
   _levelOrderIsDirty: 0
   doCheckOverwrite: 1
