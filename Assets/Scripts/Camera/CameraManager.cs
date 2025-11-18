@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
@@ -17,13 +17,15 @@ public class CameraManager : MonoBehaviour
     private bool _doCheckHighPointExit = false;
     private bool _doDirectionChangeDampen = false;
     private bool _doLerpLastMaxY = false;
-    private float _groundChangeTimer = 0;
-    private const float _groundChangeTimeLimit = 1;
+    //private float _groundChangeTimer = 0;
+    //private const float _groundChangeTimeLimit = 1;
     private float _lastMaxY = float.PositiveInfinity;
     public const float minXOffset = 20;
     public const float maxXOffset = 110;
-    private const float _minOffsetVel = 0;
-    private const float _maxOffsetVel = 100;
+    private const float _minXOffsetVel = 0;
+    private const float _maxXOffsetVel = 100;
+    private float _dirChangeXOffsetTaper = 1;
+    private float _dirChangeXOffsetTaperSpeed = .1f;
     private float _xOffset;
     private const float _defaultXDampen = 0.35f;
     private float _xDampen;
@@ -36,9 +38,15 @@ public class CameraManager : MonoBehaviour
     private const float _xOffsetDampen = 0.05f;
     private float _targetXOffset;
     private const float _maxYDampen = 0.2f;
-    private const float _maxXDeltaPercent = .075f;
-    private const float _maxYDeltaPercent = .03f;
-    private const float _maxOrthoDeltaPercent = .005f;
+    private const float _maxXDeltaPercent = .2f;
+    private const float _maxYDeltaPercent = .15f;
+    private const float _maxOrthoDeltaPercent = .04f;
+    private float _lastXDelta = 0;
+    private float _lastYDelta = 0;
+    private float _lastOrthoDelta = 0;
+    private float _maxXAccel = .3f;
+    private float _maxYAccel = .3f;
+    private float _maxOrthoAccel = 0.05f;
 
     void Awake()
     {
@@ -69,16 +77,15 @@ public class CameraManager : MonoBehaviour
             return;
         }
 
-        if(_groundChangeTimer > 0)
-        {
-            Debug.Log($"Ground change timer: {_groundChangeTimer}");
-            _groundChangeTimer += Time.fixedDeltaTime;
+        //if(_groundChangeTimer > 0)
+        //{
+        //    _groundChangeTimer += Time.fixedDeltaTime;
 
-            if(_groundChangeTimer > _groundChangeTimeLimit)
-            {
-                _groundChangeTimer = 0;
-            }    
-        }
+        //    if(_groundChangeTimer > _groundChangeTimeLimit)
+        //    {
+        //        _groundChangeTimer = 0;
+        //    }    
+        //}
 
         if (!_doCheckHighPointExit)
         {
@@ -169,9 +176,8 @@ public class CameraManager : MonoBehaviour
         }
         _xOffset = GetXOffset();
         var playerX = _playerTransform.position.x;
-        var directionalXOffset = _player.FacingForward ? _xOffset : -_xOffset;
-        var lookaheadX = playerX + directionalXOffset;
-        var camX = playerX + (directionalXOffset / 2);
+        var lookaheadX = playerX + _xOffset;
+        var camX = playerX + (_xOffset / 2);
 
         UpdateTarget(lookaheadX, _lookaheadTarget);
         UpdateTarget(playerX, _playerTarget);
@@ -195,7 +201,7 @@ public class CameraManager : MonoBehaviour
         {
             _doLerpLastMaxY = true;
             _lastMaxY = playerMaxY;
-            camParams.orthoSize += (camParams.camBottomY - playerMaxY) / 2;
+            //camParams.orthoSize += (camParams.camBottomY - playerMaxY) / 2;
             camParams.camBottomY = playerMaxY;
         }
         else if (_doLerpLastMaxY)
@@ -219,9 +225,19 @@ public class CameraManager : MonoBehaviour
 
     private float GetXOffset()
     {
-        var velOffsetT = (_player.NormalBody.linearVelocity.magnitude - _minOffsetVel) / (_maxOffsetVel - _minOffsetVel);
-        _targetXOffset = Mathf.Lerp(minXOffset, maxXOffset, velOffsetT);
+        var directionalCoefficient = _player.FacingForward ? 1 : -1;
+        var velOffsetT = (Mathf.Abs(_player.NormalBody.linearVelocity.x) - _minXOffsetVel) / (_maxXOffsetVel - _minXOffsetVel);
+        _targetXOffset = Mathf.Lerp(minXOffset, maxXOffset, velOffsetT) * directionalCoefficient;
+
+        if (_dirChangeXOffsetTaper < 1)
+        {
+            _dirChangeXOffsetTaper = Mathf.Clamp01(_dirChangeXOffsetTaper + (_dirChangeXOffsetTaperSpeed * (.25f + velOffsetT)));
+
+            return Mathf.SmoothStep(_xOffset, _targetXOffset, _dirChangeXOffsetTaper);
+        }
+
         return Mathf.SmoothStep(_xOffset, _targetXOffset, _xOffsetDampen);
+
     }
 
 
@@ -241,35 +257,81 @@ public class CameraManager : MonoBehaviour
             }
         }
         var camPos = _camera.transform.position;
+        var playerViewportPoint = _camera.WorldToViewportPoint(_player.NormalBody.position);
+
+        //Find y delta
         var maxYDelta = _maxYDeltaPercent * _camera.orthographicSize;
         var newY = Mathf.SmoothStep(camPos.y, _targetPosition.y, _yDampen);
-        if(Mathf.Abs(newY - camPos.y) > maxYDelta)
+        var yDelta = FindDelta(camPos.y, newY, _targetPosition.y - camPos.y, _lastYDelta, maxYDelta, _maxYAccel);
+
+        if(playerViewportPoint.y < .05f && yDelta < 0)
         {
-            //Debug.Log("Clamping cam Y speed");
-            newY = camPos.y + (maxYDelta * Mathf.Sign(newY - camPos.y));
-        }
+            Debug.Log("Accelerating y delta due to low player screen position.");
+            yDelta *= 1.25f;
+        }  
 
         var maxXDelta = _maxXDeltaPercent * _camera.orthographicSize;
         var newX = Mathf.SmoothStep(camPos.x, _targetPosition.x, _xDampen);
-        if (Mathf.Abs(newX - camPos.x) > maxXDelta)
+        var xDelta = FindDelta(camPos.x, newX, _targetPosition.x - camPos.x, _lastXDelta, maxXDelta, _maxXAccel);
+
+        if (playerViewportPoint.x < .1f && xDelta < 0)
         {
-            //Debug.Log("Clamping cam X speed");
-            newX = camPos.x + (maxXDelta * Mathf.Sign(newX - camPos.x));
+            Debug.Log("Accelerating x delta due to left player screen position.");
+            xDelta *= 1.25f;
+        }
+        else if (playerViewportPoint.x > .9f && xDelta > 0)
+        {
+            xDelta *= 1.25f;
+            Debug.Log("Accelerating x delta due to right player screen position.");
         }
 
         var maxOrthoDelta = _maxOrthoDeltaPercent * _camera.orthographicSize;
         var newOrthoSize = Mathf.SmoothStep(_camera.orthographicSize, _targetOrthoSize, _zoomDampen);
-        if (Mathf.Abs(_camera.orthographicSize - newOrthoSize) > maxOrthoDelta)
-        {
-            //Debug.Log("Clamping cam zoom speed");
-            newOrthoSize = _camera.orthographicSize + (maxOrthoDelta * Mathf.Sign(newOrthoSize - _camera.orthographicSize));
-        }
+        var orthoDelta = FindDelta(_camera.orthographicSize, newOrthoSize, _targetOrthoSize - _camera.orthographicSize, _lastOrthoDelta, maxOrthoDelta, _maxOrthoAccel);
 
-        _camera.transform.position = new(newX, newY);
-        _camera.orthographicSize = newOrthoSize;
+
+        _camera.transform.Translate(xDelta, yDelta, 0);
+        _camera.orthographicSize += orthoDelta;
+
+        _lastXDelta = xDelta;
+        _lastYDelta = yDelta;
+        _lastOrthoDelta = orthoDelta;
 
     }
 
+    private float FindDelta(float currentVal, float targetVal, float totalDifference, float lastDelta, float maxDelta, float maxAccel, float accelModifier = 0)
+    {
+
+        var desiredDelta = targetVal - currentVal;
+        var delta = desiredDelta;
+        var desiredDeltaSign = Mathf.Sign(desiredDelta);
+
+        if (Mathf.Abs(desiredDelta) > maxDelta)
+        {
+            delta = maxDelta * desiredDeltaSign;
+        }
+
+        var deltaAccel = delta - lastDelta;
+        maxAccel += maxAccel * accelModifier;
+
+        //Slow down as target is approached.
+        if (lastDelta > maxDelta/3 && totalDifference / lastDelta < 6)
+        {
+            Debug.Log("Slowing down as target approached.");
+            delta = lastDelta * 0.75f;
+        } else if (Mathf.Abs(deltaAccel) > maxAccel)
+        {
+            delta = lastDelta + (maxAccel * Mathf.Sign(deltaAccel));
+        }
+
+        //Reduce overshoot
+        if(Mathf.Sign(delta) != desiredDeltaSign)
+        {
+            delta *= 0.5f;
+        };
+
+        return delta;
+    }
 
     private void UpdateTarget(float xPos, CompoundTarget target)
     {
@@ -302,17 +364,6 @@ public class CameraManager : MonoBehaviour
 #endif
             AssignPrevAndNextTargets(target, target.next, true);
         }
-
-    }
-
-    private void UpdateTargetDuringDirectionChange()
-    {
-        var newParams = CheckPlayerZoom(_lastCamParams);
-        Vector3 centerPosition = new(_targetPosition.x, newParams.camBottomY + newParams.orthoSize);
-
-        _targetOrthoSize = newParams.orthoSize;
-        _targetPosition = centerPosition;
-        _lastCamParams = newParams;
 
     }
 
@@ -360,21 +411,40 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    #region Direction Change Handling
+    private void UpdateTargetDuringDirectionChange()
+    {
+        var newParams = CheckPlayerZoom(_lastCamParams);
+        Vector3 centerPosition = new(_targetPosition.x, newParams.camBottomY + newParams.orthoSize);
+
+        _targetOrthoSize = newParams.orthoSize;
+        _targetPosition = centerPosition;
+        _lastCamParams = newParams;
+
+    }
+
 
     private void OnSwitchPlayerDirection(IPlayer player)
     {
-        if (_doCheckHighPointExit || _groundChangeTimer > 0)
+        if (_doCheckHighPointExit)
         {
+            _dirChangeXOffsetTaper = 0;
             return;
         }
+
+        //if (_groundChangeTimer > 0)
+        //{
+        //    _dirChangeXOffsetTaper = 0;
+        //    return;
+        //}
+
 
         UpdateCurrentHighPoint();
 
         float targetX;
 
-        
 
-        if(_currentHighPoint.Next != null)
+        if (_currentHighPoint.Next != null)
         {
             targetX = _currentHighPoint.position.x + ((_currentHighPoint.Next.position.x - _currentHighPoint.position.x) / 2);
         }
@@ -391,7 +461,6 @@ public class CameraManager : MonoBehaviour
 
         _doCheckHighPointExit = true;
 
-        Debug.Log("Doing dir change...");
         var leftHighPointCameraPos = _camera.WorldToViewportPoint(_currentHighPoint.position);
         var leftHighPointInCamera = PointIsInCamera(leftHighPointCameraPos);
         var rightHighPointInCamera = true;
@@ -399,7 +468,6 @@ public class CameraManager : MonoBehaviour
 
         if (leftHighPointInCamera)
         {
-            Debug.Log("Left high point in camera");
             rightHighPointInCamera = true;
             if(_currentHighPoint.Next != null)
             {
@@ -409,16 +477,13 @@ public class CameraManager : MonoBehaviour
 
             if (rightHighPointInCamera)
             {
-                Debug.Log("Right high point in camera");
                 Vector3 nextLowPoint;
                 if (_player.FacingForward)
                 {
-                    Debug.Log("Player facing forward...");
                     nextLowPoint = _playerTarget.next.Position;
                 }
                 else
                 {
-                    Debug.Log("Player facing backward...");
                     nextLowPoint = _playerTarget.current.Position;
                 }
 
@@ -430,7 +495,6 @@ public class CameraManager : MonoBehaviour
 
         if (leftHighPointInCamera && rightHighPointInCamera && nextLowPointInCamera)
         {
-            Debug.Log("All necessary points in cam on dir change");
             _xDampen = _defaultXDampen / 6;
             _yDampen = _defaultYDampen / 6;
             _zoomDampen = _defaultZoomDampen / 4;
@@ -439,14 +503,6 @@ public class CameraManager : MonoBehaviour
         {
             _xDampen = _defaultXDampen / 4;
         }
-    }
-
-    private bool PointIsInCamera(Vector3 viewportPoint)
-    {
-        return viewportPoint.x >= 0.02f 
-            && viewportPoint.x <= 0.98f 
-            && viewportPoint.y >= 0.03f 
-            && viewportPoint.y <= 0.9f;
     }
 
     private void CheckHighPointExit()
@@ -467,12 +523,19 @@ public class CameraManager : MonoBehaviour
     {
         _doDirectionChangeDampen = true;
         _doCheckHighPointExit = false;
-
+        _dirChangeXOffsetTaper = 0;
     }
+    #endregion
 
+    private bool PointIsInCamera(Vector3 viewportPoint)
+    {
+        return viewportPoint.x >= 0.02f
+            && viewportPoint.x <= 0.98f
+            && viewportPoint.y >= 0.03f
+            && viewportPoint.y <= 0.9f;
+    }
     private void OnPlayerLand(IPlayer _)
     {
-        Debug.Log("CameraManager: OnPlayerLand called.");
         var collision = _player.LastLandCollision;
 
         var collidedTransformParent = collision.transform.parent;
@@ -487,7 +550,7 @@ public class CameraManager : MonoBehaviour
 
         var collidedSeg = collidedTransformParent.GetComponent<GroundSegment>();
         _currentGround = collidedSeg.parentGround;
-        _groundChangeTimer = .01f;
+        //_groundChangeTimer = .01f;
 
         AssignPrevAndNextTargets(_lookaheadTarget, collidedSeg.FirstLeftTarget);
         AssignPrevAndNextTargets(_playerTarget, collidedSeg.FirstLeftTarget);
@@ -515,7 +578,6 @@ public class CameraManager : MonoBehaviour
         
         if (level.SerializedStartLine.CurvePoint != null)
         {
-            Debug.Log("Setting current ground to start line ground");
             _currentGround = level.SerializedStartLine.CurvePoint.ParentGround;
         }
 
@@ -530,14 +592,18 @@ public class CameraManager : MonoBehaviour
         _currentHighPoint = level.SerializedStartLine.FirstHighPoint;
         _doDirectionChangeDampen = false;
         _doCheckHighPointExit = false;
-        _groundChangeTimer = 0;
+        //_groundChangeTimer = 0;
         _xDampen = _defaultXDampen;
         _yDampen = _defaultYDampen;
         _zoomDampen = _defaultZoomDampen;
         _xOffset = minXOffset;
         _doLerpLastMaxY = false;
         _lastMaxY = float.PositiveInfinity;
-}
+        _lastXDelta = 0;
+        _lastYDelta = 0;
+        _lastOrthoDelta = 0;
+        _dirChangeXOffsetTaper = 1;
+    }
 
     private (float camBottomY, float orthoSize) CheckPlayerZoom((float camBottomY, float orthoSize) camParams)
     {
