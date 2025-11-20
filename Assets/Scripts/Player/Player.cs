@@ -65,11 +65,14 @@ public class Player : MonoBehaviour, IPlayer
         _freezeTokenSource = new();
         _freezeToken = _freezeTokenSource.Token;
 
-        if (GameManager.Instance != null)
+        if (LevelManager.LevelInstantiated)
         {
             _killPlaneY = GameManager.Instance.CurrentLevel.KillPlaneY;            
             transform.position = GameManager.Instance.CurrentLevel.SerializedStartLine.StartPositionWithOffset
                 + new Vector3(0, HalfPlayerHeight + 1.2f);
+        } else
+        {
+            SerializeLevelUtility.OnDeserializationComplete += OnLevelDeserialized;
         }
     }
 
@@ -80,11 +83,6 @@ public class Player : MonoBehaviour, IPlayer
         _stateMachine.InitializeState(PlayerStateType.Standby);
         _animator.SetBool("Airborne", false);
     }
-
-    //void Update()
-    //{
-    //    _stateMachine.UpdateCurrentStates();
-    //}
 
     private void FixedUpdate()
     {
@@ -110,6 +108,13 @@ public class Player : MonoBehaviour, IPlayer
         _inputEvents.DisableInputs();
         _eventAnnouncer.ClearActions();
         CancelAsyncTokens();
+    }
+
+    private void OnLevelDeserialized(Level level)
+    {
+        SerializeLevelUtility.OnDeserializationComplete -= OnLevelDeserialized;
+        _killPlaneY = level.KillPlaneY;
+        transform.position = level.SerializedStartLine.StartPositionWithOffset + new Vector3(0, HalfPlayerHeight + 1.2f);
     }
     #endregion
 

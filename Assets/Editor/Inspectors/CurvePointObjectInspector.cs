@@ -708,7 +708,7 @@ public class CurvePointObjectInspector : Editor
         {
             return;
         }
-        var camCenterX = target.Position.x - (CameraManager.minXOffset/2);
+        var camCenterX = target.Position.x - (CameraTargeter.minXOffset/2);
 
         var camBottomY = target.CamBottomPosition.y;
         var camTopY = camBottomY + (2 * target.orthoSize);

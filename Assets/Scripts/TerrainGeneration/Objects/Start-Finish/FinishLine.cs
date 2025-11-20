@@ -126,7 +126,7 @@ public class FinishLine : MonoBehaviour, ISerializable
 
         SerializeLevelUtility.OnDeserializationComplete += OnDeserializationComplete;
     }
-    public void OnDeserializationComplete()
+    public void OnDeserializationComplete(Level _)
     {
         SerializeLevelUtility.OnDeserializationComplete -= OnDeserializationComplete;
         gameObject.SetActive(true);
@@ -157,9 +157,11 @@ public class FinishLine : MonoBehaviour, ISerializable
 
     public void Refresh(GroundManager _ = null)
     {
+
 #if UNITY_EDITOR
         Undo.RegisterFullObjectHierarchyUndo(this, "Refreshing finish line");
 #endif
+
         UpdateFlagPosition();
         UpdateBackstopPosition();
     }

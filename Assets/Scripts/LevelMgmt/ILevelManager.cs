@@ -4,7 +4,6 @@ public interface ILevelManager
 {
     GroundManager GroundManager { get; set; }
     bool HasPlayer { get; }
-    bool HasTerrainManager { get ; }
 
     void Fall();
     void GameOver(IPlayer player);

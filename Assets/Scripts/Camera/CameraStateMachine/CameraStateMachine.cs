@@ -4,12 +4,16 @@ public class CameraStateMachine
 {
     public CameraState cameraState { get; set; }
     private CameraStateFactory _stateFactory;
-    public Camera camera { get; set; }
+    public CameraManager cameraManager { get; set; }
+    public Camera Camera { get => cameraManager.camera; }
+    public CameraStateFactory Factory { get => _stateFactory; }
 
-    public CameraStateMachine(Camera cam)
+    public CameraStateMachine(CameraManager camManager)
     {
-        camera = cam;
+        cameraManager = camManager;
+        LevelManager.OnLanding += GoToStartPosition;
         _stateFactory = new(this);
+        InitializeState();
     }
 
     public void InitializeState(CameraStateType startingState = CameraStateType.Standby)
@@ -17,5 +21,17 @@ public class CameraStateMachine
         cameraState = _stateFactory.GetState(startingState);
         cameraState.EnterState();
     }
+
+    public void GoToStartPosition(Level level, PlayerRecord __)
+    {
+        cameraManager.ResetCamera(level.SerializedStartLine);
+        InitializeState(CameraStateType.Standby);
+    }
+
+    public void FixedUpdate()
+    {
+        cameraState.FixedUpdateState();
+    }
+
 
 }

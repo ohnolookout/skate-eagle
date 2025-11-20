@@ -8,7 +8,7 @@ using UnityEngine.U2D;
 /// </summary>
 public static class SerializeLevelUtility
 {
-    public static Action OnDeserializationComplete;
+    public static Action<Level> OnDeserializationComplete;
     #region Serialization
 
     /// <summary>
@@ -132,13 +132,13 @@ public static class SerializeLevelUtility
             return (SerializedStartLine)startLine.Serialize();
         }
 
-        var xPos = startLine.StartPositionWithOffset.x + CameraManager.minXOffset;
+        var xPos = startLine.StartPositionWithOffset.x + CameraTargeter.minXOffset;
         var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
         var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
         startLine.FirstCameraTarget = leftTarget;
         startLine.FirstHighPoint = ground.HighTargets.Count > 0 ? ground.HighTargets[0] : null;
         var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
-        startLine.CamStartPosition = new(xPos - (CameraManager.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
+        startLine.CamStartPosition = new(xPos - (CameraTargeter.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
         startLine.CamOrthoSize = camParams.orthoSize;
 
         return (SerializedStartLine)startLine.Serialize();
@@ -335,7 +335,7 @@ public static class SerializeLevelUtility
             ProcessSerializedObject(serializedObject, groundManager);
         }
 
-        OnDeserializationComplete?.Invoke();
+        OnDeserializationComplete?.Invoke(level);
         OnDeserializationComplete = null;
     }
 

@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private GameManager _gameManager;
     private Player _player;
     private Rigidbody2D _playerBody;
+    private static bool _levelInstantiated = false;
     private Transform _playerTransform;
     public static ResyncHub ResyncHub { get; } = new();
     public static Action<Level, PlayerRecord> OnLanding { get; set; }
@@ -33,14 +34,16 @@ public class LevelManager : MonoBehaviour, ILevelManager
     public Player Player { get => _player; set => _player = value; }
     public Rigidbody2D PlayerBody { get => _playerBody; set => _playerBody = value; }
     public bool HasPlayer { get => _player != null; }
-    public bool HasTerrainManager { get => _groundManager != null; }
+    public static bool LevelInstantiated => _levelInstantiated;
     #endregion
 
     #region Monobehaviours
     void Awake()
     {
+        _levelInstantiated = false;
         _gameManager = GameManager.Instance;
         Timer.OnStopTimer += OnStopTimer;
+
     }
 
     private void Start()
@@ -65,6 +68,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
 
     private void InitializeLevel()
     {
+        SerializeLevelUtility.OnDeserializationComplete += (_) => _levelInstantiated = true;
         SerializeLevelUtility.DeserializeLevel(_gameManager.CurrentLevel, _groundManager, this);
         OnLanding?.Invoke(_gameManager.CurrentLevel, _gameManager.CurrentPlayerRecord); //Fix with new start line class
 
@@ -79,6 +83,7 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void OnDisable()
     {
         OnLevelExit?.Invoke();
+        _levelInstantiated = false;
         ResetStaticEvents();
         Timer.OnStopTimer -= OnStopTimer;
     }

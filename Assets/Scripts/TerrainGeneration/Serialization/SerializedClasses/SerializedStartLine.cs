@@ -15,7 +15,7 @@ public class SerializedStartLine : IDeserializable
     public ResyncRef<LinkedCameraTarget> firstCameraTargetRef = new();
     public string uid;
 
-    public Vector3 StartPosition => _curvePoint.WorldPosition;
+    public Vector3 StartPosition => CurvePoint.WorldPosition;
     public Vector3 StartPositionWithOffset => StartPosition + new Vector3(xOffset, 0, 0);
     public CurvePoint CurvePoint => curvePointRef.Value;
     public Vector3 CamStartPosition => _camStartPosition;
