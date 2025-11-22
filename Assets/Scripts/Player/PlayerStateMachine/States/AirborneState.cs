@@ -13,7 +13,6 @@ public class AirborneState : PlayerState
         _player.EventAnnouncer.InvokeAction(PlayerEvent.Airborne);
         _player.NormalBody.centerOfMass = new Vector2(0, 0f);
         _player.EventAnnouncer.SubscribeToAddCollision(OnLand);
-        //_player.CollisionManager.OnCollide += OnLand;
         _params.RotationStart = _player.NormalBody.rotation;
         
         if (_player.Params.JumpCount == 1)
@@ -29,7 +28,6 @@ public class AirborneState : PlayerState
     public override void ExitState()
     {
         _player.EventAnnouncer.UnsubscribeToAddCollision(OnLand);
-        //_player.CollisionManager.OnCollide -= OnLand;
         _player.InputEvents.OnJumpRelease -= JumpRelease;
         _player.InputEvents.OnJumpPress -= SecondJump;
         _player.JumpManager.CancelReleaseCheck();

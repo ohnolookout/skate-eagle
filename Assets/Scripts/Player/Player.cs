@@ -33,7 +33,17 @@ public class Player : MonoBehaviour, IPlayer
     public Collision2D LastLandCollision { get => _lastLandCollision; set => _lastLandCollision = value; }
     public PlayerParameters Params { get => _params; }
     public bool FacingForward { get => _facingForward; set => _facingForward = value; }
-    public bool Airborne => _stateMachine.CurrentState is AirborneState;
+    public bool Airborne 
+    {
+        get
+        {
+            if(_stateMachine.CurrentState.Substate == null)
+            {
+                return false;
+            }
+            return _stateMachine.CurrentState.Substate.GetType() == typeof(AirborneState);
+        }
+    }
     public bool IsRagdoll { get => _isRagdoll; set => _isRagdoll = value; }
     public float KillPlaneY { get => _killPlaneY; set => _killPlaneY = value; }
     public InputEventController InputEvents { get => _inputEvents; set => _inputEvents = value; }

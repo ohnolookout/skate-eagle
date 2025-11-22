@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class CameraMover
 {
-    private bool undoDirectionChangeDampen = false;
-    public const float defaultXStep = 0.35f;
-    public float xStep = defaultXStep;
-    public const float defaultYStep = 0.2f;
-    public float yStep = defaultYStep;
-    public const float defaultZoomStep = 0.2f;
-    public float zoomStep = defaultZoomStep;
-    public const float maxYDampen = 0.2f;
-    private const float maxXDeltaPercent = .2f;
-    private const float maxYDeltaPercent = .15f;
-    private const float maxOrthoDeltaPercent = .04f;
-    private float lastXDelta = 0;
-    private float lastYDelta = 0;
-    private float lastOrthoDelta = 0;
-    private const float maxXAccel = .3f;
-    private const float maxYAccel = .3f;
-    private const float maxOrthoAccel = 0.05f;
+    public const float DefaultXStep = 0.3f;
+    public float xStep = DefaultXStep;
+    public const float DefaultYStep = 0.25f;
+    public float yStep = DefaultYStep;
+    public const float DefaultZoomStep = 0.15f;
+    public float zoomStep = DefaultZoomStep;
+    public const float MaxYDampen = 0.2f;
+    private const float _maxXDeltaPercent = .2f;
+    private const float _maxYDeltaPercent = .15f;
+    private const float _maxOrthoDeltaPercent = .04f;
+    private float _lastXDelta = 0;
+    private float _lastYDelta = 0;
+    private float _lastOrthoDelta = 0;
+    private const float MaxXAccel = .3f;
+    private const float MaxYAccel = .3f;
+    private const float MaxOrthoAccel = 0.05f;
+    private bool _undoDirectionChangeDampen = false;
 
     private Camera _camera;
     private CameraManager _cameraManager;
@@ -28,7 +28,7 @@ public class CameraMover
     public CameraMover(CameraManager cameraManager)
     {
         _cameraManager = cameraManager;
-        _camera = cameraManager.camera;
+        _camera = cameraManager.Camera;
     }
 
     public void UpdatePosition(CameraTargeter targeter)
@@ -38,7 +38,7 @@ public class CameraMover
 
     public void UpdatePosition(Vector3 targetPosition, float targetSize)
     {
-        if (undoDirectionChangeDampen)
+        if (_undoDirectionChangeDampen)
         {
             UndoDampen();
         }
@@ -46,7 +46,7 @@ public class CameraMover
         var playerViewportPoint = _camera.WorldToViewportPoint(_cameraManager.player.NormalBody.position);
 
         //Find y delta
-        var yDelta = FindDelta(camPos.y, targetPosition.y, yStep, maxYDeltaPercent, lastYDelta, maxYAccel);
+        var yDelta = FindDelta(camPos.y, targetPosition.y, yStep, _maxYDeltaPercent, _lastYDelta, MaxYAccel);
 
         if (playerViewportPoint.y < .05f && yDelta < 0)
         {
@@ -54,7 +54,7 @@ public class CameraMover
         }
 
         //Find x delta
-        var xDelta = FindDelta(camPos.x, targetPosition.x, xStep, maxXDeltaPercent, lastXDelta, maxXAccel);
+        var xDelta = FindDelta(camPos.x, targetPosition.x, xStep, _maxXDeltaPercent, _lastXDelta, MaxXAccel);
 
         if (playerViewportPoint.x < .1f && xDelta < 0)
         {
@@ -66,14 +66,14 @@ public class CameraMover
         }
 
         //Find ortho delta
-        var orthoDelta = FindDelta(_camera.orthographicSize, targetSize, zoomStep, maxOrthoDeltaPercent, lastOrthoDelta, maxOrthoAccel);
+        var orthoDelta = FindDelta(_camera.orthographicSize, targetSize, zoomStep, _maxOrthoDeltaPercent, _lastOrthoDelta, MaxOrthoAccel);
 
         _camera.transform.Translate(xDelta, yDelta, 0);
         _camera.orthographicSize += orthoDelta;
 
-        lastXDelta = xDelta;
-        lastYDelta = yDelta;
-        lastOrthoDelta = orthoDelta;
+        _lastXDelta = xDelta;
+        _lastYDelta = yDelta;
+        _lastOrthoDelta = orthoDelta;
     }
 
 
@@ -97,7 +97,6 @@ public class CameraMover
         //Slow down as target is approached.
         if (lastDelta > maxDelta / 3 && totalDifference / lastDelta < 6)
         {
-            Debug.Log("Slowing down as target approached.");
             delta = lastDelta * 0.75f;
         }
         else if (Mathf.Abs(deltaAccel) > maxAccel)
@@ -117,38 +116,43 @@ public class CameraMover
 
     private void UndoDampen()
     {
-        xStep = Mathf.SmoothStep(xStep, defaultXStep, 0.1f);
-        yStep = Mathf.SmoothStep(yStep, defaultYStep, 0.1f);
-        zoomStep = Mathf.SmoothStep(zoomStep, defaultZoomStep, 0.1f);
-        if (Mathf.Abs(defaultXStep - xStep) < 0.02 && Mathf.Abs(defaultYStep - yStep) < 0.02)
+        xStep = Mathf.SmoothStep(xStep, DefaultXStep, 0.1f);
+        yStep = Mathf.SmoothStep(yStep, DefaultYStep, 0.1f);
+        zoomStep = Mathf.SmoothStep(zoomStep, DefaultZoomStep, 0.1f);
+        if (Mathf.Abs(DefaultXStep - xStep) < 0.02 && Mathf.Abs(DefaultYStep - yStep) < 0.02)
         {
-            xStep = defaultXStep;
-            yStep = defaultYStep;
-            zoomStep = defaultZoomStep;
-            undoDirectionChangeDampen = false;
+            xStep = DefaultXStep;
+            yStep = DefaultYStep;
+            zoomStep = DefaultZoomStep;
+            _undoDirectionChangeDampen = false;
         }
     }
 
     public void MoveToStart(SerializedStartLine startLine)
     {
-        _camera.transform.position = startLine.CamStartPosition;
-        _camera.orthographicSize = startLine.CamOrthoSize;
+        SetPosition(startLine.CamStartPosition, startLine.CamOrthoSize);
         ResetVariables();
+    }
+
+    public void SetPosition(Vector3 position, float orthoSize)
+    {
+        _camera.transform.position = position;
+        _camera.orthographicSize = orthoSize;
     }
 
     public void ResetVariables()
     {
-        xStep = defaultXStep;
-        yStep = defaultYStep;
-        zoomStep = defaultZoomStep;
-        lastXDelta = 0;
-        lastYDelta = 0;
-        lastOrthoDelta = 0;
-        undoDirectionChangeDampen = false;        
+        xStep = DefaultXStep;
+        yStep = DefaultYStep;
+        zoomStep = DefaultZoomStep;
+        _lastXDelta = 0;
+        _lastYDelta = 0;
+        _lastOrthoDelta = 0;
+        _undoDirectionChangeDampen = false;        
     }
 
     public void OnExitDirectionChange()
     {
-        undoDirectionChangeDampen = true;
+        _undoDirectionChangeDampen = true;
     }
 }

@@ -18,7 +18,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private Player _player;
     private Rigidbody2D _playerBody;
     private static bool _levelInstantiated = false;
-    private Transform _playerTransform;
     public static ResyncHub ResyncHub { get; } = new();
     public static Action<Level, PlayerRecord> OnLanding { get; set; }
     public static Action OnGameOver { get; set; }
@@ -119,7 +118,6 @@ public class LevelManager : MonoBehaviour, ILevelManager
     private void InstantiatePlayer()
     {
         _player = Instantiate(_playerPrefab).GetComponent<Player>();
-        _playerTransform = _player.Transform;
         _playerBody = _player.NormalBody;
 
         _player.EventAnnouncer.SubscribeToEvent(PlayerEvent.StartAttempt, StartAttempt);

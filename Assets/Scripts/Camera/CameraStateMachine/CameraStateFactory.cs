@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum CameraStateType
 {
-    Standby,
+    Freeze,
     TrackGround,
     ChangeDirection,
     Freefall
@@ -18,7 +18,7 @@ public class CameraStateFactory
     {
         _cameraMachine = machine;
         _stateDict = new();
-        _stateDict[CameraStateType.Standby] = new CameraStandbyState(_cameraMachine);
+        _stateDict[CameraStateType.Freeze] = new CameraFreezeState(_cameraMachine);
         _stateDict[CameraStateType.TrackGround] = new CameraTrackGroundState(_cameraMachine);
         _stateDict[CameraStateType.ChangeDirection] = new CameraChangeDirectionState(_cameraMachine);
         _stateDict[CameraStateType.Freefall] = new CameraFreefallState(_cameraMachine);

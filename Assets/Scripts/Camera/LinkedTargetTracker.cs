@@ -27,8 +27,6 @@ public class LinkedTargetTracker
 
     public void Update(float xPos)
     {
-        //Check if xPos is past last target. If so, stop updating.
-        if (_isOverExtended) return;
         _isOverExtended = CheckOverExtension(xPos);
 
 #if UNITY_EDITOR
@@ -157,17 +155,17 @@ public class LinkedTargetTracker
 
     private bool CheckOverExtension(float posX)
     {
-        if(_currentTarget == null || Current == null)
+        if (_currentTarget == null || Current == null || _currentGround == null)
         {
             return true;
         }
 
-        if(Next == null && posX > Current.Position.x)
+        if (Next == null && (posX > _currentGround.HighTargets[^1].position.x || posX > _currentGround.CurvePoints[^1].Position.x))
         {
             return true;
         }
 
-        if(Previous == null && posX < Current.Position.x)
+        if(Previous == null && (posX < _currentGround.HighTargets[0].position.x || posX < _currentGround.CurvePoints[0].Position.x))
         {
             return true;
         }

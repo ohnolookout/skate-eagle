@@ -1,19 +1,20 @@
 using UnityEngine;
 
-public class CameraStandbyState : CameraState
+public class CameraFreezeState : CameraState
 {
-    public CameraStandbyState(CameraStateMachine cameraMachine) : base(cameraMachine)
+    public CameraFreezeState(CameraStateMachine cameraMachine) : base(cameraMachine)
     {
     }
 
     public override void EnterState()
     {
-        LevelManager.OnStandby += OnExitStandby;
+        Debug.Log("Entering freeze state.");
+        LevelManager.OnStandby += OnExitFreeze;
     }
 
     public override void ExitState()
     {
-        LevelManager.OnStandby -= OnExitStandby;
+        LevelManager.OnStandby -= OnExitFreeze;
     }
 
     public override void FixedUpdateState()
@@ -21,7 +22,7 @@ public class CameraStandbyState : CameraState
         return;
     }
 
-    public void OnExitStandby()
+    public void OnExitFreeze()
     {
         ChangeState(_cameraMachine.Factory.GetState(CameraStateType.TrackGround));
     }

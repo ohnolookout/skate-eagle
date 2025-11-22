@@ -132,13 +132,13 @@ public static class SerializeLevelUtility
             return (SerializedStartLine)startLine.Serialize();
         }
 
-        var xPos = startLine.StartPositionWithOffset.x + CameraTargeter.minXOffset;
+        var xPos = startLine.StartPositionWithOffset.x + CameraTargeter.MinXOffset;
         var targetPos = new Vector3(xPos, startLine.CurvePoint.Position.y);
         var leftTarget = CameraTargetUtility.FindNearestLeftTarget(targetPos.x, ground);
         startLine.FirstCameraTarget = leftTarget;
         startLine.FirstHighPoint = ground.HighTargets.Count > 0 ? ground.HighTargets[0] : null;
         var camParams = CameraTargetUtility.GetCamParams(xPos, leftTarget);
-        startLine.CamStartPosition = new(xPos - (CameraTargeter.minXOffset/2), camParams.camBottomY + camParams.orthoSize);
+        startLine.CamStartPosition = new(xPos - (CameraTargeter.MinXOffset/2), camParams.camBottomY + camParams.orthoSize);
         startLine.CamOrthoSize = camParams.orthoSize;
 
         return (SerializedStartLine)startLine.Serialize();

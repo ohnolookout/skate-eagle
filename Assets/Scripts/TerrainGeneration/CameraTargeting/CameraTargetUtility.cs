@@ -12,8 +12,8 @@ public static class CameraTargetUtility
     public const float MaxYOffsetT = 0.6f;
     public const float HighYT = 0.2f;
     public const float PlayerHighYT = 0.7f;
-    public const float MinSlopeDeltaForOffset = 0;
-    public const float MaxSlopeDeltaForOffset = 1;
+    public const float MinSlopeDeltaForOffset = -.25f;
+    public const float MaxSlopeDeltaForOffset = .75f;
     public const float DefaultAspectRatio = 16f / 9f;
     public const float DefaultOrthoSize = 50;
     public const float MinAbsoluteYBuffer = MinYOffsetT * DefaultOrthoSize;

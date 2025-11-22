@@ -4,7 +4,7 @@ public abstract class CameraState
 {
     protected CameraManager _cameraManager;
     protected CameraStateMachine _cameraMachine;
-    protected IPlayer _player;
+    protected IPlayer _player => _cameraManager.player;
     public virtual void EnterState() { }
     public virtual void ExitState() { }
     public virtual void FixedUpdateState() { }
@@ -17,6 +17,11 @@ public abstract class CameraState
 
     public void ChangeState(CameraState newState)
     {
+        if(_cameraMachine.cameraState != this)
+        {
+            return;
+        }
+
         ExitState();
         _cameraMachine.cameraState = newState;
         newState.EnterState();

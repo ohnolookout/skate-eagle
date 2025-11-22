@@ -13,6 +13,7 @@ public abstract class PlayerState
     protected PlayerStateFactory _stateFactory;
     protected PlayerState _substate, _superstate;
     protected bool _isRootState = false;
+    public PlayerState Substate => _substate;
 
     public PlayerState(PlayerStateMachine playerMachine, PlayerStateFactory stateFactory)
     {
